@@ -39,6 +39,7 @@ export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
       <CssBaseline />
       <AppBar
         position="fixed"
+        color="secondary"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}

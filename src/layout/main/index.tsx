@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 
-import AppBar from "@material-ui/core/AppBar";
 import CloseIcon from "@material-ui/icons/Close";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+import { TopBar } from "./TopBar";
 import clsx from "clsx";
 import logo from "../../assets/logoWhite.png";
 import { useMainStyles } from "../../styles/layout/main";
@@ -21,44 +18,14 @@ export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
   const [open, setOpen] = useState<boolean>(true);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
-  const handleDrawerToggle = () => {
-    setOpen(!open);
-  };
-
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        color="secondary"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerToggle}
-            edge="start"
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Persistent drawer
-          </Typography>
-          <div className={classes.toolbarContainer}></div>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <TopBar
+        isOpenLeftDrawerOpen={open}
+        toggleLeftDrawer={() => setOpen(!open)}
+        toggleRightDrawer={() => setIsMenuOpen(!isMenuOpen)}
+      />
       <Drawer
         className={classes.drawer}
         variant="persistent"

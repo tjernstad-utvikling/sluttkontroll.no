@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Theme,
   createStyles,
@@ -6,17 +7,15 @@ import {
 } from "@material-ui/core/styles";
 
 import AppBar from "@material-ui/core/AppBar";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import React from "react";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
+import logo from "../../assets/logoWhite.png";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -24,14 +23,11 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState<boolean>(true);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleDrawerToggle = () => {
+    setOpen(!open);
   };
 
   return (
@@ -48,35 +44,51 @@ export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={handleDrawerToggle}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={classes.menuButton}
           >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
             Persistent drawer
           </Typography>
+          <div className={classes.toolbarContainer}></div>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={classes.menuButton}
+          >
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
         className={classes.drawer}
         variant="persistent"
+        color="primary"
         anchor="left"
         open={open}
         classes={{
-          paper: classes.drawerPaper,
+          paper: classes.drawerPaperClients,
         }}
       >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
+        <div className={clsx(classes.drawerHeader, classes.drawerLogoHeader)}>
+          <img src={logo} alt="" height={100} />
         </div>
+        <Divider />
+      </Drawer>
+      <Drawer
+        className={classes.drawer}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        anchor="right"
+        open={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      >
+        <div className={classes.drawerHeader}>{/* drawer header */}</div>
         <Divider />
       </Drawer>
       <main
@@ -91,7 +103,7 @@ export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
   );
 };
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -112,11 +124,11 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
+    toolbarContainer: {
+      flexGrow: 1,
+    },
     menuButton: {
       marginRight: theme.spacing(2),
-    },
-    hide: {
-      display: "none",
     },
     drawer: {
       width: drawerWidth,
@@ -125,6 +137,10 @@ const useStyles = makeStyles((theme: Theme) =>
     drawerPaper: {
       width: drawerWidth,
     },
+    drawerPaperClients: {
+      width: drawerWidth,
+      backgroundColor: theme.palette.primary.main,
+    },
     drawerHeader: {
       display: "flex",
       alignItems: "center",
@@ -132,6 +148,10 @@ const useStyles = makeStyles((theme: Theme) =>
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
       justifyContent: "flex-end",
+    },
+    drawerLogoHeader: {
+      justifyContent: "center",
+      height: 150,
     },
     content: {
       flexGrow: 1,

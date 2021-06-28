@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import {
-  Theme,
-  createStyles,
-  makeStyles,
-  useTheme,
-} from "@material-ui/core/styles";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 
 import AppBar from "@material-ui/core/AppBar";
+import CloseIcon from "@material-ui/icons/Close";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
@@ -22,7 +18,6 @@ interface MainLayoutProps {
 }
 export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
   const classes = useStyles();
-  const theme = useTheme();
   const [open, setOpen] = useState<boolean>(true);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -88,7 +83,16 @@ export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
         open={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
       >
-        <div className={classes.drawerHeader}>{/* drawer header */}</div>
+        <div className={classes.drawerHeader}>
+          <IconButton
+            color="inherit"
+            aria-label="close drawer"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={classes.menuButton}
+          >
+            <CloseIcon />
+          </IconButton>
+        </div>
         <Divider />
       </Drawer>
       <main

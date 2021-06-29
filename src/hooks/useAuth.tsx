@@ -17,11 +17,10 @@ export const AuthProvider = ({
 }): JSX.Element => {
     const [user, setUser] = useState<SlkUser>();
 
-    interface SignIn {
-        email: string;
-        password: string;
-    }
-    const signIn = async ({ email, password }: SignIn): Promise<boolean> => {
+    const signIn = async (
+        email: string,
+        password: string
+    ): Promise<boolean> => {
         const loginResponse = await getLogin(email, password);
         if (loginResponse.status === 200) {
             const userResponse = await getCurrentUser();
@@ -70,10 +69,7 @@ export const AuthProvider = ({
 
 interface ContextInterface {
     user: SlkUser | undefined;
-    signIn: (credentials: {
-        email: string;
-        password: string;
-    }) => Promise<boolean>;
+    signIn: (email: string, password: string) => Promise<boolean>;
     signOut: () => void;
     loadUserFromStorage: () => boolean;
 }

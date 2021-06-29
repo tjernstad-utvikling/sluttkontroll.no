@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
+import { FrontPage } from "../views/frontPage";
 import { Main } from "./main";
 
 export const AppRouter = () => {
@@ -8,7 +9,7 @@ export const AppRouter = () => {
       <div>
         <Switch>
           <Route exact path="/">
-            <p>Home screen</p>
+            <FrontPage />
           </Route>
           <Route path="/">
             <Main />

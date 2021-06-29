@@ -1,5 +1,4 @@
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
@@ -43,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2)
+    },
+    errorText: {
+        color: theme.palette.error.main
     }
 }));
 
@@ -55,6 +57,7 @@ export const FrontPage = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+    const [loginError, setLoginError] = useState<string>();
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -62,8 +65,14 @@ export const FrontPage = () => {
         try {
             if (await signIn(email, password)) {
                 history.push('/kontroll');
+            } else {
+                setLoginError(
+                    'Innlogging feilet, epost eller passord eksisterer ikke'
+                );
             }
-        } catch (error) {}
+        } catch (error) {
+            setLoginError('Innlogging feilet, en ukjent feil oppsto');
+        }
         setIsLoggingIn(false);
     };
 
@@ -116,6 +125,13 @@ export const FrontPage = () => {
                             id="password"
                             autoComplete="current-password"
                         />
+                        {loginError !== undefined ? (
+                            <Typography
+                                className={classes.errorText}
+                                component="span">
+                                {loginError}
+                            </Typography>
+                        ) : undefined}
                         <LoadingButton
                             isLoading={isLoggingIn}
                             type="submit"

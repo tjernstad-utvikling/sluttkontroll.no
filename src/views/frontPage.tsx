@@ -1,3 +1,7 @@
+import * as Yup from 'yup';
+
+import { Form, Formik, useField } from 'formik';
+
 import Avatar from '@material-ui/core/Avatar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -5,9 +9,10 @@ import Link from '@material-ui/core/Link';
 import { LoadingButton } from '../components/button';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
-import { TextField } from '../validation/textField';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { TextField } from '../components/input';
 import Typography from '@material-ui/core/Typography';
-import { ValidatorForm } from '../validation/formContainer';
 import { makeStyles } from '@material-ui/core/styles';
 import { useAuth } from '../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
@@ -96,61 +101,69 @@ export const FrontPage = () => {
                     <Typography component="h1" variant="h5">
                         Logg inn
                     </Typography>
-                    <ValidatorForm
-                        onSubmit={handleLogin}
-                        className={classes.form}>
-                        <TextField
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Epost"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            type="email"
-                        />
+                    <Formik
+                        initialValues={{
+                            email: '',
+                            password: ''
+                        }}
+                        validationSchema={Yup.object({
+                            email: Yup.string()
+                                .email('Invalid email address')
+                                .required('Required'),
+                            password: Yup.string().required('Required')
+                        })}
+                        onSubmit={(values, { setSubmitting }) => {
+                            setTimeout(() => {
+                                alert(JSON.stringify(values, null, 2));
+                                setSubmitting(false);
+                            }, 400);
+                        }}>
+                        <Form className={classes.form}>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                id="email"
+                                label="Epost"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                                type="email"
+                            />
 
-                        <TextField
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Passord"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                        />
-                        {loginError !== undefined ? (
-                            <Typography
-                                className={classes.errorText}
-                                component="span">
-                                {loginError}
-                            </Typography>
-                        ) : undefined}
-                        <LoadingButton
-                            isLoading={isLoggingIn}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}>
-                            Logg inn
-                        </LoadingButton>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Glemt passord?
-                                </Link>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                name="password"
+                                label="Passord"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                            />
+                            {loginError !== undefined ? (
+                                <Typography
+                                    className={classes.errorText}
+                                    component="span">
+                                    {loginError}
+                                </Typography>
+                            ) : undefined}
+                            <LoadingButton
+                                isLoading={isLoggingIn}
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}>
+                                Logg inn
+                            </LoadingButton>
+                            <Grid container>
+                                <Grid item xs>
+                                    <Link href="#" variant="body2">
+                                        Glemt passord?
+                                    </Link>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </ValidatorForm>
+                        </Form>
+                    </Formik>
                 </div>
             </Grid>
         </Grid>

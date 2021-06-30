@@ -5,8 +5,9 @@ import Link from '@material-ui/core/Link';
 import { LoadingButton } from '../components/button';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
+import { TextField } from '../validation/textField';
 import Typography from '@material-ui/core/Typography';
+import { ValidatorForm } from '../validation/formContainer';
 import { makeStyles } from '@material-ui/core/styles';
 import { useAuth } from '../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
@@ -95,10 +96,9 @@ export const FrontPage = () => {
                     <Typography component="h1" variant="h5">
                         Logg inn
                     </Typography>
-                    <form
+                    <ValidatorForm
                         onSubmit={handleLogin}
-                        className={classes.form}
-                        noValidate>
+                        className={classes.form}>
                         <TextField
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -111,7 +111,9 @@ export const FrontPage = () => {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            type="email"
                         />
+
                         <TextField
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -148,7 +150,7 @@ export const FrontPage = () => {
                                 </Link>
                             </Grid>
                         </Grid>
-                    </form>
+                    </ValidatorForm>
                 </div>
             </Grid>
         </Grid>

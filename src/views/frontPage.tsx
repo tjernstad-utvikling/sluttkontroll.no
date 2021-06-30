@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import { Form, Formik, useField } from 'formik';
+import { Form, Formik } from 'formik';
 
 import Avatar from '@material-ui/core/Avatar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,7 +10,6 @@ import { LoadingButton } from '../components/button';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { TextField } from '../components/input';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -60,27 +59,7 @@ export const FrontPage = () => {
 
     const history = useHistory();
 
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
     const [loginError, setLoginError] = useState<string>();
-
-    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setIsLoggingIn(true);
-        try {
-            if (await signIn(email, password)) {
-                history.push('/kontroll');
-            } else {
-                setLoginError(
-                    'Innlogging feilet, epost eller passord eksisterer ikke'
-                );
-            }
-        } catch (error) {
-            setLoginError('Innlogging feilet, en ukjent feil oppsto');
-        }
-        setIsLoggingIn(false);
-    };
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -108,61 +87,74 @@ export const FrontPage = () => {
                         }}
                         validationSchema={Yup.object({
                             email: Yup.string()
-                                .email('Invalid email address')
-                                .required('Required'),
-                            password: Yup.string().required('Required')
+                                .email('Epost er ugyldig')
+                                .required('Epost er påkrevd'),
+                            password: Yup.string().required('Påkrevd')
                         })}
-                        onSubmit={(values, { setSubmitting }) => {
-                            setTimeout(() => {
-                                alert(JSON.stringify(values, null, 2));
-                                setSubmitting(false);
-                            }, 400);
+                        onSubmit={async (values, { setSubmitting }) => {
+                            try {
+                                if (
+                                    await signIn(values.email, values.password)
+                                ) {
+                                    history.push('/kontroll');
+                                } else {
+                                    setLoginError(
+                                        'Innlogging feilet, epost eller passord eksisterer ikke'
+                                    );
+                                }
+                            } catch (error) {
+                                setLoginError(
+                                    'Innlogging feilet, en ukjent feil oppsto'
+                                );
+                            }
                         }}>
-                        <Form className={classes.form}>
-                            <TextField
-                                variant="outlined"
-                                fullWidth
-                                id="email"
-                                label="Epost"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                                type="email"
-                            />
+                        {({ isSubmitting }) => (
+                            <Form className={classes.form}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    id="email"
+                                    label="Epost"
+                                    name="email"
+                                    autoComplete="email"
+                                    autoFocus
+                                    type="email"
+                                />
 
-                            <TextField
-                                variant="outlined"
-                                fullWidth
-                                name="password"
-                                label="Passord"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                            />
-                            {loginError !== undefined ? (
-                                <Typography
-                                    className={classes.errorText}
-                                    component="span">
-                                    {loginError}
-                                </Typography>
-                            ) : undefined}
-                            <LoadingButton
-                                isLoading={isLoggingIn}
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                className={classes.submit}>
-                                Logg inn
-                            </LoadingButton>
-                            <Grid container>
-                                <Grid item xs>
-                                    <Link href="#" variant="body2">
-                                        Glemt passord?
-                                    </Link>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    name="password"
+                                    label="Passord"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+                                />
+                                {loginError !== undefined ? (
+                                    <Typography
+                                        className={classes.errorText}
+                                        component="span">
+                                        {loginError}
+                                    </Typography>
+                                ) : undefined}
+                                <LoadingButton
+                                    isLoading={isSubmitting}
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}>
+                                    Logg inn
+                                </LoadingButton>
+                                <Grid container>
+                                    <Grid item xs>
+                                        <Link href="#" variant="body2">
+                                            Glemt passord?
+                                        </Link>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </Form>
+                            </Form>
+                        )}
                     </Formik>
                 </div>
             </Grid>

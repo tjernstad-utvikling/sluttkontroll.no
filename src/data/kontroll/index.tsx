@@ -19,9 +19,9 @@ export const KontrollContextProvider = ({
 
     const loadKlienter = async (): Promise<void> => {
         try {
-            const klienter = await getClients();
+            const { status, klienter } = await getClients();
 
-            if (klienter !== undefined) {
+            if (status === 200) {
                 dispatch({
                     type: ActionType.setKlienter,
                     payload: klienter

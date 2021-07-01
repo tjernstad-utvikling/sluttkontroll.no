@@ -1,6 +1,8 @@
 import { ActionType, KontrollActions, kontrollState } from './contracts';
 
-export const initialState: kontrollState = {} as kontrollState;
+export const initialState: kontrollState = {
+    klienter: undefined
+};
 
 export const kontrollReducer = (
     state: kontrollState,

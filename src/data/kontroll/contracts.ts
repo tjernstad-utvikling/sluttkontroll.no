@@ -1,7 +1,7 @@
 import { Klient } from '../../contracts/kontrollApi';
 
 export interface kontrollState {
-    klienter: Array<Klient>;
+    klienter: Array<Klient> | undefined;
 }
 
 export enum ActionType {

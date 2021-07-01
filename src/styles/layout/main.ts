@@ -48,7 +48,8 @@ export const useMainStyles = makeStyles((theme: Theme) =>
         },
         drawerLogoHeader: {
             justifyContent: 'center',
-            height: 150
+            height: 150,
+            minHeight: 150
         },
         content: {
             flexGrow: 1,

@@ -16,6 +16,7 @@ export const AuthProvider = ({
     children: React.ReactNode;
 }): JSX.Element => {
     const [user, setUser] = useState<SlkUser>();
+    const [hasCheckedLocal, setHasCheckedLocal] = useState(false);
 
     const signIn = async (
         email: string,
@@ -44,13 +45,16 @@ export const AuthProvider = ({
 
     const loadUserFromStorage = () => {
         const token = localStorage.getItem(StorageKeys.token);
+
         if (token !== null) {
             const jsonValue = localStorage.getItem(StorageKeys.currentUser);
             const currentUser: SlkUser =
                 jsonValue != null ? JSON.parse(jsonValue) : undefined;
             setUser(currentUser);
+            setHasCheckedLocal(true);
             return true;
         }
+        setHasCheckedLocal(true);
         return false;
     };
 
@@ -58,6 +62,7 @@ export const AuthProvider = ({
         <Context.Provider
             value={{
                 user,
+                hasCheckedLocal,
                 signIn,
                 signOut,
                 loadUserFromStorage
@@ -69,6 +74,7 @@ export const AuthProvider = ({
 
 interface ContextInterface {
     user: SlkUser | undefined;
+    hasCheckedLocal: boolean;
     signIn: (email: string, password: string) => Promise<boolean>;
     signOut: () => void;
     loadUserFromStorage: () => boolean;

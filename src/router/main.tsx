@@ -1,5 +1,6 @@
 import { Route, Switch } from 'react-router-dom';
 
+import { KontrollerView } from '../views/kontroller';
 import { MainLayout } from '../layout/main';
 import Typography from '@material-ui/core/Typography';
 
@@ -8,7 +9,7 @@ export const Main = () => {
         <MainLayout>
             <Switch>
                 <Route path="/">
-                    <Typography paragraph>Main screen</Typography>
+                    <KontrollerView />
                 </Route>
             </Switch>
         </MainLayout>

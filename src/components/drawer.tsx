@@ -24,7 +24,7 @@ export const KlientMenu = (): JSX.Element => {
         return (
             <div>
                 {klienter.map((klient) => (
-                    <KlientListItem klient={klient} />
+                    <KlientListItem klient={klient} key={klient.id} />
                 ))}
             </div>
         );
@@ -43,7 +43,6 @@ interface KlientListItemProps {
     klient: Klient;
 }
 const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
-    const classes = useStyles();
     const [open, setOpen] = useState<boolean>(false);
     const handleClick = () => {
         setOpen(!open);
@@ -56,11 +55,29 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    <ListItem button className={classes.nested}>
-                        <ListItemText primary="Starred" />
-                    </ListItem>
+                    {klient.objekts.map((objekt) => (
+                        <ObjektListItem
+                            id={objekt.id}
+                            name={objekt.name}
+                            key={objekt.id}
+                        />
+                    ))}
                 </List>
             </Collapse>
         </div>
+    );
+};
+
+const ObjektListItem = ({
+    name
+}: {
+    id: number;
+    name: string;
+}): JSX.Element => {
+    const classes = useStyles();
+    return (
+        <ListItem button className={classes.nested}>
+            <ListItemText primary={name} />
+        </ListItem>
     );
 };

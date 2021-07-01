@@ -18,7 +18,7 @@ interface ListItemLinkProps {
 
 export const ListItemLink = (props: ListItemLinkProps) => {
     const { icon, primary, to } = props;
-    let match = useRouteMatch(to);
+    const match = useRouteMatch(to);
 
     const renderLink = React.useMemo(
         () =>

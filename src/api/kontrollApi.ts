@@ -1,6 +1,7 @@
+import { Klient } from '../contracts/kontrollApi';
 import sluttkontrollApi from './sluttkontroll';
 
-export const getClients = async (): Promise<unknown> => {
+export const getClients = async (): Promise<Array<Klient>> => {
     try {
         const { status, data } = await sluttkontrollApi.get('/v3/klient');
         if (status === 200) {

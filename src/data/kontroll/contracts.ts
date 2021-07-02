@@ -1,4 +1,9 @@
-import { Klient, Kontroll } from '../../contracts/kontrollApi';
+import {
+    Checklist,
+    Klient,
+    Kontroll,
+    Skjema
+} from '../../contracts/kontrollApi';
 
 export interface kontrollState {
     klienter: Array<Klient> | undefined;
@@ -7,7 +12,9 @@ export interface kontrollState {
 
 export enum ActionType {
     setKlienter,
-    setKontroller
+    setKontroller,
+    setSkjemaer,
+    setChecklister
 }
 
 export interface setKlienter {
@@ -19,8 +26,20 @@ export interface setKontroller {
     type: ActionType.setKontroller;
     payload: Array<Kontroll>;
 }
+export interface setSkjemaer {
+    type: ActionType.setSkjemaer;
+    payload: Array<Skjema>;
+}
+export interface setChecklister {
+    type: ActionType.setChecklister;
+    payload: Array<Checklist>;
+}
 
-export type KontrollActions = setKlienter | setKontroller;
+export type KontrollActions =
+    | setKlienter
+    | setKontroller
+    | setSkjemaer
+    | setChecklister;
 
 export interface ContextInterface {
     state: kontrollState;

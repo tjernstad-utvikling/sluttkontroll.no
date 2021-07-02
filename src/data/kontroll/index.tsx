@@ -32,12 +32,21 @@ export const KontrollContextProvider = ({
     };
     const loadKontroller = async (): Promise<void> => {
         try {
-            const { status, kontroller } = await getKontroller();
+            const { status, kontroller, skjemaer, checklists } =
+                await getKontroller();
 
             if (status === 200) {
                 dispatch({
                     type: ActionType.setKontroller,
                     payload: kontroller
+                });
+                dispatch({
+                    type: ActionType.setSkjemaer,
+                    payload: skjemaer
+                });
+                dispatch({
+                    type: ActionType.setChecklister,
+                    payload: checklists
                 });
             }
         } catch (error) {

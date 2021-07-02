@@ -6,6 +6,9 @@ export interface Klient {
 
 export interface Kontroll {
     id: number;
+    name: string;
+    kommentar: string;
+    done: boolean;
     Objekt: {
         id: number;
         name: string;
@@ -14,9 +17,10 @@ export interface Kontroll {
             name: string;
         };
     };
-    name: string;
-    kommentar: string;
-    Skjemaer: Array<Skjema>;
+    user: {
+        id: number;
+    };
+    avvikUtbedrere: Array<{ id: number }>;
 }
 
 export interface Skjema {
@@ -24,8 +28,7 @@ export interface Skjema {
     area: string;
     omrade: string;
     kommentar: string;
-    checklists: Array<Checklist>;
-    measurements: unknown;
+    kontroll: { id: number };
 }
 
 export interface Checklist {
@@ -34,10 +37,12 @@ export interface Checklist {
         id: number;
         prosedyreNr: string;
         prosedyre: string;
+        tiltak: null;
         tekst: string;
-        tiltak: string | null;
+        gruppe: string;
     };
     aktuell: boolean;
+    skjema: { id: number };
 }
 
 export interface Measurement {

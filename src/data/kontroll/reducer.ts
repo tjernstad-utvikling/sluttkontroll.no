@@ -1,7 +1,8 @@
 import { ActionType, KontrollActions, kontrollState } from './contracts';
 
 export const initialState: kontrollState = {
-    klienter: undefined
+    klienter: undefined,
+    kontroller: undefined
 };
 
 export const kontrollReducer = (

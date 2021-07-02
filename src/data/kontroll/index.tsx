@@ -1,8 +1,7 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
+import { getClients, getKontroller } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
-
-import { getClients } from '../../api/kontrollApi';
 
 export const useKontroll = () => {
     return useContext(KontrollContext);
@@ -31,12 +30,27 @@ export const KontrollContextProvider = ({
             console.log(error);
         }
     };
+    const loadKontroller = async (): Promise<void> => {
+        try {
+            const { status, kontroller } = await getKontroller();
+
+            if (status === 200) {
+                dispatch({
+                    type: ActionType.setKontroller,
+                    payload: kontroller
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <KontrollContext.Provider
             value={{
                 state,
 
+                loadKontroller,
                 loadKlienter
             }}>
             {children}

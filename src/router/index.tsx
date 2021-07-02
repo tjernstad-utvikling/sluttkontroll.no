@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
-import { FrontPage } from '../views/frontPage';
+import FrontPage from '../views/public-frontPage';
 import { Main } from './main';
 import { PrivateRoute } from './privateRoute';
 import { useAuth } from '../hooks/useAuth';

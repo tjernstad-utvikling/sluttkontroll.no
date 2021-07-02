@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const FrontPage = () => {
+const FrontPage = () => {
     const classes = useStyles();
     const { signIn } = useAuth();
 
@@ -161,3 +161,5 @@ export const FrontPage = () => {
         </Grid>
     );
 };
+
+export default FrontPage;

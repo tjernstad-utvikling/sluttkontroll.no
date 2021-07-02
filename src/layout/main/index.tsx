@@ -32,7 +32,6 @@ export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
                 className={clsx(classes.content, {
                     [classes.contentShift]: open
                 })}>
-                <div className={classes.drawerHeader} />
                 {children}
             </main>
         </div>

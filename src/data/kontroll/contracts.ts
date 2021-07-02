@@ -8,6 +8,8 @@ import {
 export interface kontrollState {
     klienter: Array<Klient> | undefined;
     kontroller: Array<Kontroll> | undefined;
+    skjemaer: Array<Skjema> | undefined;
+    checklists: Array<Checklist> | undefined;
 }
 
 export enum ActionType {

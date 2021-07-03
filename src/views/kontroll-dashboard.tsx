@@ -2,10 +2,10 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { KontrollTable } from '../components/kontroll';
 import Paper from '@material-ui/core/Paper';
-import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useUser } from '../data/user';
 
 const KontrollerView = () => {
     const classes = usePageStyles();
@@ -13,12 +13,13 @@ const KontrollerView = () => {
         state: { kontroller },
         loadKontroller
     } = useKontroll();
+    const { loadUsers } = useUser();
+
     useEffectOnce(() => {
         loadKontroller();
+        loadUsers();
     });
-    useEffect(() => {
-        console.log(kontroller);
-    }, [kontroller]);
+
     return (
         <div>
             <div className={classes.appBarSpacer} />

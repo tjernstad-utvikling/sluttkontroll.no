@@ -4,7 +4,7 @@ export const initialState: UserState = {
     users: undefined
 };
 
-export const kontrollReducer = (
+export const userReducer = (
     state: UserState,
     action: UserActions
 ): UserState => {

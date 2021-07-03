@@ -7,11 +7,15 @@ import {
 } from '@material-ui/data-grid';
 
 import { Kontroll } from '../contracts/kontrollApi';
+import { useUser } from '../data/user';
 
 interface KontrollTableProps {
     kontroller: Array<Kontroll>;
 }
 export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
+    const {
+        state: { users }
+    } = useUser();
     const columns: GridColDef[] = [
         {
             field: 'klient',
@@ -39,8 +43,13 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
             headerName: 'Utførende',
             sortable: false,
             flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                params.row.user.id || ''
+            valueGetter: (params: GridValueGetterParams) => {
+                if (users !== undefined) {
+                    const user = users.find((u) => u.id === params.row.user.id);
+                    return user?.name;
+                }
+                return '';
+            }
         },
         {
             field: 'kommentar',

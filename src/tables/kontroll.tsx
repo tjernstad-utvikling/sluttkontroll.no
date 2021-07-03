@@ -1,21 +1,11 @@
-import * as React from 'react';
+import { GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
 
-import {
-    DataGrid,
-    GridColDef,
-    GridValueGetterParams
-} from '@material-ui/data-grid';
-
+import { DataGrid } from '@material-ui/data-grid';
 import { Kontroll } from '../contracts/kontrollApi';
-import { useUser } from '../data/user';
+import { User } from '../contracts/userApi';
+import { useTable } from './tableContainer';
 
-interface KontrollTableProps {
-    kontroller: Array<Kontroll>;
-}
-export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
-    const {
-        state: { users }
-    } = useUser();
+export const kontrollColumns = (users: User[]): GridColDef[] => {
     const columns: GridColDef[] = [
         {
             field: 'klient',
@@ -58,14 +48,24 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
         }
     ];
 
+    return columns;
+};
+
+interface KontrollTableProps {
+    kontroller: Array<Kontroll>;
+}
+export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
+    const { columns } = useTable();
     return (
-        <DataGrid
-            rows={kontroller}
-            columns={columns}
-            pageSize={5}
-            checkboxSelection
-            disableSelectionOnClick
-            autoHeight
-        />
+        <div>
+            <DataGrid
+                rows={kontroller}
+                columns={columns}
+                pageSize={5}
+                checkboxSelection
+                disableSelectionOnClick
+                autoHeight
+            />
+        </div>
     );
 };

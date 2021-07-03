@@ -1,8 +1,9 @@
 import { Card, CardMenu } from '../components/card';
+import { KontrollTable, kontrollColumns } from '../tables/kontroll';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { KontrollTable } from '../components/kontroll';
+import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -14,7 +15,10 @@ const KontrollerView = () => {
         state: { kontroller },
         loadKontroller
     } = useKontroll();
-    const { loadUsers } = useUser();
+    const {
+        loadUsers,
+        state: { users }
+    } = useUser();
 
     useEffectOnce(() => {
         loadKontroller();
@@ -29,7 +33,10 @@ const KontrollerView = () => {
                     <Grid item xs={12}>
                         <Card title="Kontroller" menu={<CardMenu />}>
                             {kontroller !== undefined ? (
-                                <KontrollTable kontroller={kontroller} />
+                                <TableContainer
+                                    columns={kontrollColumns(users ?? [])}>
+                                    <KontrollTable kontroller={kontroller} />
+                                </TableContainer>
                             ) : (
                                 <div>Venter på kontroller</div>
                             )}

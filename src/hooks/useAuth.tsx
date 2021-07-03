@@ -3,6 +3,7 @@ import { getCurrentUser, getLogin } from '../api/auth';
 
 import { SlkUser } from '../contracts/user';
 import { StorageKeys } from '../contracts/keys';
+import { refreshLoginToken } from '../api/sluttkontroll';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
 
@@ -43,10 +44,11 @@ export const AuthProvider = ({
         localStorage.removeItem(StorageKeys.refreshToken);
     };
 
-    const loadUserFromStorage = () => {
+    const loadUserFromStorage = async () => {
         const token = localStorage.getItem(StorageKeys.token);
 
         if (token !== null) {
+            await refreshLoginToken();
             const jsonValue = localStorage.getItem(StorageKeys.currentUser);
             const currentUser: SlkUser =
                 jsonValue != null ? JSON.parse(jsonValue) : undefined;
@@ -77,5 +79,5 @@ interface ContextInterface {
     hasCheckedLocal: boolean;
     signIn: (email: string, password: string) => Promise<boolean>;
     signOut: () => void;
-    loadUserFromStorage: () => boolean;
+    loadUserFromStorage: () => Promise<boolean>;
 }

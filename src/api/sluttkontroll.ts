@@ -65,7 +65,7 @@ instance.interceptors.response.use(
 
 export default instance;
 
-const refreshLoginToken = async (): Promise<{
+export const refreshLoginToken = async (): Promise<{
     token: string;
 }> => {
     try {

@@ -31,6 +31,7 @@ export const Card = ({ children, title, menu }: CardProps) => {
 };
 
 export const CardMenu = () => {
+    const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -44,9 +45,11 @@ export const CardMenu = () => {
     return (
         <div>
             <IconButton
+                className={classes.cardTitle}
                 aria-label="open menu"
                 aria-controls="simple-menu"
                 aria-haspopup="true"
+                onMouseOver={handleClick}
                 onClick={handleClick}>
                 <MoreVertIcon />
             </IconButton>
@@ -70,7 +73,8 @@ const useStyles = makeStyles((theme) => ({
     },
     cardTitle: {
         fontSize: '1.75rem!important',
-        fontWeight: 500
+        fontWeight: 500,
+        color: '#ffffff'
     },
     paper: {
         display: 'flex',

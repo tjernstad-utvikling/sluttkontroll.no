@@ -6,7 +6,7 @@ export const usePageStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(4)
     },
     paper: {
-        padding: theme.spacing(2),
+        padding: theme.spacing(1),
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column'

@@ -1,7 +1,8 @@
+import { Card, CardMenu } from '../components/card';
+
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { KontrollTable } from '../components/kontroll';
-import Paper from '@material-ui/core/Paper';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -26,13 +27,13 @@ const KontrollerView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Paper className={classes.paper}>
+                        <Card title="Kontroller" menu={<CardMenu />}>
                             {kontroller !== undefined ? (
                                 <KontrollTable kontroller={kontroller} />
                             ) : (
                                 <div>Venter på kontroller</div>
                             )}
-                        </Paper>
+                        </Card>
                     </Grid>
                 </Grid>
             </Container>

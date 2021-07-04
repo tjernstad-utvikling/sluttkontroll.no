@@ -11,14 +11,19 @@ export const useTable = () => {
 
 export const TableContainer = ({
     children,
-    columns
+    columns,
+    defaultColumns
 }: {
     children: React.ReactNode;
     columns: GridColDef[];
     // tableId: string;
+    defaultColumns: Array<string>;
 }): JSX.Element => {
     const [visibleColumns, setVisibleColumns] = useState<Array<string>>([]);
     const returnColumns = useRef<GridColDef[]>();
+    if (visibleColumns.length === 0) {
+        setVisibleColumns(defaultColumns);
+    }
 
     returnColumns.current = columns.map((c) => {
         return { ...c, hide: !visibleColumns.includes(c.field) };

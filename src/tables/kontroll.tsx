@@ -16,7 +16,7 @@ export const kontrollColumns = (users: User[]): GridColDef[] => {
                 params.row.Objekt.klient.name || ''
         },
         {
-            field: 'object',
+            field: 'objekt',
             headerName: 'Lokasjon',
             sortable: false,
             flex: 1,
@@ -50,6 +50,13 @@ export const kontrollColumns = (users: User[]): GridColDef[] => {
 
     return columns;
 };
+
+export const defaultColumns: Array<string> = [
+    'klient',
+    'objekt',
+    'name',
+    'user'
+];
 
 interface KontrollTableProps {
     kontroller: Array<Kontroll>;

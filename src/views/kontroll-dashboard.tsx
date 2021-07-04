@@ -1,5 +1,9 @@
 import { Card, CardMenu } from '../components/card';
-import { KontrollTable, kontrollColumns } from '../tables/kontroll';
+import {
+    KontrollTable,
+    defaultColumns,
+    kontrollColumns
+} from '../tables/kontroll';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -34,7 +38,8 @@ const KontrollerView = () => {
                         <Card title="Kontroller" menu={<CardMenu />}>
                             {kontroller !== undefined ? (
                                 <TableContainer
-                                    columns={kontrollColumns(users ?? [])}>
+                                    columns={kontrollColumns(users ?? [])}
+                                    defaultColumns={defaultColumns}>
                                     <KontrollTable kontroller={kontroller} />
                                 </TableContainer>
                             ) : (

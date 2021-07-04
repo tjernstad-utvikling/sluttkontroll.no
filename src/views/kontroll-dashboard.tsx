@@ -39,7 +39,8 @@ const KontrollerView = () => {
                             {kontroller !== undefined ? (
                                 <TableContainer
                                     columns={kontrollColumns(users ?? [])}
-                                    defaultColumns={defaultColumns}>
+                                    defaultColumns={defaultColumns}
+                                    tableId="kontroller">
                                     <KontrollTable kontroller={kontroller} />
                                 </TableContainer>
                             ) : (

@@ -1,4 +1,5 @@
 import { GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
+import { useEffect, useState } from 'react';
 
 import { ColumnSelect } from '../components/table';
 import { DataGrid } from '@material-ui/data-grid';
@@ -11,7 +12,6 @@ export const kontrollColumns = (users: User[]): GridColDef[] => {
         {
             field: 'klient',
             headerName: 'Klient',
-            sortable: false,
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 params.row.Objekt.klient.name || ''
@@ -19,7 +19,6 @@ export const kontrollColumns = (users: User[]): GridColDef[] => {
         {
             field: 'objekt',
             headerName: 'Lokasjon',
-            sortable: false,
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 params.row.Objekt.name || ''
@@ -32,7 +31,6 @@ export const kontrollColumns = (users: User[]): GridColDef[] => {
         {
             field: 'user',
             headerName: 'Utførende',
-            sortable: false,
             flex: 1,
             valueGetter: (params: GridValueGetterParams) => {
                 if (users !== undefined) {
@@ -64,6 +62,30 @@ interface KontrollTableProps {
 }
 export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
     const { columns } = useTable();
+    const [isShift, setIsShift] = useState<boolean>(false);
+
+    const handleKeyDown = (event: any) => {
+        console.log(event);
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Shift') {
+                setIsShift(true);
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Shift') {
+                setIsShift(false);
+            }
+        });
+
+        // cleanup this component
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyDown);
+        };
+    }, []);
     return (
         <div>
             <ColumnSelect />
@@ -73,6 +95,7 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
                 pageSize={5}
                 checkboxSelection
                 disableSelectionOnClick
+                disableColumnSelector
                 autoHeight
             />
         </div>

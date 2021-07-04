@@ -43,7 +43,7 @@ const KontrollerView = () => {
                                     <KontrollTable kontroller={kontroller} />
                                 </TableContainer>
                             ) : (
-                                <div>Venter på kontroller</div>
+                                <div>Laster kontroller</div>
                             )}
                         </Card>
                     </Grid>

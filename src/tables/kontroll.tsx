@@ -1,5 +1,6 @@
 import { GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
 
+import { ColumnSelect } from '../components/table';
 import { DataGrid } from '@material-ui/data-grid';
 import { Kontroll } from '../contracts/kontrollApi';
 import { User } from '../contracts/userApi';
@@ -65,6 +66,7 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
     const { columns } = useTable();
     return (
         <div>
+            <ColumnSelect />
             <DataGrid
                 rows={kontroller}
                 columns={columns}

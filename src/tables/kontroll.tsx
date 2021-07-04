@@ -1,4 +1,8 @@
-import { GridColDef, GridValueGetterParams } from '@material-ui/data-grid';
+import {
+    GridColDef,
+    GridRowSelectedParams,
+    GridValueGetterParams
+} from '@material-ui/data-grid';
 import { useEffect, useState } from 'react';
 
 import { ColumnSelect } from '../components/table';
@@ -63,6 +67,7 @@ interface KontrollTableProps {
 export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
     const { columns } = useTable();
     const [isShift, setIsShift] = useState<boolean>(false);
+    const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
 
     const handleKeyDown = (event: any) => {
         console.log(event);
@@ -86,10 +91,16 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
             window.removeEventListener('keyup', handleKeyDown);
         };
     }, []);
+
+    const handleSelect = (row: GridRowSelectedParams) => {
+        const index = kontroller.findIndex((k) => k.id === row.data.id);
+        console.log(index);
+    };
     return (
         <div>
             <ColumnSelect />
             <DataGrid
+                ref={}
                 rows={kontroller}
                 columns={columns}
                 pageSize={5}
@@ -97,6 +108,7 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
                 disableSelectionOnClick
                 disableColumnSelector
                 autoHeight
+                onRowSelected={handleSelect}
             />
         </div>
     );

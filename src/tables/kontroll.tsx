@@ -14,6 +14,11 @@ import { useTable } from './tableContainer';
 export const kontrollColumns = (users: User[]): GridColDef[] => {
     const columns: GridColDef[] = [
         {
+            field: 'id',
+            headerName: '#',
+            flex: 1
+        },
+        {
             field: 'klient',
             headerName: 'Klient',
             flex: 1,
@@ -65,42 +70,53 @@ interface KontrollTableProps {
     kontroller: Array<Kontroll>;
 }
 export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
-    const { columns } = useTable();
+    const { columns, apiRef } = useTable();
     const [isShift, setIsShift] = useState<boolean>(false);
     const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
 
-    const handleKeyDown = (event: any) => {
-        console.log(event);
-    };
-
     useEffect(() => {
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Shift') {
-                setIsShift(true);
+        const handleKey = (event: KeyboardEvent, down: boolean) => {
+            if (event.key === 'Shift') {
+                setIsShift(down);
             }
-        });
-        window.addEventListener('keyup', (e) => {
-            if (e.key === 'Shift') {
-                setIsShift(false);
-            }
-        });
+        };
+        window.addEventListener('keydown', (e) => handleKey(e, true));
+        window.addEventListener('keyup', (e) => handleKey(e, false));
 
         // cleanup this component
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('keyup', handleKeyDown);
+            window.removeEventListener('keydown', (e) => handleKey(e, true));
+            window.removeEventListener('keyup', (e) => handleKey(e, false));
         };
     }, []);
 
     const handleSelect = (row: GridRowSelectedParams) => {
         const index = kontroller.findIndex((k) => k.id === row.data.id);
-        console.log(index);
+
+        if (isShift) {
+            if (lastSelectedIndex === undefined) {
+                return;
+            }
+
+            if (index === lastSelectedIndex) {
+                return;
+            }
+            const subsetArray = kontroller.slice(
+                Math.min(index, lastSelectedIndex),
+                Math.max(index, lastSelectedIndex) + 1
+            );
+
+            const selectArray = subsetArray.map((k) => k.id);
+            apiRef.current.selectRows(selectArray, row.isSelected);
+        }
+
+        setLastSelectedIndex(index);
     };
     return (
         <div>
             <ColumnSelect />
+
             <DataGrid
-                ref={}
                 rows={kontroller}
                 columns={columns}
                 pageSize={5}

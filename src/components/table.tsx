@@ -50,6 +50,7 @@ export const ColumnSelect = (): JSX.Element => {
                                                 }
                                                 name={c.headerName}
                                                 color="primary"
+                                                size="small"
                                             />
                                         }
                                         label={c.headerName}

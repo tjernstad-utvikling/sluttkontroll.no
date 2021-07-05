@@ -1,6 +1,8 @@
 import {
     GridColDef,
     GridRowSelectedParams,
+    GridSortDirection,
+    GridSortModelParams,
     GridValueGetterParams
 } from '@material-ui/data-grid';
 import { useEffect, useState } from 'react';
@@ -73,6 +75,36 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
     const { columns, apiRef } = useTable();
     const [isShift, setIsShift] = useState<boolean>(false);
     const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
+    const [_kontroller, set_Kontroller] = useState<Array<Kontroll>>();
+
+    function sort<T, K extends keyof T>(
+        data: T[],
+        field: K,
+        mode: GridSortDirection
+    ): T[] {
+        let sortedRows = data
+            .slice()
+            .sort((a, b) => String(a[field]).localeCompare(String(b[field])));
+
+        if (mode === 'desc') {
+            sortedRows = sortedRows.reverse();
+        }
+        return sortedRows;
+    }
+
+    const handleSortMode = (sortMode: GridSortModelParams) => {
+        console.log(sortMode);
+        if (sortMode.sortModel.length === 0) {
+            set_Kontroller(kontroller);
+            return;
+        }
+        const field: any = sortMode.sortModel[0].field;
+        if (_kontroller !== undefined) {
+            set_Kontroller(
+                sort(_kontroller, field, sortMode.sortModel[0].sort)
+            );
+        }
+    };
 
     useEffect(() => {
         const handleKey = (event: KeyboardEvent, down: boolean) => {
@@ -90,42 +122,51 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
         };
     }, []);
 
+    useEffect(() => {
+        set_Kontroller(kontroller);
+    }, [kontroller]);
+
     const handleSelect = (row: GridRowSelectedParams) => {
-        const index = kontroller.findIndex((k) => k.id === row.data.id);
+        if (_kontroller !== undefined) {
+            const index = _kontroller.findIndex((k) => k.id === row.data.id);
 
-        if (isShift) {
-            if (lastSelectedIndex === undefined) {
-                return;
+            if (isShift) {
+                if (lastSelectedIndex === undefined) {
+                    return;
+                }
+
+                if (index === lastSelectedIndex) {
+                    return;
+                }
+                const subsetArray = _kontroller.slice(
+                    Math.min(index, lastSelectedIndex),
+                    Math.max(index, lastSelectedIndex) + 1
+                );
+
+                const selectArray = subsetArray.map((k) => k.id);
+                apiRef.current.selectRows(selectArray, row.isSelected);
             }
 
-            if (index === lastSelectedIndex) {
-                return;
-            }
-            const subsetArray = kontroller.slice(
-                Math.min(index, lastSelectedIndex),
-                Math.max(index, lastSelectedIndex) + 1
-            );
-
-            const selectArray = subsetArray.map((k) => k.id);
-            apiRef.current.selectRows(selectArray, row.isSelected);
+            setLastSelectedIndex(index);
         }
-
-        setLastSelectedIndex(index);
     };
     return (
         <div>
             <ColumnSelect />
-
-            <DataGrid
-                rows={kontroller}
-                columns={columns}
-                pageSize={5}
-                checkboxSelection
-                disableSelectionOnClick
-                disableColumnSelector
-                autoHeight
-                onRowSelected={handleSelect}
-            />
+            {_kontroller && (
+                <DataGrid
+                    rows={_kontroller}
+                    columns={columns}
+                    pageSize={5}
+                    checkboxSelection
+                    disableSelectionOnClick
+                    disableColumnSelector
+                    autoHeight
+                    sortingMode="server"
+                    onSortModelChange={handleSortMode}
+                    onRowSelected={handleSelect}
+                />
+            )}
         </div>
     );
 };

@@ -41,7 +41,10 @@ const KontrollerView = () => {
                                     columns={kontrollColumns(users ?? [])}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">
-                                    <KontrollTable kontroller={kontroller} />
+                                    <KontrollTable
+                                        users={users ?? []}
+                                        kontroller={kontroller}
+                                    />
                                 </TableContainer>
                             ) : (
                                 <div>Laster kontroller</div>

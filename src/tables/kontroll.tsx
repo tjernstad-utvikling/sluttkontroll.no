@@ -1,5 +1,7 @@
 import {
     GridColDef,
+    GridColumns,
+    GridRowData,
     GridRowSelectedParams,
     GridSortDirection,
     GridSortModelParams,
@@ -13,7 +15,25 @@ import { Kontroll } from '../contracts/kontrollApi';
 import { User } from '../contracts/userApi';
 import { useTable } from './tableContainer';
 
-export const kontrollColumns = (users: User[]): GridColDef[] => {
+export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
+    const klient = (): string => {
+        return data.Objekt.klient.name || '';
+    };
+    const objekt = (): string => {
+        return data.Objekt.name || '';
+    };
+    const user = (users: User[]): string => {
+        if (users !== undefined) {
+            const user = users.find((u) => u.id === data.user.id);
+
+            return user?.name || '';
+        }
+        return '';
+    };
+
+    return { klient, objekt, user };
+};
+export const kontrollColumns = (users: User[]) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -25,14 +45,14 @@ export const kontrollColumns = (users: User[]): GridColDef[] => {
             headerName: 'Klient',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                params.row.Objekt.klient.name || ''
+                KontrollValueGetter(params.row).klient()
         },
         {
             field: 'objekt',
             headerName: 'Lokasjon',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                params.row.Objekt.name || ''
+                KontrollValueGetter(params.row).objekt()
         },
         {
             field: 'name',
@@ -44,11 +64,7 @@ export const kontrollColumns = (users: User[]): GridColDef[] => {
             headerName: 'Utførende',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) => {
-                if (users !== undefined) {
-                    const user = users.find((u) => u.id === params.row.user.id);
-                    return user?.name;
-                }
-                return '';
+                return KontrollValueGetter(params.row).user(users);
             }
         },
         {
@@ -70,8 +86,9 @@ export const defaultColumns: Array<string> = [
 
 interface KontrollTableProps {
     kontroller: Array<Kontroll>;
+    users: User[];
 }
-export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
+export const KontrollTable = ({ kontroller, users }: KontrollTableProps) => {
     const { columns, apiRef } = useTable();
     const [isShift, setIsShift] = useState<boolean>(false);
     const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
@@ -80,11 +97,57 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
     function sort<T, K extends keyof T>(
         data: T[],
         field: K,
-        mode: GridSortDirection
+        mode: GridSortDirection,
+        columns: GridColumns
     ): T[] {
-        let sortedRows = data
-            .slice()
-            .sort((a, b) => String(a[field]).localeCompare(String(b[field])));
+        const column = columns.find((c) => c.field === field);
+        let sortedRows: T[] = [];
+        if (column !== undefined && column.valueGetter) {
+            switch (field.toString()) {
+                case 'klient':
+                    sortedRows = data
+                        .slice()
+                        .sort((a, b) =>
+                            String(
+                                KontrollValueGetter(a)['klient']()
+                            ).localeCompare(
+                                String(KontrollValueGetter(b)['klient']())
+                            )
+                        );
+                    break;
+                case 'objekt':
+                    sortedRows = data
+                        .slice()
+                        .sort((a, b) =>
+                            String(
+                                KontrollValueGetter(a)['objekt']()
+                            ).localeCompare(
+                                String(KontrollValueGetter(b)['objekt']())
+                            )
+                        );
+                    break;
+                case 'user':
+                    sortedRows = data
+                        .slice()
+                        .sort((a, b) =>
+                            String(
+                                KontrollValueGetter(a)['user'](users)
+                            ).localeCompare(
+                                String(KontrollValueGetter(b)['user'](users))
+                            )
+                        );
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            sortedRows = data
+                .slice()
+                .sort((a, b) =>
+                    String(a[field]).localeCompare(String(b[field]))
+                );
+        }
 
         if (mode === 'desc') {
             sortedRows = sortedRows.reverse();
@@ -93,7 +156,6 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
     }
 
     const handleSortMode = (sortMode: GridSortModelParams) => {
-        console.log(sortMode);
         if (sortMode.sortModel.length === 0) {
             set_Kontroller(kontroller);
             return;
@@ -101,7 +163,12 @@ export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
         const field: any = sortMode.sortModel[0].field;
         if (_kontroller !== undefined) {
             set_Kontroller(
-                sort(_kontroller, field, sortMode.sortModel[0].sort)
+                sort(
+                    _kontroller,
+                    field,
+                    sortMode.sortModel[0].sort,
+                    sortMode.columns
+                )
             );
         }
     };

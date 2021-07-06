@@ -39,23 +39,25 @@ export const ColumnSelect = (): JSX.Element => {
                                 Velg kolonner
                             </FormLabel>
                             <FormGroup>
-                                {columns.map((c) => (
-                                    <FormControlLabel
-                                        key={c.field}
-                                        control={
-                                            <Switch
-                                                checked={!c.hide}
-                                                onChange={() =>
-                                                    toggleColumn(c.field)
-                                                }
-                                                name={c.headerName}
-                                                color="primary"
-                                                size="small"
-                                            />
-                                        }
-                                        label={c.headerName}
-                                    />
-                                ))}
+                                {columns
+                                    .filter((c) => c.field !== '__HIDDEN__')
+                                    .map((c) => (
+                                        <FormControlLabel
+                                            key={c.field}
+                                            control={
+                                                <Switch
+                                                    checked={!c.hide}
+                                                    onChange={() =>
+                                                        toggleColumn(c.field)
+                                                    }
+                                                    name={c.headerName}
+                                                    color="primary"
+                                                    size="small"
+                                                />
+                                            }
+                                            label={c.headerName}
+                                        />
+                                    ))}
                             </FormGroup>
                         </FormControl>
                         {}

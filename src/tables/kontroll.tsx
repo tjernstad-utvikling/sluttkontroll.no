@@ -1,19 +1,12 @@
 import {
     GridColDef,
-    GridColumns,
     GridRowData,
-    GridRowSelectedParams,
-    GridSortDirection,
-    GridSortModelParams,
     GridValueGetterParams
 } from '@material-ui/data-grid';
-import { useEffect, useState } from 'react';
 
-import { ColumnSelect } from '../components/table';
-import { DataGrid } from '@material-ui/data-grid';
+import { BaseTable } from './baseTable';
 import { Kontroll } from '../contracts/kontrollApi';
 import { User } from '../contracts/userApi';
-import { useTable } from './tableContainer';
 
 export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
     const klient = (): string => {
@@ -89,151 +82,44 @@ interface KontrollTableProps {
     users: User[];
 }
 export const KontrollTable = ({ kontroller, users }: KontrollTableProps) => {
-    const { columns, apiRef } = useTable();
-    const [isShift, setIsShift] = useState<boolean>(false);
-    const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
-    const [_kontroller, set_Kontroller] = useState<Array<Kontroll>>();
+    function kontrollCustomSort<T extends keyof Kontroll>(
+        data: Kontroll[],
+        field: T
+    ): Kontroll[] {
+        switch (field.toString()) {
+            case 'klient':
+                return data
+                    .slice()
+                    .sort((a, b) =>
+                        String(KontrollValueGetter(a).klient()).localeCompare(
+                            String(KontrollValueGetter(b).klient())
+                        )
+                    );
 
-    function sort<T, K extends keyof T>(
-        data: T[],
-        field: K,
-        mode: GridSortDirection,
-        columns: GridColumns
-    ): T[] {
-        const column = columns.find((c) => c.field === field);
-        let sortedRows: T[] = [];
-        if (column !== undefined && column.valueGetter) {
-            switch (field.toString()) {
-                case 'klient':
-                    sortedRows = data
-                        .slice()
-                        .sort((a, b) =>
-                            String(
-                                KontrollValueGetter(a)['klient']()
-                            ).localeCompare(
-                                String(KontrollValueGetter(b)['klient']())
-                            )
-                        );
-                    break;
-                case 'objekt':
-                    sortedRows = data
-                        .slice()
-                        .sort((a, b) =>
-                            String(
-                                KontrollValueGetter(a)['objekt']()
-                            ).localeCompare(
-                                String(KontrollValueGetter(b)['objekt']())
-                            )
-                        );
-                    break;
-                case 'user':
-                    sortedRows = data
-                        .slice()
-                        .sort((a, b) =>
-                            String(
-                                KontrollValueGetter(a)['user'](users)
-                            ).localeCompare(
-                                String(KontrollValueGetter(b)['user'](users))
-                            )
-                        );
-                    break;
+            case 'objekt':
+                return data
+                    .slice()
+                    .sort((a, b) =>
+                        String(KontrollValueGetter(a).objekt()).localeCompare(
+                            String(KontrollValueGetter(b).objekt())
+                        )
+                    );
 
-                default:
-                    break;
-            }
-        } else {
-            sortedRows = data
-                .slice()
-                .sort((a, b) =>
-                    String(a[field]).localeCompare(String(b[field]))
-                );
+            case 'user':
+                return data
+                    .slice()
+                    .sort((a, b) =>
+                        String(
+                            KontrollValueGetter(a).user(users)
+                        ).localeCompare(
+                            String(KontrollValueGetter(b).user(users))
+                        )
+                    );
+
+            default:
+                return data;
         }
-
-        if (mode === 'desc') {
-            sortedRows = sortedRows.reverse();
-        }
-        return sortedRows;
     }
 
-    const handleSortMode = (sortMode: GridSortModelParams) => {
-        if (sortMode.sortModel.length === 0) {
-            set_Kontroller(kontroller);
-            return;
-        }
-        const field: any = sortMode.sortModel[0].field;
-        if (_kontroller !== undefined) {
-            set_Kontroller(
-                sort(
-                    _kontroller,
-                    field,
-                    sortMode.sortModel[0].sort,
-                    sortMode.columns
-                )
-            );
-        }
-    };
-
-    useEffect(() => {
-        const handleKey = (event: KeyboardEvent, down: boolean) => {
-            if (event.key === 'Shift') {
-                setIsShift(down);
-            }
-        };
-        window.addEventListener('keydown', (e) => handleKey(e, true));
-        window.addEventListener('keyup', (e) => handleKey(e, false));
-
-        // cleanup this component
-        return () => {
-            window.removeEventListener('keydown', (e) => handleKey(e, true));
-            window.removeEventListener('keyup', (e) => handleKey(e, false));
-        };
-    }, []);
-
-    useEffect(() => {
-        set_Kontroller(kontroller);
-    }, [kontroller]);
-
-    const handleSelect = (row: GridRowSelectedParams) => {
-        if (_kontroller !== undefined) {
-            const index = _kontroller.findIndex((k) => k.id === row.data.id);
-
-            if (isShift) {
-                if (lastSelectedIndex === undefined) {
-                    return;
-                }
-
-                if (index === lastSelectedIndex) {
-                    return;
-                }
-                const subsetArray = _kontroller.slice(
-                    Math.min(index, lastSelectedIndex),
-                    Math.max(index, lastSelectedIndex) + 1
-                );
-
-                const selectArray = subsetArray.map((k) => k.id);
-                apiRef.current.selectRows(selectArray, row.isSelected);
-            }
-
-            setLastSelectedIndex(index);
-        }
-    };
-    return (
-        <div>
-            <ColumnSelect />
-            {_kontroller && (
-                <DataGrid
-                    rows={_kontroller}
-                    columns={columns}
-                    pageSize={5}
-                    checkboxSelection
-                    disableSelectionOnClick
-                    disableColumnSelector
-                    autoHeight
-                    sortingMode="server"
-                    onSortModelChange={handleSortMode}
-                    onRowSelected={handleSelect}
-                />
-            )}
-        </div>
-    );
+    return <BaseTable data={kontroller} customSort={kontrollCustomSort} />;
 };

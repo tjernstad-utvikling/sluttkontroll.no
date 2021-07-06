@@ -35,7 +35,7 @@ const KontrollerView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Kontroller" menu={<CardMenu />}>
+                        <Card title="Dine kontroller" menu={<CardMenu />}>
                             {kontroller !== undefined ? (
                                 <TableContainer
                                     columns={kontrollColumns(users ?? [])}

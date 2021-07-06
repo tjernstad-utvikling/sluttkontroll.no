@@ -1,4 +1,5 @@
 import {
+    GridCellParams,
     GridColDef,
     GridRowData,
     GridValueGetterParams
@@ -50,15 +51,17 @@ export const kontrollColumns = (users: User[]) => {
         {
             field: 'name',
             headerName: 'Kontroll',
-            flex: 1
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <a href="/">{params.row.name}</a>
+            )
         },
         {
             field: 'user',
             headerName: 'Utførende',
             flex: 1,
-            valueGetter: (params: GridValueGetterParams) => {
-                return KontrollValueGetter(params.row).user(users);
-            }
+            valueGetter: (params: GridValueGetterParams) =>
+                KontrollValueGetter(params.row).user(users)
         },
         {
             field: 'kommentar',

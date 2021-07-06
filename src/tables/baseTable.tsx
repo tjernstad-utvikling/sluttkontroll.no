@@ -6,7 +6,7 @@ import {
 } from '@material-ui/data-grid';
 import { useEffect, useState } from 'react';
 
-import { ColumnSelect } from '../components/table';
+import { ColumnSelect } from './tableUtils';
 import { DataGrid } from '@material-ui/data-grid';
 import { useTable } from './tableContainer';
 

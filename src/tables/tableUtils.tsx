@@ -8,7 +8,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormLabel from '@material-ui/core/FormLabel';
 import React from 'react';
 import Switch from '@material-ui/core/Switch';
-import { useTable } from '../tables/tableContainer';
+import { useTable } from './tableContainer';
 
 export const ColumnSelect = (): JSX.Element => {
     const classes = useStyles();

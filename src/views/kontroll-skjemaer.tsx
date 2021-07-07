@@ -11,12 +11,10 @@ import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useRouteMatch } from 'react-router-dom';
 import { useUser } from '../data/user';
 
-const KontrollerView = () => {
+const SkjemaerView = () => {
     const classes = usePageStyles();
-    const { url } = useRouteMatch();
     const {
         state: { kontroller },
         loadKontroller
@@ -40,7 +38,7 @@ const KontrollerView = () => {
                         <Card title="Dine kontroller" menu={<CardMenu />}>
                             {kontroller !== undefined ? (
                                 <TableContainer
-                                    columns={kontrollColumns(users ?? [], url)}
+                                    columns={kontrollColumns(users ?? [], '')}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">
                                     <KontrollTable
@@ -59,4 +57,4 @@ const KontrollerView = () => {
     );
 };
 
-export default KontrollerView;
+export default SkjemaerView;

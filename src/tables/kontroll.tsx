@@ -7,6 +7,7 @@ import {
 
 import { BaseTable } from './baseTable';
 import { Kontroll } from '../contracts/kontrollApi';
+import { Link } from 'react-router-dom';
 import { User } from '../contracts/userApi';
 
 export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
@@ -27,7 +28,7 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
 
     return { klient, objekt, user };
 };
-export const kontrollColumns = (users: User[]) => {
+export const kontrollColumns = (users: User[], url: string) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -53,7 +54,7 @@ export const kontrollColumns = (users: User[]) => {
             headerName: 'Kontroll',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <a href="/">{params.row.name}</a>
+                <Link to={`${url}/${params.row.id}`}>{params.row.name}</Link>
             )
         },
         {

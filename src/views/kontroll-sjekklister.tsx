@@ -1,5 +1,10 @@
 import { Card, CardMenu } from '../components/card';
-import { SjekklisteTable, columns, defaultColumns } from '../tables/sjekkliste';
+import {
+    SjekklisteTable,
+    SjekklisteValueGetter,
+    columns,
+    defaultColumns
+} from '../tables/sjekkliste';
 import { useEffect, useState } from 'react';
 
 import { Checklist } from '../contracts/kontrollApi';
@@ -29,7 +34,17 @@ const SjekklisterView = () => {
     useEffect(() => {
         if (checklists !== undefined) {
             setChecklists(
-                checklists.filter((c) => c.skjema.id === Number(skjemaId))
+                checklists
+                    .filter((c) => c.skjema.id === Number(skjemaId))
+                    .sort((a, b) =>
+                        String(
+                            SjekklisteValueGetter(a).prosedyreNr()
+                        ).localeCompare(
+                            String(SjekklisteValueGetter(b).prosedyreNr()),
+                            undefined,
+                            { numeric: true, sensitivity: 'base' }
+                        )
+                    )
             );
         }
     }, [checklists, skjemaId]);

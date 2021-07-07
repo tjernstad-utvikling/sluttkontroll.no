@@ -80,7 +80,9 @@ export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
                         String(
                             SjekklisteValueGetter(a).prosedyreNr()
                         ).localeCompare(
-                            String(SjekklisteValueGetter(b).prosedyreNr())
+                            String(SjekklisteValueGetter(b).prosedyreNr()),
+                            undefined,
+                            { numeric: true, sensitivity: 'base' }
                         )
                     );
 

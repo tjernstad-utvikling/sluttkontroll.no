@@ -32,7 +32,9 @@ export const columns = (kontroller: Kontroll[], url: string) => {
             headerName: 'Areal',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <Link to={`${url}/${params.row.id}`}>{params.row.area}</Link>
+                <Link to={`${url}/skjema/${params.row.id}`}>
+                    {params.row.area}
+                </Link>
             )
         },
         {
@@ -62,23 +64,24 @@ export const defaultColumns: Array<string> = ['area', 'omrade', 'kontroll'];
 
 interface SkjemaTableProps {
     skjemaer: Array<Skjema>;
+    kontroller: Array<Kontroll>;
 }
-export const SkjemaTable = ({ skjemaer }: SkjemaTableProps) => {
+export const SkjemaTable = ({ skjemaer, kontroller }: SkjemaTableProps) => {
     function CustomSort<T extends keyof Skjema>(
         data: Skjema[],
         field: T
     ): Skjema[] {
         switch (field.toString()) {
-            // case 'user':
-            //     return data
-            //         .slice()
-            //         .sort((a, b) =>
-            //             String(
-            //                 KontrollValueGetter(a).user(users)
-            //             ).localeCompare(
-            //                 String(KontrollValueGetter(b).user(users))
-            //             )
-            //         );
+            case 'kontroll':
+                return data
+                    .slice()
+                    .sort((a, b) =>
+                        String(
+                            SkjemaValueGetter(a).kontroll(kontroller)
+                        ).localeCompare(
+                            String(SkjemaValueGetter(b).kontroll(kontroller))
+                        )
+                    );
 
             default:
                 return data;

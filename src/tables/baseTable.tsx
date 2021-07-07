@@ -120,7 +120,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
                 <DataGrid
                     rows={sortedData}
                     columns={columns}
-                    pageSize={5}
+                    pageSize={15}
                     checkboxSelection
                     disableSelectionOnClick
                     disableColumnSelector

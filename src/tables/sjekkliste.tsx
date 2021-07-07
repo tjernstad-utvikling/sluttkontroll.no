@@ -1,13 +1,11 @@
-import { Checklist, Kontroll, Skjema } from '../contracts/kontrollApi';
 import {
-    GridCellParams,
     GridColDef,
     GridRowData,
     GridValueGetterParams
 } from '@material-ui/data-grid';
 
 import { BaseTable } from './baseTable';
-import { Link } from 'react-router-dom';
+import { Checklist } from '../contracts/kontrollApi';
 
 export const SjekklisteValueGetter = (data: Checklist | GridRowData) => {
     const prosedyre = (): string => {

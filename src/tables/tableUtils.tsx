@@ -6,6 +6,10 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormLabel from '@material-ui/core/FormLabel';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import React from 'react';
 import Switch from '@material-ui/core/Switch';
 import { useTable } from './tableContainer';
@@ -40,7 +44,11 @@ export const ColumnSelect = (): JSX.Element => {
                             </FormLabel>
                             <FormGroup>
                                 {columns
-                                    .filter((c) => c.field !== '__HIDDEN__')
+                                    .filter(
+                                        (c) =>
+                                            c.field !== '__HIDDEN__' &&
+                                            c.field !== 'action'
+                                    )
                                     .map((c) => (
                                         <FormControlLabel
                                             key={c.field}
@@ -65,6 +73,42 @@ export const ColumnSelect = (): JSX.Element => {
                 ) : null}
             </div>
         </ClickAwayListener>
+    );
+};
+
+interface RowActionProps {
+    children: React.ReactNode;
+}
+export const RowAction = ({ children }: RowActionProps) => {
+    const classes = useStyles();
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    return (
+        <div>
+            <IconButton
+                aria-label="open menu"
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleClick}>
+                <MoreVertIcon />
+            </IconButton>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}>
+                {children}
+            </Menu>
+        </div>
     );
 };
 

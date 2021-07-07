@@ -8,6 +8,7 @@ import {
 import { BaseTable } from './baseTable';
 import { Kontroll } from '../contracts/kontrollApi';
 import { Link } from 'react-router-dom';
+import { RowAction } from '../tables/tableUtils';
 import { User } from '../contracts/userApi';
 
 export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
@@ -68,6 +69,18 @@ export const kontrollColumns = (users: User[], url: string) => {
             field: 'kommentar',
             headerName: 'Kommentar',
             flex: 1
+        },
+        {
+            field: 'action',
+            headerName: ' ',
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) => (
+                <RowAction>
+                    <MenuItem onClick={handleClose}>Profile</MenuItem>
+                </RowAction>
+            )
         }
     ];
 

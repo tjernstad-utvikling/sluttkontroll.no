@@ -50,7 +50,7 @@ export const TableContainer = ({
     }
 
     returnColumns.current = _columns.map((c) => {
-        if (c.field === '__HIDDEN__') {
+        if (c.field === '__HIDDEN__' || c.field === 'action') {
             return c;
         }
         return { ...c, hide: !visibleColumns.includes(c.field) };
@@ -58,7 +58,7 @@ export const TableContainer = ({
 
     useEffect(() => {
         returnColumns.current = _columns.map((c) => {
-            if (c.field === '__HIDDEN__') {
+            if (c.field === '__HIDDEN__' || c.field === 'action') {
                 return c;
             }
             return { ...c, hide: !visibleColumns.includes(c.field) };

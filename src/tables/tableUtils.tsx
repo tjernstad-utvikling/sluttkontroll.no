@@ -76,18 +76,21 @@ export const ColumnSelect = (): JSX.Element => {
     );
 };
 
-interface RowActionProps {
-    children: React.ReactNode;
+export interface ActionItem {
+    name: string;
+    action: () => void;
 }
-export const RowAction = ({ children }: RowActionProps) => {
-    const classes = useStyles();
+interface RowActionProps {
+    actionItems: Array<ActionItem>;
+}
+export const RowAction = ({ actionItems }: RowActionProps) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
+    const close = () => {
         setAnchorEl(null);
     };
 
@@ -105,8 +108,17 @@ export const RowAction = ({ children }: RowActionProps) => {
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
-                onClose={handleClose}>
-                {children}
+                onClose={close}>
+                {actionItems.map((ai) => (
+                    <MenuItem
+                        key={ai.name}
+                        onClick={() => {
+                            close();
+                            ai.action();
+                        }}>
+                        {ai.name}
+                    </MenuItem>
+                ))}
             </Menu>
         </div>
     );

@@ -7,11 +7,14 @@ import {
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { Kontroll } from '../contracts/kontrollApi';
+import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useRouteMatch } from 'react-router-dom';
+import { useState } from 'react';
 import { useUser } from '../data/user';
 
 const KontrollerView = () => {
@@ -31,6 +34,15 @@ const KontrollerView = () => {
         loadUsers();
     });
 
+    const [editId, setEditId] = useState<number>();
+
+    const editKontroll = (id: number) => {
+        setEditId(id);
+    };
+    const closeEdit = () => {
+        setEditId(undefined);
+    };
+
     return (
         <div>
             <div className={classes.appBarSpacer} />
@@ -40,7 +52,11 @@ const KontrollerView = () => {
                         <Card title="Dine kontroller" menu={<CardMenu />}>
                             {kontroller !== undefined ? (
                                 <TableContainer
-                                    columns={kontrollColumns(users ?? [], url)}
+                                    columns={kontrollColumns(
+                                        users ?? [],
+                                        url,
+                                        editKontroll
+                                    )}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">
                                     <KontrollTable
@@ -55,6 +71,11 @@ const KontrollerView = () => {
                     </Grid>
                 </Grid>
             </Container>
+            <KontrollEditModal
+                kontroll={{} as Kontroll}
+                editId={editId}
+                close={closeEdit}
+            />
         </div>
     );
 };

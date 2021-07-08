@@ -1,13 +1,21 @@
+import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollSchema } from '../schema/kontroll';
 import Modal from '@material-ui/core/Modal';
-import { useState } from 'react';
 
-export const KontrollEditModal = (): JSX.Element => {
-    const [open, setOpen] = useState<boolean>(false);
+interface KontrollEditModalProps {
+    kontroll: Kontroll;
+    editId: number | undefined;
+    close: () => void;
+}
+export const KontrollEditModal = ({
+    kontroll,
+    editId,
+    close
+}: KontrollEditModalProps): JSX.Element => {
     return (
         <Modal
-            open={open}
-            onClose={() => setOpen(!open)}
+            open={Boolean(editId)}
+            onClose={close}
             aria-labelledby="modal-title">
             <div>
                 <h2 id="modal-title">Rediger kontroll</h2>

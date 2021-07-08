@@ -29,7 +29,11 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
 
     return { klient, objekt, user };
 };
-export const kontrollColumns = (users: User[], url: string) => {
+export const kontrollColumns = (
+    users: User[],
+    url: string,
+    edit: (id: number) => void
+) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -77,9 +81,14 @@ export const kontrollColumns = (users: User[], url: string) => {
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => (
-                <RowAction>
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                </RowAction>
+                <RowAction
+                    actionItems={[
+                        {
+                            name: 'Rediger',
+                            action: () => edit(params.row.id)
+                        }
+                    ]}
+                />
             )
         }
     ];

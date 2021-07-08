@@ -4,6 +4,7 @@ import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollSchema } from '../schema/kontroll';
 import Modal from '@material-ui/core/Modal';
 import { useKontroll } from '../data/kontroll';
+import { useModalStyles } from '../styles/modal';
 
 interface KontrollEditModalProps {
     editId: number | undefined;
@@ -13,6 +14,7 @@ export const KontrollEditModal = ({
     editId,
     close
 }: KontrollEditModalProps): JSX.Element => {
+    const classes = useModalStyles();
     const [kontroll, setKontroll] = useState<Kontroll>();
     const {
         state: { kontroller }
@@ -27,7 +29,7 @@ export const KontrollEditModal = ({
             open={Boolean(editId)}
             onClose={close}
             aria-labelledby="modal-title">
-            <div>
+            <div className={classes.root}>
                 <h2 id="modal-title">Rediger kontroll</h2>
                 {kontroll && <KontrollSchema kontroll={kontroll} />}
             </div>

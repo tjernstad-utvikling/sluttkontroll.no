@@ -110,13 +110,15 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
                 open={Boolean(anchorEl)}
                 onClose={close}>
                 {actionItems.map((ai) => (
-                    <MenuItem
-                        key={ai.name}
-                        onClick={() => {
-                            close();
-                            ai.action();
-                        }}>
-                        {ai.name}
+                    <MenuItem key={ai.name}>
+                        <Button
+                            onClick={() => {
+                                close();
+                                ai.action();
+                            }}
+                            color="primary">
+                            {ai.name}
+                        </Button>
                     </MenuItem>
                 ))}
             </Menu>

@@ -7,7 +7,6 @@ import {
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -71,11 +70,7 @@ const KontrollerView = () => {
                     </Grid>
                 </Grid>
             </Container>
-            <KontrollEditModal
-                kontroll={{} as Kontroll}
-                editId={editId}
-                close={closeEdit}
-            />
+            <KontrollEditModal editId={editId} close={closeEdit} />
         </div>
     );
 };

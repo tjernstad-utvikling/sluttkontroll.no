@@ -1,17 +1,27 @@
+import { useEffect, useState } from 'react';
+
 import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollSchema } from '../schema/kontroll';
 import Modal from '@material-ui/core/Modal';
+import { useKontroll } from '../data/kontroll';
 
 interface KontrollEditModalProps {
-    kontroll: Kontroll;
     editId: number | undefined;
     close: () => void;
 }
 export const KontrollEditModal = ({
-    kontroll,
     editId,
     close
 }: KontrollEditModalProps): JSX.Element => {
+    const [kontroll, setKontroll] = useState<Kontroll>();
+    const {
+        state: { kontroller }
+    } = useKontroll();
+    useEffect(() => {
+        if (kontroller !== undefined) {
+            setKontroll(kontroller.find((k) => k.id === editId));
+        }
+    }, [editId, kontroller]);
     return (
         <Modal
             open={Boolean(editId)}
@@ -19,7 +29,7 @@ export const KontrollEditModal = ({
             aria-labelledby="modal-title">
             <div>
                 <h2 id="modal-title">Rediger kontroll</h2>
-                <KontrollSchema />
+                {kontroll && <KontrollSchema kontroll={kontroll} />}
             </div>
         </Modal>
     );

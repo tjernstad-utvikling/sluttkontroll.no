@@ -2,27 +2,20 @@ import * as Yup from 'yup';
 
 import { Form, Formik } from 'formik';
 
-import Avatar from '@material-ui/core/Avatar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
+import { Kontroll } from '../contracts/kontrollApi';
 import { LoadingButton } from '../components/button';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
-import React from 'react';
 import { TextField } from '../components/input';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { useAuth } from '../hooks/useAuth';
-import { useHistory } from 'react-router-dom';
-import { useState } from 'react';
 
-interface KontrollSchemaProps {}
-export const KontrollSchema = ({}: KontrollSchemaProps): JSX.Element => {
+interface KontrollSchemaProps {
+    kontroll: Kontroll;
+}
+export const KontrollSchema = ({
+    kontroll
+}: KontrollSchemaProps): JSX.Element => {
     return (
         <Formik
             initialValues={{
-                email: '',
+                email: kontroll.name,
                 password: ''
             }}
             validationSchema={Yup.object({

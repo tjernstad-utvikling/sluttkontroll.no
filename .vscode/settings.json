@@ -43,6 +43,7 @@
         "krevd",
         "maks",
         "mixins",
+        "navn",
         "objekts",
         "omrade",
         "oppsto",
@@ -51,6 +52,7 @@
         "påkrevd",
         "registrert",
         "rende",
+        "res",
         "resultat",
         "sjekklister",
         "sluttkontroll",
@@ -58,6 +60,8 @@
         "tiltak",
         "ugyldig",
         "ukjent",
+        "utf",
+        "utføres",
         "vuedraggable"
     ]
 }

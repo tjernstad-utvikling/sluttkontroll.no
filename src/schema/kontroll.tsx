@@ -21,9 +21,11 @@ export const KontrollSchema = ({
         state: { users }
     } = useUser();
 
-    const [userOptions, setUserOptions] = useState<
-        Array<{ value: User; label: string }>
-    >([]);
+    interface Option {
+        value: User;
+        label: string;
+    }
+    const [userOptions, setUserOptions] = useState<Array<Option>>();
 
     useEffect(() => {
         if (users !== undefined) {
@@ -31,66 +33,93 @@ export const KontrollSchema = ({
         }
     }, [users]);
 
-    return (
-        <Formik
-            initialValues={{
-                name: kontroll.name,
-                user: {
-                    id: kontroll.user.id,
-                    name: users?.find((u) => u.id === kontroll.user.id)?.name
-                },
-                avvikUtbedrere: kontroll.avvikUtbedrere
-            }}
-            validationSchema={Yup.object({
-                name: Yup.string().required('Kontroll navn er påkrevd')
-            })}
-            onSubmit={async (values, { setSubmitting }) => {
-                console.log(values);
-            }}>
-            {({ isSubmitting, setFieldValue, values }) => {
-                console.log(values);
-                return (
-                    <Form>
-                        <TextField
-                            variant="outlined"
-                            fullWidth
-                            id="name"
-                            label="Kontroll navn"
-                            name="name"
-                            autoFocus
-                        />
-                        {users && (
-                            <div>
-                                <label htmlFor="user-select">
-                                    Kontroll utføres av
-                                </label>
-                                <br />
-                                <Select
-                                    inputId="user-select"
-                                    className="basic-single"
-                                    classNamePrefix="select"
-                                    isSearchable
-                                    value={{
-                                        value: values.user,
-                                        label: values.user.name
-                                    }}
-                                    name="user"
-                                    options={userOptions}
-                                />
-                            </div>
-                        )}
+    const user = userOptions?.find((u) => u.value.id === kontroll.user.id);
+    if (userOptions !== undefined) {
+        return (
+            <Formik
+                initialValues={{
+                    name: kontroll.name,
+                    user: user !== undefined ? user : ({} as Option),
+                    avvikUtbedrere: kontroll.avvikUtbedrere.map((a) => {
+                        let user = userOptions.find((u) => u.value.id === a.id);
+                        return user !== undefined ? user : ({} as Option);
+                    })
+                }}
+                validationSchema={Yup.object({
+                    name: Yup.string().required('Kontroll navn er påkrevd')
+                })}
+                onSubmit={async (values, { setSubmitting }) => {
+                    console.log(values);
+                }}>
+                {({ isSubmitting, setFieldValue, values }) => {
+                    return (
+                        <Form>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                id="name"
+                                label="Kontroll navn"
+                                name="name"
+                                autoFocus
+                            />
+                            {users && (
+                                <div>
+                                    <label htmlFor="user-select">
+                                        Kontrollen utføres av
+                                    </label>
+                                    <Select
+                                        inputId="user-select"
+                                        className="basic-single"
+                                        classNamePrefix="select"
+                                        isSearchable
+                                        onChange={(selected) => {
+                                            if (selected !== null) {
+                                                setFieldValue(
+                                                    'user',
+                                                    selected.value
+                                                );
+                                            }
+                                        }}
+                                        value={values.user}
+                                        name="user"
+                                        options={userOptions}
+                                    />
+                                    <label htmlFor="avvikUtbedrere-select">
+                                        Utbedrere av avvik
+                                    </label>
+                                    <Select
+                                        inputId="avvikUtbedrere-select"
+                                        className="basic-single"
+                                        classNamePrefix="select"
+                                        isSearchable
+                                        isMulti
+                                        onChange={(selected) => {
+                                            setFieldValue(
+                                                'avvikUtbedrere',
+                                                selected
+                                            );
+                                        }}
+                                        value={values.avvikUtbedrere}
+                                        name="avvikUtbedrere"
+                                        options={userOptions}
+                                    />
+                                </div>
+                            )}
 
-                        <LoadingButton
-                            isLoading={isSubmitting}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary">
-                            Logg inn
-                        </LoadingButton>
-                    </Form>
-                );
-            }}
-        </Formik>
-    );
+                            <LoadingButton
+                                isLoading={isSubmitting}
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary">
+                                Logg inn
+                            </LoadingButton>
+                        </Form>
+                    );
+                }}
+            </Formik>
+        );
+    } else {
+        return <div></div>;
+    }
 };

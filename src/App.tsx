@@ -10,7 +10,12 @@ function App() {
         <ThemeProvider theme={theme}>
             <AuthProvider>
                 <UserContextProvider>
-                    <SnackbarProvider maxSnack={3}>
+                    <SnackbarProvider
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center'
+                        }}
+                        maxSnack={3}>
                         <AppRouter />
                     </SnackbarProvider>
                 </UserContextProvider>

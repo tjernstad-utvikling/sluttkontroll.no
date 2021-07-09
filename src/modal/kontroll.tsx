@@ -4,7 +4,6 @@ import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollSchema } from '../schema/kontroll';
 import Modal from '@material-ui/core/Modal';
 import { User } from '../contracts/userApi';
-import { updateKontroll } from '../api/kontrollApi';
 import { useKontroll } from '../data/kontroll';
 import { useModalStyles } from '../styles/modal';
 
@@ -12,6 +11,7 @@ interface KontrollEditModalProps {
     editId: number | undefined;
     close: () => void;
 }
+
 export const KontrollEditModal = ({
     editId,
     close
@@ -20,7 +20,8 @@ export const KontrollEditModal = ({
     const [kontroll, setKontroll] = useState<Kontroll>();
 
     const {
-        state: { kontroller }
+        state: { kontroller },
+        updateKontroll
     } = useKontroll();
 
     useEffect(() => {
@@ -35,10 +36,16 @@ export const KontrollEditModal = ({
         avvikUtbedrere: User[]
     ): Promise<boolean> => {
         if (kontroll !== undefined) {
-            try {
-            } catch (error) {}
-            await updateKontroll({ ...kontroll, name, user, avvikUtbedrere });
-            return true;
+            if (
+                await updateKontroll({
+                    ...kontroll,
+                    name,
+                    user,
+                    avvikUtbedrere
+                })
+            ) {
+                close();
+            }
         }
         return false;
     };

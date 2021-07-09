@@ -16,6 +16,17 @@ export const kontrollReducer = (
             return { ...state, klienter: action.payload };
         case ActionType.setKontroller:
             return { ...state, kontroller: action.payload };
+        case ActionType.updateKontroll:
+            return {
+                ...state,
+                kontroller: state.kontroller?.map((k) => {
+                    if (k.id === action.payload.id) {
+                        return action.payload;
+                    } else {
+                        return k;
+                    }
+                })
+            };
         case ActionType.setSkjemaer:
             return { ...state, skjemaer: action.payload };
         case ActionType.setChecklister:

@@ -1,7 +1,14 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
-import { getClients, getKontroller } from '../../api/kontrollApi';
+import {
+    getClients,
+    getKontroller,
+    updateKontroll as updateKontrollApi
+} from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
+
+import { Kontroll } from '../../contracts/kontrollApi';
+import { useSnackbar } from 'notistack';
 
 export const useKontroll = () => {
     return useContext(KontrollContext);
@@ -15,6 +22,8 @@ export const KontrollContextProvider = ({
     children: React.ReactNode;
 }): JSX.Element => {
     const [state, dispatch] = useReducer(kontrollReducer, initialState);
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const loadKlienter = async (): Promise<void> => {
         try {
@@ -54,13 +63,35 @@ export const KontrollContextProvider = ({
         }
     };
 
+    const updateKontroll = async (kontroll: Kontroll): Promise<boolean> => {
+        try {
+            await updateKontrollApi(kontroll);
+
+            dispatch({
+                type: ActionType.updateKontroll,
+                payload: kontroll
+            });
+
+            enqueueSnackbar('Kontroll oppdatert', {
+                variant: 'success'
+            });
+            return true;
+        } catch (error) {
+            enqueueSnackbar('Problemer med oppdatering av kontrollen', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
     return (
         <KontrollContext.Provider
             value={{
                 state,
 
                 loadKontroller,
-                loadKlienter
+                loadKlienter,
+                updateKontroll
             }}>
             {children}
         </KontrollContext.Provider>

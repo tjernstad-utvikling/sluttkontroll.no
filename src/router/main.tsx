@@ -1,6 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
 
 import { KontrollContextProvider } from '../data/kontroll';
+import KontrollNewView from '../views/kontroll-new';
 import KontrollerView from '../views/kontroll-dashboard';
 import { MainLayout } from '../layout/main';
 import SjekklisterView from '../views/kontroll-sjekklister';
@@ -13,6 +14,9 @@ export const Main = () => {
                 <Switch>
                     <Route exact path={`/kontroll`}>
                         <KontrollerView />
+                    </Route>
+                    <Route exact path={`/kontroll/new`}>
+                        <KontrollNewView />
                     </Route>
                     <Route path={`/kontroll/:kontrollId/skjema/:skjemaId`}>
                         <SjekklisterView />

@@ -35,6 +35,8 @@ export const KontrollEditModal = ({
         avvikUtbedrere: User[]
     ): Promise<boolean> => {
         if (kontroll !== undefined) {
+            try {
+            } catch (error) {}
             await updateKontroll({ ...kontroll, name, user, avvikUtbedrere });
             return true;
         }

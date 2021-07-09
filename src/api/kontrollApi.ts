@@ -35,3 +35,21 @@ export const getKontroller = async (): Promise<{
         throw new Error(error);
     }
 };
+export const updateKontroll = async (
+    kontroll: Kontroll
+): Promise<{
+    status: number;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(
+            `/v3/kontroll/${kontroll.id}`,
+            { kontroll }
+        );
+        if (status === 204) {
+            return { status };
+        }
+        throw new Error('not 204');
+    } catch (error) {
+        throw new Error(error);
+    }
+};

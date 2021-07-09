@@ -13,9 +13,15 @@ import { useUser } from '../data/user';
 
 interface KontrollSchemaProps {
     kontroll: Kontroll;
+    onSubmit: (
+        name: string,
+        user: User,
+        avvikUtbedrere: Array<User>
+    ) => Promise<boolean>;
 }
 export const KontrollSchema = ({
-    kontroll
+    kontroll,
+    onSubmit
 }: KontrollSchemaProps): JSX.Element => {
     const {
         state: { users }
@@ -49,7 +55,11 @@ export const KontrollSchema = ({
                     name: Yup.string().required('Kontroll navn er påkrevd')
                 })}
                 onSubmit={async (values, { setSubmitting }) => {
-                    console.log(values);
+                    await onSubmit(
+                        values.name,
+                        values.user.value,
+                        values.avvikUtbedrere.map((a) => a.value)
+                    );
                 }}>
                 {({ isSubmitting, setFieldValue, values }) => {
                     return (
@@ -74,10 +84,7 @@ export const KontrollSchema = ({
                                         isSearchable
                                         onChange={(selected) => {
                                             if (selected !== null) {
-                                                setFieldValue(
-                                                    'user',
-                                                    selected.value
-                                                );
+                                                setFieldValue('user', selected);
                                             }
                                         }}
                                         value={values.user}

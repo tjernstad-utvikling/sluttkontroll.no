@@ -6,6 +6,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import { KlientSchema } from '../schema/klient';
+import { KontrollSchema } from '../schema/kontroll';
 import { LocationSchema } from '../schema/location';
 import React from 'react';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -14,6 +15,7 @@ import StepConnector from '@material-ui/core/StepConnector';
 import { StepIconProps } from '@material-ui/core/StepIcon';
 import StepLabel from '@material-ui/core/StepLabel';
 import Stepper from '@material-ui/core/Stepper';
+import { User } from '../contracts/userApi';
 import VideoLabelIcon from '@material-ui/icons/VideoLabel';
 import clsx from 'clsx';
 import { useKontroll } from '../data/kontroll';
@@ -47,6 +49,14 @@ const KontrollNewView = () => {
         }
         return false;
     };
+    const saveNewKontroll = async (
+        name: string,
+        user: User,
+        avvikUtbedrere: Array<User> | null
+    ): Promise<boolean> => {
+        return false;
+    };
+
     const onSelectKlient = (klient: Klient) => {
         setSelectedKlient(klient);
         setActiveStep(1);
@@ -77,6 +87,8 @@ const KontrollNewView = () => {
                         onSubmit={onSelectLocation}
                     />
                 );
+            case 2:
+                return <KontrollSchema onSubmit={saveNewKontroll} />;
         }
     };
 

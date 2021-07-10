@@ -33,7 +33,7 @@ export const KontrollEditModal = ({
     const handleUpdate = async (
         name: string,
         user: User,
-        avvikUtbedrere: User[]
+        avvikUtbedrere: User[] | null
     ): Promise<boolean> => {
         if (kontroll !== undefined) {
             if (
@@ -41,7 +41,8 @@ export const KontrollEditModal = ({
                     ...kontroll,
                     name,
                     user,
-                    avvikUtbedrere
+                    avvikUtbedrere:
+                        avvikUtbedrere !== null ? avvikUtbedrere : []
                 })
             ) {
                 close();

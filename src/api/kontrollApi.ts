@@ -102,3 +102,22 @@ export const updateKontroll = async (
         throw new Error(error);
     }
 };
+
+export const newKontroll = async (
+    kontroll: Kontroll
+): Promise<{
+    status: number;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.post(
+            `/v3/kontroll/${location.id}/${user.id}`,
+            { kontroll }
+        );
+        if (status === 200) {
+            return { status };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};

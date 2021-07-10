@@ -7,16 +7,17 @@ import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import { TextField } from '../components/input';
 import { User } from '../contracts/userApi';
+import { isNull } from 'util';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useUser } from '../data/user';
 
 interface KontrollSchemaProps {
-    kontroll: Kontroll;
+    kontroll?: Kontroll;
     onSubmit: (
         name: string,
         user: User,
-        avvikUtbedrere: Array<User>
+        avvikUtbedrere: Array<User> | null
     ) => Promise<boolean>;
 }
 export const KontrollSchema = ({
@@ -39,27 +40,41 @@ export const KontrollSchema = ({
         }
     }, [users]);
 
-    const user = userOptions?.find((u) => u.value.id === kontroll.user.id);
+    const user =
+        kontroll !== undefined
+            ? userOptions?.find((u) => u.value.id === kontroll.user.id)
+            : null;
     if (userOptions !== undefined) {
         return (
             <Formik
                 initialValues={{
-                    name: kontroll.name,
-                    user: user !== undefined ? user : ({} as Option),
-                    avvikUtbedrere: kontroll.avvikUtbedrere.map((a) => {
-                        let user = userOptions.find((u) => u.value.id === a.id);
-                        return user !== undefined ? user : ({} as Option);
-                    })
+                    name: kontroll !== undefined ? kontroll.name : '',
+                    user: user !== undefined ? user : null,
+                    avvikUtbedrere:
+                        kontroll !== undefined
+                            ? kontroll.avvikUtbedrere.map((a) => {
+                                  let user = userOptions.find(
+                                      (u) => u.value.id === a.id
+                                  );
+                                  return user !== undefined
+                                      ? user
+                                      : ({} as Option);
+                              })
+                            : null
                 }}
                 validationSchema={Yup.object({
                     name: Yup.string().required('Kontroll navn er påkrevd')
                 })}
                 onSubmit={async (values, { setSubmitting }) => {
-                    await onSubmit(
-                        values.name,
-                        values.user.value,
-                        values.avvikUtbedrere.map((a) => a.value)
-                    );
+                    if (values.user !== null) {
+                        await onSubmit(
+                            values.name,
+                            values.user.value,
+                            values.avvikUtbedrere !== null
+                                ? values.avvikUtbedrere.map((a) => a.value)
+                                : null
+                        );
+                    }
                 }}>
                 {({ isSubmitting, setFieldValue, values }) => {
                     return (

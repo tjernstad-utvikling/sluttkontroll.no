@@ -17,6 +17,25 @@ export const getClients = async (): Promise<{
     }
 };
 
+export const newClient = async (
+    name: string
+): Promise<{
+    status: number;
+    klient: Klient;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post('/v3/klient/', {
+            name
+        });
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 export const getKontroller = async (): Promise<{
     status: number;
     kontroller: Array<Kontroll>;
@@ -35,6 +54,7 @@ export const getKontroller = async (): Promise<{
         throw new Error(error);
     }
 };
+
 export const updateKontroll = async (
     kontroll: Kontroll
 ): Promise<{

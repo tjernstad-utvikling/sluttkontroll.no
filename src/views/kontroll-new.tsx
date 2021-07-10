@@ -1,11 +1,11 @@
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
 import { Card } from '../components/card';
-import Check from '@material-ui/icons/Check';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import { Klient } from '../contracts/kontrollApi';
+import { KlientSchema } from '../schema/klient';
 import React from 'react';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Step from '@material-ui/core/Step';
@@ -13,26 +13,31 @@ import StepConnector from '@material-ui/core/StepConnector';
 import { StepIconProps } from '@material-ui/core/StepIcon';
 import StepLabel from '@material-ui/core/StepLabel';
 import Stepper from '@material-ui/core/Stepper';
-import Typography from '@material-ui/core/Typography';
 import VideoLabelIcon from '@material-ui/icons/VideoLabel';
 import clsx from 'clsx';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useState } from 'react';
 
 const KontrollNewView = () => {
     const classes = usePageStyles();
 
-    const [activeStep, setActiveStep] = React.useState(0);
+    const { saveNewKlient } = useKontroll();
+    const [activeStep, setActiveStep] = useState(0);
+    const [selectedKlient, setSelectedKlient] = useState<Klient>();
 
-    const {
-        state: { klienter },
-        loadKontroller
-    } = useKontroll();
-
-    useEffectOnce(() => {
-        loadKontroller();
-    });
+    const createNew = async (name: string) => {
+        const res = await saveNewKlient(name);
+        if (res.status && res.klient !== undefined) {
+            setSelectedKlient(res.klient);
+            setActiveStep(1);
+        }
+        return res.status;
+    };
+    const onSelectKlient = (klient: Klient) => {
+        setSelectedKlient(klient);
+        setActiveStep(1);
+    };
 
     return (
         <div>
@@ -41,40 +46,37 @@ const KontrollNewView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Ny kontroll">
-                            {klienter !== undefined ? (
-                                <div>
-                                    <Stepper
-                                        alternativeLabel
-                                        activeStep={activeStep}
-                                        connector={<ColorlibConnector />}>
-                                        <Step>
-                                            <StepLabel
-                                                StepIconComponent={
-                                                    ColorlibStepIcon
-                                                }>
-                                                Klient
-                                            </StepLabel>
-                                        </Step>
-                                        <Step>
-                                            <StepLabel
-                                                StepIconComponent={
-                                                    ColorlibStepIcon
-                                                }>
-                                                Lokasjon
-                                            </StepLabel>
-                                        </Step>
-                                        <Step>
-                                            <StepLabel
-                                                StepIconComponent={
-                                                    ColorlibStepIcon
-                                                }>
-                                                Kontroll
-                                            </StepLabel>
-                                        </Step>
-                                    </Stepper>
-                                </div>
+                            <Stepper
+                                alternativeLabel
+                                activeStep={activeStep}
+                                connector={<ColorlibConnector />}>
+                                <Step>
+                                    <StepLabel
+                                        StepIconComponent={ColorlibStepIcon}>
+                                        Klient
+                                        <br /> {selectedKlient?.name}
+                                    </StepLabel>
+                                </Step>
+                                <Step>
+                                    <StepLabel
+                                        StepIconComponent={ColorlibStepIcon}>
+                                        Lokasjon
+                                    </StepLabel>
+                                </Step>
+                                <Step>
+                                    <StepLabel
+                                        StepIconComponent={ColorlibStepIcon}>
+                                        Kontroll
+                                    </StepLabel>
+                                </Step>
+                            </Stepper>
+                            {activeStep === 0 ? (
+                                <KlientSchema
+                                    onCreateNew={createNew}
+                                    onSubmit={onSelectKlient}
+                                />
                             ) : (
-                                <div>Laster klienter</div>
+                                <div />
                             )}
                         </Card>
                     </Grid>

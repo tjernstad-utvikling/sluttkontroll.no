@@ -14,6 +14,14 @@ export const kontrollReducer = (
     switch (action.type) {
         case ActionType.setKlienter:
             return { ...state, klienter: action.payload };
+        case ActionType.newKlient:
+            return {
+                ...state,
+                klienter:
+                    state.klienter !== undefined
+                        ? [...state.klienter, action.payload]
+                        : [action.payload]
+            };
         case ActionType.setKontroller:
             return { ...state, kontroller: action.payload };
         case ActionType.updateKontroll:

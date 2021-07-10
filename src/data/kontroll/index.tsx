@@ -3,6 +3,7 @@ import React, { createContext, useContext, useReducer } from 'react';
 import {
     getClients,
     getKontroller,
+    newClient,
     updateKontroll as updateKontrollApi
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
@@ -38,6 +39,27 @@ export const KontrollContextProvider = ({
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const saveNewKlient = async (name: string) => {
+        try {
+            const { klient } = await newClient(name);
+
+            dispatch({
+                type: ActionType.newKlient,
+                payload: klient
+            });
+
+            enqueueSnackbar('Klient lagret', {
+                variant: 'success'
+            });
+            return { status: true, klient };
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av klient', {
+                variant: 'error'
+            });
+        }
+        return { status: false };
     };
     const loadKontroller = async (): Promise<void> => {
         try {
@@ -91,6 +113,7 @@ export const KontrollContextProvider = ({
 
                 loadKontroller,
                 loadKlienter,
+                saveNewKlient,
                 updateKontroll
             }}>
             {children}

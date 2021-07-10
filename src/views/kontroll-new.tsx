@@ -1,11 +1,12 @@
+import { Klient, Location } from '../contracts/kontrollApi';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import { Klient } from '../contracts/kontrollApi';
 import { KlientSchema } from '../schema/klient';
+import { LocationSchema } from '../schema/location';
 import React from 'react';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Step from '@material-ui/core/Step';
@@ -22,9 +23,10 @@ import { useState } from 'react';
 const KontrollNewView = () => {
     const classes = usePageStyles();
 
-    const { saveNewKlient } = useKontroll();
+    const { saveNewKlient, saveNewLocation } = useKontroll();
     const [activeStep, setActiveStep] = useState(0);
     const [selectedKlient, setSelectedKlient] = useState<Klient>();
+    const [selectedLocation, setSelectedLocation] = useState<Location>();
 
     const createNew = async (name: string) => {
         const res = await saveNewKlient(name);
@@ -34,9 +36,48 @@ const KontrollNewView = () => {
         }
         return res.status;
     };
+    const createNewLocation = async (name: string) => {
+        if (selectedKlient !== undefined) {
+            const res = await saveNewLocation(name, selectedKlient);
+            if (res.status && res.location !== undefined) {
+                setSelectedLocation(res.location);
+                setActiveStep(2);
+            }
+            return res.status;
+        }
+        return false;
+    };
     const onSelectKlient = (klient: Klient) => {
         setSelectedKlient(klient);
         setActiveStep(1);
+    };
+    const onSelectLocation = (location: Location) => {
+        setSelectedLocation(location);
+        setActiveStep(2);
+    };
+
+    const formSwitch = () => {
+        switch (activeStep) {
+            case 0:
+                return (
+                    <KlientSchema
+                        onCreateNew={createNew}
+                        onSubmit={onSelectKlient}
+                    />
+                );
+            case 1:
+                return (
+                    <LocationSchema
+                        locations={
+                            selectedKlient !== undefined
+                                ? selectedKlient.objekts
+                                : []
+                        }
+                        onCreateNew={createNewLocation}
+                        onSubmit={onSelectLocation}
+                    />
+                );
+        }
     };
 
     return (
@@ -61,6 +102,7 @@ const KontrollNewView = () => {
                                     <StepLabel
                                         StepIconComponent={ColorlibStepIcon}>
                                         Lokasjon
+                                        <br /> {selectedLocation?.name}
                                     </StepLabel>
                                 </Step>
                                 <Step>
@@ -70,14 +112,7 @@ const KontrollNewView = () => {
                                     </StepLabel>
                                 </Step>
                             </Stepper>
-                            {activeStep === 0 ? (
-                                <KlientSchema
-                                    onCreateNew={createNew}
-                                    onSubmit={onSelectKlient}
-                                />
-                            ) : (
-                                <div />
-                            )}
+                            {formSwitch()}
                         </Card>
                     </Grid>
                 </Grid>

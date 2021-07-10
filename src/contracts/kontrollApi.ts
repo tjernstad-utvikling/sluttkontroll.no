@@ -1,7 +1,12 @@
 export interface Klient {
     id: number;
     name: string;
-    objekts: Array<{ id: number; name: string }>;
+    objekts: Array<Location>;
+}
+
+export interface Location {
+    id: number;
+    name: string;
 }
 
 export interface Kontroll {

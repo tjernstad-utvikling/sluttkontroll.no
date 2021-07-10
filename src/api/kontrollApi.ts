@@ -1,4 +1,10 @@
-import { Checklist, Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
+import {
+    Checklist,
+    Klient,
+    Kontroll,
+    Location,
+    Skjema
+} from '../contracts/kontrollApi';
 
 import sluttkontrollApi from './sluttkontroll';
 
@@ -27,6 +33,29 @@ export const newClient = async (
         const { status, data } = await sluttkontrollApi.post('/v3/klient/', {
             name
         });
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+export const newLocation = async (
+    name: string,
+    klient: Klient
+): Promise<{
+    status: number;
+    location: Location;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/objekt/${klient.id}`,
+            {
+                name
+            }
+        );
         if (status === 200) {
             return { status, ...data };
         }

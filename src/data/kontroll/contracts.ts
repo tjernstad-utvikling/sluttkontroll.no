@@ -2,6 +2,7 @@ import {
     Checklist,
     Klient,
     Kontroll,
+    Location,
     Skjema
 } from '../../contracts/kontrollApi';
 
@@ -15,6 +16,7 @@ export interface kontrollState {
 export enum ActionType {
     setKlienter,
     newKlient,
+    newLocation,
     setKontroller,
     updateKontroll,
     setSkjemaer,
@@ -29,6 +31,10 @@ export interface setKlienter {
 export interface newKlient {
     type: ActionType.newKlient;
     payload: Klient;
+}
+export interface newLocation {
+    type: ActionType.newLocation;
+    payload: { location: Location; klient: Klient };
 }
 
 export interface setKontroller {
@@ -51,6 +57,7 @@ export interface setChecklister {
 export type KontrollActions =
     | setKlienter
     | newKlient
+    | newLocation
     | setKontroller
     | updateKontroll
     | setSkjemaer
@@ -62,6 +69,10 @@ export interface ContextInterface {
     saveNewKlient: (
         name: string
     ) => Promise<{ status: boolean; klient?: Klient }>;
+    saveNewLocation: (
+        name: string,
+        klient: Klient
+    ) => Promise<{ status: boolean; location?: Location }>;
     loadKontroller: () => Promise<void>;
     updateKontroll: (kontroll: Kontroll) => Promise<boolean>;
 }

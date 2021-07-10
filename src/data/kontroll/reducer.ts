@@ -22,6 +22,20 @@ export const kontrollReducer = (
                         ? [...state.klienter, action.payload]
                         : [action.payload]
             };
+        case ActionType.newLocation:
+            return {
+                ...state,
+                klienter: state.klienter?.map((k) => {
+                    if (k.id === action.payload.klient.id) {
+                        return {
+                            ...k,
+                            objekts: [...k.objekts, action.payload.location]
+                        };
+                    } else {
+                        return k;
+                    }
+                })
+            };
         case ActionType.setKontroller:
             return { ...state, kontroller: action.payload };
         case ActionType.updateKontroll:

@@ -1,14 +1,15 @@
 import { ActionType, ContextInterface } from './contracts';
+import { Klient, Kontroll } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     getClients,
     getKontroller,
     newClient,
+    newLocation,
     updateKontroll as updateKontrollApi
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
 
-import { Kontroll } from '../../contracts/kontrollApi';
 import { useSnackbar } from 'notistack';
 
 export const useKontroll = () => {
@@ -56,6 +57,27 @@ export const KontrollContextProvider = ({
             return { status: true, klient };
         } catch (error) {
             enqueueSnackbar('Problemer med lagring av klient', {
+                variant: 'error'
+            });
+        }
+        return { status: false };
+    };
+
+    const saveNewLocation = async (name: string, klient: Klient) => {
+        try {
+            const { location } = await newLocation(name, klient);
+
+            dispatch({
+                type: ActionType.newLocation,
+                payload: { location, klient }
+            });
+
+            enqueueSnackbar('Lokasjon lagret', {
+                variant: 'success'
+            });
+            return { status: true, location };
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av lokasjon', {
                 variant: 'error'
             });
         }
@@ -114,7 +136,8 @@ export const KontrollContextProvider = ({
                 loadKontroller,
                 loadKlienter,
                 saveNewKlient,
-                updateKontroll
+                updateKontroll,
+                saveNewLocation
             }}>
             {children}
         </KontrollContext.Provider>

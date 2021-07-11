@@ -1,7 +1,7 @@
 import { Card, CardMenu } from '../components/card';
 import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -16,6 +16,8 @@ const SkjemaerView = () => {
     const classes = usePageStyles();
     const { kontrollId } = useParams<SkjemaerViewParams>();
     const { url } = useRouteMatch();
+
+    const history = useHistory();
 
     const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>([]);
     const {
@@ -41,7 +43,21 @@ const SkjemaerView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Skjemaer" menu={<CardMenu items={[]} />}>
+                        <Card
+                            title="Skjemaer"
+                            menu={
+                                <CardMenu
+                                    items={[
+                                        {
+                                            label: 'Nytt skjema',
+                                            action: () =>
+                                                history.push(
+                                                    `/kontroll/${kontrollId}/skjema/new`
+                                                )
+                                        }
+                                    ]}
+                                />
+                            }>
                             {skjemaer !== undefined ? (
                                 <TableContainer
                                     columns={columns(kontroller ?? [], url)}

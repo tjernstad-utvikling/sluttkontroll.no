@@ -5,6 +5,7 @@ import KontrollNewView from '../views/kontroll-new';
 import KontrollerView from '../views/kontroll-dashboard';
 import { MainLayout } from '../layout/main';
 import SjekklisterView from '../views/kontroll-sjekklister';
+import SkjemaNewView from '../views/kontroll-skjema-new';
 import SkjemaerView from '../views/kontroll-skjemaer';
 
 export const Main = () => {
@@ -17,6 +18,9 @@ export const Main = () => {
                     </Route>
                     <Route exact path={`/kontroll/new`}>
                         <KontrollNewView />
+                    </Route>
+                    <Route path={`/kontroll/:kontrollId/skjema/new`}>
+                        <SkjemaNewView />
                     </Route>
                     <Route path={`/kontroll/:kontrollId/skjema/:skjemaId`}>
                         <SjekklisterView />

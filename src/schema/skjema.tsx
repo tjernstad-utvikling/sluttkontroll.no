@@ -3,7 +3,6 @@ import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 
 import { LoadingButton } from '../components/button';
-import Select from 'react-select';
 import { Skjema } from '../contracts/kontrollApi';
 import { TextField } from '../components/input';
 

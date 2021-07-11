@@ -30,7 +30,14 @@ export const Card = ({ children, title, menu }: CardProps) => {
     );
 };
 
-export const CardMenu = () => {
+interface CardMenuItem {
+    label: string;
+    action: () => void;
+}
+interface CardMenuProps {
+    items: Array<CardMenuItem>;
+}
+export const CardMenu = ({ items }: CardMenuProps) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -59,9 +66,11 @@ export const CardMenu = () => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}>
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                {items.map((item) => (
+                    <MenuItem key={item.label} onClick={item.action}>
+                        {item.label}
+                    </MenuItem>
+                ))}
             </Menu>
         </div>
     );

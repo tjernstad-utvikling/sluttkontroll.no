@@ -61,7 +61,7 @@ export const LocationSchema = ({
                             {locations && (
                                 <div>
                                     <label htmlFor="klient-select">
-                                        Klient
+                                        Lokasjon
                                     </label>
                                     <CreatableSelect
                                         onCreateOption={(newName) => {

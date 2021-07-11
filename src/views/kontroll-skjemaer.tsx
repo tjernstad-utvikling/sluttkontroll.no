@@ -41,7 +41,7 @@ const SkjemaerView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Skjemaer" menu={<CardMenu />}>
+                        <Card title="Skjemaer" menu={<CardMenu items={[]} />}>
                             {skjemaer !== undefined ? (
                                 <TableContainer
                                     columns={columns(kontroller ?? [], url)}

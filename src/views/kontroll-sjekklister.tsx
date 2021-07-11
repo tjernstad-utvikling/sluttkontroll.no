@@ -55,7 +55,7 @@ const SjekklisterView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Sjekkliste" menu={<CardMenu />}>
+                        <Card title="Sjekkliste" menu={<CardMenu items={[]} />}>
                             {checklists !== undefined ? (
                                 <TableContainer
                                     columns={columns('')}

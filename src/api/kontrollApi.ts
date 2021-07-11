@@ -6,6 +6,7 @@ import {
     Skjema
 } from '../contracts/kontrollApi';
 
+import { User } from '../contracts/userApi';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getClients = async (): Promise<{
@@ -104,17 +105,21 @@ export const updateKontroll = async (
 };
 
 export const newKontroll = async (
-    kontroll: Kontroll
+    name: string,
+    avvikUtbedrere: Array<User>,
+    location: Location,
+    user: User
 ): Promise<{
     status: number;
+    kontroll: Kontroll;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.post(
+        const { status, data } = await sluttkontrollApi.post(
             `/v3/kontroll/${location.id}/${user.id}`,
-            { kontroll }
+            { name, avvikUtbedrere }
         );
         if (status === 200) {
-            return { status };
+            return { status, ...data };
         }
         throw new Error('not 200');
     } catch (error) {

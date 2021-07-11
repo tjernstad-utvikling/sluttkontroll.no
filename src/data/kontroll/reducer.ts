@@ -38,6 +38,14 @@ export const kontrollReducer = (
             };
         case ActionType.setKontroller:
             return { ...state, kontroller: action.payload };
+        case ActionType.newKontroll:
+            return {
+                ...state,
+                kontroller:
+                    state.kontroller !== undefined
+                        ? [...state.kontroller, action.payload]
+                        : [action.payload]
+            };
         case ActionType.updateKontroll:
             return {
                 ...state,

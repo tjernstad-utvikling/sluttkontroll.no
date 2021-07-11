@@ -1,4 +1,4 @@
-import { Klient, Location } from '../contracts/kontrollApi';
+import { Klient, Kontroll, Location } from '../contracts/kontrollApi';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import { Card } from '../components/card';
@@ -25,7 +25,7 @@ import { useState } from 'react';
 const KontrollNewView = () => {
     const classes = usePageStyles();
 
-    const { saveNewKlient, saveNewLocation } = useKontroll();
+    const { saveNewKlient, saveNewLocation, saveNewKontroll } = useKontroll();
     const [activeStep, setActiveStep] = useState(0);
     const [selectedKlient, setSelectedKlient] = useState<Klient>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
@@ -49,11 +49,24 @@ const KontrollNewView = () => {
         }
         return false;
     };
-    const saveNewKontroll = async (
+    const saveKontroll = async (
         name: string,
         user: User,
         avvikUtbedrere: Array<User> | null
     ): Promise<boolean> => {
+        if (selectedLocation !== undefined) {
+            if (
+                await saveNewKontroll(
+                    name,
+                    avvikUtbedrere !== null ? avvikUtbedrere : [],
+                    selectedLocation,
+                    user
+                )
+            ) {
+                return true;
+            }
+            return false;
+        }
         return false;
     };
 
@@ -88,7 +101,7 @@ const KontrollNewView = () => {
                     />
                 );
             case 2:
-                return <KontrollSchema onSubmit={saveNewKontroll} />;
+                return <KontrollSchema onSubmit={saveKontroll} />;
         }
     };
 

@@ -6,6 +6,8 @@ import {
     Skjema
 } from '../../contracts/kontrollApi';
 
+import { User } from '../../contracts/userApi';
+
 export interface kontrollState {
     klienter: Array<Klient> | undefined;
     kontroller: Array<Kontroll> | undefined;
@@ -18,6 +20,7 @@ export enum ActionType {
     newKlient,
     newLocation,
     setKontroller,
+    newKontroll,
     updateKontroll,
     setSkjemaer,
     setChecklister
@@ -41,6 +44,10 @@ export interface setKontroller {
     type: ActionType.setKontroller;
     payload: Array<Kontroll>;
 }
+export interface newKontroll {
+    type: ActionType.newKontroll;
+    payload: Kontroll;
+}
 export interface updateKontroll {
     type: ActionType.updateKontroll;
     payload: Kontroll;
@@ -59,6 +66,7 @@ export type KontrollActions =
     | newKlient
     | newLocation
     | setKontroller
+    | newKontroll
     | updateKontroll
     | setSkjemaer
     | setChecklister;
@@ -74,5 +82,11 @@ export interface ContextInterface {
         klient: Klient
     ) => Promise<{ status: boolean; location?: Location }>;
     loadKontroller: () => Promise<void>;
+    saveNewKontroll: (
+        name: string,
+        avvikUtbedrere: Array<User>,
+        location: Location,
+        user: User
+    ) => Promise<boolean>;
     updateKontroll: (kontroll: Kontroll) => Promise<boolean>;
 }

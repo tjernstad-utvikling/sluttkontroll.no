@@ -1,4 +1,4 @@
-import { Klient, Kontroll, Location } from '../contracts/kontrollApi';
+import { Klient, Location } from '../contracts/kontrollApi';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import { Card } from '../components/card';
@@ -18,12 +18,15 @@ import Stepper from '@material-ui/core/Stepper';
 import { User } from '../contracts/userApi';
 import VideoLabelIcon from '@material-ui/icons/VideoLabel';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
 
 const KontrollNewView = () => {
     const classes = usePageStyles();
+
+    const history = useHistory();
 
     const { saveNewKlient, saveNewLocation, saveNewKontroll } = useKontroll();
     const [activeStep, setActiveStep] = useState(0);
@@ -63,6 +66,7 @@ const KontrollNewView = () => {
                     user
                 )
             ) {
+                history.push('/kontroll');
                 return true;
             }
             return false;

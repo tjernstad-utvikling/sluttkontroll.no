@@ -7,8 +7,8 @@ import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import { TextField } from '../components/input';
 import { User } from '../contracts/userApi';
-import { isNull } from 'util';
 import { useEffect } from 'react';
+import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
 import { useUser } from '../data/user';
 
@@ -25,7 +25,8 @@ export const KontrollSchema = ({
     onSubmit
 }: KontrollSchemaProps): JSX.Element => {
     const {
-        state: { users }
+        state: { users },
+        loadUsers
     } = useUser();
 
     interface Option {
@@ -39,6 +40,10 @@ export const KontrollSchema = ({
             setUserOptions(users.map((u) => ({ value: u, label: u.name })));
         }
     }, [users]);
+
+    useEffectOnce(() => {
+        loadUsers();
+    });
 
     const user =
         kontroll !== undefined
@@ -134,7 +139,7 @@ export const KontrollSchema = ({
                                 fullWidth
                                 variant="contained"
                                 color="primary">
-                                Logg inn
+                                Lagre
                             </LoadingButton>
                         </Form>
                     );
@@ -142,6 +147,6 @@ export const KontrollSchema = ({
             </Formik>
         );
     } else {
-        return <div></div>;
+        return <div>mangler options</div>;
     }
 };

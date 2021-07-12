@@ -1,24 +1,27 @@
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
-import { TableContainer, useTable } from '../tables/tableContainer';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { Card } from '../components/card';
 import { Checkpoint } from '../contracts/checkpointApi';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { SkjemaSchema } from '../schema/skjema';
+import { SkjemaerViewParams } from '../contracts/navigation';
+import { TableContainer } from '../tables/tableContainer';
 import { getCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useHistory } from 'react-router-dom';
+import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
 
 const SkjemaNewView = () => {
     const classes = usePageStyles();
-
+    const { saveNewSkjema } = useKontroll();
+    const { kontrollId } = useParams<SkjemaerViewParams>();
     const history = useHistory();
-    const { apiRef } = useTable();
+
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
-    const [selected, setSelected] = useState();
+    const [selected, setSelected] = useState<Checkpoint[]>([]);
 
     useEffectOnce(async () => {
         try {
@@ -37,13 +40,14 @@ const SkjemaNewView = () => {
         } catch (error) {}
     });
 
-    const onSelectedRows = () => {
-        setSelected(undefined);
-    };
     const onSaveSkjema = async (
         omrade: string,
         area: string
     ): Promise<boolean> => {
+        if (await saveNewSkjema(area, omrade, selected, Number(kontrollId))) {
+            history.push(`/kontroll/${kontrollId}`);
+            return true;
+        }
         return false;
     };
 
@@ -54,7 +58,10 @@ const SkjemaNewView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Nytt skjema">
-                            <SkjemaSchema onSubmit={onSaveSkjema} />
+                            <SkjemaSchema
+                                onSubmit={onSaveSkjema}
+                                checkpointCount={selected.length}
+                            />
 
                             {checkpoints !== undefined ? (
                                 <TableContainer
@@ -63,7 +70,9 @@ const SkjemaNewView = () => {
                                     tableId="checkpoints">
                                     <CheckpointTable
                                         checkpoints={checkpoints}
-                                        onSelected={onSelectedRows}
+                                        onSelected={(checkpoints) =>
+                                            setSelected(checkpoints)
+                                        }
                                     />
                                 </TableContainer>
                             ) : (

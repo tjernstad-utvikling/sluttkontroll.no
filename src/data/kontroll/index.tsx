@@ -7,10 +7,12 @@ import {
     newClient,
     newKontroll,
     newLocation,
+    newSkjema,
     updateKontroll as updateKontrollApi
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
 
+import { Checkpoint } from '../../contracts/checkpointApi';
 import { User } from '../../contracts/userApi';
 import { useSnackbar } from 'notistack';
 
@@ -154,6 +156,36 @@ export const KontrollContextProvider = ({
         }
         return false;
     };
+    const saveNewSkjema = async (
+        area: string,
+        omrade: string,
+        checkpoints: Checkpoint[],
+        kontrollId: number
+    ): Promise<boolean> => {
+        try {
+            const res = await newSkjema(
+                area,
+                omrade,
+                checkpoints.map((c) => c.id),
+                kontrollId
+            );
+
+            dispatch({
+                type: ActionType.newSkjema,
+                payload: res.skjema
+            });
+
+            enqueueSnackbar('Skjema lagret', {
+                variant: 'success'
+            });
+            return true;
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av skjema', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
 
     return (
         <KontrollContext.Provider
@@ -165,7 +197,8 @@ export const KontrollContextProvider = ({
                 saveNewKlient,
                 updateKontroll,
                 saveNewKontroll,
-                saveNewLocation
+                saveNewLocation,
+                saveNewSkjema
             }}>
             {children}
         </KontrollContext.Provider>

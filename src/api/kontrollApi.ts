@@ -6,6 +6,7 @@ import {
     Skjema
 } from '../contracts/kontrollApi';
 
+import { Checkpoint } from '../contracts/checkpointApi';
 import { User } from '../contracts/userApi';
 import sluttkontrollApi from './sluttkontroll';
 
@@ -117,6 +118,28 @@ export const newKontroll = async (
         const { status, data } = await sluttkontrollApi.post(
             `/v3/kontroll/${location.id}/${user.id}`,
             { name, avvikUtbedrere }
+        );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+export const newSkjema = async (
+    area: string,
+    omrade: string,
+    checkpointIds: Array<number>,
+    kontrollId: number
+): Promise<{
+    status: number;
+    skjema: Skjema;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/skjema/${kontrollId}`,
+            { area, omrade, checkpoints: checkpointIds }
         );
         if (status === 200) {
             return { status, ...data };

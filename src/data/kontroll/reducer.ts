@@ -59,6 +59,14 @@ export const kontrollReducer = (
             };
         case ActionType.setSkjemaer:
             return { ...state, skjemaer: action.payload };
+        case ActionType.newSkjema:
+            return {
+                ...state,
+                skjemaer:
+                    state.skjemaer !== undefined
+                        ? [...state.skjemaer, action.payload]
+                        : [action.payload]
+            };
         case ActionType.setChecklister:
             return { ...state, checklists: action.payload };
 

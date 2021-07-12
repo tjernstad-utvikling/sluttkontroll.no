@@ -6,6 +6,7 @@ import {
     Skjema
 } from '../../contracts/kontrollApi';
 
+import { Checkpoint } from '../../contracts/checkpointApi';
 import { User } from '../../contracts/userApi';
 
 export interface kontrollState {
@@ -23,6 +24,7 @@ export enum ActionType {
     newKontroll,
     updateKontroll,
     setSkjemaer,
+    newSkjema,
     setChecklister
 }
 
@@ -56,6 +58,10 @@ export interface setSkjemaer {
     type: ActionType.setSkjemaer;
     payload: Array<Skjema>;
 }
+export interface newSkjema {
+    type: ActionType.newSkjema;
+    payload: Skjema;
+}
 export interface setChecklister {
     type: ActionType.setChecklister;
     payload: Array<Checklist>;
@@ -69,6 +75,7 @@ export type KontrollActions =
     | newKontroll
     | updateKontroll
     | setSkjemaer
+    | newSkjema
     | setChecklister;
 
 export interface ContextInterface {
@@ -89,4 +96,10 @@ export interface ContextInterface {
         user: User
     ) => Promise<boolean>;
     updateKontroll: (kontroll: Kontroll) => Promise<boolean>;
+    saveNewSkjema: (
+        area: string,
+        omrade: string,
+        checkpoints: Checkpoint[],
+        kontrollId: number
+    ) => Promise<boolean>;
 }

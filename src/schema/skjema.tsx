@@ -9,8 +9,12 @@ import { TextField } from '../components/input';
 interface SkjemaSchemaProps {
     skjema?: Skjema;
     onSubmit: (omrade: string, area: string) => Promise<boolean>;
+    checkpointCount?: number;
 }
-export const SkjemaSchema = ({ onSubmit }: SkjemaSchemaProps): JSX.Element => {
+export const SkjemaSchema = ({
+    onSubmit,
+    checkpointCount
+}: SkjemaSchemaProps): JSX.Element => {
     return (
         <Formik
             initialValues={{
@@ -50,7 +54,10 @@ export const SkjemaSchema = ({ onSubmit }: SkjemaSchemaProps): JSX.Element => {
                             fullWidth
                             variant="contained"
                             color="primary">
-                            Lagre
+                            Lagre{' '}
+                            {checkpointCount !== undefined
+                                ? `(Sjekkpunkter: ${checkpointCount} ) `
+                                : ''}
                         </LoadingButton>
                     </Form>
                 );

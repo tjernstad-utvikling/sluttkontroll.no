@@ -1,6 +1,8 @@
+import { GridColDef, GridRowData, GridRowId } from '@material-ui/data-grid';
+
 import { BaseTable } from './baseTable';
 import { Checkpoint } from '../contracts/checkpointApi';
-import { GridColDef } from '@material-ui/data-grid';
+import { useTable } from './tableContainer';
 
 export const columns = (url: string) => {
     const columns: GridColDef[] = [
@@ -28,8 +30,13 @@ export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 
 interface CheckpointTableProps {
     checkpoints: Array<Checkpoint>;
+    onSelected: (checkpoints: Array<Checkpoint>) => void;
 }
-export const CheckpointTable = ({ checkpoints }: CheckpointTableProps) => {
+export const CheckpointTable = ({
+    checkpoints,
+    onSelected
+}: CheckpointTableProps) => {
+    const { apiRef } = useTable();
     function CustomSort<T extends keyof Checkpoint>(
         data: Checkpoint[],
         field: T
@@ -39,6 +46,30 @@ export const CheckpointTable = ({ checkpoints }: CheckpointTableProps) => {
                 return data;
         }
     }
+    const onSelect = () => {
+        const rows: Map<GridRowId, GridRowData> =
+            apiRef.current.getSelectedRows();
 
-    return <BaseTable data={checkpoints} customSort={CustomSort} />;
+        const cpRows: Checkpoint[] = [];
+
+        rows.forEach((r) =>
+            cpRows.push({
+                gruppe: r.gruppe,
+                id: r.id,
+                prosedyre: r.prosedyre,
+                prosedyreNr: r.prosedyreNr,
+                tekst: r.tekst,
+                tiltak: r.tiltak
+            })
+        );
+        onSelected(cpRows);
+    };
+
+    return (
+        <BaseTable
+            onSelected={onSelect}
+            data={checkpoints}
+            customSort={CustomSort}
+        />
+    );
 };

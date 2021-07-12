@@ -17,10 +17,12 @@ interface Data {
 interface BaseTableProps<T, K extends keyof T> {
     data: Array<T>;
     customSort: (data: T[], field: K) => T[];
+    onSelected?: () => void;
 }
 export const BaseTable = <T extends Data, K extends keyof T>({
     data,
-    customSort
+    customSort,
+    onSelected
 }: BaseTableProps<T, K>) => {
     const { columns, apiRef } = useTable();
     const [isShift, setIsShift] = useState<boolean>(false);
@@ -108,6 +110,9 @@ export const BaseTable = <T extends Data, K extends keyof T>({
 
                 const selectArray = subsetArray.map((k) => k.id);
                 apiRef.current.selectRows(selectArray, row.isSelected);
+            }
+            if (onSelected !== undefined) {
+                onSelected();
             }
 
             setLastSelectedIndex(index);

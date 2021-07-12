@@ -1,15 +1,15 @@
 import { Klient, Location } from '../contracts/kontrollApi';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
+import AddLocationIcon from '@material-ui/icons/AddLocation';
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import { KlientSchema } from '../schema/klient';
 import { KontrollSchema } from '../schema/kontroll';
+import LocationCityIcon from '@material-ui/icons/LocationCity';
 import { LocationSchema } from '../schema/location';
 import React from 'react';
-import SettingsIcon from '@material-ui/icons/Settings';
 import Step from '@material-ui/core/Step';
 import StepConnector from '@material-ui/core/StepConnector';
 import { StepIconProps } from '@material-ui/core/StepIcon';
@@ -204,9 +204,9 @@ function ColorlibStepIcon(props: StepIconProps) {
     const { active, completed } = props;
 
     const icons: { [index: string]: React.ReactElement } = {
-        1: <SettingsIcon />,
-        2: <GroupAddIcon />,
-        3: <VideoLabelIcon />
+        1: <LocationCityIcon />,
+        2: <AddLocationIcon />,
+        3: <PlaylistAddCheckIcon />
     };
 
     return (

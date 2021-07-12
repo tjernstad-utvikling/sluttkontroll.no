@@ -6,7 +6,6 @@ import {
     Skjema
 } from '../contracts/kontrollApi';
 
-import { Checkpoint } from '../contracts/checkpointApi';
 import { User } from '../contracts/userApi';
 import sluttkontrollApi from './sluttkontroll';
 

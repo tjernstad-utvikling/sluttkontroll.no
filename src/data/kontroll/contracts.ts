@@ -25,7 +25,8 @@ export enum ActionType {
     updateKontroll,
     setSkjemaer,
     newSkjema,
-    setChecklister
+    setChecklister,
+    addChecklists
 }
 
 export interface setKlienter {
@@ -66,6 +67,10 @@ export interface setChecklister {
     type: ActionType.setChecklister;
     payload: Array<Checklist>;
 }
+export interface addChecklists {
+    type: ActionType.addChecklists;
+    payload: Array<Checklist>;
+}
 
 export type KontrollActions =
     | setKlienter
@@ -76,7 +81,8 @@ export type KontrollActions =
     | updateKontroll
     | setSkjemaer
     | newSkjema
-    | setChecklister;
+    | setChecklister
+    | addChecklists;
 
 export interface ContextInterface {
     state: kontrollState;

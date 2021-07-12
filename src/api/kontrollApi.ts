@@ -127,6 +127,7 @@ export const newKontroll = async (
         throw new Error(error);
     }
 };
+
 export const newSkjema = async (
     area: string,
     omrade: string,
@@ -140,6 +141,25 @@ export const newSkjema = async (
         const { status, data } = await sluttkontrollApi.post(
             `/v3/skjema/${kontrollId}`,
             { area, omrade, checkpoints: checkpointIds }
+        );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+export const getChecklistsBySkjema = async (
+    skjema: Skjema
+): Promise<{
+    status: number;
+    checklists: Checklist[];
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `v3/checklist/skjema/${skjema.id}`
         );
         if (status === 200) {
             return { status, ...data };

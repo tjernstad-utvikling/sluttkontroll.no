@@ -2,6 +2,7 @@ import { ActionType, ContextInterface } from './contracts';
 import { Klient, Kontroll, Location } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
+    getChecklistsBySkjema,
     getClients,
     getKontroller,
     newClient,
@@ -169,6 +170,14 @@ export const KontrollContextProvider = ({
                 checkpoints.map((c) => c.id),
                 kontrollId
             );
+            if (res.status === 200) {
+                const clRes = await getChecklistsBySkjema(res.skjema);
+
+                dispatch({
+                    type: ActionType.addChecklists,
+                    payload: clRes.checklists
+                });
+            }
 
             dispatch({
                 type: ActionType.newSkjema,

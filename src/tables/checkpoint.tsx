@@ -1,6 +1,8 @@
 import { GridColDef, GridRowData, GridRowId } from '@material-ui/data-grid';
+import { useEffect, useState } from 'react';
 
 import { BaseTable } from './baseTable';
+import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
 import { useTable } from './tableContainer';
 
@@ -30,13 +32,34 @@ export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 
 interface CheckpointTableProps {
     checkpoints: Array<Checkpoint>;
+    checklists?: Array<Checklist>;
+    skjemaId?: number;
     onSelected: (checkpoints: Array<Checkpoint>) => void;
 }
 export const CheckpointTable = ({
     checkpoints,
+    checklists,
+    skjemaId,
     onSelected
 }: CheckpointTableProps) => {
     const { apiRef } = useTable();
+    const [idIsSelected, setIdIsSelected] = useState<number>();
+
+    useEffect(() => {
+        if (
+            idIsSelected !== skjemaId &&
+            checklists !== undefined &&
+            skjemaId !== undefined &&
+            apiRef.current !== null
+        ) {
+            const selectArray = checklists.map((cl) => cl.checkpoint.id);
+            apiRef.current.selectRows(selectArray);
+
+            // Prevent updating if select state more than once
+            setIdIsSelected(skjemaId);
+        }
+    }, [apiRef, checklists, idIsSelected, skjemaId]);
+
     function CustomSort<T extends keyof Checkpoint>(
         data: Checkpoint[],
         field: T

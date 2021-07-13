@@ -4,6 +4,7 @@ import { KontrollContextProvider } from '../data/kontroll';
 import KontrollNewView from '../views/kontroll-new';
 import KontrollerView from '../views/kontroll-dashboard';
 import { MainLayout } from '../layout/main';
+import SjekklisteEditView from '../views/kontroll-sjekkliste-edit';
 import SjekklisterView from '../views/kontroll-sjekklister';
 import SkjemaNewView from '../views/kontroll-skjema-new';
 import SkjemaerView from '../views/kontroll-skjemaer';
@@ -21,6 +22,10 @@ export const Main = () => {
                     </Route>
                     <Route path={`/kontroll/:kontrollId/skjema/new`}>
                         <SkjemaNewView />
+                    </Route>
+                    <Route
+                        path={`/kontroll/:kontrollId/skjema/:skjemaId/edit-checklist`}>
+                        <SjekklisteEditView />
                     </Route>
                     <Route path={`/kontroll/:kontrollId/skjema/:skjemaId`}>
                         <SjekklisterView />

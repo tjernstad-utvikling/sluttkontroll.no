@@ -77,6 +77,20 @@ export const kontrollReducer = (
                         ? [...state.checklists, ...action.payload]
                         : [...action.payload]
             };
+        case ActionType.editChecklists:
+            return {
+                ...state,
+                checklists:
+                    state.checklists !== undefined
+                        ? [
+                              ...state.checklists.filter(
+                                  (cl) =>
+                                      cl.skjema.id !== action.payload.skjemaId
+                              ),
+                              ...action.payload.checklists
+                          ]
+                        : [...action.payload.checklists]
+            };
         default:
             throw new Error('unknown action');
     }

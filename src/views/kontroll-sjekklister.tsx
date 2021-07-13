@@ -6,6 +6,7 @@ import {
     defaultColumns
 } from '../tables/sjekkliste';
 import { useEffect, useState } from 'react';
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
 import { Checklist } from '../contracts/kontrollApi';
 import Container from '@material-ui/core/Container';
@@ -15,11 +16,13 @@ import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useParams } from 'react-router-dom';
 
 const SjekklisterView = () => {
     const classes = usePageStyles();
     const { skjemaId } = useParams<SjekklisterViewParams>();
+
+    const history = useHistory();
+    let { url } = useRouteMatch();
 
     const [_checklists, setChecklists] = useState<Array<Checklist>>([]);
     const {
@@ -55,7 +58,21 @@ const SjekklisterView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Sjekkliste" menu={<CardMenu items={[]} />}>
+                        <Card
+                            title="Sjekkliste"
+                            menu={
+                                <CardMenu
+                                    items={[
+                                        {
+                                            label: 'Legg til / fjerne sjekkpunkter',
+                                            action: () =>
+                                                history.push(
+                                                    `${url}/edit-checklist`
+                                                )
+                                        }
+                                    ]}
+                                />
+                            }>
                             {checklists !== undefined ? (
                                 <TableContainer
                                     columns={columns('')}

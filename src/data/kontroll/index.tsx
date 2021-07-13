@@ -2,6 +2,7 @@ import { ActionType, ContextInterface } from './contracts';
 import { Klient, Kontroll, Location } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
+    editChecklist,
     getChecklistsBySkjema,
     getClients,
     getKontroller,
@@ -195,6 +196,32 @@ export const KontrollContextProvider = ({
         }
         return false;
     };
+    const saveEditChecklist = async (
+        skjemaId: number,
+        checkpoints: Checkpoint[]
+    ): Promise<boolean> => {
+        try {
+            const res = await editChecklist(
+                checkpoints.map((c) => c.id),
+                skjemaId
+            );
+
+            dispatch({
+                type: ActionType.editChecklists,
+                payload: { skjemaId, checklists: res.checklists }
+            });
+
+            enqueueSnackbar('Sjekkliste lagret', {
+                variant: 'success'
+            });
+            return true;
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av sjekkliste', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
 
     return (
         <KontrollContext.Provider
@@ -207,7 +234,8 @@ export const KontrollContextProvider = ({
                 updateKontroll,
                 saveNewKontroll,
                 saveNewLocation,
-                saveNewSkjema
+                saveNewSkjema,
+                saveEditChecklist
             }}>
             {children}
         </KontrollContext.Provider>

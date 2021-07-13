@@ -149,6 +149,26 @@ export const newSkjema = async (
         throw new Error(error);
     }
 };
+export const editChecklist = async (
+    checkpointIds: Array<number>,
+    skjemaId: number
+): Promise<{
+    status: number;
+    checklists: Array<Checklist>;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.put(
+            `/v3/checklist/${skjemaId}`,
+            { checkpointIds }
+        );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 
 export const getChecklistsBySkjema = async (
     skjema: Skjema

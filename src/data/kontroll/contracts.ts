@@ -21,9 +21,11 @@ export enum ActionType {
     newKlient,
     newLocation,
     setKontroller,
+    addKontroller,
     newKontroll,
     updateKontroll,
     setSkjemaer,
+    addSkjemaer,
     newSkjema,
     setChecklister,
     addChecklists,
@@ -48,6 +50,10 @@ export interface setKontroller {
     type: ActionType.setKontroller;
     payload: Array<Kontroll>;
 }
+export interface addKontroller {
+    type: ActionType.addKontroller;
+    payload: Array<Kontroll>;
+}
 export interface newKontroll {
     type: ActionType.newKontroll;
     payload: Kontroll;
@@ -58,6 +64,10 @@ export interface updateKontroll {
 }
 export interface setSkjemaer {
     type: ActionType.setSkjemaer;
+    payload: Array<Skjema>;
+}
+export interface addSkjemaer {
+    type: ActionType.addSkjemaer;
     payload: Array<Skjema>;
 }
 export interface newSkjema {
@@ -82,9 +92,11 @@ export type KontrollActions =
     | newKlient
     | newLocation
     | setKontroller
+    | addKontroller
     | newKontroll
     | updateKontroll
     | setSkjemaer
+    | addSkjemaer
     | newSkjema
     | setChecklister
     | addChecklists
@@ -101,6 +113,7 @@ export interface ContextInterface {
         klient: Klient
     ) => Promise<{ status: boolean; location?: Location }>;
     loadKontroller: () => Promise<void>;
+    loadKontrollerByKlient: (klientId: number) => Promise<void>;
     saveNewKontroll: (
         name: string,
         avvikUtbedrere: Array<User>,

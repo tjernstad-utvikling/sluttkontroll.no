@@ -4,3 +4,6 @@ export interface SkjemaerViewParams {
 export interface SjekklisterViewParams {
     skjemaId: string;
 }
+export interface KontrollKlientViewParams {
+    klientId: string;
+}

@@ -6,6 +6,7 @@ import {
     getChecklistsBySkjema,
     getClients,
     getKontroller,
+    getKontrollerByKlient,
     newClient,
     newKontroll,
     newLocation,
@@ -116,6 +117,30 @@ export const KontrollContextProvider = ({
             } catch (error) {
                 console.log(error);
             }
+        }
+    };
+    const loadKontrollerByKlient = async (klientId: number): Promise<void> => {
+        try {
+            const { status, kontroller, skjemaer, checklists } =
+                await getKontrollerByKlient(klientId);
+
+            if (status === 200) {
+                dispatch({
+                    type: ActionType.addKontroller,
+                    payload: kontroller
+                });
+                dispatch({
+                    type: ActionType.addSkjemaer,
+                    payload: skjemaer
+                });
+                dispatch({
+                    type: ActionType.addChecklists,
+                    payload: checklists
+                });
+                setHasLoadedMyKontroller(true);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -235,6 +260,7 @@ export const KontrollContextProvider = ({
                 state,
 
                 loadKontroller,
+                loadKontrollerByKlient,
                 loadKlienter,
                 saveNewKlient,
                 updateKontroll,

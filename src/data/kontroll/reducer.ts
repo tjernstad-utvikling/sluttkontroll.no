@@ -1,5 +1,7 @@
 import { ActionType, KontrollActions, kontrollState } from './contracts';
 
+import _ from 'lodash';
+
 export const initialState: kontrollState = {
     klienter: undefined,
     kontroller: undefined,
@@ -38,6 +40,11 @@ export const kontrollReducer = (
             };
         case ActionType.setKontroller:
             return { ...state, kontroller: action.payload };
+        case ActionType.addKontroller:
+            return {
+                ...state,
+                kontroller: _.unionBy(action.payload, state.kontroller, 'id')
+            };
         case ActionType.newKontroll:
             return {
                 ...state,
@@ -59,6 +66,11 @@ export const kontrollReducer = (
             };
         case ActionType.setSkjemaer:
             return { ...state, skjemaer: action.payload };
+        case ActionType.addSkjemaer:
+            return {
+                ...state,
+                skjemaer: _.unionBy(action.payload, state.skjemaer, 'id')
+            };
         case ActionType.newSkjema:
             return {
                 ...state,
@@ -72,10 +84,7 @@ export const kontrollReducer = (
         case ActionType.addChecklists:
             return {
                 ...state,
-                checklists:
-                    state.checklists !== undefined
-                        ? [...state.checklists, ...action.payload]
-                        : [...action.payload]
+                checklists: _.unionBy(action.payload, state.checklists, 'id')
             };
         case ActionType.editChecklists:
             return {

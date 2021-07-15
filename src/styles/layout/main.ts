@@ -51,6 +51,9 @@ export const useMainStyles = makeStyles((theme: Theme) =>
             height: 150,
             minHeight: 150
         },
+        collapseListLeftDrawer: {
+            backgroundColor: theme.palette.primary.dark
+        },
         content: {
             flexGrow: 1,
             padding: theme.spacing(1),

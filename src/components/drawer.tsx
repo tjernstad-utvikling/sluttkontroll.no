@@ -10,6 +10,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
+import { useMainStyles } from '../styles/layout/main';
 
 export const KlientMenu = (): JSX.Element => {
     const {
@@ -43,6 +44,7 @@ interface KlientListItemProps {
     klient: Klient;
 }
 const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
+    const classes = useMainStyles();
     const [open, setOpen] = useState<boolean>(false);
     const handleClick = () => {
         setOpen(!open);
@@ -50,11 +52,21 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
     return (
         <div>
             <ListItem button onClick={handleClick}>
-                <ListItemText primary={klient.name} />
-                {open ? <ExpandLess /> : <ExpandMore />}
+                <ListItemText
+                    primaryTypographyProps={{ color: 'secondary' }}
+                    primary={klient.name}
+                />
+                {open ? (
+                    <ExpandLess color="secondary" />
+                ) : (
+                    <ExpandMore color="secondary" />
+                )}
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+                <List
+                    className={classes.collapseListLeftDrawer}
+                    component="div"
+                    disablePadding>
                     {klient.objekts.map((objekt) => (
                         <ObjektListItem
                             id={objekt.id}
@@ -77,7 +89,10 @@ const ObjektListItem = ({
     const classes = useStyles();
     return (
         <ListItem button className={classes.nested}>
-            <ListItemText primary={name} />
+            <ListItemText
+                primaryTypographyProps={{ color: 'secondary' }}
+                primary={name}
+            />
         </ListItem>
     );
 };

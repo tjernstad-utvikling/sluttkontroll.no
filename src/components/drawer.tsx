@@ -5,6 +5,7 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { Klient } from '../contracts/kontrollApi';
+import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -52,6 +53,7 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
     return (
         <div>
             <ListItem button onClick={handleClick}>
+                <Link to="/kontroll/klient/9">test</Link>
                 <ListItemText
                     primaryTypographyProps={{ color: 'secondary' }}
                     primary={klient.name}

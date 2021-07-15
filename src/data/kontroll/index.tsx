@@ -17,6 +17,7 @@ import { initialState, kontrollReducer } from './reducer';
 import { Checkpoint } from '../../contracts/checkpointApi';
 import { User } from '../../contracts/userApi';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 
 export const useKontroll = () => {
     return useContext(KontrollContext);
@@ -30,6 +31,8 @@ export const KontrollContextProvider = ({
     children: React.ReactNode;
 }): JSX.Element => {
     const [state, dispatch] = useReducer(kontrollReducer, initialState);
+    const [hasLoadedMyKontroller, setHasLoadedMyKontroller] =
+        useState<boolean>(false);
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -90,26 +93,29 @@ export const KontrollContextProvider = ({
         return { status: false };
     };
     const loadKontroller = async (): Promise<void> => {
-        try {
-            const { status, kontroller, skjemaer, checklists } =
-                await getKontroller();
+        if (!hasLoadedMyKontroller) {
+            try {
+                const { status, kontroller, skjemaer, checklists } =
+                    await getKontroller();
 
-            if (status === 200) {
-                dispatch({
-                    type: ActionType.setKontroller,
-                    payload: kontroller
-                });
-                dispatch({
-                    type: ActionType.setSkjemaer,
-                    payload: skjemaer
-                });
-                dispatch({
-                    type: ActionType.setChecklister,
-                    payload: checklists
-                });
+                if (status === 200) {
+                    dispatch({
+                        type: ActionType.setKontroller,
+                        payload: kontroller
+                    });
+                    dispatch({
+                        type: ActionType.setSkjemaer,
+                        payload: skjemaer
+                    });
+                    dispatch({
+                        type: ActionType.setChecklister,
+                        payload: checklists
+                    });
+                    setHasLoadedMyKontroller(true);
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
         }
     };
 

@@ -37,7 +37,9 @@ const SjekklisteEditView = () => {
         loadKontroller();
     });
 
-    const onSubmitChecklist = async () => {
+    const onSubmitChecklist = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         setIsSubmitting(true);
         if (await saveEditChecklist(Number(skjemaId), selected)) {
             history.goBack();

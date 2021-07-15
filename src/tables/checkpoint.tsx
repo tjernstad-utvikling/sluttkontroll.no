@@ -1,5 +1,5 @@
 import { GridColDef, GridRowData, GridRowId } from '@material-ui/data-grid';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { BaseTable } from './baseTable';
 import { Checklist } from '../contracts/kontrollApi';
@@ -43,22 +43,25 @@ export const CheckpointTable = ({
     onSelected
 }: CheckpointTableProps) => {
     const { apiRef } = useTable();
-    const [idIsSelected, setIdIsSelected] = useState<number>();
+
+    const selectionModel = useMemo(() => {
+        if (checklists !== undefined) {
+            return checklists.map((cl) => cl.checkpoint.id);
+        }
+    }, [checklists]);
 
     useEffect(() => {
+        console.log({ apiRef, checklists, skjemaId });
         if (
-            idIsSelected !== skjemaId &&
             checklists !== undefined &&
             skjemaId !== undefined &&
-            apiRef.current !== null
+            apiRef.current !== null &&
+            checkpoints.length > 0
         ) {
             const selectArray = checklists.map((cl) => cl.checkpoint.id);
             apiRef.current.selectRows(selectArray);
-
-            // Prevent updating if select state more than once
-            setIdIsSelected(skjemaId);
         }
-    }, [apiRef, checklists, idIsSelected, skjemaId]);
+    }, [apiRef, checklists, checkpoints.length, skjemaId]);
 
     function CustomSort<T extends keyof Checkpoint>(
         data: Checkpoint[],
@@ -90,6 +93,7 @@ export const CheckpointTable = ({
 
     return (
         <BaseTable
+            selectionModel={selectionModel}
             onSelected={onSelect}
             data={checkpoints}
             customSort={CustomSort}

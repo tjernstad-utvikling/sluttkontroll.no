@@ -17,11 +17,13 @@ interface Data {
 interface BaseTableProps<T, K extends keyof T> {
     data: Array<T>;
     customSort: (data: T[], field: K) => T[];
+    selectionModel?: number[] | undefined;
     onSelected?: () => void;
 }
 export const BaseTable = <T extends Data, K extends keyof T>({
     data,
     customSort,
+    selectionModel,
     onSelected
 }: BaseTableProps<T, K>) => {
     const { columns, apiRef } = useTable();
@@ -125,6 +127,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
                 <DataGrid
                     rows={sortedData}
                     columns={columns}
+                    selectionModel={selectionModel}
                     pageSize={15}
                     checkboxSelection
                     disableSelectionOnClick

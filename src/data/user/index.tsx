@@ -1,5 +1,5 @@
 import { ActionType, ContextInterface } from './contracts';
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer, useState } from 'react';
 import { initialState, userReducer } from './reducer';
 
 import { getUsers } from '../../api/userApi';
@@ -16,19 +16,23 @@ export const UserContextProvider = ({
     children: React.ReactNode;
 }): JSX.Element => {
     const [state, dispatch] = useReducer(userReducer, initialState);
+    const [hasLoadedUsers, setHasLoadedUsers] = useState<boolean>(false);
 
     const loadUsers = async (): Promise<void> => {
-        try {
-            const { status, users } = await getUsers();
+        if (!hasLoadedUsers) {
+            try {
+                const { status, users } = await getUsers();
 
-            if (status === 200) {
-                dispatch({
-                    type: ActionType.setUsers,
-                    payload: users
-                });
+                if (status === 200) {
+                    dispatch({
+                        type: ActionType.setUsers,
+                        payload: users
+                    });
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
+            setHasLoadedUsers(true);
         }
     };
 

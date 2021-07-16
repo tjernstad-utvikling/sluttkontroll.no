@@ -36,14 +36,11 @@ const KontrollKlientView = () => {
     } = useUser();
 
     useEffect(() => {
-        const onload = async () => {
-            if (loadedKlient !== Number(klientId)) {
-                await loadKontrollerByKlient(Number(klientId));
-                setLoadedKlient(Number(klientId));
-                loadUsers();
-            }
-        };
-        onload();
+        if (loadedKlient !== Number(klientId)) {
+            loadKontrollerByKlient(Number(klientId));
+            setLoadedKlient(Number(klientId));
+            loadUsers();
+        }
     }, [klientId, loadKontrollerByKlient, loadUsers, loadedKlient]);
 
     useEffect(() => {

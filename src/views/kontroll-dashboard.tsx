@@ -4,22 +4,28 @@ import {
     defaultColumns,
     kontrollColumns
 } from '../tables/kontroll';
+import { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
+import { useAuth } from '../hooks/useAuth';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useState } from 'react';
 import { useUser } from '../data/user';
 
 const KontrollerView = () => {
     const classes = usePageStyles();
     const { url } = useRouteMatch();
     const history = useHistory();
+    const { user } = useAuth();
+
+    const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
+
     const {
         state: { kontroller },
         loadKontroller
@@ -33,6 +39,12 @@ const KontrollerView = () => {
         loadKontroller();
         loadUsers();
     });
+
+    useEffect(() => {
+        if (kontroller !== undefined) {
+            setKontroller(kontroller.filter((k) => k.user.id === user?.id));
+        }
+    }, [kontroller, user?.id]);
 
     const [editId, setEditId] = useState<number>();
 
@@ -73,7 +85,7 @@ const KontrollerView = () => {
                                     tableId="kontroller">
                                     <KontrollTable
                                         users={users ?? []}
-                                        kontroller={kontroller}
+                                        kontroller={_kontroller}
                                     />
                                 </TableContainer>
                             ) : (

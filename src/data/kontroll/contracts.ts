@@ -20,14 +20,11 @@ export enum ActionType {
     setKlienter,
     newKlient,
     newLocation,
-    setKontroller,
     addKontroller,
     newKontroll,
     updateKontroll,
-    setSkjemaer,
     addSkjemaer,
     newSkjema,
-    setChecklister,
     addChecklists,
     editChecklists
 }
@@ -46,10 +43,6 @@ export interface newLocation {
     payload: { location: Location; klient: Klient };
 }
 
-export interface setKontroller {
-    type: ActionType.setKontroller;
-    payload: Array<Kontroll>;
-}
 export interface addKontroller {
     type: ActionType.addKontroller;
     payload: Array<Kontroll>;
@@ -62,10 +55,7 @@ export interface updateKontroll {
     type: ActionType.updateKontroll;
     payload: Kontroll;
 }
-export interface setSkjemaer {
-    type: ActionType.setSkjemaer;
-    payload: Array<Skjema>;
-}
+
 export interface addSkjemaer {
     type: ActionType.addSkjemaer;
     payload: Array<Skjema>;
@@ -73,10 +63,6 @@ export interface addSkjemaer {
 export interface newSkjema {
     type: ActionType.newSkjema;
     payload: Skjema;
-}
-export interface setChecklister {
-    type: ActionType.setChecklister;
-    payload: Array<Checklist>;
 }
 export interface addChecklists {
     type: ActionType.addChecklists;
@@ -91,14 +77,11 @@ export type KontrollActions =
     | setKlienter
     | newKlient
     | newLocation
-    | setKontroller
     | addKontroller
     | newKontroll
     | updateKontroll
-    | setSkjemaer
     | addSkjemaer
     | newSkjema
-    | setChecklister
     | addChecklists
     | editChecklists;
 

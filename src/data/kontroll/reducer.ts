@@ -38,8 +38,6 @@ export const kontrollReducer = (
                     }
                 })
             };
-        case ActionType.setKontroller:
-            return { ...state, kontroller: action.payload };
         case ActionType.addKontroller:
             return {
                 ...state,
@@ -64,8 +62,6 @@ export const kontrollReducer = (
                     }
                 })
             };
-        case ActionType.setSkjemaer:
-            return { ...state, skjemaer: action.payload };
         case ActionType.addSkjemaer:
             return {
                 ...state,
@@ -79,8 +75,6 @@ export const kontrollReducer = (
                         ? [...state.skjemaer, action.payload]
                         : [action.payload]
             };
-        case ActionType.setChecklister:
-            return { ...state, checklists: action.payload };
         case ActionType.addChecklists:
             return {
                 ...state,

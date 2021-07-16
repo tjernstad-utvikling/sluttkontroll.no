@@ -101,15 +101,15 @@ export const KontrollContextProvider = ({
 
                 if (status === 200) {
                     dispatch({
-                        type: ActionType.setKontroller,
+                        type: ActionType.addKontroller,
                         payload: kontroller
                     });
                     dispatch({
-                        type: ActionType.setSkjemaer,
+                        type: ActionType.addSkjemaer,
                         payload: skjemaer
                     });
                     dispatch({
-                        type: ActionType.setChecklister,
+                        type: ActionType.addChecklists,
                         payload: checklists
                     });
                     setHasLoadedMyKontroller(true);

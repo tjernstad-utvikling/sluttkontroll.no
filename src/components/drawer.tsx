@@ -91,6 +91,7 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
                     disablePadding>
                     {klient.objekts.map((objekt) => (
                         <ObjektListItem
+                            klientId={klient.id}
                             id={objekt.id}
                             name={objekt.name}
                             key={objekt.id}
@@ -103,9 +104,12 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
 };
 
 const ObjektListItem = ({
-    name
+    name,
+    id,
+    klientId
 }: {
     id: number;
+    klientId: number;
     name: string;
 }): JSX.Element => {
     const classes = useStyles();
@@ -113,7 +117,11 @@ const ObjektListItem = ({
         <ListItem button className={classes.nested}>
             <ListItemText
                 primaryTypographyProps={{ color: 'secondary' }}
-                primary={name}
+                primary={
+                    <ItemLink to={`/kontroll/klient/${klientId}/object/${id}`}>
+                        {name}
+                    </ItemLink>
+                }
             />
         </ListItem>
     );

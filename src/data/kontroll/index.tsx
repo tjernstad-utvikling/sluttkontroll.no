@@ -7,6 +7,7 @@ import {
     getClients,
     getKontroller,
     getKontrollerByKlient,
+    getKontrollerByObjekt,
     newClient,
     newKontroll,
     newLocation,
@@ -123,6 +124,29 @@ export const KontrollContextProvider = ({
         try {
             const { status, kontroller, skjemaer, checklists } =
                 await getKontrollerByKlient(klientId);
+
+            if (status === 200) {
+                dispatch({
+                    type: ActionType.addKontroller,
+                    payload: kontroller
+                });
+                dispatch({
+                    type: ActionType.addSkjemaer,
+                    payload: skjemaer
+                });
+                dispatch({
+                    type: ActionType.addChecklists,
+                    payload: checklists
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const loadKontrollerByObjekt = async (objektId: number): Promise<void> => {
+        try {
+            const { status, kontroller, skjemaer, checklists } =
+                await getKontrollerByObjekt(objektId);
 
             if (status === 200) {
                 dispatch({
@@ -260,6 +284,7 @@ export const KontrollContextProvider = ({
 
                 loadKontroller,
                 loadKontrollerByKlient,
+                loadKontrollerByObjekt,
                 loadKlienter,
                 saveNewKlient,
                 updateKontroll,

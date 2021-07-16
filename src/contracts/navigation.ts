@@ -7,3 +7,6 @@ export interface SjekklisterViewParams {
 export interface KontrollKlientViewParams {
     klientId: string;
 }
+export interface KontrollObjectViewParams {
+    objectId: string;
+}

@@ -84,6 +84,7 @@ export const getKontroller = async (): Promise<{
         throw new Error(error);
     }
 };
+
 export const getKontrollerByKlient = async (
     klientId: number
 ): Promise<{
@@ -95,6 +96,27 @@ export const getKontrollerByKlient = async (
     try {
         const { status, data } = await sluttkontrollApi.get(
             `/v3/kontroll/klient/${klientId}`
+        );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+export const getKontrollerByObjekt = async (
+    objektId: number
+): Promise<{
+    status: number;
+    kontroller: Array<Kontroll>;
+    skjemaer: Array<Skjema>;
+    checklists: Array<Checklist>;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `/v3/kontroll/object/${objektId}`
         );
         if (status === 200) {
             return { status, ...data };

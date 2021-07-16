@@ -4,17 +4,17 @@ import {
     defaultColumns,
     kontrollColumns
 } from '../tables/kontroll';
+import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useState } from 'react';
 import { useUser } from '../data/user';
 
 const KontrollKlientView = () => {
@@ -22,6 +22,10 @@ const KontrollKlientView = () => {
     const { url } = useRouteMatch();
     const { klientId } = useParams<KontrollKlientViewParams>();
     const history = useHistory();
+
+    const [loadedKlient, setLoadedKlient] = useState<number>();
+    const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
+
     const {
         state: { kontroller },
         loadKontrollerByKlient
@@ -31,10 +35,26 @@ const KontrollKlientView = () => {
         state: { users }
     } = useUser();
 
-    useEffectOnce(() => {
-        loadKontrollerByKlient(Number(klientId));
-        loadUsers();
-    });
+    useEffect(() => {
+        const onload = async () => {
+            if (loadedKlient !== Number(klientId)) {
+                await loadKontrollerByKlient(Number(klientId));
+                setLoadedKlient(Number(klientId));
+                loadUsers();
+            }
+        };
+        onload();
+    }, [klientId, loadKontrollerByKlient, loadUsers, loadedKlient]);
+
+    useEffect(() => {
+        if (kontroller !== undefined) {
+            setKontroller(
+                kontroller.filter(
+                    (k) => k.Objekt.klient.id === Number(klientId)
+                )
+            );
+        }
+    }, [kontroller, klientId]);
 
     const [editId, setEditId] = useState<number>();
 
@@ -75,7 +95,7 @@ const KontrollKlientView = () => {
                                     tableId="kontroller">
                                     <KontrollTable
                                         users={users ?? []}
-                                        kontroller={kontroller}
+                                        kontroller={_kontroller}
                                     />
                                 </TableContainer>
                             ) : (

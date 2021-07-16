@@ -137,7 +137,6 @@ export const KontrollContextProvider = ({
                     type: ActionType.addChecklists,
                     payload: checklists
                 });
-                setHasLoadedMyKontroller(true);
             }
         } catch (error) {
             console.log(error);

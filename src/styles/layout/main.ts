@@ -34,6 +34,11 @@ export const useMainStyles = makeStyles((theme: Theme) =>
         drawerPaper: {
             width: drawerWidth
         },
+        lefDrawerButton: {
+            '&.active': {
+                backgroundColor: 'rgba(0, 0, 0, 0.3)'
+            }
+        },
         drawerPaperClients: {
             width: drawerWidth,
             backgroundColor: theme.palette.primary.main

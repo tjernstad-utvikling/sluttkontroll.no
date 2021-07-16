@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
     NavLink as RouterLink,
-    NavLinkProps as RouterLinkProps,
-    useRouteMatch
+    NavLinkProps as RouterLinkProps
 } from 'react-router-dom';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 
+import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -58,29 +58,32 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
     };
     return (
         <div>
-            <ListItemLink to={`/kontroll/klient/${klient.id}`}>
-                <>
-                    <ListItemText
-                        primaryTypographyProps={{ color: 'secondary' }}
-                        primary={klient.name}
-                    />
-                    {open ? (
-                        <IconButton
-                            color="inherit"
-                            aria-label={`åpne lokasjoner for klient ${klient.name}`}
-                            onClick={handleClick}>
-                            <ExpandLess color="secondary" />
-                        </IconButton>
-                    ) : (
-                        <IconButton
-                            color="inherit"
-                            aria-label={`åpne lokasjoner for klient ${klient.name}`}
-                            onClick={handleClick}>
-                            <ExpandMore color="secondary" />
-                        </IconButton>
-                    )}
-                </>
-            </ListItemLink>
+            <ListItem>
+                <ListItemText
+                    primaryTypographyProps={{ color: 'secondary' }}
+                    primary={
+                        <ItemLink to={`/kontroll/klient/${klient.id}`}>
+                            {klient.name}
+                        </ItemLink>
+                    }
+                />
+
+                {open ? (
+                    <IconButton
+                        color="inherit"
+                        aria-label={`åpne lokasjoner for klient ${klient.name}`}
+                        onClick={handleClick}>
+                        <ExpandLess color="secondary" />
+                    </IconButton>
+                ) : (
+                    <IconButton
+                        color="inherit"
+                        aria-label={`åpne lokasjoner for klient ${klient.name}`}
+                        onClick={handleClick}>
+                        <ExpandMore color="secondary" />
+                    </IconButton>
+                )}
+            </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List
                     className={classes.collapseListLeftDrawer}
@@ -117,13 +120,12 @@ const ObjektListItem = ({
 };
 
 interface ListItemLinkProps {
-    children: React.ReactElement;
+    children: string;
     to: string;
 }
 
-export const ListItemLink = ({ to, children }: ListItemLinkProps) => {
-    const match = useRouteMatch(to);
-
+export const ItemLink = ({ to, children }: ListItemLinkProps) => {
+    const classes = useMainStyles();
     const renderLink = React.useMemo(
         () =>
             React.forwardRef<any, Omit<RouterLinkProps, 'to'>>(
@@ -135,10 +137,11 @@ export const ListItemLink = ({ to, children }: ListItemLinkProps) => {
     );
 
     return (
-        <li>
-            <ListItem selected={match !== null} button component={renderLink}>
-                {children}
-            </ListItem>
-        </li>
+        <Button
+            className={classes.lefDrawerButton}
+            component={renderLink}
+            color="inherit">
+            {children}
+        </Button>
     );
 };

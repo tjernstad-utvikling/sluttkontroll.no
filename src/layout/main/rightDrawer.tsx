@@ -33,7 +33,7 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                 </IconButton>
             </div>
             <Divider />
-            <List aria-label="main mailbox folders">
+            <List aria-label="hoved meny">
                 <ListItemLink
                     to="/kontroll"
                     primary="Kontroll"

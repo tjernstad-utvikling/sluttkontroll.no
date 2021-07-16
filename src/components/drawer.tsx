@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
+import {
+    NavLink as RouterLink,
+    NavLinkProps as RouterLinkProps,
+    useRouteMatch
+} from 'react-router-dom';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import IconButton from '@material-ui/core/IconButton';
 import { Klient } from '../contracts/kontrollApi';
-import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import { Omit } from '@material-ui/types';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { useMainStyles } from '../styles/layout/main';
@@ -24,11 +31,11 @@ export const KlientMenu = (): JSX.Element => {
 
     if (klienter !== undefined) {
         return (
-            <div>
+            <List aria-label="Klienter">
                 {klienter.map((klient) => (
                     <KlientListItem klient={klient} key={klient.id} />
                 ))}
-            </div>
+            </List>
         );
     }
     return <div></div>;
@@ -52,18 +59,29 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
     };
     return (
         <div>
-            <ListItem button onClick={handleClick}>
-                <Link to="/kontroll/klient/9">test</Link>
-                <ListItemText
-                    primaryTypographyProps={{ color: 'secondary' }}
-                    primary={klient.name}
-                />
-                {open ? (
-                    <ExpandLess color="secondary" />
-                ) : (
-                    <ExpandMore color="secondary" />
-                )}
-            </ListItem>
+            <ListItemLink to={`/kontroll/klient/${klient.id}`}>
+                <>
+                    <ListItemText
+                        primaryTypographyProps={{ color: 'secondary' }}
+                        primary={klient.name}
+                    />
+                    {open ? (
+                        <IconButton
+                            color="inherit"
+                            aria-label={`åpne lokasjoner for klient ${klient.name}`}
+                            onClick={handleClick}>
+                            <ExpandLess color="secondary" />
+                        </IconButton>
+                    ) : (
+                        <IconButton
+                            color="inherit"
+                            aria-label={`åpne lokasjoner for klient ${klient.name}`}
+                            onClick={handleClick}>
+                            <ExpandMore color="secondary" />
+                        </IconButton>
+                    )}
+                </>
+            </ListItemLink>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List
                     className={classes.collapseListLeftDrawer}
@@ -96,5 +114,32 @@ const ObjektListItem = ({
                 primary={name}
             />
         </ListItem>
+    );
+};
+
+interface ListItemLinkProps {
+    children: React.ReactElement;
+    to: string;
+}
+
+export const ListItemLink = ({ to, children }: ListItemLinkProps) => {
+    const match = useRouteMatch(to);
+
+    const renderLink = React.useMemo(
+        () =>
+            React.forwardRef<any, Omit<RouterLinkProps, 'to'>>(
+                (itemProps, ref) => (
+                    <RouterLink to={to} ref={ref} {...itemProps} />
+                )
+            ),
+        [to]
+    );
+
+    return (
+        <li>
+            <ListItem selected={match !== null} button component={renderLink}>
+                {children}
+            </ListItem>
+        </li>
     );
 };

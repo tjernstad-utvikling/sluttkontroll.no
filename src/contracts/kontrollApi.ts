@@ -62,26 +62,6 @@ export interface Measurement {
     type: string;
 }
 
-export interface Avvik {
-    id: number;
-    beskrivelse: string;
-    avvikBilder: Array<AvvikBilde>;
-    checklist: {
-        id: number;
-    };
-    kommentar: string;
-    laderModus: string | null;
-    registrertDato: string;
-    status: string | null;
-}
-
-export interface AvvikBilde {
-    id: number;
-    image: string;
-    width: number;
-    height: number;
-}
-
 export interface MeasurementType {
     id: number;
     enhet: string;

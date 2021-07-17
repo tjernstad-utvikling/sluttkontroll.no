@@ -1,11 +1,11 @@
-import { Checkpoint } from '../contracts/checkpointApi';
+import { Avvik } from '../contracts/avvikApi';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getAvvikByKontrollList = async (
     ids: Array<number>
 ): Promise<{
     status: number;
-    Avvik: Array<Checkpoint>;
+    avvik: Array<Avvik>;
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(

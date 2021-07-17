@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
         background: theme.palette.primary.main
     },
     cardTitle: {
-        fontSize: '1.75rem!important',
+        fontSize: '1.55rem!important',
         fontWeight: 500,
         color: '#ffffff'
     },

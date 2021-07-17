@@ -1,4 +1,5 @@
 import { Card, CardMenu } from '../components/card';
+import { Klient, Kontroll } from '../contracts/kontrollApi';
 import {
     KontrollTable,
     defaultColumns,
@@ -9,7 +10,6 @@ import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
@@ -25,9 +25,10 @@ const KontrollKlientView = () => {
 
     const [loadedKlient, setLoadedKlient] = useState<number>();
     const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
+    const [_klient, setKlient] = useState<Klient>();
 
     const {
-        state: { kontroller },
+        state: { kontroller, klienter },
         loadKontrollerByKlient
     } = useKontroll();
     const {
@@ -52,6 +53,11 @@ const KontrollKlientView = () => {
             );
         }
     }, [kontroller, klientId]);
+    useEffect(() => {
+        if (klienter !== undefined) {
+            setKlient(klienter.find((k) => k.id === Number(klientId)));
+        }
+    }, [kontroller, klientId, klienter]);
 
     const [editId, setEditId] = useState<number>();
 
@@ -67,6 +73,9 @@ const KontrollKlientView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Card title="Klient">Klient: {_klient?.name}</Card>
+                    </Grid>
                     <Grid item xs={12}>
                         <Card
                             title="Kontroller"

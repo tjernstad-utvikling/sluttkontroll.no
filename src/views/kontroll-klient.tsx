@@ -8,11 +8,15 @@ import {
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
+import { CardContent } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
+import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
+import Typography from '@material-ui/core/Typography';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
@@ -74,7 +78,21 @@ const KontrollKlientView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Klient">Klient: {_klient?.name}</Card>
+                        <Card title="Klient">
+                            <CardContent>
+                                <div style={{ flex: 1, flexDirection: 'row' }}>
+                                    <Typography paragraph>
+                                        <strong>Klient:</strong> {_klient?.name}
+                                    </Typography>
+                                    <IconButton
+                                        color="inherit"
+                                        aria-label="open drawer"
+                                        edge="start">
+                                        <EditIcon />
+                                    </IconButton>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </Grid>
                     <Grid item xs={12}>
                         <Card

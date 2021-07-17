@@ -76,6 +76,10 @@ export const CardMenu = ({ items }: CardMenuProps) => {
     );
 };
 
+export const CardContent = ({ children }: { children: React.ReactNode }) => {
+    const classes = useStyles();
+    return <div className={classes.content}>{children}</div>;
+};
 const useStyles = makeStyles((theme) => ({
     cardHeader: {
         background: theme.palette.primary.main
@@ -89,5 +93,9 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column'
+    },
+    content: {
+        paddingRight: theme.spacing(2),
+        paddingLeft: theme.spacing(2)
     }
 }));

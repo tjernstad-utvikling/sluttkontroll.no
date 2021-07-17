@@ -5,13 +5,13 @@ import { initialState, userReducer } from './reducer';
 import { Kontroll } from '../../contracts/kontrollApi';
 import { getAvvikByKontrollList } from '../../api/avvikApi';
 
-export const useUser = () => {
-    return useContext(UserContext);
+export const useAvvik = () => {
+    return useContext(AvvikContext);
 };
 
-const UserContext = createContext<ContextInterface>({} as ContextInterface);
+const AvvikContext = createContext<ContextInterface>({} as ContextInterface);
 
-export const UserContextProvider = ({
+export const AvvikContextProvider = ({
     children
 }: {
     children: React.ReactNode;
@@ -38,13 +38,13 @@ export const UserContextProvider = ({
     };
 
     return (
-        <UserContext.Provider
+        <AvvikContext.Provider
             value={{
                 state,
 
                 loadAvvikByKontroller
             }}>
             {children}
-        </UserContext.Provider>
+        </AvvikContext.Provider>
     );
 };

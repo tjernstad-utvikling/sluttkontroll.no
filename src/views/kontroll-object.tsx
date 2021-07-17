@@ -6,7 +6,7 @@ import {
     kontrollColumns
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -17,13 +17,13 @@ import { KontrollObjectViewParams } from '../contracts/navigation';
 import { LocationEditSchema } from '../schema/location';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@material-ui/core/Typography';
+import { useAvvik } from '../data/avvik';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const KontrollObjektView = () => {
     const classes = usePageStyles();
-    const { url } = useRouteMatch();
     const { objectId, klientId } = useParams<KontrollObjectViewParams>();
     const history = useHistory();
 
@@ -42,6 +42,10 @@ const KontrollObjektView = () => {
         loadUsers,
         state: { users }
     } = useUser();
+
+    const {
+        state: { avvik }
+    } = useAvvik();
 
     useEffect(() => {
         if (loadedObjekt !== Number(objectId)) {
@@ -143,13 +147,14 @@ const KontrollObjektView = () => {
                                     columns={kontrollColumns(
                                         users ?? [],
                                         klienter ?? [],
-                                        url,
+                                        avvik ?? [],
                                         editKontroll
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">
                                     <KontrollTable
                                         users={users ?? []}
+                                        avvik={avvik ?? []}
                                         klienter={klienter ?? []}
                                         kontroller={_kontroller}
                                     />

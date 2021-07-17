@@ -6,6 +6,7 @@ import {
 } from '@material-ui/data-grid';
 import { Klient, Kontroll } from '../contracts/kontrollApi';
 
+import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Link } from 'react-router-dom';
 import { RowAction } from '../tables/tableUtils';
@@ -42,13 +43,23 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
         }
         return '';
     };
+    const avvik = (avvik: Avvik[]): number => {
+        if (avvik !== undefined) {
+            const avvikene = avvik.filter(
+                (a) => a.checklist.skjema.kontroll === data.id
+            );
 
-    return { klient, objekt, user };
+            return avvikene.length;
+        }
+        return 0;
+    };
+
+    return { klient, objekt, user, avvik };
 };
 export const kontrollColumns = (
     users: User[],
     klienter: Klient[],
-    url: string,
+    avvik: Avvik[],
     edit: (id: number) => void
 ) => {
     const columns: GridColDef[] = [
@@ -80,6 +91,14 @@ export const kontrollColumns = (
                     to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}`}>
                     {params.row.name}
                 </Link>
+            )
+        },
+        {
+            field: 'avvik',
+            headerName: 'Avvik ',
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <span>{KontrollValueGetter(params.row).avvik(avvik)}</span>
             )
         },
         {
@@ -127,11 +146,13 @@ interface KontrollTableProps {
     kontroller: Array<Kontroll>;
     users: User[];
     klienter: Klient[];
+    avvik: Avvik[];
 }
 export const KontrollTable = ({
     kontroller,
     users,
-    klienter
+    klienter,
+    avvik
 }: KontrollTableProps) => {
     function kontrollCustomSort<T extends keyof Kontroll>(
         data: Kontroll[],
@@ -169,6 +190,14 @@ export const KontrollTable = ({
                         ).localeCompare(
                             String(KontrollValueGetter(b).user(users))
                         )
+                    );
+            case 'avvik':
+                return data
+                    .slice()
+                    .sort(
+                        (a, b) =>
+                            KontrollValueGetter(a).avvik(avvik) -
+                            KontrollValueGetter(b).avvik(avvik)
                     );
 
             default:

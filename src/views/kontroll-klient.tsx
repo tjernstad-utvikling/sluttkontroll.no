@@ -18,13 +18,14 @@ import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@material-ui/core/Typography';
+import { useAvvik } from '../data/avvik';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const KontrollKlientView = () => {
     const classes = usePageStyles();
-    const { url } = useRouteMatch();
+
     const { klientId } = useParams<KontrollKlientViewParams>();
     const history = useHistory();
 
@@ -43,6 +44,10 @@ const KontrollKlientView = () => {
         loadUsers,
         state: { users }
     } = useUser();
+
+    const {
+        state: { avvik }
+    } = useAvvik();
 
     useEffect(() => {
         if (loadedKlient !== Number(klientId)) {
@@ -140,13 +145,14 @@ const KontrollKlientView = () => {
                                     columns={kontrollColumns(
                                         users ?? [],
                                         klienter ?? [],
-                                        url,
+                                        avvik ?? [],
                                         editKontroll
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">
                                     <KontrollTable
                                         klienter={klienter ?? []}
+                                        avvik={avvik ?? []}
                                         users={users ?? []}
                                         kontroller={_kontroller}
                                     />

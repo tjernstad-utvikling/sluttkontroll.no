@@ -5,7 +5,6 @@ import {
     kontrollColumns
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -13,14 +12,16 @@ import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
 import { useAuth } from '../hooks/useAuth';
+import { useAvvik } from '../data/avvik';
 import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const KontrollerView = () => {
     const classes = usePageStyles();
-    const { url } = useRouteMatch();
+
     const history = useHistory();
     const { user } = useAuth();
 
@@ -34,6 +35,10 @@ const KontrollerView = () => {
         loadUsers,
         state: { users }
     } = useUser();
+
+    const {
+        state: { avvik }
+    } = useAvvik();
 
     useEffectOnce(() => {
         loadKontroller();
@@ -79,13 +84,14 @@ const KontrollerView = () => {
                                     columns={kontrollColumns(
                                         users ?? [],
                                         klienter ?? [],
-                                        url,
+                                        avvik ?? [],
                                         editKontroll
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">
                                     <KontrollTable
                                         klienter={klienter ?? []}
+                                        avvik={avvik ?? []}
                                         users={users ?? []}
                                         kontroller={_kontroller}
                                     />

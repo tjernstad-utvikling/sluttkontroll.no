@@ -43,6 +43,25 @@ export const newClient = async (
     }
 };
 
+export const editClient = async (
+    id: number,
+    name: string
+): Promise<{
+    status: number;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(`/v3/klient/${id}`, {
+            name
+        });
+        if (status === 204) {
+            return { status };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 export const newLocation = async (
     name: string,
     klient: Klient

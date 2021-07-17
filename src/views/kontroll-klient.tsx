@@ -8,11 +8,12 @@ import {
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
+import Button from '@material-ui/core/Button';
 import { CardContent } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
+import { KlientEditSchema } from '../schema/klient';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
@@ -31,9 +32,12 @@ const KontrollKlientView = () => {
     const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
     const [_klient, setKlient] = useState<Klient>();
 
+    const [editKlient, setEditKlient] = useState<boolean>(false);
+
     const {
         state: { kontroller, klienter },
-        loadKontrollerByKlient
+        loadKontrollerByKlient,
+        saveEditKlient
     } = useKontroll();
     const {
         loadUsers,
@@ -72,6 +76,12 @@ const KontrollKlientView = () => {
         setEditId(undefined);
     };
 
+    const handleEditKlient = async (name: string): Promise<void> => {
+        if (_klient !== undefined) {
+            await saveEditKlient(name, _klient);
+        }
+    };
+
     return (
         <div>
             <div className={classes.appBarSpacer} />
@@ -80,17 +90,32 @@ const KontrollKlientView = () => {
                     <Grid item xs={12}>
                         <Card title="Klient">
                             <CardContent>
-                                <div style={{ flex: 1, flexDirection: 'row' }}>
-                                    <Typography paragraph>
-                                        <strong>Klient:</strong> {_klient?.name}
-                                    </Typography>
-                                    <IconButton
-                                        color="inherit"
-                                        aria-label="open drawer"
-                                        edge="start">
-                                        <EditIcon />
-                                    </IconButton>
-                                </div>
+                                {!editKlient ? (
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() =>
+                                            setEditKlient(!editKlient)
+                                        }
+                                        startIcon={<EditIcon />}>
+                                        Rediger klient
+                                    </Button>
+                                ) : (
+                                    <div />
+                                )}
+                                <div style={{ paddingBottom: '10px' }} />
+
+                                <Typography paragraph>
+                                    <strong>Klient:</strong> {_klient?.name}
+                                </Typography>
+                                {editKlient && _klient !== undefined ? (
+                                    <KlientEditSchema
+                                        klient={_klient}
+                                        onSubmit={handleEditKlient}
+                                    />
+                                ) : (
+                                    <div />
+                                )}
                             </CardContent>
                         </Card>
                     </Grid>

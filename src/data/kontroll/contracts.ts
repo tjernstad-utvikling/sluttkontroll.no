@@ -19,6 +19,7 @@ export interface kontrollState {
 export enum ActionType {
     setKlienter,
     newKlient,
+    updateKlient,
     newLocation,
     addKontroller,
     newKontroll,
@@ -36,6 +37,10 @@ export interface setKlienter {
 
 export interface newKlient {
     type: ActionType.newKlient;
+    payload: Klient;
+}
+export interface updateKlient {
+    type: ActionType.updateKlient;
     payload: Klient;
 }
 export interface newLocation {
@@ -76,6 +81,7 @@ export interface editChecklists {
 export type KontrollActions =
     | setKlienter
     | newKlient
+    | updateKlient
     | newLocation
     | addKontroller
     | newKontroll
@@ -91,6 +97,7 @@ export interface ContextInterface {
     saveNewKlient: (
         name: string
     ) => Promise<{ status: boolean; klient?: Klient }>;
+    saveEditKlient: (name: string, klient: Klient) => Promise<boolean>;
     saveNewLocation: (
         name: string,
         klient: Klient

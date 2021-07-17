@@ -5,6 +5,7 @@ import { Form, Formik } from 'formik';
 import CreatableSelect from 'react-select/creatable';
 import { Klient } from '../contracts/kontrollApi';
 import { LoadingButton } from '../components/button';
+import { TextField } from '../components/input';
 import { useEffect } from 'react';
 import { useKontroll } from '../data/kontroll';
 import { useState } from 'react';
@@ -105,4 +106,48 @@ export const KlientSchema = ({
     } else {
         return <div></div>;
     }
+};
+
+interface KlientEditSchemaProps {
+    klient: Klient;
+    onSubmit: (name: string) => Promise<void>;
+}
+export const KlientEditSchema = ({
+    klient,
+    onSubmit
+}: KlientEditSchemaProps): JSX.Element => {
+    return (
+        <Formik
+            initialValues={{
+                name: klient.name
+            }}
+            validationSchema={Yup.object({})}
+            onSubmit={async (values, { setSubmitting }) => {
+                await onSubmit(values.name);
+            }}>
+            {({ isSubmitting, setFieldValue, values }) => {
+                return (
+                    <Form>
+                        <TextField
+                            variant="outlined"
+                            fullWidth
+                            id="name"
+                            label="Kontroll navn"
+                            name="name"
+                            autoFocus
+                        />
+
+                        <LoadingButton
+                            isLoading={isSubmitting}
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary">
+                            Lagre
+                        </LoadingButton>
+                    </Form>
+                );
+            }}
+        </Formik>
+    );
 };

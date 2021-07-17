@@ -3,6 +3,7 @@ import { Klient, Kontroll, Location } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     editChecklist,
+    editClient,
     getChecklistsBySkjema,
     getClients,
     getKontroller,
@@ -72,6 +73,26 @@ export const KontrollContextProvider = ({
             });
         }
         return { status: false };
+    };
+    const saveEditKlient = async (name: string, klient: Klient) => {
+        try {
+            await editClient(klient.id, name);
+
+            dispatch({
+                type: ActionType.updateKlient,
+                payload: { ...klient, name }
+            });
+
+            enqueueSnackbar('Klient lagret', {
+                variant: 'success'
+            });
+            return true;
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av klient', {
+                variant: 'error'
+            });
+        }
+        return false;
     };
 
     const saveNewLocation = async (name: string, klient: Klient) => {
@@ -287,6 +308,7 @@ export const KontrollContextProvider = ({
                 loadKontrollerByObjekt,
                 loadKlienter,
                 saveNewKlient,
+                saveEditKlient,
                 updateKontroll,
                 saveNewKontroll,
                 saveNewLocation,

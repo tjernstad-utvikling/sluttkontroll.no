@@ -27,7 +27,7 @@ const KontrollerView = () => {
     const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
 
     const {
-        state: { kontroller },
+        state: { kontroller, klienter },
         loadKontroller
     } = useKontroll();
     const {
@@ -78,12 +78,14 @@ const KontrollerView = () => {
                                 <TableContainer
                                     columns={kontrollColumns(
                                         users ?? [],
+                                        klienter ?? [],
                                         url,
                                         editKontroll
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">
                                     <KontrollTable
+                                        klienter={klienter ?? []}
                                         users={users ?? []}
                                         kontroller={_kontroller}
                                     />

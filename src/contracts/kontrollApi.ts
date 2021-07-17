@@ -16,10 +16,8 @@ export interface Kontroll {
     done: boolean;
     Objekt: {
         id: number;
-        name: string;
         klient: {
             id: number;
-            name: string;
         };
     };
     user: {

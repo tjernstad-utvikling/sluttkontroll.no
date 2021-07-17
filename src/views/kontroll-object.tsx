@@ -142,6 +142,7 @@ const KontrollObjektView = () => {
                                 <TableContainer
                                     columns={kontrollColumns(
                                         users ?? [],
+                                        klienter ?? [],
                                         url,
                                         editKontroll
                                     )}
@@ -149,6 +150,7 @@ const KontrollObjektView = () => {
                                     tableId="kontroller">
                                     <KontrollTable
                                         users={users ?? []}
+                                        klienter={klienter ?? []}
                                         kontroller={_kontroller}
                                     />
                                 </TableContainer>

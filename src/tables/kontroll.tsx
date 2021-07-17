@@ -4,19 +4,35 @@ import {
     GridRowData,
     GridValueGetterParams
 } from '@material-ui/data-grid';
+import { Klient, Kontroll } from '../contracts/kontrollApi';
 
 import { BaseTable } from './baseTable';
-import { Kontroll } from '../contracts/kontrollApi';
 import { Link } from 'react-router-dom';
 import { RowAction } from '../tables/tableUtils';
 import { User } from '../contracts/userApi';
 
 export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
-    const klient = (): string => {
-        return data.Objekt.klient.name || '';
+    const klient = (klienter: Klient[]): string => {
+        if (klienter !== undefined) {
+            const klient = klienter.find((k) => k.id === data.Objekt.klient.id);
+
+            return klient?.name || '';
+        }
+        return '';
     };
-    const objekt = (): string => {
-        return data.Objekt.name || '';
+    const objekt = (klienter: Klient[]): string => {
+        if (klienter !== undefined) {
+            const klient = klienter.find((k) => k.id === data.Objekt.klient.id);
+            if (klient !== undefined) {
+                const location = klient.objekts.find(
+                    (o) => o.id === data.Objekt.id
+                );
+                return location?.name || '';
+            }
+
+            return '';
+        }
+        return '';
     };
     const user = (users: User[]): string => {
         if (users !== undefined) {
@@ -31,6 +47,7 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
 };
 export const kontrollColumns = (
     users: User[],
+    klienter: Klient[],
     url: string,
     edit: (id: number) => void
 ) => {
@@ -45,14 +62,14 @@ export const kontrollColumns = (
             headerName: 'Klient',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).klient()
+                KontrollValueGetter(params.row).klient(klienter)
         },
         {
             field: 'objekt',
             headerName: 'Lokasjon',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).objekt()
+                KontrollValueGetter(params.row).objekt(klienter)
         },
         {
             field: 'name',
@@ -109,8 +126,13 @@ export const defaultColumns: Array<string> = [
 interface KontrollTableProps {
     kontroller: Array<Kontroll>;
     users: User[];
+    klienter: Klient[];
 }
-export const KontrollTable = ({ kontroller, users }: KontrollTableProps) => {
+export const KontrollTable = ({
+    kontroller,
+    users,
+    klienter
+}: KontrollTableProps) => {
     function kontrollCustomSort<T extends keyof Kontroll>(
         data: Kontroll[],
         field: T
@@ -120,8 +142,10 @@ export const KontrollTable = ({ kontroller, users }: KontrollTableProps) => {
                 return data
                     .slice()
                     .sort((a, b) =>
-                        String(KontrollValueGetter(a).klient()).localeCompare(
-                            String(KontrollValueGetter(b).klient())
+                        String(
+                            KontrollValueGetter(a).klient(klienter)
+                        ).localeCompare(
+                            String(KontrollValueGetter(b).klient(klienter))
                         )
                     );
 
@@ -129,8 +153,10 @@ export const KontrollTable = ({ kontroller, users }: KontrollTableProps) => {
                 return data
                     .slice()
                     .sort((a, b) =>
-                        String(KontrollValueGetter(a).objekt()).localeCompare(
-                            String(KontrollValueGetter(b).objekt())
+                        String(
+                            KontrollValueGetter(a).objekt(klienter)
+                        ).localeCompare(
+                            String(KontrollValueGetter(b).objekt(klienter))
                         )
                     );
 

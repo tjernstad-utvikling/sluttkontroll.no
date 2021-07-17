@@ -139,12 +139,14 @@ const KontrollKlientView = () => {
                                 <TableContainer
                                     columns={kontrollColumns(
                                         users ?? [],
+                                        klienter ?? [],
                                         url,
                                         editKontroll
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">
                                     <KontrollTable
+                                        klienter={klienter ?? []}
                                         users={users ?? []}
                                         kontroller={_kontroller}
                                     />

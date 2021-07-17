@@ -59,7 +59,10 @@ export const kontrollColumns = (
             headerName: 'Kontroll',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <Link to={`/kontroll/${params.row.id}`}>{params.row.name}</Link>
+                <Link
+                    to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}`}>
+                    {params.row.name}
+                </Link>
             )
         },
         {

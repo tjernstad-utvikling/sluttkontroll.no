@@ -62,7 +62,7 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
                 <ListItemText
                     primaryTypographyProps={{ color: 'secondary' }}
                     primary={
-                        <ItemLink to={`/kontroll/klient/${klient.id}`}>
+                        <ItemLink to={`/kontroll/kl/${klient.id}`}>
                             {klient.name}
                         </ItemLink>
                     }
@@ -118,7 +118,7 @@ const ObjektListItem = ({
             <ListItemText
                 primaryTypographyProps={{ color: 'secondary' }}
                 primary={
-                    <ItemLink to={`/kontroll/klient/${klientId}/object/${id}`}>
+                    <ItemLink to={`/kontroll/kl/${klientId}/obj/${id}`}>
                         {name}
                     </ItemLink>
                 }

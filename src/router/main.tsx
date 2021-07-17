@@ -22,25 +22,27 @@ export const Main = () => {
                     <Route exact path={`/kontroll/new`}>
                         <KontrollNewView />
                     </Route>
-                    <Route path={`/kontroll/klient/:klientId/object/:objectId`}>
-                        <KontrollObjektView />
+                    <Route
+                        path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/edit-checklist`}>
+                        <SjekklisteEditView />
                     </Route>
-                    <Route path={`/kontroll/klient/:klientId`}>
-                        <KontrollKlientView />
-                    </Route>
-
-                    <Route path={`/kontroll/:kontrollId/skjema/new`}>
+                    <Route
+                        path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/new`}>
                         <SkjemaNewView />
                     </Route>
                     <Route
-                        path={`/kontroll/:kontrollId/skjema/:skjemaId/edit-checklist`}>
-                        <SjekklisteEditView />
-                    </Route>
-                    <Route path={`/kontroll/:kontrollId/skjema/:skjemaId`}>
+                        path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId`}>
                         <SjekklisterView />
                     </Route>
-                    <Route path={`/kontroll/:kontrollId`}>
+                    <Route
+                        path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId`}>
                         <SkjemaerView />
+                    </Route>
+                    <Route path={`/kontroll/kl/:klientId/obj/:objectId`}>
+                        <KontrollObjektView />
+                    </Route>
+                    <Route path={`/kontroll/kl/:klientId`}>
+                        <KontrollKlientView />
                     </Route>
                 </Switch>
             </MainLayout>

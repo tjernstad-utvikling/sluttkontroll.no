@@ -8,5 +8,6 @@ export interface KontrollKlientViewParams {
     klientId: string;
 }
 export interface KontrollObjectViewParams {
+    klientId: string;
     objectId: string;
 }

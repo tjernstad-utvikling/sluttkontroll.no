@@ -84,6 +84,24 @@ export const newLocation = async (
         throw new Error(error);
     }
 };
+export const editLocation = async (
+    name: string,
+    id: number
+): Promise<{
+    status: number;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(`/v3/objekt/${id}`, {
+            name
+        });
+        if (status === 204) {
+            return { status };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 
 export const getKontroller = async (): Promise<{
     status: number;

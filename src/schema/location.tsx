@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import { LoadingButton } from '../components/button';
 import { Location } from '../contracts/kontrollApi';
+import { TextField } from '../components/input';
 
 interface LocationSchemaProps {
     location?: Location;
@@ -102,4 +103,48 @@ export const LocationSchema = ({
     } else {
         return <div></div>;
     }
+};
+
+interface LocationEditSchemaProps {
+    location: Location;
+    onSubmit: (name: string) => Promise<void>;
+}
+export const LocationEditSchema = ({
+    location,
+    onSubmit
+}: LocationEditSchemaProps): JSX.Element => {
+    return (
+        <Formik
+            initialValues={{
+                name: location.name
+            }}
+            validationSchema={Yup.object({})}
+            onSubmit={async (values, { setSubmitting }) => {
+                await onSubmit(values.name);
+            }}>
+            {({ isSubmitting, setFieldValue, values }) => {
+                return (
+                    <Form>
+                        <TextField
+                            variant="outlined"
+                            fullWidth
+                            id="name"
+                            label="Lokasjon navn"
+                            name="name"
+                            autoFocus
+                        />
+
+                        <LoadingButton
+                            isLoading={isSubmitting}
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary">
+                            Lagre
+                        </LoadingButton>
+                    </Form>
+                );
+            }}
+        </Formik>
+    );
 };

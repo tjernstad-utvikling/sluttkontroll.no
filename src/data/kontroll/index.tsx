@@ -4,6 +4,7 @@ import React, { createContext, useContext, useReducer } from 'react';
 import {
     editChecklist,
     editClient,
+    editLocation,
     getChecklistsBySkjema,
     getClients,
     getKontroller,
@@ -114,6 +115,30 @@ export const KontrollContextProvider = ({
             });
         }
         return { status: false };
+    };
+    const saveEditLocation = async (
+        name: string,
+        klientId: number,
+        location: Location
+    ): Promise<boolean> => {
+        try {
+            await editLocation(name, location.id);
+
+            dispatch({
+                type: ActionType.updateLocation,
+                payload: { location: { ...location, name }, klientId }
+            });
+
+            enqueueSnackbar('Lokasjon lagret', {
+                variant: 'success'
+            });
+            return true;
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av lokasjon', {
+                variant: 'error'
+            });
+        }
+        return false;
     };
     const loadKontroller = async (): Promise<void> => {
         if (!hasLoadedMyKontroller) {
@@ -312,6 +337,7 @@ export const KontrollContextProvider = ({
                 updateKontroll,
                 saveNewKontroll,
                 saveNewLocation,
+                saveEditLocation,
                 saveNewSkjema,
                 saveEditChecklist
             }}>

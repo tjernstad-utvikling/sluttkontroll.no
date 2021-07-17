@@ -21,6 +21,7 @@ export enum ActionType {
     newKlient,
     updateKlient,
     newLocation,
+    updateLocation,
     addKontroller,
     newKontroll,
     updateKontroll,
@@ -46,6 +47,10 @@ export interface updateKlient {
 export interface newLocation {
     type: ActionType.newLocation;
     payload: { location: Location; klient: Klient };
+}
+export interface updateLocation {
+    type: ActionType.updateLocation;
+    payload: { location: Location; klientId: number };
 }
 
 export interface addKontroller {
@@ -83,6 +88,7 @@ export type KontrollActions =
     | newKlient
     | updateKlient
     | newLocation
+    | updateLocation
     | addKontroller
     | newKontroll
     | updateKontroll
@@ -102,6 +108,11 @@ export interface ContextInterface {
         name: string,
         klient: Klient
     ) => Promise<{ status: boolean; location?: Location }>;
+    saveEditLocation: (
+        name: string,
+        klientId: number,
+        location: Location
+    ) => Promise<boolean>;
     loadKontroller: () => Promise<void>;
     loadKontrollerByKlient: (klientId: number) => Promise<void>;
     loadKontrollerByObjekt: (objektId: number) => Promise<void>;

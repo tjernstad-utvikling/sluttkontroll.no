@@ -132,7 +132,7 @@ export const KlientEditSchema = ({
                             variant="outlined"
                             fullWidth
                             id="name"
-                            label="Kontroll navn"
+                            label="Klient navn"
                             name="name"
                             autoFocus
                         />

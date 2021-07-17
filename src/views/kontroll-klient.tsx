@@ -78,7 +78,9 @@ const KontrollKlientView = () => {
 
     const handleEditKlient = async (name: string): Promise<void> => {
         if (_klient !== undefined) {
-            await saveEditKlient(name, _klient);
+            if (await saveEditKlient(name, _klient)) {
+                setEditKlient(false);
+            }
         }
     };
 

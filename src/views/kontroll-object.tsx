@@ -81,7 +81,9 @@ const KontrollObjektView = () => {
 
     const handleEditLocation = async (name: string): Promise<void> => {
         if (_location !== undefined) {
-            await saveEditLocation(name, Number(klientId), _location);
+            if (await saveEditLocation(name, Number(klientId), _location)) {
+                setEditLocation(false);
+            }
         }
     };
 

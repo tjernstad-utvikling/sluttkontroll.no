@@ -2,19 +2,24 @@ import * as Yup from 'yup';
 
 import { Form, Formik } from 'formik';
 
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 import { Kontroll } from '../contracts/kontrollApi';
 import { LoadingButton } from '../components/button';
+import { MeasurementType } from '../contracts/measurementApi';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import Select from 'react-select';
 import { TextField } from '../components/input';
 import { User } from '../contracts/userApi';
 import { useEffect } from 'react';
-import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useMeasurement } from '../data/measurement';
 import { useState } from 'react';
-import { useUser } from '../data/user';
 
 interface MeasurementSchemaProps {
     kontroll?: Kontroll;
-    onSubmit: (
+    onSubmit?: (
         name: string,
         user: User,
         avvikUtbedrere: Array<User> | null
@@ -25,83 +30,106 @@ export const MeasurementSchema = ({
     onSubmit
 }: MeasurementSchemaProps): JSX.Element => {
     const {
-        state: { users },
-        loadUsers
-    } = useUser();
+        state: { measurementTypes }
+    } = useMeasurement();
 
     interface Option {
-        value: User;
+        value: MeasurementType;
         label: string;
     }
-    const [userOptions, setUserOptions] = useState<Array<Option>>();
+    const [options, setOptions] = useState<Array<Option>>();
+    const [type, setType] = useState<MeasurementType>();
 
     useEffect(() => {
-        if (users !== undefined) {
-            setUserOptions(users.map((u) => ({ value: u, label: u.name })));
+        if (measurementTypes !== undefined) {
+            setOptions(
+                measurementTypes.map((mt) => {
+                    return { value: mt, label: mt.longName };
+                })
+            );
         }
-    }, [users]);
+    }, [measurementTypes]);
 
-    useEffectOnce(() => {
-        loadUsers();
-    });
-
-    const user =
-        kontroll !== undefined
-            ? userOptions?.find((u) => u.value.id === kontroll.user.id)
-            : null;
-    if (userOptions !== undefined) {
+    if (options !== undefined) {
         return (
             <Formik
                 initialValues={{
-                    name: kontroll !== undefined ? kontroll.name : '',
-                    user: user !== undefined ? user : null
+                    name: '',
+                    type: null,
+                    pol: 1,
+                    element: ''
                 }}
                 validationSchema={Yup.object({
-                    name: Yup.string().required('Kontroll navn er påkrevd')
+                    name: Yup.string().required('Kontroll navn er påkrevd'),
+                    type: Yup.string().required('Type er påkrevd')
                 })}
                 onSubmit={async (values, { setSubmitting }) => {
-                    if (values.user !== null) {
-                        await onSubmit(
-                            values.name,
-                            values.user.value,
-                            values.avvikUtbedrere !== null
-                                ? values.avvikUtbedrere.map((a) => a.value)
-                                : null
-                        );
+                    if (values.type !== null) {
                     }
                 }}>
                 {({ isSubmitting, setFieldValue, values }) => {
                     return (
                         <Form>
-                            <TextField
-                                variant="outlined"
-                                fullWidth
-                                id="name"
-                                label="Kontroll navn"
-                                name="name"
-                                autoFocus
-                            />
-                            {users && (
+                            {measurementTypes && (
                                 <div>
-                                    <label htmlFor="user-select">
-                                        Kontrollen utføres av
-                                    </label>
+                                    <label htmlFor="type-select">Type</label>
                                     <Select
-                                        inputId="user-select"
+                                        inputId="type-select"
                                         className="basic-single"
                                         classNamePrefix="select"
                                         isSearchable
                                         onChange={(selected) => {
                                             if (selected !== null) {
-                                                setFieldValue('user', selected);
+                                                setFieldValue('type', selected);
+                                                setType(selected.value);
                                             }
                                         }}
-                                        value={values.user}
+                                        value={values.type}
                                         name="user"
-                                        options={userOptions}
+                                        options={options}
+                                        autoFocus
                                     />
                                 </div>
                             )}
+                            {type !== undefined && type.hasPol ? (
+                                <FormControl component="fieldset">
+                                    <FormLabel component="legend">
+                                        Faser
+                                    </FormLabel>
+                                    <RadioGroup
+                                        aria-label="antall faser"
+                                        name="pol"
+                                        value={values.pol}
+                                        onChange={(e, value) => {
+                                            setFieldValue('pol', value);
+                                        }}>
+                                        <FormControlLabel
+                                            value={1}
+                                            control={<Radio />}
+                                            label="1 Pol"
+                                        />
+                                        <FormControlLabel
+                                            value={2}
+                                            control={<Radio />}
+                                            label="2 Pol"
+                                        />
+                                        <FormControlLabel
+                                            value={3}
+                                            control={<Radio />}
+                                            label="3 Pol"
+                                        />
+                                    </RadioGroup>
+                                </FormControl>
+                            ) : (
+                                <div />
+                            )}
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                id="element"
+                                label="Element"
+                                name="element"
+                            />
 
                             <LoadingButton
                                 isLoading={isSubmitting}

@@ -13,6 +13,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
+import { useAvvik } from '../data/avvik';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -29,6 +30,10 @@ const SjekklisterView = () => {
         state: { checklists },
         loadKontroller
     } = useKontroll();
+
+    const {
+        state: { avvik }
+    } = useAvvik();
 
     useEffectOnce(() => {
         loadKontroller();
@@ -75,10 +80,13 @@ const SjekklisterView = () => {
                             }>
                             {checklists !== undefined ? (
                                 <TableContainer
-                                    columns={columns('')}
+                                    columns={columns(avvik ?? [], '')}
                                     defaultColumns={defaultColumns}
                                     tableId="checklists">
-                                    <SjekklisteTable checklists={_checklists} />
+                                    <SjekklisteTable
+                                        avvik={avvik ?? []}
+                                        checklists={_checklists}
+                                    />
                                 </TableContainer>
                             ) : (
                                 <div>Laster skjemaer</div>

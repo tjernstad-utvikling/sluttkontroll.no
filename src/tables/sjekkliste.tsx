@@ -1,9 +1,11 @@
 import {
+    GridCellParams,
     GridColDef,
     GridRowData,
     GridValueGetterParams
 } from '@material-ui/data-grid';
 
+import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Checklist } from '../contracts/kontrollApi';
 
@@ -14,9 +16,20 @@ export const SjekklisteValueGetter = (data: Checklist | GridRowData) => {
     const prosedyreNr = (): string => {
         return data.checkpoint.prosedyreNr;
     };
-    return { prosedyre, prosedyreNr };
+    const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
+        if (avvik !== undefined) {
+            const avvikene = avvik.filter((a) => a.checklist.id === data.id);
+
+            return {
+                open: avvikene.filter((a) => a.status !== 'lukket').length,
+                closed: avvikene.filter((a) => a.status === 'lukket').length
+            };
+        }
+        return { open: 0, closed: 0 };
+    };
+    return { prosedyre, prosedyreNr, avvik };
 };
-export const columns = (url: string) => {
+export const columns = (avvik: Avvik[], url: string) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -43,6 +56,17 @@ export const columns = (url: string) => {
                 SjekklisteValueGetter(params.row).prosedyre()
         },
         {
+            field: 'avvik',
+            headerName: 'Avvik (åpne | lukket) ',
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <span>
+                    ({SjekklisteValueGetter(params.row).avvik(avvik).open} |{' '}
+                    {SjekklisteValueGetter(params.row).avvik(avvik).closed} ){' '}
+                </span>
+            )
+        },
+        {
             field: 'aktuell',
             headerName: 'Aktuell',
             flex: 1
@@ -56,8 +80,12 @@ export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 
 interface SjekklisteTableProps {
     checklists: Array<Checklist>;
+    avvik: Array<Avvik>;
 }
-export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
+export const SjekklisteTable = ({
+    checklists,
+    avvik
+}: SjekklisteTableProps) => {
     function CustomSort<T extends keyof Checklist>(
         data: Checklist[],
         field: T
@@ -85,6 +113,14 @@ export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
                             { numeric: true, sensitivity: 'base' }
                         )
                     );
+            case 'avvik':
+                return data
+                    .slice()
+                    .sort(
+                        (a, b) =>
+                            SjekklisteValueGetter(a).avvik(avvik).open -
+                            SjekklisteValueGetter(b).avvik(avvik).open
+                    );
 
             default:
                 return data;
@@ -95,7 +131,7 @@ export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
         <BaseTable
             data={checklists}
             customSort={CustomSort}
-            customSortFields={['prosedyre', 'prosedyreNr']}
+            customSortFields={['prosedyre', 'prosedyreNr', 'avvik']}
         />
     );
 };

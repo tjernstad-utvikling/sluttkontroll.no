@@ -43,14 +43,18 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
         }
         return '';
     };
-    const avvik = (avvik: Avvik[]): number => {
+    const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
         if (avvik !== undefined) {
             const avvikene = avvik.filter(
                 (a) => a.checklist.skjema.kontroll.id === data.id
             );
-            return avvikene.length;
+
+            return {
+                open: avvikene.filter((a) => a.status !== 'lukket').length,
+                closed: avvikene.filter((a) => a.status === 'lukket').length
+            };
         }
-        return 0;
+        return { open: 0, closed: 0 };
     };
 
     return { klient, objekt, user, avvik };
@@ -94,10 +98,13 @@ export const kontrollColumns = (
         },
         {
             field: 'avvik',
-            headerName: 'Avvik ',
+            headerName: 'Avvik (åpne | lukket) ',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <span>{KontrollValueGetter(params.row).avvik(avvik)}</span>
+                <span>
+                    ({KontrollValueGetter(params.row).avvik(avvik).open} |{' '}
+                    {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
+                </span>
             )
         },
         {
@@ -195,8 +202,8 @@ export const KontrollTable = ({
                     .slice()
                     .sort(
                         (a, b) =>
-                            KontrollValueGetter(a).avvik(avvik) -
-                            KontrollValueGetter(b).avvik(avvik)
+                            KontrollValueGetter(a).avvik(avvik).open -
+                            KontrollValueGetter(b).avvik(avvik).open
                     );
 
             default:

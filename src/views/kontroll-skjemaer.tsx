@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaerViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
+import { useAvvik } from '../data/avvik';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -24,6 +25,10 @@ const SkjemaerView = () => {
         state: { skjemaer, kontroller },
         loadKontroller
     } = useKontroll();
+
+    const {
+        state: { avvik }
+    } = useAvvik();
 
     useEffectOnce(() => {
         loadKontroller();
@@ -60,12 +65,17 @@ const SkjemaerView = () => {
                             }>
                             {skjemaer !== undefined ? (
                                 <TableContainer
-                                    columns={columns(kontroller ?? [], url)}
+                                    columns={columns(
+                                        kontroller ?? [],
+                                        avvik ?? [],
+                                        url
+                                    )}
                                     defaultColumns={defaultColumns}
                                     tableId="skjemaer">
                                     <SkjemaTable
                                         skjemaer={_skjemaer}
                                         kontroller={kontroller ?? []}
+                                        avvik={avvik ?? []}
                                     />
                                 </TableContainer>
                             ) : (

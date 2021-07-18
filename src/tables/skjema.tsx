@@ -6,6 +6,7 @@ import {
 } from '@material-ui/data-grid';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
+import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Link } from 'react-router-dom';
 
@@ -18,9 +19,27 @@ export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
         return '';
     };
 
-    return { kontroll };
+    const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
+        if (avvik !== undefined) {
+            const avvikene = avvik.filter(
+                (a) => a.checklist.skjema.id === data.id
+            );
+
+            return {
+                open: avvikene.filter((a) => a.status !== 'lukket').length,
+                closed: avvikene.filter((a) => a.status === 'lukket').length
+            };
+        }
+        return { open: 0, closed: 0 };
+    };
+
+    return { kontroll, avvik };
 };
-export const columns = (kontroller: Kontroll[], url: string) => {
+export const columns = (
+    kontroller: Kontroll[],
+    avvik: Avvik[],
+    url: string
+) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -51,6 +70,17 @@ export const columns = (kontroller: Kontroll[], url: string) => {
                 SkjemaValueGetter(params.row).kontroll(kontroller)
         },
         {
+            field: 'avvik',
+            headerName: 'Avvik (åpne | lukket) ',
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <span>
+                    ({SkjemaValueGetter(params.row).avvik(avvik).open} |{' '}
+                    {SkjemaValueGetter(params.row).avvik(avvik).closed} ){' '}
+                </span>
+            )
+        },
+        {
             field: 'kommentar',
             headerName: 'Kommentar',
             flex: 1
@@ -65,8 +95,13 @@ export const defaultColumns: Array<string> = ['area', 'omrade', 'kontroll'];
 interface SkjemaTableProps {
     skjemaer: Array<Skjema>;
     kontroller: Array<Kontroll>;
+    avvik: Avvik[];
 }
-export const SkjemaTable = ({ skjemaer, kontroller }: SkjemaTableProps) => {
+export const SkjemaTable = ({
+    skjemaer,
+    kontroller,
+    avvik
+}: SkjemaTableProps) => {
     function CustomSort<T extends keyof Skjema>(
         data: Skjema[],
         field: T
@@ -82,6 +117,14 @@ export const SkjemaTable = ({ skjemaer, kontroller }: SkjemaTableProps) => {
                             String(SkjemaValueGetter(b).kontroll(kontroller))
                         )
                     );
+            case 'avvik':
+                return data
+                    .slice()
+                    .sort(
+                        (a, b) =>
+                            SkjemaValueGetter(a).avvik(avvik).open -
+                            SkjemaValueGetter(b).avvik(avvik).open
+                    );
 
             default:
                 return data;
@@ -92,7 +135,7 @@ export const SkjemaTable = ({ skjemaer, kontroller }: SkjemaTableProps) => {
         <BaseTable
             data={skjemaer}
             customSort={CustomSort}
-            customSortFields={['kontroll']}
+            customSortFields={['kontroll', 'avvik']}
         />
     );
 };

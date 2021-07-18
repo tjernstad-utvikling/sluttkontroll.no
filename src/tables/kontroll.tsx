@@ -124,7 +124,7 @@ export const kontrollColumns = (
             field: 'measurement',
             headerName: 'Målinger',
             flex: 1,
-            valueGetter: (params: GridValueGetterParams) => (
+            renderCell: (params: GridCellParams) => (
                 <Link
                     to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/measurement`}>
                     {KontrollValueGetter(params.row).measurement(measurements)}

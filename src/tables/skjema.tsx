@@ -98,8 +98,11 @@ export const columns = (
             field: 'measurement',
             headerName: 'Målinger',
             flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                SkjemaValueGetter(params.row).measurement(measurements)
+            renderCell: (params: GridCellParams) => (
+                <Link to={`${url}/skjema/${params.row.id}/measurement`}>
+                    {SkjemaValueGetter(params.row).measurement(measurements)}
+                </Link>
+            )
         },
         {
             field: 'kommentar',

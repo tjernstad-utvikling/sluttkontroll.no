@@ -60,7 +60,7 @@ const MeasurementsView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card
-                            title="Skjemaer"
+                            title="Målinger"
                             menu={
                                 <CardMenu
                                     items={[

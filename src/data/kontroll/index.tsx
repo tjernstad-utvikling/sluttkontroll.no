@@ -21,6 +21,7 @@ import { initialState, kontrollReducer } from './reducer';
 import { Checkpoint } from '../../contracts/checkpointApi';
 import { User } from '../../contracts/userApi';
 import { useAvvik } from '../avvik';
+import { useMeasurement } from '../measurement';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
@@ -40,6 +41,7 @@ export const KontrollContextProvider = ({
         useState<boolean>(false);
 
     const { loadAvvikByKontroller } = useAvvik();
+    const { loadMeasurementByKontroller } = useMeasurement();
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -150,6 +152,7 @@ export const KontrollContextProvider = ({
                     await getKontroller();
 
                 loadAvvikByKontroller(kontroller);
+                loadMeasurementByKontroller(kontroller);
 
                 if (status === 200) {
                     dispatch({
@@ -177,6 +180,7 @@ export const KontrollContextProvider = ({
                 await getKontrollerByKlient(klientId);
 
             loadAvvikByKontroller(kontroller);
+            loadMeasurementByKontroller(kontroller);
 
             if (status === 200) {
                 dispatch({
@@ -202,6 +206,7 @@ export const KontrollContextProvider = ({
                 await getKontrollerByObjekt(objektId);
 
             loadAvvikByKontroller(kontroller);
+            loadMeasurementByKontroller(kontroller);
 
             if (status === 200) {
                 dispatch({

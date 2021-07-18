@@ -24,14 +24,14 @@ export const MeasurementContextProvider = ({
         kontroller: Kontroll[]
     ): Promise<void> => {
         try {
-            const { status, measurement } = await getMeasurementByKontrollList(
+            const { status, measurements } = await getMeasurementByKontrollList(
                 kontroller.map((k) => k.id)
             );
 
             if (status === 200) {
                 dispatch({
                     type: ActionType.addMeasurement,
-                    payload: measurement
+                    payload: measurements
                 });
             }
         } catch (error) {

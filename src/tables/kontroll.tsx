@@ -57,14 +57,15 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
         }
         return { open: 0, closed: 0 };
     };
-    const measurement = (measurement: Measurement[]): number => {
-        if (measurement !== undefined) {
-            const measurements = measurement.filter(
+    const measurement = (measurements: Measurement[]): number => {
+        if (measurements !== undefined) {
+            const filteredMeasurements = measurements.filter(
                 (m) => m.Skjema.kontroll.id === data.id
             );
 
-            return measurements.length;
+            return filteredMeasurements.length;
         }
+
         return 0;
     };
 

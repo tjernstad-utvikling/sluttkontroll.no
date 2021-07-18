@@ -5,7 +5,7 @@ export const getMeasurementByKontrollList = async (
     ids: Array<number>
 ): Promise<{
     status: number;
-    measurement: Array<Measurement>;
+    measurements: Array<Measurement>;
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(

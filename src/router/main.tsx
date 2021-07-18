@@ -8,6 +8,7 @@ import KontrollObjektView from '../views/kontroll-object';
 import KontrollerView from '../views/kontroll-dashboard';
 import { MainLayout } from '../layout/main';
 import { MeasurementContextProvider } from '../data/measurement';
+import MeasurementsView from '../views/kontroll-measurement';
 import SjekklisteEditView from '../views/kontroll-sjekkliste-edit';
 import SjekklisterView from '../views/kontroll-sjekklister';
 import SkjemaNewView from '../views/kontroll-skjema-new';
@@ -35,8 +36,16 @@ export const Main = () => {
                                 <SkjemaNewView />
                             </Route>
                             <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/measurement`}>
+                                <MeasurementsView />
+                            </Route>
+                            <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId`}>
                                 <SjekklisterView />
+                            </Route>
+                            <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/measurement`}>
+                                <MeasurementsView />
                             </Route>
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId`}>

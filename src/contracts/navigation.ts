@@ -1,6 +1,10 @@
 export interface SkjemaerViewParams {
     kontrollId: string;
 }
+export interface MeasurementsViewParams {
+    kontrollId: string;
+    skjemaId?: string;
+}
 export interface SjekklisterViewParams {
     skjemaId: string;
 }

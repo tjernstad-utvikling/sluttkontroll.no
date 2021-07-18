@@ -91,5 +91,11 @@ export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
         }
     }
 
-    return <BaseTable data={checklists} customSort={CustomSort} />;
+    return (
+        <BaseTable
+            data={checklists}
+            customSort={CustomSort}
+            customSortFields={['prosedyre', 'prosedyreNr']}
+        />
+    );
 };

@@ -17,12 +17,14 @@ interface Data {
 interface BaseTableProps<T, K extends keyof T> {
     data: Array<T>;
     customSort: (data: T[], field: K) => T[];
+    customSortFields: any[];
     selectionModel?: number[] | undefined;
     onSelected?: () => void;
 }
 export const BaseTable = <T extends Data, K extends keyof T>({
     data,
     customSort,
+    customSortFields,
     selectionModel,
     onSelected
 }: BaseTableProps<T, K>) => {
@@ -39,7 +41,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
     ): T[] {
         const column = columns.find((c) => c.field === field);
         let sortedRows: T[] = [];
-        if (column !== undefined && column.valueGetter) {
+        if (column !== undefined && customSortFields.includes(field)) {
             sortedRows = customSort(data, field);
         } else {
             sortedRows = data

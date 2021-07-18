@@ -6,7 +6,7 @@ import {
     kontrollColumns
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
 import { CardContent } from '@material-ui/core';

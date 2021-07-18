@@ -97,6 +97,7 @@ export const CheckpointTable = ({
             onSelected={onSelect}
             data={checkpoints}
             customSort={CustomSort}
+            customSortFields={[]}
         />
     );
 };

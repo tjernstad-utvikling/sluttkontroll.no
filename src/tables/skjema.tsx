@@ -88,5 +88,11 @@ export const SkjemaTable = ({ skjemaer, kontroller }: SkjemaTableProps) => {
         }
     }
 
-    return <BaseTable data={skjemaer} customSort={CustomSort} />;
+    return (
+        <BaseTable
+            data={skjemaer}
+            customSort={CustomSort}
+            customSortFields={['kontroll']}
+        />
+    );
 };

@@ -46,9 +46,8 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
     const avvik = (avvik: Avvik[]): number => {
         if (avvik !== undefined) {
             const avvikene = avvik.filter(
-                (a) => a.checklist.skjema.kontroll === data.id
+                (a) => a.checklist.skjema.kontroll.id === data.id
             );
-
             return avvikene.length;
         }
         return 0;
@@ -205,5 +204,11 @@ export const KontrollTable = ({
         }
     }
 
-    return <BaseTable data={kontroller} customSort={kontrollCustomSort} />;
+    return (
+        <BaseTable
+            data={kontroller}
+            customSort={kontrollCustomSort}
+            customSortFields={['avvik', 'klient', 'objekt', 'user']}
+        />
+    );
 };

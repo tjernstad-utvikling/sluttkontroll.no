@@ -2,6 +2,9 @@ export interface Measurement {
     id: number;
     Skjema: {
         id: number;
+        kontroll: {
+            id: number;
+        };
     };
     element: string;
     enhet: string;

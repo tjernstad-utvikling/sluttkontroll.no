@@ -9,6 +9,7 @@ import { Klient, Kontroll } from '../contracts/kontrollApi';
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Link } from 'react-router-dom';
+import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from '../tables/tableUtils';
 import { User } from '../contracts/userApi';
 
@@ -56,13 +57,24 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
         }
         return { open: 0, closed: 0 };
     };
+    const measurement = (measurement: Measurement[]): number => {
+        if (measurement !== undefined) {
+            const measurements = measurement.filter(
+                (m) => m.Skjema.kontroll.id === data.id
+            );
 
-    return { klient, objekt, user, avvik };
+            return measurements.length;
+        }
+        return 0;
+    };
+
+    return { klient, objekt, user, avvik, measurement };
 };
 export const kontrollColumns = (
     users: User[],
     klienter: Klient[],
     avvik: Avvik[],
+    measurements: Measurement[],
     edit: (id: number) => void
 ) => {
     const columns: GridColDef[] = [
@@ -106,6 +118,13 @@ export const kontrollColumns = (
                     {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
                 </span>
             )
+        },
+        {
+            field: 'measurement',
+            headerName: 'Målinger',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                KontrollValueGetter(params.row).measurement(measurements)
         },
         {
             field: 'user',
@@ -153,12 +172,14 @@ interface KontrollTableProps {
     users: User[];
     klienter: Klient[];
     avvik: Avvik[];
+    measurement: Measurement[];
 }
 export const KontrollTable = ({
     kontroller,
     users,
     klienter,
-    avvik
+    avvik,
+    measurement
 }: KontrollTableProps) => {
     function kontrollCustomSort<T extends keyof Kontroll>(
         data: Kontroll[],
@@ -205,6 +226,14 @@ export const KontrollTable = ({
                             KontrollValueGetter(a).avvik(avvik).open -
                             KontrollValueGetter(b).avvik(avvik).open
                     );
+            case 'measurement':
+                return data
+                    .slice()
+                    .sort(
+                        (a, b) =>
+                            KontrollValueGetter(a).measurement(measurement) -
+                            KontrollValueGetter(b).measurement(measurement)
+                    );
 
             default:
                 return data;
@@ -215,7 +244,13 @@ export const KontrollTable = ({
         <BaseTable
             data={kontroller}
             customSort={kontrollCustomSort}
-            customSortFields={['avvik', 'klient', 'objekt', 'user']}
+            customSortFields={[
+                'avvik',
+                'klient',
+                'objekt',
+                'user',
+                'measurement'
+            ]}
         />
     );
 };

@@ -16,6 +16,7 @@ import { useAvvik } from '../data/avvik';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
+import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
@@ -39,6 +40,9 @@ const KontrollerView = () => {
     const {
         state: { avvik }
     } = useAvvik();
+    const {
+        state: { measurement }
+    } = useMeasurement();
 
     useEffectOnce(() => {
         loadKontroller();
@@ -85,6 +89,7 @@ const KontrollerView = () => {
                                         users ?? [],
                                         klienter ?? [],
                                         avvik ?? [],
+                                        measurement ?? [],
                                         editKontroll
                                     )}
                                     defaultColumns={defaultColumns}
@@ -93,6 +98,7 @@ const KontrollerView = () => {
                                         klienter={klienter ?? []}
                                         avvik={avvik ?? []}
                                         users={users ?? []}
+                                        measurement={measurement ?? []}
                                         kontroller={_kontroller}
                                     />
                                 </TableContainer>

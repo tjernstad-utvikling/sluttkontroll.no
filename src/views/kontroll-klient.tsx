@@ -20,6 +20,7 @@ import { TableContainer } from '../tables/tableContainer';
 import Typography from '@material-ui/core/Typography';
 import { useAvvik } from '../data/avvik';
 import { useKontroll } from '../data/kontroll';
+import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
@@ -48,6 +49,10 @@ const KontrollKlientView = () => {
     const {
         state: { avvik }
     } = useAvvik();
+
+    const {
+        state: { measurement }
+    } = useMeasurement();
 
     useEffect(() => {
         if (loadedKlient !== Number(klientId)) {
@@ -146,6 +151,7 @@ const KontrollKlientView = () => {
                                         users ?? [],
                                         klienter ?? [],
                                         avvik ?? [],
+                                        measurement ?? [],
                                         editKontroll
                                     )}
                                     defaultColumns={defaultColumns}
@@ -154,6 +160,7 @@ const KontrollKlientView = () => {
                                         klienter={klienter ?? []}
                                         avvik={avvik ?? []}
                                         users={users ?? []}
+                                        measurement={measurement ?? []}
                                         kontroller={_kontroller}
                                     />
                                 </TableContainer>

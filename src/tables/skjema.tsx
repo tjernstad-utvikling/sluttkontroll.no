@@ -9,6 +9,7 @@ import { Kontroll, Skjema } from '../contracts/kontrollApi';
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Link } from 'react-router-dom';
+import { Measurement } from '../contracts/measurementApi';
 
 export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): string => {
@@ -33,11 +34,24 @@ export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
         return { open: 0, closed: 0 };
     };
 
-    return { kontroll, avvik };
+    const measurement = (measurements: Measurement[]): number => {
+        if (measurements !== undefined) {
+            const filteredMeasurements = measurements.filter(
+                (m) => m.Skjema.kontroll.id === data.id
+            );
+
+            return filteredMeasurements.length;
+        }
+
+        return 0;
+    };
+
+    return { kontroll, avvik, measurement };
 };
 export const columns = (
     kontroller: Kontroll[],
     avvik: Avvik[],
+    measurements: Measurement[],
     url: string
 ) => {
     const columns: GridColDef[] = [
@@ -81,6 +95,13 @@ export const columns = (
             )
         },
         {
+            field: 'measurement',
+            headerName: 'Målinger',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                SkjemaValueGetter(params.row).measurement(measurements)
+        },
+        {
             field: 'kommentar',
             headerName: 'Kommentar',
             flex: 1
@@ -96,11 +117,13 @@ interface SkjemaTableProps {
     skjemaer: Array<Skjema>;
     kontroller: Array<Kontroll>;
     avvik: Avvik[];
+    measurements: Measurement[];
 }
 export const SkjemaTable = ({
     skjemaer,
     kontroller,
-    avvik
+    avvik,
+    measurements
 }: SkjemaTableProps) => {
     function CustomSort<T extends keyof Skjema>(
         data: Skjema[],
@@ -126,6 +149,15 @@ export const SkjemaTable = ({
                             SkjemaValueGetter(b).avvik(avvik).open
                     );
 
+            case 'measurement':
+                return data
+                    .slice()
+                    .sort(
+                        (a, b) =>
+                            SkjemaValueGetter(a).measurement(measurements) -
+                            SkjemaValueGetter(b).measurement(measurements)
+                    );
+
             default:
                 return data;
         }
@@ -135,7 +167,7 @@ export const SkjemaTable = ({
         <BaseTable
             data={skjemaer}
             customSort={CustomSort}
-            customSortFields={['kontroll', 'avvik']}
+            customSortFields={['kontroll', 'avvik', 'measurement']}
         />
     );
 };

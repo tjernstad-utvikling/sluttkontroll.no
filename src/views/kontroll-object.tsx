@@ -49,7 +49,7 @@ const KontrollObjektView = () => {
     } = useAvvik();
 
     const {
-        state: { measurement }
+        state: { measurements }
     } = useMeasurement();
 
     useEffect(() => {
@@ -153,7 +153,7 @@ const KontrollObjektView = () => {
                                         users ?? [],
                                         klienter ?? [],
                                         avvik ?? [],
-                                        measurement ?? [],
+                                        measurements ?? [],
                                         editKontroll
                                     )}
                                     defaultColumns={defaultColumns}
@@ -161,7 +161,7 @@ const KontrollObjektView = () => {
                                     <KontrollTable
                                         users={users ?? []}
                                         avvik={avvik ?? []}
-                                        measurement={measurement ?? []}
+                                        measurements={measurements ?? []}
                                         klienter={klienter ?? []}
                                         kontroller={_kontroller}
                                     />

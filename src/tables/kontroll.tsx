@@ -173,14 +173,14 @@ interface KontrollTableProps {
     users: User[];
     klienter: Klient[];
     avvik: Avvik[];
-    measurement: Measurement[];
+    measurements: Measurement[];
 }
 export const KontrollTable = ({
     kontroller,
     users,
     klienter,
     avvik,
-    measurement
+    measurements
 }: KontrollTableProps) => {
     function kontrollCustomSort<T extends keyof Kontroll>(
         data: Kontroll[],
@@ -232,8 +232,8 @@ export const KontrollTable = ({
                     .slice()
                     .sort(
                         (a, b) =>
-                            KontrollValueGetter(a).measurement(measurement) -
-                            KontrollValueGetter(b).measurement(measurement)
+                            KontrollValueGetter(a).measurement(measurements) -
+                            KontrollValueGetter(b).measurement(measurements)
                     );
 
             default:

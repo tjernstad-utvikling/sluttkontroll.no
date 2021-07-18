@@ -3,7 +3,7 @@ import { ActionType, MeasurementActions, MeasurementState } from './contracts';
 import _ from 'lodash';
 
 export const initialState: MeasurementState = {
-    measurement: undefined
+    measurements: undefined
 };
 
 export const userReducer = (
@@ -14,7 +14,11 @@ export const userReducer = (
         case ActionType.addMeasurement:
             return {
                 ...state,
-                measurement: _.unionBy(action.payload, state.measurement, 'id')
+                measurements: _.unionBy(
+                    action.payload,
+                    state.measurements,
+                    'id'
+                )
             };
 
         default:

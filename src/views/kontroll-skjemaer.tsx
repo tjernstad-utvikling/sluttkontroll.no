@@ -11,6 +11,7 @@ import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
+import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SkjemaerView = () => {
@@ -29,6 +30,10 @@ const SkjemaerView = () => {
     const {
         state: { avvik }
     } = useAvvik();
+
+    const {
+        state: { measurements }
+    } = useMeasurement();
 
     useEffectOnce(() => {
         loadKontroller();
@@ -68,6 +73,7 @@ const SkjemaerView = () => {
                                     columns={columns(
                                         kontroller ?? [],
                                         avvik ?? [],
+                                        measurements ?? [],
                                         url
                                     )}
                                     defaultColumns={defaultColumns}
@@ -76,6 +82,7 @@ const SkjemaerView = () => {
                                         skjemaer={_skjemaer}
                                         kontroller={kontroller ?? []}
                                         avvik={avvik ?? []}
+                                        measurements={measurements ?? []}
                                     />
                                 </TableContainer>
                             ) : (

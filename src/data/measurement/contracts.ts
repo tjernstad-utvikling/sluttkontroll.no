@@ -2,7 +2,7 @@ import { Kontroll } from '../../contracts/kontrollApi';
 import { Measurement } from '../../contracts/measurementApi';
 
 export interface MeasurementState {
-    measurement: Array<Measurement> | undefined;
+    measurements: Array<Measurement> | undefined;
 }
 
 export enum ActionType {

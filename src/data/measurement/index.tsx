@@ -1,9 +1,12 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
+import {
+    getMeasurementByKontrollList,
+    getMeasurementTypes
+} from '../../api/measurementApi';
 import { initialState, userReducer } from './reducer';
 
 import { Kontroll } from '../../contracts/kontrollApi';
-import { getMeasurementByKontrollList } from '../../api/measurementApi';
 
 export const useMeasurement = () => {
     return useContext(MeasurementContext);
@@ -33,6 +36,16 @@ export const MeasurementContextProvider = ({
                     type: ActionType.addMeasurement,
                     payload: measurements
                 });
+
+                const { status, measurementTypes } =
+                    await getMeasurementTypes();
+
+                if (status === 200) {
+                    dispatch({
+                        type: ActionType.setMeasurementTypes,
+                        payload: measurementTypes
+                    });
+                }
             }
         } catch (error) {
             console.log(error);

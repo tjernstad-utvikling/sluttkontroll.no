@@ -5,6 +5,8 @@ export const useModalStyles = makeStyles((theme) => ({
         backgroundColor: '#fff',
         margin: 15,
         padding: 15,
-        borderRadius: 5
+        borderRadius: 5,
+        maxHeight: '95vh',
+        overflow: 'auto'
     }
 }));

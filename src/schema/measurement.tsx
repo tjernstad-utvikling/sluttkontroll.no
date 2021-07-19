@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
 import { Form, Formik } from 'formik';
+import { useEffect, useMemo } from 'react';
 
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -14,7 +15,6 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Select from 'react-select';
 import { TextField } from '../components/input';
 import { User } from '../contracts/userApi';
-import { useEffect } from 'react';
 import { useMeasurement } from '../data/measurement';
 import { useState } from 'react';
 
@@ -55,13 +55,21 @@ export const MeasurementSchema = ({
         }
     }, [measurementTypes]);
 
+    const selectedType = useMemo(() => {
+        const option = options?.find((o) => o.value.shortName === 'kont');
+        if (option !== undefined) {
+            return option;
+        }
+        return null;
+    }, [options]);
+
     if (options !== undefined) {
         return (
             <div id="measurementForm">
                 <Formik
                     initialValues={{
                         name: '',
-                        type: null,
+                        type: selectedType,
                         pol: '1',
                         element: '',
                         resultat: '',

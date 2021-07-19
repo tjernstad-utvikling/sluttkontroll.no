@@ -115,17 +115,15 @@ export const MeasurementSchema = ({
                                                     name="user"
                                                     options={options}
                                                     autoFocus
-                                                    menuPortalTarget={document.getElementById(
-                                                        'measurementForm'
-                                                    )}
                                                     styles={{
-                                                        menuPortal: (
-                                                            styles
-                                                        ) => ({
-                                                            ...styles,
-                                                            zIndex: 1000
+                                                        menuPortal: (base) => ({
+                                                            ...base,
+                                                            zIndex: 9999
                                                         })
                                                     }}
+                                                    menuPortalTarget={
+                                                        document.body
+                                                    }
                                                 />
                                             </div>
                                         )}

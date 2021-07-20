@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import { Form, Formik } from 'formik';
+import { Form, Formik, useFormikContext } from 'formik';
 import { useEffect, useMemo } from 'react';
 
 import FormControl from '@material-ui/core/FormControl';
@@ -18,6 +18,21 @@ import { User } from '../contracts/userApi';
 import { useMeasurement } from '../data/measurement';
 import { useState } from 'react';
 
+interface Option {
+    value: MeasurementType;
+    label: string;
+}
+
+interface FormValues {
+    name: string;
+    type: Option | null;
+    pol: string;
+    element: string;
+    resultat: string;
+    enhet: string;
+    maks: string;
+    min: string;
+}
 interface MeasurementSchemaProps {
     kontroll?: Kontroll;
     onSubmit?: (
@@ -34,10 +49,6 @@ export const MeasurementSchema = ({
         state: { measurementTypes }
     } = useMeasurement();
 
-    interface Option {
-        value: MeasurementType;
-        label: string;
-    }
     const [options, setOptions] = useState<Array<Option>>();
     const [type, setType] = useState<MeasurementType>();
 
@@ -184,13 +195,7 @@ export const MeasurementSchema = ({
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            variant="outlined"
-                                            fullWidth
-                                            id="enhet"
-                                            label="Enhet"
-                                            name="enhet"
-                                        />
+                                        <EnhetField />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
@@ -230,4 +235,27 @@ export const MeasurementSchema = ({
     } else {
         return <div>mangler options</div>;
     }
+};
+
+const EnhetField = () => {
+    const {
+        values: { type },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    useEffect(() => {
+        if (type !== null) {
+            setFieldValue('enhet', type.value.enhet);
+        }
+    }, [setFieldValue, type]);
+
+    return (
+        <TextField
+            variant="outlined"
+            fullWidth
+            id="enhet"
+            label="Enhet"
+            name="enhet"
+        />
+    );
 };

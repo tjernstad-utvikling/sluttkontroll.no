@@ -1,4 +1,8 @@
-import { Measurement, MeasurementType } from '../../contracts/measurementApi';
+import {
+    Measurement,
+    MeasurementType,
+    NewFormMeasurement
+} from '../../contracts/measurementApi';
 
 import { Kontroll } from '../../contracts/kontrollApi';
 
@@ -26,4 +30,8 @@ export type MeasurementActions = addMeasurement | setMeasurementTypes;
 export interface ContextInterface {
     state: MeasurementState;
     loadMeasurementByKontroller: (kontroller: Kontroll[]) => Promise<void>;
+    saveNewMeasurement: (
+        measurement: NewFormMeasurement,
+        skjemaID: number
+    ) => Promise<boolean>;
 }

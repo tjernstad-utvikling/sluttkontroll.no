@@ -96,6 +96,7 @@ const MeasurementsView = () => {
             <MeasurementModal
                 open={newModalOpen}
                 close={() => setNewModalOpen(!newModalOpen)}
+                skjemaId={Number(skjemaId)}
             />
         </div>
     );

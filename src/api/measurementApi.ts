@@ -1,4 +1,8 @@
-import { Measurement, MeasurementType } from '../contracts/measurementApi';
+import {
+    Measurement,
+    MeasurementType,
+    NewFormMeasurement
+} from '../contracts/measurementApi';
 
 import sluttkontrollApi from './sluttkontroll';
 
@@ -27,6 +31,26 @@ export const getMeasurementTypes = async (): Promise<{
     try {
         const { status, data } = await sluttkontrollApi.get(
             `/v3/measurement/types`
+        );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+export const newMeasurement = async (
+    measurement: NewFormMeasurement,
+    skjemaID: number
+): Promise<{
+    status: number;
+    measurement: Measurement;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/measurement/${skjemaID}`,
+            { measurement }
         );
         if (status === 200) {
             return { status, ...data };

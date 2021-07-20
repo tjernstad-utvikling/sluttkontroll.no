@@ -1,20 +1,21 @@
 import * as Yup from 'yup';
 
 import { Form, Formik, useFormikContext } from 'formik';
+import {
+    MeasurementType,
+    NewFormMeasurement
+} from '../contracts/measurementApi';
 import { useEffect, useMemo } from 'react';
 
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
-import { Kontroll } from '../contracts/kontrollApi';
 import { LoadingButton } from '../components/button';
-import { MeasurementType } from '../contracts/measurementApi';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Select from 'react-select';
 import { TextField } from '../components/input';
-import { User } from '../contracts/userApi';
 import { useMeasurement } from '../data/measurement';
 import { useState } from 'react';
 
@@ -34,15 +35,9 @@ interface FormValues {
     min: string;
 }
 interface MeasurementSchemaProps {
-    kontroll?: Kontroll;
-    onSubmit?: (
-        name: string,
-        user: User,
-        avvikUtbedrere: Array<User> | null
-    ) => Promise<boolean>;
+    onSubmit: (measurement: NewFormMeasurement) => Promise<boolean>;
 }
 export const MeasurementSchema = ({
-    kontroll,
     onSubmit
 }: MeasurementSchemaProps): JSX.Element => {
     const {
@@ -90,10 +85,35 @@ export const MeasurementSchema = ({
                     }}
                     validationSchema={Yup.object({
                         name: Yup.string().required('Kontroll navn er påkrevd'),
-                        type: Yup.string().required('Type er påkrevd')
+                        type: Yup.string().required('Type er påkrevd'),
+                        resultat: Yup.number()
+                            .typeError('Resultat må være et tall')
+                            .transform((_, value) => {
+                                return +value.replace(/,/, '.');
+                            })
+                            .required('Resultat er påkrevd'),
+                        enhet: Yup.string().required('Enhet er påkrevd'),
+                        maks: Yup.number()
+                            .typeError('Maks må være et tall')
+                            .transform((_, value) => {
+                                return +value.replace(/,/, '.');
+                            }),
+                        min: Yup.number()
+                            .typeError('Resultat må være et tall')
+                            .transform((_, value) => {
+                                return +value.replace(/,/, '.');
+                            })
                     })}
                     onSubmit={async (values, { setSubmitting }) => {
                         if (values.type !== null) {
+                            await onSubmit({
+                                ...values,
+                                resultat: Number(values.resultat),
+                                maks: Number(values.maks),
+                                min: Number(values.min),
+                                pol: Number(values.pol),
+                                type: values.type.value.shortName
+                            });
                         }
                     }}>
                     {({ isSubmitting, setFieldValue, values }) => {

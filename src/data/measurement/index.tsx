@@ -2,11 +2,14 @@ import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     getMeasurementByKontrollList,
-    getMeasurementTypes
+    getMeasurementTypes,
+    newMeasurement
 } from '../../api/measurementApi';
 import { initialState, userReducer } from './reducer';
 
 import { Kontroll } from '../../contracts/kontrollApi';
+import { NewFormMeasurement } from '../../contracts/measurementApi';
+import { useSnackbar } from 'notistack';
 
 export const useMeasurement = () => {
     return useContext(MeasurementContext);
@@ -22,6 +25,8 @@ export const MeasurementContextProvider = ({
     children: React.ReactNode;
 }): JSX.Element => {
     const [state, dispatch] = useReducer(userReducer, initialState);
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const loadMeasurementByKontroller = async (
         kontroller: Kontroll[]
@@ -52,12 +57,40 @@ export const MeasurementContextProvider = ({
         }
     };
 
+    const saveNewMeasurement = async (
+        measurementData: NewFormMeasurement,
+        skjemaID: number
+    ): Promise<boolean> => {
+        try {
+            const { measurement } = await newMeasurement(
+                measurementData,
+                skjemaID
+            );
+
+            dispatch({
+                type: ActionType.addMeasurement,
+                payload: [measurement]
+            });
+
+            enqueueSnackbar('Måling lagret', {
+                variant: 'success'
+            });
+            return true;
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av måling', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
     return (
         <MeasurementContext.Provider
             value={{
                 state,
 
-                loadMeasurementByKontroller
+                loadMeasurementByKontroller,
+                saveNewMeasurement
             }}>
             {children}
         </MeasurementContext.Provider>

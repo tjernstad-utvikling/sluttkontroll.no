@@ -8,10 +8,19 @@ export interface Measurement {
     };
     element: string;
     enhet: string;
-    maks: string;
-    min: string;
+    maks: number;
+    min: number;
     pol: number | null;
-    resultat: string;
+    resultat: number;
+    type: string;
+}
+export interface NewFormMeasurement {
+    element: string;
+    enhet: string;
+    maks: number;
+    min: number;
+    pol: number | null;
+    resultat: number;
     type: string;
 }
 

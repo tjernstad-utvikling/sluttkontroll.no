@@ -7,7 +7,7 @@ import { useModalStyles } from '../styles/modal';
 interface MeasurementModalProps {
     open: boolean;
     close: () => void;
-    skjemaId: number;
+    skjemaId?: number;
 }
 
 export const MeasurementModal = ({
@@ -22,7 +22,11 @@ export const MeasurementModal = ({
     const handleSave = async (
         measurement: NewFormMeasurement
     ): Promise<boolean> => {
-        if (measurement !== undefined) {
+        if (
+            measurement !== undefined &&
+            skjemaId !== undefined &&
+            !isNaN(skjemaId)
+        ) {
             if (await saveNewMeasurement(measurement, skjemaId)) {
                 close();
             }

@@ -71,186 +71,175 @@ export const MeasurementSchema = ({
 
     if (options !== undefined) {
         return (
-            <div id="measurementForm">
-                <Formik
-                    initialValues={{
-                        name: '',
-                        type: selectedType,
-                        pol: '1',
-                        element: '',
-                        resultat: '',
-                        enhet: '',
-                        maks: '',
-                        min: ''
-                    }}
-                    validationSchema={Yup.object({
-                        name: Yup.string().required('Kontroll navn er påkrevd'),
-                        type: Yup.string().required('Type er påkrevd'),
-                        resultat: Yup.number()
-                            .typeError('Resultat må være et tall')
-                            .transform((_, value) => {
-                                return +value.replace(/,/, '.');
-                            })
-                            .required('Resultat er påkrevd'),
-                        enhet: Yup.string().required('Enhet er påkrevd'),
-                        maks: Yup.number()
-                            .typeError('Maks må være et tall')
-                            .transform((_, value) => {
-                                return +value.replace(/,/, '.');
-                            }),
-                        min: Yup.number()
-                            .typeError('Resultat må være et tall')
-                            .transform((_, value) => {
-                                return +value.replace(/,/, '.');
-                            })
-                    })}
-                    onSubmit={async (values, { setSubmitting }) => {
-                        if (values.type !== null) {
-                            await onSubmit({
-                                ...values,
-                                resultat: Number(values.resultat),
-                                maks: Number(values.maks),
-                                min: Number(values.min),
-                                pol: Number(values.pol),
-                                type: values.type.value.shortName
-                            });
-                        }
-                    }}>
-                    {({ isSubmitting, setFieldValue, values }) => {
-                        return (
-                            <Form>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={6}>
-                                        {measurementTypes && (
-                                            <div>
-                                                <label htmlFor="type-select">
-                                                    Type
-                                                </label>
-                                                <Select
-                                                    inputId="type-select"
-                                                    className="basic-single"
-                                                    classNamePrefix="select"
-                                                    isSearchable
-                                                    onChange={(selected) => {
-                                                        if (selected !== null) {
-                                                            setFieldValue(
-                                                                'type',
-                                                                selected
-                                                            );
-                                                            setType(
-                                                                selected.value
-                                                            );
-                                                        }
-                                                    }}
-                                                    value={values.type}
-                                                    name="user"
-                                                    options={options}
-                                                    autoFocus
-                                                    styles={{
-                                                        menuPortal: (base) => ({
-                                                            ...base,
-                                                            zIndex: 9999
-                                                        })
-                                                    }}
-                                                    menuPortalTarget={
-                                                        document.body
-                                                    }
-                                                />
-                                            </div>
-                                        )}
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        {type !== undefined && type.hasPol ? (
-                                            <FormControl component="fieldset">
-                                                <FormLabel component="legend">
-                                                    Faser
-                                                </FormLabel>
-                                                <RadioGroup
-                                                    aria-label="antall faser"
-                                                    name="pol"
-                                                    value={values.pol}
-                                                    onChange={(e, value) => {
+            <Formik
+                initialValues={{
+                    name: '',
+                    type: selectedType,
+                    pol: '1',
+                    element: '',
+                    resultat: '',
+                    enhet: '',
+                    maks: '',
+                    min: ''
+                }}
+                validationSchema={Yup.object({
+                    resultat: Yup.number()
+                        .typeError('Resultat må være et tall')
+                        .transform((_, value) => {
+                            return +value.replace(/,/, '.');
+                        })
+                        .required('Resultat er påkrevd'),
+                    enhet: Yup.string().required('Enhet er påkrevd'),
+                    maks: Yup.number()
+                        .typeError('Maks må være et tall')
+                        .transform((_, value) => {
+                            return +value.replace(/,/, '.');
+                        }),
+                    min: Yup.number()
+                        .typeError('Resultat må være et tall')
+                        .transform((_, value) => {
+                            return +value.replace(/,/, '.');
+                        })
+                })}
+                onSubmit={async (values, { setSubmitting }) => {
+                    if (values.type !== null) {
+                        await onSubmit({
+                            ...values,
+                            resultat: Number(values.resultat),
+                            maks: Number(values.maks),
+                            min: Number(values.min),
+                            pol: Number(values.pol),
+                            type: values.type.value.shortName
+                        });
+                    }
+                }}>
+                {({ isSubmitting, setFieldValue, values, errors }) => {
+                    return (
+                        <Form>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                    {measurementTypes && (
+                                        <div>
+                                            <label htmlFor="type-select">
+                                                Type
+                                            </label>
+                                            <Select
+                                                inputId="type-select"
+                                                className="basic-single"
+                                                classNamePrefix="select"
+                                                isSearchable
+                                                onChange={(selected) => {
+                                                    if (selected !== null) {
                                                         setFieldValue(
-                                                            'pol',
-                                                            value
+                                                            'type',
+                                                            selected
                                                         );
-                                                    }}>
-                                                    <FormControlLabel
-                                                        value="1"
-                                                        control={<Radio />}
-                                                        label="1 Pol"
-                                                    />
-                                                    <FormControlLabel
-                                                        value="2"
-                                                        control={<Radio />}
-                                                        label="2 Pol"
-                                                    />
-                                                    <FormControlLabel
-                                                        value="3"
-                                                        control={<Radio />}
-                                                        label="3 Pol"
-                                                    />
-                                                </RadioGroup>
-                                            </FormControl>
-                                        ) : (
-                                            <div />
-                                        )}
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            variant="outlined"
-                                            fullWidth
-                                            id="element"
-                                            label="Element"
-                                            name="element"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            variant="outlined"
-                                            fullWidth
-                                            id="resultat"
-                                            label="Resultat"
-                                            name="resultat"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <EnhetField />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            variant="outlined"
-                                            fullWidth
-                                            id="maks"
-                                            label="Maks"
-                                            name="maks"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            variant="outlined"
-                                            fullWidth
-                                            id="min"
-                                            label="Min"
-                                            name="min"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <LoadingButton
-                                            isLoading={isSubmitting}
-                                            type="submit"
-                                            fullWidth
-                                            variant="contained"
-                                            color="primary">
-                                            Lagre
-                                        </LoadingButton>
-                                    </Grid>
+                                                        setType(selected.value);
+                                                    }
+                                                }}
+                                                value={values.type}
+                                                name="user"
+                                                options={options}
+                                                autoFocus
+                                                styles={{
+                                                    menuPortal: (base) => ({
+                                                        ...base,
+                                                        zIndex: 9999
+                                                    })
+                                                }}
+                                                menuPortalTarget={document.body}
+                                            />
+                                        </div>
+                                    )}
                                 </Grid>
-                            </Form>
-                        );
-                    }}
-                </Formik>
-            </div>
+                                <Grid item xs={12} sm={6}>
+                                    {type !== undefined && type.hasPol ? (
+                                        <FormControl component="fieldset">
+                                            <FormLabel component="legend">
+                                                Faser
+                                            </FormLabel>
+                                            <RadioGroup
+                                                aria-label="antall faser"
+                                                name="pol"
+                                                value={values.pol}
+                                                onChange={(e, value) => {
+                                                    setFieldValue('pol', value);
+                                                }}>
+                                                <FormControlLabel
+                                                    value="1"
+                                                    control={<Radio />}
+                                                    label="1 Pol"
+                                                />
+                                                <FormControlLabel
+                                                    value="2"
+                                                    control={<Radio />}
+                                                    label="2 Pol"
+                                                />
+                                                <FormControlLabel
+                                                    value="3"
+                                                    control={<Radio />}
+                                                    label="3 Pol"
+                                                />
+                                            </RadioGroup>
+                                        </FormControl>
+                                    ) : (
+                                        <div />
+                                    )}
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="element"
+                                        label="Element"
+                                        name="element"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="resultat"
+                                        label="Resultat"
+                                        name="resultat"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <EnhetField />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="maks"
+                                        label="Maks"
+                                        name="maks"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="min"
+                                        label="Min"
+                                        name="min"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <LoadingButton
+                                        isLoading={isSubmitting}
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary">
+                                        Lagre
+                                    </LoadingButton>
+                                </Grid>
+                            </Grid>
+                        </Form>
+                    );
+                }}
+            </Formik>
         );
     } else {
         return <div>mangler options</div>;

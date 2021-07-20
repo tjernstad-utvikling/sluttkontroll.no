@@ -62,15 +62,19 @@ const MeasurementsView = () => {
                         <Card
                             title="Målinger"
                             menu={
-                                <CardMenu
-                                    items={[
-                                        {
-                                            label: 'Ny måling',
-                                            action: () =>
-                                                setNewModalOpen(!newModalOpen)
-                                        }
-                                    ]}
-                                />
+                                skjemaId !== undefined && (
+                                    <CardMenu
+                                        items={[
+                                            {
+                                                label: 'Ny måling',
+                                                action: () =>
+                                                    setNewModalOpen(
+                                                        !newModalOpen
+                                                    )
+                                            }
+                                        ]}
+                                    />
+                                )
                             }>
                             {skjemaer !== undefined ? (
                                 <TableContainer

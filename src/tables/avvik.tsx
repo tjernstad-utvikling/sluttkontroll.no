@@ -7,12 +7,11 @@ import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
-import { Measurement } from '../contracts/measurementApi';
 
-export const AvvikValueGetter = (data: Measurement | GridRowData) => {
+export const AvvikValueGetter = (data: Avvik | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): string => {
         const kontroll = kontroller.find(
-            (k) => k.id === data.Skjema.kontroll.id
+            (k) => k.id === data.checklist.skjema.kontroll.id
         );
         if (kontroll !== undefined) {
             return kontroll?.name || '';
@@ -20,21 +19,27 @@ export const AvvikValueGetter = (data: Measurement | GridRowData) => {
         return '';
     };
     const area = (skjemaer: Skjema[]): string => {
-        const skjema = skjemaer.find((s) => s.id === data.Skjema.id);
+        const skjema = skjemaer.find((s) => s.id === data.checklist.skjema.id);
         if (skjema !== undefined) {
             return skjema.area;
         }
         return '';
     };
     const omrade = (skjemaer: Skjema[]): string => {
-        const skjema = skjemaer.find((s) => s.id === data.Skjema.id);
+        const skjema = skjemaer.find((s) => s.id === data.checklist.skjema.id);
         if (skjema !== undefined) {
             return skjema.omrade;
         }
         return '';
     };
+    const avvikBilder = (): number => {
+        if (data.avvikBilder.length > 0) {
+            return data.avvikBilder.length;
+        }
+        return 0;
+    };
 
-    return { kontroll, area, omrade };
+    return { kontroll, area, omrade, avvikBilder };
 };
 export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
     const columns: GridColDef[] = [
@@ -65,7 +70,9 @@ export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
         {
             field: 'avvikBilder',
             headerName: 'Bilder',
-            flex: 1
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                AvvikValueGetter(params.row).avvikBilder()
         },
         {
             field: 'kommentar',
@@ -145,6 +152,14 @@ export const AvvikTable = ({
                         ).localeCompare(
                             String(AvvikValueGetter(b).omrade(skjemaer))
                         )
+                    );
+            case 'avvikBilder':
+                return data
+                    .slice()
+                    .sort(
+                        (a, b) =>
+                            AvvikValueGetter(a).avvikBilder() -
+                            AvvikValueGetter(b).avvikBilder()
                     );
             default:
                 return data;

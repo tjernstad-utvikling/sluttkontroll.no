@@ -63,7 +63,7 @@ const AvvikView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card
-                            title="Målinger"
+                            title="Avvik"
                             menu={
                                 checklistId !== undefined && (
                                     <CardMenu

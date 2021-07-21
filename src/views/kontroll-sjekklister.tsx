@@ -80,7 +80,7 @@ const SjekklisterView = () => {
                             }>
                             {checklists !== undefined ? (
                                 <TableContainer
-                                    columns={columns(avvik ?? [], '')}
+                                    columns={columns(avvik ?? [], url)}
                                     defaultColumns={defaultColumns}
                                     tableId="checklists">
                                     <SjekklisteTable

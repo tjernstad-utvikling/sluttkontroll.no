@@ -114,10 +114,13 @@ export const kontrollColumns = (
             headerName: 'Avvik (åpne | lukket) ',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <span>
-                    ({KontrollValueGetter(params.row).avvik(avvik).open} |{' '}
-                    {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
-                </span>
+                <Link
+                    to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/avvik`}>
+                    <span>
+                        ({KontrollValueGetter(params.row).avvik(avvik).open} |{' '}
+                        {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
+                    </span>
+                </Link>
             )
         },
         {

@@ -88,10 +88,12 @@ export const columns = (
             headerName: 'Avvik (åpne | lukket) ',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <span>
-                    ({SkjemaValueGetter(params.row).avvik(avvik).open} |{' '}
-                    {SkjemaValueGetter(params.row).avvik(avvik).closed} ){' '}
-                </span>
+                <Link to={`${url}/skjema/${params.row.id}/avvik`}>
+                    <span>
+                        ({SkjemaValueGetter(params.row).avvik(avvik).open} |{' '}
+                        {SkjemaValueGetter(params.row).avvik(avvik).closed} ){' '}
+                    </span>
+                </Link>
             )
         },
         {

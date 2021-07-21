@@ -5,6 +5,11 @@ export interface MeasurementsViewParams {
     kontrollId: string;
     skjemaId?: string;
 }
+export interface AvvikViewParams {
+    kontrollId: string;
+    skjemaId?: string;
+    checklistId?: string;
+}
 export interface SjekklisterViewParams {
     skjemaId: string;
 }

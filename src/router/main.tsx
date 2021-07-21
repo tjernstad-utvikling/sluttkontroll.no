@@ -1,6 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
 
 import { AvvikContextProvider } from '../data/avvik';
+import AvvikView from '../views/kontroll-avvik';
 import { KontrollContextProvider } from '../data/kontroll';
 import KontrollKlientView from '../views/kontroll-klient';
 import KontrollNewView from '../views/kontroll-new';
@@ -32,6 +33,10 @@ export const Main = () => {
                                 <SjekklisteEditView />
                             </Route>
                             <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/checklist/:checklistId/avvik`}>
+                                <AvvikView />
+                            </Route>
+                            <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/new`}>
                                 <SkjemaNewView />
                             </Route>
@@ -40,12 +45,20 @@ export const Main = () => {
                                 <MeasurementsView />
                             </Route>
                             <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/avvik`}>
+                                <AvvikView />
+                            </Route>
+                            <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId`}>
                                 <SjekklisterView />
                             </Route>
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/measurement`}>
                                 <MeasurementsView />
+                            </Route>
+                            <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/avvik`}>
+                                <AvvikView />
                             </Route>
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId`}>

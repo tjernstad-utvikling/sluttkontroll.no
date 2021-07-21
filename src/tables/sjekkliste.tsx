@@ -8,6 +8,7 @@ import {
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Checklist } from '../contracts/kontrollApi';
+import { Link } from 'react-router-dom';
 
 export const SjekklisteValueGetter = (data: Checklist | GridRowData) => {
     const prosedyre = (): string => {
@@ -60,10 +61,13 @@ export const columns = (avvik: Avvik[], url: string) => {
             headerName: 'Avvik (åpne | lukket) ',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <span>
-                    ({SjekklisteValueGetter(params.row).avvik(avvik).open} |{' '}
-                    {SjekklisteValueGetter(params.row).avvik(avvik).closed} ){' '}
-                </span>
+                <Link to={`${url}/checklist/${params.row.id}/avvik`}>
+                    <span>
+                        ({SjekklisteValueGetter(params.row).avvik(avvik).open} |{' '}
+                        {SjekklisteValueGetter(params.row).avvik(avvik).closed}{' '}
+                        ){' '}
+                    </span>
+                </Link>
             )
         },
         {

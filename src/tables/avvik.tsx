@@ -5,6 +5,7 @@ import {
 } from '@material-ui/data-grid';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
+import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Measurement } from '../contracts/measurementApi';
 
@@ -18,15 +19,22 @@ export const AvvikValueGetter = (data: Measurement | GridRowData) => {
         }
         return '';
     };
-    const skjema = (skjemaer: Skjema[]): string => {
+    const area = (skjemaer: Skjema[]): string => {
         const skjema = skjemaer.find((s) => s.id === data.Skjema.id);
         if (skjema !== undefined) {
-            return `${skjema?.area} - ${skjema?.omrade}` || '';
+            return skjema.area;
+        }
+        return '';
+    };
+    const omrade = (skjemaer: Skjema[]): string => {
+        const skjema = skjemaer.find((s) => s.id === data.Skjema.id);
+        if (skjema !== undefined) {
+            return skjema.omrade;
         }
         return '';
     };
 
-    return { kontroll, skjema };
+    return { kontroll, area, omrade };
 };
 export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
     const columns: GridColDef[] = [
@@ -36,33 +44,42 @@ export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
             flex: 1
         },
         {
-            field: 'type',
-            headerName: 'Type',
+            field: 'beskrivelse',
+            headerName: 'Beskrivelse',
             flex: 1
         },
         {
-            field: 'element',
-            headerName: 'Element',
+            field: 'areal',
+            headerName: 'Areal',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                AvvikValueGetter(params.row).area(skjemaer)
+        },
+        {
+            field: 'omrade',
+            headerName: 'Område',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                AvvikValueGetter(params.row).omrade(skjemaer)
+        },
+        {
+            field: 'avvikBilder',
+            headerName: 'Bilder',
             flex: 1
         },
         {
-            field: 'resultat',
-            headerName: 'Resultat',
+            field: 'kommentar',
+            headerName: 'Kommentar',
             flex: 1
         },
         {
-            field: 'enhet',
-            headerName: 'Enhet',
+            field: 'registrertDato',
+            headerName: 'Registrert dato',
             flex: 1
         },
         {
-            field: 'min',
-            headerName: 'Min',
-            flex: 1
-        },
-        {
-            field: 'maks',
-            headerName: 'Maks',
+            field: 'status',
+            headerName: 'Status',
             flex: 1
         },
         {
@@ -70,14 +87,7 @@ export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                MeasurementValueGetter(params.row).kontroll(kontroller)
-        },
-        {
-            field: 'skjema',
-            headerName: 'Skjema',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                MeasurementValueGetter(params.row).skjema(skjemaer)
+                AvvikValueGetter(params.row).kontroll(kontroller)
         }
     ];
 
@@ -85,26 +95,26 @@ export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
 };
 
 export const defaultColumns: Array<string> = [
-    'type',
-    'element',
-    'resultat',
-    'enhet'
+    'beskrivelse',
+    'avvBilder',
+    'kommentar',
+    'status'
 ];
 
 interface AvvikTableProps {
-    measurements: Measurement[];
+    avvik: Avvik[];
     kontroller: Kontroll[];
     skjemaer: Skjema[];
 }
 export const AvvikTable = ({
     kontroller,
-    measurements,
+    avvik,
     skjemaer
 }: AvvikTableProps) => {
-    function CustomSort<T extends keyof Measurement>(
-        data: Measurement[],
+    function CustomSort<T extends keyof Avvik>(
+        data: Avvik[],
         field: T
-    ): Measurement[] {
+    ): Avvik[] {
         switch (field.toString()) {
             case 'kontroll':
                 return data
@@ -116,14 +126,24 @@ export const AvvikTable = ({
                             String(AvvikValueGetter(b).kontroll(kontroller))
                         )
                     );
-            case 'skjema':
+            case 'area':
                 return data
                     .slice()
                     .sort((a, b) =>
                         String(
-                            AvvikValueGetter(a).skjema(skjemaer)
+                            AvvikValueGetter(a).area(skjemaer)
                         ).localeCompare(
-                            String(AvvikValueGetter(b).skjema(skjemaer))
+                            String(AvvikValueGetter(b).area(skjemaer))
+                        )
+                    );
+            case 'omrade':
+                return data
+                    .slice()
+                    .sort((a, b) =>
+                        String(
+                            AvvikValueGetter(a).omrade(skjemaer)
+                        ).localeCompare(
+                            String(AvvikValueGetter(b).omrade(skjemaer))
                         )
                     );
             default:
@@ -133,9 +153,9 @@ export const AvvikTable = ({
 
     return (
         <BaseTable
-            data={measurements}
+            data={avvik}
             customSort={CustomSort}
-            customSortFields={['kontroll', 'skjema']}
+            customSortFields={['kontroll', 'area', 'omrade']}
         />
     );
 };

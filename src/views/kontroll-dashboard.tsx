@@ -10,6 +10,8 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
+import { PDFViewer } from '@react-pdf/renderer';
+import { Report } from '../document/report';
 import { TableContainer } from '../tables/tableContainer';
 import { useAuth } from '../hooks/useAuth';
 import { useAvvik } from '../data/avvik';
@@ -83,6 +85,9 @@ const KontrollerView = () => {
                                     ]}
                                 />
                             }>
+                            <PDFViewer height={900}>
+                                <Report />
+                            </PDFViewer>
                             {kontroller !== undefined ? (
                                 <TableContainer
                                     columns={kontrollColumns(

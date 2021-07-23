@@ -158,6 +158,10 @@ export const kontrollColumns = (
                         {
                             name: 'Rediger',
                             action: () => edit(params.row.id)
+                        },
+                        {
+                            name: 'Kontrollrapport',
+                            to: `/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/report`
                         }
                     ]}
                 />

@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormLabel from '@material-ui/core/FormLabel';
 import IconButton from '@material-ui/core/IconButton';
+import { Link } from 'react-router-dom';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -78,7 +79,8 @@ export const ColumnSelect = (): JSX.Element => {
 
 export interface ActionItem {
     name: string;
-    action: () => void;
+    action?: () => void;
+    to?: string;
 }
 interface RowActionProps {
     actionItems: Array<ActionItem>;
@@ -111,14 +113,22 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
                 onClose={close}>
                 {actionItems.map((ai) => (
                     <MenuItem key={ai.name}>
-                        <Button
-                            onClick={() => {
-                                close();
-                                ai.action();
-                            }}
-                            color="primary">
-                            {ai.name}
-                        </Button>
+                        {ai.action !== undefined ? (
+                            <Button
+                                onClick={() => {
+                                    close();
+                                    if (ai.action !== undefined) {
+                                        ai.action();
+                                    }
+                                }}
+                                color="primary">
+                                {ai.name}
+                            </Button>
+                        ) : ai.to !== undefined ? (
+                            <Link to={ai.to}>{ai.name}</Link>
+                        ) : (
+                            <div />
+                        )}
                     </MenuItem>
                 ))}
             </Menu>

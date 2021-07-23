@@ -6,6 +6,7 @@ import { KontrollContextProvider } from '../data/kontroll';
 import KontrollKlientView from '../views/kontroll-klient';
 import KontrollNewView from '../views/kontroll-new';
 import KontrollObjektView from '../views/kontroll-object';
+import KontrollReportView from '../views/kontroll-report';
 import KontrollerView from '../views/kontroll-dashboard';
 import { MainLayout } from '../layout/main';
 import { MeasurementContextProvider } from '../data/measurement';
@@ -59,6 +60,10 @@ export const Main = () => {
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/avvik`}>
                                 <AvvikView />
+                            </Route>
+                            <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/report`}>
+                                <KontrollReportView />
                             </Route>
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId`}>

@@ -1,7 +1,6 @@
 import { Document, Page, StyleSheet, Text } from '@react-pdf/renderer';
 
 import { FrontPage } from '../document/frontPage';
-import { PdfImage } from '../components/image';
 
 export const Report = () => (
     <Document>

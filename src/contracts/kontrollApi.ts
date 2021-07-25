@@ -25,6 +25,37 @@ export interface Kontroll {
     };
     avvikUtbedrere: Array<{ id: number }>;
 }
+export interface ReportKontroll {
+    id: number;
+    name: string;
+    kommentar: string;
+    done: boolean;
+    Objekt: {
+        id: number;
+        klient: {
+            id: number;
+        };
+    };
+    user: {
+        id: number;
+    };
+    avvikUtbedrere: Array<{ id: number }>;
+    rapportEgenskaper: {
+        adresse: string;
+        id: number;
+        kontaktEpost: string;
+        kontaktTelefon: string;
+        kontaktperson: string;
+        kontrollerEpost: string;
+        kontrollerTelefon: string;
+        kontrollsted: string;
+        oppdragsgiver: string;
+        postnr: string;
+        poststed: string;
+        rapportUser: { id: number };
+        sertifikater: [];
+    };
+}
 
 export interface Skjema {
     id: number;

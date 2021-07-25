@@ -20,3 +20,8 @@ export interface KontrollObjectViewParams {
     klientId: string;
     objectId: string;
 }
+export interface KontrollReportViewParams {
+    klientId: string;
+    objectId: string;
+    kontrollId: string;
+}

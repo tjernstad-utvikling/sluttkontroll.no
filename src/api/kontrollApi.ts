@@ -3,6 +3,7 @@ import {
     Klient,
     Kontroll,
     Location,
+    ReportKontroll,
     Skjema
 } from '../contracts/kontrollApi';
 
@@ -113,6 +114,25 @@ export const getKontroller = async (): Promise<{
         const { status, data } = await sluttkontrollApi.get(
             '/v3/kontroll/current-user'
         );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+export const getKontrollReportData = async (
+    kontrollId: number
+): Promise<{
+    status: number;
+    kontroll: ReportKontroll;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `/v3/kontroll/${kontrollId}/report-data`
+        );
+        console.log({ ...data });
         if (status === 200) {
             return { status, ...data };
         }

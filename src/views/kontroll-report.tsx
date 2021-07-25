@@ -7,16 +7,21 @@ import { ReportSwitch, ReportViewer } from '../components/report';
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { KontrollReportViewParams } from '../contracts/navigation';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useParams } from 'react-router-dom';
 
 const KontrollReportView = () => {
     const classes = usePageStyles();
+    const { kontrollId } = useParams<KontrollReportViewParams>();
 
     return (
         <div>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
-                <DocumentContainer reportTypeId="kontroll">
+                <DocumentContainer
+                    reportTypeId="kontroll"
+                    kontrollId={Number(kontrollId)}>
                     <Grid container spacing={0}>
                         <Grid item xs={12} sm={8}>
                             <Card title="Kontroll rapport">

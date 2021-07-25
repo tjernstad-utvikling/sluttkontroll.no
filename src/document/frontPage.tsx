@@ -1,5 +1,4 @@
 import {
-    Defs,
     G,
     Image,
     Page,
@@ -74,15 +73,16 @@ export const FrontPage = ({ frontPageData }: FrontPageProps) => {
             <View style={styles.container}>
                 <View style={styles.text}>
                     <Text style={styles.title}>{'Rapport '}</Text>
-                    <Text style={styles.title}>{'3. Partskontroll'}</Text>
+                    <Text style={styles.title}>{frontPageData.title}</Text>
                 </View>
                 <View>
                     <Image style={styles.logo} src={PdfLogo} />
                 </View>
                 <View style={[styles.text, styles.subText]}>
-                    <Text>Dato</Text>
+                    <Text>{frontPageData.kontrollsted}</Text>
+                    <Text>{frontPageData.date}</Text>
                     <Text>Den elektriske installasjon er vurdert av:</Text>
-                    <Text>User</Text>
+                    <Text>{frontPageData.user}</Text>
                 </View>
             </View>
         </Page>

@@ -2,20 +2,25 @@ import { Document, Page, StyleSheet, Text } from '@react-pdf/renderer';
 
 import { FrontPage } from '../document/frontPage';
 
-export const Report = () => (
-    <Document>
-        <FrontPage />
-        <Page>
-            <Text
-                style={styles.pageNumber}
-                render={({ pageNumber, totalPages }) =>
-                    `${pageNumber} / ${totalPages}`
-                }
-                fixed
-            />
-        </Page>
-    </Document>
-);
+interface ReportProps {
+    hasFrontPage: boolean;
+}
+export const Report = ({ hasFrontPage }: ReportProps) => {
+    return (
+        <Document>
+            {hasFrontPage && <FrontPage />}
+            <Page>
+                <Text
+                    style={styles.pageNumber}
+                    render={({ pageNumber, totalPages }) =>
+                        `${pageNumber} / ${totalPages}`
+                    }
+                    fixed
+                />
+            </Page>
+        </Document>
+    );
+};
 
 const styles = StyleSheet.create({
     body: {

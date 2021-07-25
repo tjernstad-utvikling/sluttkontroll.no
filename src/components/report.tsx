@@ -1,9 +1,13 @@
+import { ReportModules, useReport } from '../document/documentContainer';
+
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { PDFViewer } from '@react-pdf/renderer';
+import { Report } from '../document/report';
 import Switch from '@material-ui/core/Switch';
-import { useReport } from '../document/documentContainer';
+import { useWindowSize } from '../hooks/useWindowSize';
 
 interface ReportSwitchProps {
-    id: string;
+    id: ReportModules;
     label: string;
 }
 export const ReportSwitch = ({ id, label }: ReportSwitchProps) => {
@@ -15,9 +19,24 @@ export const ReportSwitch = ({ id, label }: ReportSwitchProps) => {
                     checked={visibleReportModules.includes(id)}
                     onChange={() => toggleModuleVisibilityState(id)}
                     name={id}
+                    color="primary"
                 />
             }
             label={label}
         />
+    );
+};
+
+export const ReportViewer = () => {
+    const { visibleReportModules } = useReport();
+    const size = useWindowSize();
+    return (
+        <PDFViewer height={size.height - 120}>
+            <Report
+                hasFrontPage={visibleReportModules.includes(
+                    ReportModules.frontPage
+                )}
+            />
+        </PDFViewer>
     );
 };

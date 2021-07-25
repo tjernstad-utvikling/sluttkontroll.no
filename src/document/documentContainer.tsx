@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
 
@@ -13,11 +13,11 @@ export const DocumentContainer = ({
     children: React.ReactNode;
     reportTypeId: string;
 }): JSX.Element => {
-    const [visibleReportModules, setVisibleReportModules] = useState<string[]>(
-        []
-    );
+    const [visibleReportModules, setVisibleReportModules] = useState<
+        ReportModules[]
+    >([]);
 
-    const toggleModuleVisibilityState = (id: string) => {
+    const toggleModuleVisibilityState = (id: ReportModules) => {
         if (visibleReportModules.includes(id)) {
             setVisibleReportModules(
                 visibleReportModules.filter((vrm) => vrm !== id)
@@ -36,6 +36,10 @@ export const DocumentContainer = ({
 };
 
 interface ContextInterface {
-    visibleReportModules: string[];
-    toggleModuleVisibilityState: (id: string) => void;
+    visibleReportModules: ReportModules[];
+    toggleModuleVisibilityState: (id: ReportModules) => void;
+}
+
+export enum ReportModules {
+    frontPage = 'FrontPage'
 }

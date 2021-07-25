@@ -10,7 +10,9 @@ interface ReportProps {
 export const Report = ({ hasFrontPage, frontPageData }: ReportProps) => {
     return (
         <Document>
-            {hasFrontPage && <FrontPage frontPageData={frontPageData} />}
+            {hasFrontPage && frontPageData !== undefined && (
+                <FrontPage frontPageData={frontPageData} />
+            )}
             <Page>
                 <Text
                     style={styles.pageNumber}

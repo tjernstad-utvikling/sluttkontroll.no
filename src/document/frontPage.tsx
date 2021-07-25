@@ -11,9 +11,13 @@ import {
     View
 } from '@react-pdf/renderer';
 
+import { FrontPageData } from './documentContainer';
 import PdfLogo from '../assets/pdf-logo.png';
 
-export const FrontPage = () => {
+interface FrontPageProps {
+    frontPageData: FrontPageData;
+}
+export const FrontPage = ({ frontPageData }: FrontPageProps) => {
     return (
         <Page style={{ position: 'relative', top: 0, left: 0 }}>
             <Svg>

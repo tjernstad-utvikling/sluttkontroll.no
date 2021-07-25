@@ -28,7 +28,7 @@ export const ReportSwitch = ({ id, label }: ReportSwitchProps) => {
 };
 
 export const ReportViewer = () => {
-    const { visibleReportModules } = useReport();
+    const { visibleReportModules, frontPageData } = useReport();
     const size = useWindowSize();
     return (
         <PDFViewer height={size.height - 120}>
@@ -36,6 +36,7 @@ export const ReportViewer = () => {
                 hasFrontPage={visibleReportModules.includes(
                     ReportModules.frontPage
                 )}
+                frontPageData={frontPageData}
             />
         </PDFViewer>
     );

@@ -1,14 +1,16 @@
 import { Document, Page, StyleSheet, Text } from '@react-pdf/renderer';
 
 import { FrontPage } from '../document/frontPage';
+import { FrontPageData } from './documentContainer';
 
 interface ReportProps {
     hasFrontPage: boolean;
+    frontPageData?: FrontPageData;
 }
-export const Report = ({ hasFrontPage }: ReportProps) => {
+export const Report = ({ hasFrontPage, frontPageData }: ReportProps) => {
     return (
         <Document>
-            {hasFrontPage && <FrontPage />}
+            {hasFrontPage && <FrontPage frontPageData={frontPageData} />}
             <Page>
                 <Text
                     style={styles.pageNumber}

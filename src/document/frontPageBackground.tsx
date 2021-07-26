@@ -1,6 +1,6 @@
 import { G, Path, Svg } from '@react-pdf/renderer';
 
-export const FrontPage = () => {
+export const FrontPageBackground = () => {
     return (
         <Svg>
             <G>

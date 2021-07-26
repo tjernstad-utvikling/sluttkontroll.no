@@ -2,7 +2,7 @@ import { G, Path, Svg } from '@react-pdf/renderer';
 
 export const FrontPageBackground = () => {
     return (
-        <Svg>
+        <Svg width="590" height="840">
             <G>
                 <Path
                     style={{ fill: '#1662a8', fillOpacity: 1, stroke: 'none' }}

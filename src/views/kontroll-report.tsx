@@ -38,6 +38,19 @@ const KontrollReportView = () => {
 
                                     <FrontPageAdjusting />
                                 </div>
+
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                    <ReportSwitch
+                                        id={ReportModules.infoPage}
+                                        label="Infoside"
+                                    />
+                                    {/*
+                                    <FrontPageAdjusting /> */}
+                                </div>
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={4}>

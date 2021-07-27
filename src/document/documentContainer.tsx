@@ -86,7 +86,8 @@ interface ContextInterface {
 }
 
 export enum ReportModules {
-    frontPage = 'FrontPage'
+    frontPage = 'FrontPage',
+    infoPage = 'InfoPage'
 }
 
 export interface FrontPageData {

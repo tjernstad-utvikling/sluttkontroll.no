@@ -6,6 +6,7 @@ import { ReportSwitch, ReportViewer } from '../components/report';
 
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
+import { FrontPageAdjusting } from '../document/kontrollReportData';
 import Grid from '@material-ui/core/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -25,10 +26,18 @@ const KontrollReportView = () => {
                     <Grid container spacing={0}>
                         <Grid item xs={12} sm={8}>
                             <Card title="Kontroll rapport">
-                                <ReportSwitch
-                                    id={ReportModules.frontPage}
-                                    label="Forside"
-                                />
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                    <ReportSwitch
+                                        id={ReportModules.frontPage}
+                                        label="Forside"
+                                    />
+
+                                    <FrontPageAdjusting />
+                                </div>
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={4}>

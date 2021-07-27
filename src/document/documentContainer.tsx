@@ -68,7 +68,8 @@ export const DocumentContainer = ({
             value={{
                 visibleReportModules,
                 toggleModuleVisibilityState,
-                frontPageData
+                frontPageData,
+                setFrontPageData
             }}>
             {children}
         </Context.Provider>
@@ -79,6 +80,9 @@ interface ContextInterface {
     visibleReportModules: ReportModules[];
     toggleModuleVisibilityState: (id: ReportModules) => void;
     frontPageData: FrontPageData | undefined;
+    setFrontPageData: React.Dispatch<
+        React.SetStateAction<FrontPageData | undefined>
+    >;
 }
 
 export enum ReportModules {

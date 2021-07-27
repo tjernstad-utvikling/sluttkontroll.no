@@ -37,6 +37,9 @@ export const ReportViewer = () => {
                     ReportModules.frontPage
                 )}
                 frontPageData={frontPageData}
+                hasInfoPage={visibleReportModules.includes(
+                    ReportModules.infoPage
+                )}
             />
         </PDFViewer>
     );

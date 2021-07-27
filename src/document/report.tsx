@@ -1,6 +1,6 @@
 import { Document, Page, StyleSheet, Text } from '@react-pdf/renderer';
 
-import { FrontPage } from '../document/frontPage';
+import { FrontPage } from '../document/modules/frontPage';
 import { FrontPageData } from './documentContainer';
 
 interface ReportProps {

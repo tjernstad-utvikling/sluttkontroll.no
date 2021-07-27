@@ -6,7 +6,7 @@ import { ReportSwitch, ReportViewer } from '../components/report';
 
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
-import { FrontPageAdjusting } from '../document/kontrollReportData';
+import { FrontPageAdjusting } from '../document/customizeData/kontrollReportData';
 import Grid from '@material-ui/core/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
 import { usePageStyles } from '../styles/kontroll/page';

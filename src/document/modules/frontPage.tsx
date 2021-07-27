@@ -1,8 +1,8 @@
 import { Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
-import { FrontPageBackground } from './frontPageBackground';
-import { FrontPageData } from './documentContainer';
-import PdfLogo from '../assets/pdf-logo.png';
+import { FrontPageBackground } from './utils/frontPageBackground';
+import { FrontPageData } from '../documentContainer';
+import PdfLogo from '../../assets/pdf-logo.png';
 
 interface FrontPageProps {
     frontPageData: FrontPageData;

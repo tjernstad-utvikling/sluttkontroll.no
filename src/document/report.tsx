@@ -19,7 +19,9 @@ export const Report = ({
             {hasFrontPage && frontPageData !== undefined && (
                 <FrontPage frontPageData={frontPageData} />
             )}
-            {hasInfoPage && <InfoPage />}
+            {hasInfoPage && frontPageData !== undefined && (
+                <InfoPage frontPageData={frontPageData} />
+            )}
             <Page>
                 <Text
                     style={styles.pageNumber}

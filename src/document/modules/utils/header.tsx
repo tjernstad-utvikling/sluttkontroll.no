@@ -1,17 +1,42 @@
-import { StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Image, StyleSheet, Text, View } from '@react-pdf/renderer';
 
-export const Header = () => {
+import pdfLogo from '../../../assets/pdf-logo.png';
+
+interface HeaderProps {
+    title: string;
+    location: string;
+    date: string;
+}
+export const Header = ({ title, location, date }: HeaderProps) => {
     return (
         <View style={styles.headerContainer} fixed>
             <View
                 style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    flexDirection: 'row'
+                    flexDirection: 'row',
+                    padding: 5
                 }}>
-                <Text>Test 1</Text>
+                <Image
+                    style={{ width: 80, paddingVertical: 5 }}
+                    src={pdfLogo}
+                />
+                <View
+                    style={{
+                        fontSize: 12,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                    <Text>Rapport {title}</Text>
+                    <Text>hos</Text>
+                    <Text>{location}</Text>
+                </View>
 
-                <Text>Test2</Text>
+                <Text style={{ alignSelf: 'center', fontSize: 12 }}>
+                    {date}
+                </Text>
             </View>
         </View>
     );

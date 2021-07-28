@@ -1,4 +1,4 @@
-import { Page, StyleSheet, Text } from '@react-pdf/renderer';
+import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
@@ -19,6 +19,9 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
                 location={frontPageData.kontrollsted}
                 date={frontPageData.date}
             />
+            <View style={[styles.tableBorder, { textAlign: 'center' }]}>
+                <Text>Informasjon om inspeksjonssted</Text>
+            </View>
 
             <Footer />
         </Page>
@@ -31,13 +34,8 @@ const styles = StyleSheet.create({
         paddingBottom: 45,
         paddingHorizontal: 20
     },
-    logo: {
-        marginHorizontal: 150
-    },
-    title: {
-        fontSize: '20px'
-    },
-    subText: {
-        fontSize: '30px'
+    tableBorder: {
+        borderTop: '1px solid #5b8bc9',
+        borderBottom: '1px solid #5b8bc9'
     }
 });

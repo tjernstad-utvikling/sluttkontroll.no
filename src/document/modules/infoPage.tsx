@@ -1,4 +1,4 @@
-import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Page, StyleSheet, Text } from '@react-pdf/renderer';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
@@ -9,20 +9,28 @@ interface InfoPageProps {
 }
 export const InfoPage = ({ frontPageData }: InfoPageProps) => {
     return (
-        <Page style={{ position: 'relative', top: 0, left: 0 }}>
+        <Page
+            style={[
+                { position: 'relative', top: 0, left: 0 },
+                styles.container
+            ]}>
             <Header
                 title={frontPageData.title}
                 location={frontPageData.kontrollsted}
                 date={frontPageData.date}
             />
-            <View style={styles.container}></View>
+
             <Footer />
         </Page>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {},
+    container: {
+        paddingTop: 100,
+        paddingBottom: 45,
+        paddingHorizontal: 20
+    },
     logo: {
         marginHorizontal: 150
     },

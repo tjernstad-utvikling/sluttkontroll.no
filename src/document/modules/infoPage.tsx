@@ -1,5 +1,6 @@
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
+import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
 
@@ -15,6 +16,7 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
                 date={frontPageData.date}
             />
             <View style={styles.container}></View>
+            <Footer />
         </Page>
     );
 };

@@ -20,7 +20,26 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
                 date={frontPageData.date}
             />
             <View style={[styles.tableBorder, { textAlign: 'center' }]}>
-                <Text>Informasjon om inspeksjonssted</Text>
+                <Text style={styles.tableHeader}>
+                    Informasjon om inspeksjonssted
+                </Text>
+            </View>
+            <View
+                style={{
+                    fontSize: 12,
+                    padding: 2,
+                    display: 'flex',
+                    flexDirection: 'row'
+                }}>
+                <View
+                    style={{
+                        width: '5cm'
+                    }}>
+                    <Text>Oppdragsgiver</Text>
+                </View>
+                <View>
+                    <Text>Test kunde</Text>
+                </View>
             </View>
 
             <Footer />
@@ -36,6 +55,10 @@ const styles = StyleSheet.create({
     },
     tableBorder: {
         borderTop: '1px solid #5b8bc9',
-        borderBottom: '1px solid #5b8bc9'
+        borderBottom: '1px solid #5b8bc9',
+        paddingVertical: 5
+    },
+    tableHeader: {
+        fontSize: 14
     }
 });

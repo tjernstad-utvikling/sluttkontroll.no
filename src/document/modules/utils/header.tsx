@@ -18,7 +18,7 @@ export const Header = ({ title, location, date }: HeaderProps) => {
                     padding: 5
                 }}>
                 <Image
-                    style={{ width: 80, paddingVertical: 5 }}
+                    style={{ width: 60, paddingVertical: 5 }}
                     src={pdfLogo}
                 />
                 <View
@@ -45,8 +45,8 @@ export const Header = ({ title, location, date }: HeaderProps) => {
 const styles = StyleSheet.create({
     headerContainer: {
         position: 'absolute',
-        left: 15,
-        right: 15,
+        left: 20,
+        right: 20,
         top: 15,
         borderTop: '1px solid #5b8bc9',
         borderBottom: '1px solid #5b8bc9'

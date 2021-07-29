@@ -21,11 +21,42 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
                 date={frontPageData.date}
             />
             <TableHeader title="Informasjon om inspeksjonssted" />
-            <TableRow>
+            <TableRow tint>
                 <TableCell isTitle width={180}>
                     Oppdragsgiver
                 </TableCell>
                 <TableCell>Test client AS</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell isTitle width={180}>
+                    Kontrollsted
+                </TableCell>
+                <TableCell>Test sted</TableCell>
+            </TableRow>
+            <TableRow hasBottomBorder tint>
+                <TableCell isTitle width={180}>
+                    Adresse
+                </TableCell>
+                <TableCell>Test sted</TableCell>
+            </TableRow>
+            {/* Kontaktperson under */}
+            <TableRow>
+                <TableCell isTitle width={180}>
+                    Kontaktperson
+                </TableCell>
+                <TableCell>Test sted</TableCell>
+            </TableRow>
+            <TableRow tint>
+                <TableCell isTitle width={180}>
+                    Telefonnummer
+                </TableCell>
+                <TableCell>Test sted</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell isTitle width={180}>
+                    E-postadresse
+                </TableCell>
+                <TableCell>Test sted</TableCell>
             </TableRow>
 
             <Footer />

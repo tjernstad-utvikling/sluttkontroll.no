@@ -12,15 +12,23 @@ export const TableHeader = ({ title }: TableHeaderProps) => {
 };
 interface TableRowProps {
     children: React.ReactNode;
+    tint?: boolean;
+    hasBottomBorder?: boolean;
 }
-export const TableRow = ({ children }: TableRowProps) => {
+export const TableRow = ({
+    children,
+    tint,
+    hasBottomBorder
+}: TableRowProps) => {
     return (
         <View
             style={{
                 fontSize: 12,
                 padding: 2,
                 display: 'flex',
-                flexDirection: 'row'
+                flexDirection: 'row',
+                backgroundColor: (tint && '#d7d8fc') || '',
+                borderBottom: (hasBottomBorder && '1px solid #5b8bc9') || ''
             }}>
             {children}
         </View>

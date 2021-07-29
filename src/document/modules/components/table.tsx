@@ -27,7 +27,7 @@ export const TableRow = ({
                 padding: 2,
                 display: 'flex',
                 flexDirection: 'row',
-                backgroundColor: (tint && '#d7d8fc') || '',
+                backgroundColor: (tint && '#e9eef5') || '',
                 borderBottom: (hasBottomBorder && '1px solid #5b8bc9') || ''
             }}>
             {children}
@@ -40,13 +40,6 @@ interface TableCellProps {
     isTitle?: boolean;
 }
 export const TableCell = ({ children, width, isTitle }: TableCellProps) => {
-    console.log(
-        isTitle
-            ? {
-                  fontWeight: 'bold'
-              }
-            : {}
-    );
     return (
         <View
             style={

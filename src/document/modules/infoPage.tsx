@@ -4,6 +4,7 @@ import { TableCell, TableHeader, TableRow } from './components/table';
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
+import { Spacer } from './components/spacing';
 
 interface InfoPageProps {
     frontPageData: FrontPageData;
@@ -52,11 +53,32 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
                 </TableCell>
                 <TableCell>Test sted</TableCell>
             </TableRow>
-            <TableRow>
+            <TableRow hasBottomBorder>
                 <TableCell isTitle width={180}>
                     E-postadresse
                 </TableCell>
                 <TableCell>Test sted</TableCell>
+            </TableRow>
+            <Spacer />
+
+            <TableHeader title="Kontrollert av" />
+            <TableRow tint>
+                <TableCell isTitle width={180}>
+                    Kontrollør
+                </TableCell>
+                <TableCell>Test client AS</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell isTitle width={180}>
+                    Telefonnummer
+                </TableCell>
+                <TableCell>Test client AS</TableCell>
+            </TableRow>
+            <TableRow hasBottomBorder tint>
+                <TableCell isTitle width={180}>
+                    E-postadresse
+                </TableCell>
+                <TableCell>Test client AS</TableCell>
             </TableRow>
 
             <Footer />

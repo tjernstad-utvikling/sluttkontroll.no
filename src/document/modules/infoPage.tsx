@@ -1,4 +1,5 @@
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { TableHeader, TableRow } from './components/table';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
@@ -19,18 +20,8 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
                 location={frontPageData.kontrollsted}
                 date={frontPageData.date}
             />
-            <View style={[styles.tableBorder, { textAlign: 'center' }]}>
-                <Text style={styles.tableHeader}>
-                    Informasjon om inspeksjonssted
-                </Text>
-            </View>
-            <View
-                style={{
-                    fontSize: 12,
-                    padding: 2,
-                    display: 'flex',
-                    flexDirection: 'row'
-                }}>
+            <TableHeader title="Informasjon om inspeksjonssted" />
+            <TableRow>
                 <View
                     style={{
                         width: '5cm'
@@ -40,7 +31,7 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
                 <View>
                     <Text>Test kunde</Text>
                 </View>
-            </View>
+            </TableRow>
 
             <Footer />
         </Page>

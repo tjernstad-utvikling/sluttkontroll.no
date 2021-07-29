@@ -1,9 +1,10 @@
-import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Page, StyleSheet } from '@react-pdf/renderer';
 import { TableCell, TableHeader, TableRow } from './components/table';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
+import { InfoBox } from './components/box';
 import { Spacer } from './components/spacing';
 
 interface InfoPageProps {
@@ -80,6 +81,10 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
                 </TableCell>
                 <TableCell>Test client AS</TableCell>
             </TableRow>
+
+            <Spacer />
+
+            <InfoBox />
 
             <Footer />
         </Page>

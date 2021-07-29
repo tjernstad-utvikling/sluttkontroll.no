@@ -26,13 +26,43 @@ export const TableRow = ({ children }: TableRowProps) => {
         </View>
     );
 };
+interface TableCellProps {
+    children: string;
+    width?: number;
+    isTitle?: boolean;
+}
+export const TableCell = ({ children, width, isTitle }: TableCellProps) => {
+    console.log(
+        isTitle
+            ? {
+                  fontWeight: 'bold'
+              }
+            : {}
+    );
+    return (
+        <View
+            style={
+                width !== undefined
+                    ? {
+                          width: width
+                      }
+                    : {}
+            }>
+            <Text
+                style={
+                    isTitle
+                        ? {
+                              fontWeight: 'bold'
+                          }
+                        : {}
+                }>
+                {children}
+            </Text>
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        paddingTop: 100,
-        paddingBottom: 45,
-        paddingHorizontal: 20
-    },
     tableBorder: {
         borderTop: '1px solid #5b8bc9',
         borderBottom: '1px solid #5b8bc9',

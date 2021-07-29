@@ -1,5 +1,5 @@
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
-import { TableHeader, TableRow } from './components/table';
+import { TableCell, TableHeader, TableRow } from './components/table';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
@@ -22,15 +22,10 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
             />
             <TableHeader title="Informasjon om inspeksjonssted" />
             <TableRow>
-                <View
-                    style={{
-                        width: '5cm'
-                    }}>
-                    <Text>Oppdragsgiver</Text>
-                </View>
-                <View>
-                    <Text>Test kunde</Text>
-                </View>
+                <TableCell isTitle width={180}>
+                    Oppdragsgiver
+                </TableCell>
+                <TableCell>Test client AS</TableCell>
             </TableRow>
 
             <Footer />

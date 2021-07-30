@@ -9,8 +9,9 @@ import { Spacer } from './components/spacing';
 
 interface InfoPageProps {
     frontPageData: FrontPageData;
+    infoText: string;
 }
-export const InfoPage = ({ frontPageData }: InfoPageProps) => {
+export const InfoPage = ({ frontPageData, infoText }: InfoPageProps) => {
     return (
         <Page
             style={[
@@ -84,7 +85,7 @@ export const InfoPage = ({ frontPageData }: InfoPageProps) => {
 
             <Spacer />
 
-            <InfoBox />
+            <InfoBox text={infoText} />
 
             <Footer />
         </Page>

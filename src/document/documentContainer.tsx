@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 
 import { ReportKontroll } from '../contracts/kontrollApi';
+import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -26,6 +27,7 @@ export const DocumentContainer = ({
     >([]);
     const [_kontroll, setKontroll] = useState<ReportKontroll>();
     const [frontPageData, setFrontPageData] = useState<FrontPageData>();
+    const [_infoText, setInfoText] = useState<string>();
 
     const {
         state: { users },
@@ -35,6 +37,8 @@ export const DocumentContainer = ({
     useEffectOnce(async () => {
         loadUsers();
         const { kontroll } = await getKontrollReportData(Number(kontrollId));
+        const { infoText } = await getInfoText();
+        setInfoText(infoText);
         setKontroll(kontroll);
     });
 
@@ -69,7 +73,8 @@ export const DocumentContainer = ({
                 visibleReportModules,
                 toggleModuleVisibilityState,
                 frontPageData,
-                setFrontPageData
+                setFrontPageData,
+                infoText: _infoText
             }}>
             {children}
         </Context.Provider>
@@ -79,10 +84,13 @@ export const DocumentContainer = ({
 interface ContextInterface {
     visibleReportModules: ReportModules[];
     toggleModuleVisibilityState: (id: ReportModules) => void;
+
     frontPageData: FrontPageData | undefined;
     setFrontPageData: React.Dispatch<
         React.SetStateAction<FrontPageData | undefined>
     >;
+
+    infoText: string | undefined;
 }
 
 export enum ReportModules {

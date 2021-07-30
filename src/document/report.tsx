@@ -7,20 +7,27 @@ interface ReportProps {
     hasFrontPage: boolean;
     frontPageData?: FrontPageData;
     hasInfoPage: boolean;
+    infoText: string | undefined;
 }
 export const Report = ({
     hasFrontPage,
     frontPageData,
-    hasInfoPage
+    hasInfoPage,
+    infoText
 }: ReportProps) => {
     return (
         <Document>
             {hasFrontPage && frontPageData !== undefined && (
                 <FrontPage frontPageData={frontPageData} />
             )}
-            {hasInfoPage && frontPageData !== undefined && (
-                <InfoPage frontPageData={frontPageData} />
-            )}
+            {hasInfoPage &&
+                frontPageData !== undefined &&
+                infoText !== undefined && (
+                    <InfoPage
+                        infoText={infoText}
+                        frontPageData={frontPageData}
+                    />
+                )}
         </Document>
     );
 };

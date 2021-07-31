@@ -28,9 +28,16 @@ export const ReportSwitch = ({ id, label }: ReportSwitchProps) => {
 };
 
 export const ReportViewer = () => {
-    const { visibleReportModules, frontPageData, infoText, kontroll } =
-        useReport();
+    const {
+        visibleReportModules,
+        frontPageData,
+        infoText,
+        kontroll,
+        skjemaer
+    } = useReport();
+
     const size = useWindowSize();
+
     return (
         <PDFViewer height={size.height - 120}>
             <Report
@@ -46,6 +53,7 @@ export const ReportViewer = () => {
                 hasSkjemaPage={visibleReportModules.includes(
                     ReportModules.skjemaPage
                 )}
+                skjemaer={skjemaer}
             />
         </PDFViewer>
     );

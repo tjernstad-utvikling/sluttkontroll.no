@@ -1,15 +1,17 @@
 import { Page, StyleSheet } from '@react-pdf/renderer';
-import { TableCell, TableHeader, TableRow } from './components/table';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
+import { Skjema } from '../../contracts/kontrollApi';
 import { Spacer } from './components/spacing';
-
+import { TableHeader } from './components/table';
+import {SkjemaRow} from './components/skjema';
 interface SkjemaPageProps {
     frontPageData: FrontPageData;
+    skjemaer: Skjema[];
 }
-export const SkjemaPage = ({ frontPageData }: SkjemaPageProps) => {
+export const SkjemaPage = ({ frontPageData, skjemaer }: SkjemaPageProps) => {
     return (
         <Page
             style={[
@@ -23,13 +25,9 @@ export const SkjemaPage = ({ frontPageData }: SkjemaPageProps) => {
             />
 
             <TableHeader title="Kontrollskjema" />
-            <TableRow>
-                <TableCell width={50}>T1</TableCell>
-                <TableCell width={500}>
-                    Er fordelinger/sikringsskap ok?
-                </TableCell>
-                <TableCell width={80}>Avvik (99)</TableCell>
-            </TableRow>
+            {skjemaer.map((s) => (
+                <SkjemaRow nr={s.} />
+            ))}
 
             <Spacer />
 

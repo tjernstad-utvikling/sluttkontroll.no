@@ -1,9 +1,11 @@
+import { ReportKontroll, Skjema } from '../contracts/kontrollApi';
+
 import { Document } from '@react-pdf/renderer';
 import { FrontPage } from '../document/modules/frontPage';
 import { FrontPageData } from './documentContainer';
 import { InfoPage } from '../document/modules/infoPage';
-import { ReportKontroll } from '../contracts/kontrollApi';
 import { SkjemaPage } from './modules/skjemaPage';
+
 interface ReportProps {
     hasFrontPage: boolean;
     frontPageData?: FrontPageData;
@@ -11,6 +13,7 @@ interface ReportProps {
     infoText: string | undefined;
     kontroll: ReportKontroll | undefined;
     hasSkjemaPage: boolean;
+    skjemaer: Skjema[] | undefined;
 }
 export const Report = ({
     hasFrontPage,
@@ -18,7 +21,8 @@ export const Report = ({
     hasInfoPage,
     infoText,
     kontroll,
-    hasSkjemaPage
+    hasSkjemaPage,
+    skjemaer
 }: ReportProps) => {
     return (
         <Document>
@@ -35,9 +39,14 @@ export const Report = ({
                         kontroll={kontroll}
                     />
                 )}
-            {hasSkjemaPage && frontPageData !== undefined && (
-                <SkjemaPage frontPageData={frontPageData} />
-            )}
+            {hasSkjemaPage &&
+                frontPageData !== undefined &&
+                skjemaer !== undefined && (
+                    <SkjemaPage
+                        skjemaer={skjemaer}
+                        frontPageData={frontPageData}
+                    />
+                )}
         </Document>
     );
 };

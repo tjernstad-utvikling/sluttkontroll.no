@@ -1,10 +1,11 @@
+import { ReportKontroll, Skjema } from '../contracts/kontrollApi';
 import { createContext, useContext, useState } from 'react';
 
-import { ReportKontroll } from '../contracts/kontrollApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useKontroll } from '../data/kontroll';
 import { useUser } from '../data/user';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
@@ -28,6 +29,11 @@ export const DocumentContainer = ({
     const [_kontroll, setKontroll] = useState<ReportKontroll>();
     const [frontPageData, setFrontPageData] = useState<FrontPageData>();
     const [_infoText, setInfoText] = useState<string>();
+
+    const {
+        state: { skjemaer }
+    } = useKontroll();
+    const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>();
 
     const {
         state: { users },
@@ -59,6 +65,12 @@ export const DocumentContainer = ({
         }
     }, [_kontroll, users]);
 
+    useEffect(() => {
+        if (skjemaer !== undefined) {
+            setSkjemaer(skjemaer.filter((s) => s.kontroll.id === kontrollId));
+        }
+    }, [skjemaer, kontrollId]);
+
     const toggleModuleVisibilityState = (id: ReportModules) => {
         if (visibleReportModules.includes(id)) {
             setVisibleReportModules(
@@ -77,7 +89,8 @@ export const DocumentContainer = ({
                 frontPageData,
                 setFrontPageData,
                 infoText: _infoText,
-                kontroll: _kontroll
+                kontroll: _kontroll,
+                skjemaer: _skjemaer
             }}>
             {children}
         </Context.Provider>
@@ -96,6 +109,7 @@ interface ContextInterface {
     infoText: string | undefined;
 
     kontroll: ReportKontroll | undefined;
+    skjemaer: Skjema[] | undefined;
 }
 
 export enum ReportModules {

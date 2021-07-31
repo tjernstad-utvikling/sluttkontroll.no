@@ -1,5 +1,6 @@
 import { Checklist, Skjema } from '../../contracts/kontrollApi';
 import { Page, StyleSheet, Text } from '@react-pdf/renderer';
+import { TableCell, TableHeader, TableRow } from './components/table';
 import { useEffect, useState } from 'react';
 
 import { Avvik } from '../../contracts/avvikApi';
@@ -9,7 +10,6 @@ import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
 import { SjekklisteValueGetter } from '../../tables/sjekkliste';
 import { Spacer } from './components/spacing';
-import { TableHeader } from './components/table';
 
 interface SkjemaPageProps {
     frontPageData: FrontPageData;
@@ -60,6 +60,11 @@ export const SkjemaPage = ({
                     avvik={avvik.filter((a) => a.checklist.id === checklist.id)}
                 />
             ))}
+            {skjema.kommentar !== null && skjema.kommentar !== '' && (
+                <TableRow hasBottomBorder hasTopBorder>
+                    <TableCell>{skjema.kommentar}</TableCell>
+                </TableRow>
+            )}
 
             <Spacer />
 

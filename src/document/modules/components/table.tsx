@@ -13,12 +13,14 @@ export const TableHeader = ({ title }: TableHeaderProps) => {
 interface TableRowProps {
     children: React.ReactNode;
     tint?: boolean;
+    hasTopBorder?: boolean;
     hasBottomBorder?: boolean;
 }
 export const TableRow = ({
     children,
     tint,
-    hasBottomBorder
+    hasBottomBorder,
+    hasTopBorder
 }: TableRowProps) => {
     return (
         <View
@@ -28,7 +30,8 @@ export const TableRow = ({
                 display: 'flex',
                 flexDirection: 'row',
                 backgroundColor: (tint && '#e9eef5') || '',
-                borderBottom: (hasBottomBorder && '1px solid #5b8bc9') || ''
+                borderBottom: (hasBottomBorder && '1px solid #5b8bc9') || '',
+                borderTop: (hasTopBorder && '1px solid #5b8bc9') || ''
             }}>
             {children}
         </View>

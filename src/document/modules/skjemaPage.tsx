@@ -1,10 +1,12 @@
 import { Checklist, Skjema } from '../../contracts/kontrollApi';
 import { Page, StyleSheet } from '@react-pdf/renderer';
+import { useEffect, useState } from 'react';
 
 import { ChecklistRow } from './components/skjema';
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
+import { SjekklisteValueGetter } from '../../tables/sjekkliste';
 import { Spacer } from './components/spacing';
 import { TableHeader } from './components/table';
 
@@ -18,6 +20,19 @@ export const SkjemaPage = ({
     skjema,
     checklists
 }: SkjemaPageProps) => {
+    const [_checklists, setChecklists] = useState<Checklist[]>([]);
+
+    useEffect(() => {
+        setChecklists(
+            checklists.sort((a, b) =>
+                String(SjekklisteValueGetter(a).prosedyreNr()).localeCompare(
+                    String(SjekklisteValueGetter(b).prosedyreNr()),
+                    undefined,
+                    { numeric: true, sensitivity: 'base' }
+                )
+            )
+        );
+    }, [checklists]);
     return (
         <Page
             style={[
@@ -31,7 +46,7 @@ export const SkjemaPage = ({
             />
 
             <TableHeader title="Kontrollskjema" />
-            {checklists.map((checklist, index) => (
+            {_checklists.map((checklist, index) => (
                 <ChecklistRow
                     isEvenIndex={index % 2 === 0}
                     key={checklist.id}

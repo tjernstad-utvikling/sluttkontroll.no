@@ -1,8 +1,10 @@
 import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
 import { createContext, useContext, useState } from 'react';
 
+import { Avvik } from '../contracts/avvikApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
+import { useAvvik } from '../data/avvik';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
@@ -39,6 +41,11 @@ export const DocumentContainer = ({
     const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>();
 
     const {
+        state: { avvik },
+        loadAvvikByKontroller
+    } = useAvvik();
+
+    const {
         state: { users },
         loadUsers
     } = useUser();
@@ -51,6 +58,7 @@ export const DocumentContainer = ({
         setKontroll(kontroll);
 
         loadKontrollerByObjekt(objectId);
+        loadAvvikByKontroller([kontroll]);
     });
 
     useEffect(() => {
@@ -96,7 +104,8 @@ export const DocumentContainer = ({
                 infoText: _infoText,
                 kontroll: _kontroll,
                 skjemaer: _skjemaer,
-                checklists
+                checklists,
+                avvik
             }}>
             {children}
         </Context.Provider>
@@ -117,6 +126,8 @@ interface ContextInterface {
     kontroll: ReportKontroll | undefined;
     skjemaer: Skjema[] | undefined;
     checklists: Checklist[] | undefined;
+
+    avvik: Avvik[] | undefined;
 }
 
 export enum ReportModules {

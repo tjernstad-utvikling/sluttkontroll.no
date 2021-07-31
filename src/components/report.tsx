@@ -34,7 +34,8 @@ export const ReportViewer = () => {
         infoText,
         kontroll,
         skjemaer,
-        checklists
+        checklists,
+        avvik
     } = useReport();
 
     const size = useWindowSize();
@@ -56,6 +57,7 @@ export const ReportViewer = () => {
                 )}
                 skjemaer={skjemaer}
                 checklists={checklists}
+                avvik={avvik}
             />
         </PDFViewer>
     );

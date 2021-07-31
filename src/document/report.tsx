@@ -1,5 +1,6 @@
 import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
 
+import { Avvik } from '../contracts/avvikApi';
 import { Document } from '@react-pdf/renderer';
 import { FrontPage } from '../document/modules/frontPage';
 import { FrontPageData } from './documentContainer';
@@ -15,6 +16,7 @@ interface ReportProps {
     hasSkjemaPage: boolean;
     skjemaer: Skjema[] | undefined;
     checklists: Checklist[] | undefined;
+    avvik: Avvik[] | undefined;
 }
 export const Report = ({
     hasFrontPage,
@@ -24,7 +26,8 @@ export const Report = ({
     kontroll,
     hasSkjemaPage,
     skjemaer,
-    checklists
+    checklists,
+    avvik
 }: ReportProps) => {
     return (
         <Document>
@@ -45,6 +48,7 @@ export const Report = ({
                 frontPageData !== undefined &&
                 skjemaer !== undefined &&
                 checklists !== undefined &&
+                avvik !== undefined &&
                 skjemaer.map((s) => (
                     <SkjemaPage
                         key={s.id}
@@ -52,6 +56,7 @@ export const Report = ({
                         checklists={checklists.filter(
                             (ch) => ch.skjema.id === s.id
                         )}
+                        avvik={avvik}
                         frontPageData={frontPageData}
                     />
                 ))}

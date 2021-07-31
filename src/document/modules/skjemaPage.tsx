@@ -2,6 +2,7 @@ import { Checklist, Skjema } from '../../contracts/kontrollApi';
 import { Page, StyleSheet, Text } from '@react-pdf/renderer';
 import { useEffect, useState } from 'react';
 
+import { Avvik } from '../../contracts/avvikApi';
 import { ChecklistRow } from './components/skjema';
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
@@ -14,11 +15,13 @@ interface SkjemaPageProps {
     frontPageData: FrontPageData;
     skjema: Skjema;
     checklists: Checklist[];
+    avvik: Avvik[];
 }
 export const SkjemaPage = ({
     frontPageData,
     skjema,
-    checklists
+    checklists,
+    avvik
 }: SkjemaPageProps) => {
     const [_checklists, setChecklists] = useState<Checklist[]>([]);
 
@@ -54,7 +57,7 @@ export const SkjemaPage = ({
                     key={checklist.id}
                     nr={checklist.checkpoint.prosedyreNr}
                     prosedyre={checklist.checkpoint.prosedyre}
-                    status={'OK still'}
+                    avvik={avvik.filter((a) => a.checklist.id === checklist.id)}
                 />
             ))}
 

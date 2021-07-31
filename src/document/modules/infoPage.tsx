@@ -5,13 +5,19 @@ import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
 import { InfoBox } from './components/box';
+import { ReportKontroll } from '../../contracts/kontrollApi';
 import { Spacer } from './components/spacing';
 
 interface InfoPageProps {
     frontPageData: FrontPageData;
     infoText: string;
+    kontroll: ReportKontroll;
 }
-export const InfoPage = ({ frontPageData, infoText }: InfoPageProps) => {
+export const InfoPage = ({
+    frontPageData,
+    infoText,
+    kontroll
+}: InfoPageProps) => {
     return (
         <Page
             style={[
@@ -28,38 +34,44 @@ export const InfoPage = ({ frontPageData, infoText }: InfoPageProps) => {
                 <TableCell isTitle width={180}>
                     Oppdragsgiver
                 </TableCell>
-                <TableCell>Test client AS</TableCell>
+                <TableCell>
+                    {kontroll.rapportEgenskaper.oppdragsgiver}
+                </TableCell>
             </TableRow>
             <TableRow>
                 <TableCell isTitle width={180}>
                     Kontrollsted
                 </TableCell>
-                <TableCell>Test sted</TableCell>
+                <TableCell>{kontroll.rapportEgenskaper.kontrollsted}</TableCell>
             </TableRow>
             <TableRow hasBottomBorder tint>
                 <TableCell isTitle width={180}>
                     Adresse
                 </TableCell>
-                <TableCell>Test sted</TableCell>
+                <TableCell>{kontroll.rapportEgenskaper.adresse}</TableCell>
             </TableRow>
             {/* Kontaktperson under */}
             <TableRow>
                 <TableCell isTitle width={180}>
                     Kontaktperson
                 </TableCell>
-                <TableCell>Test sted</TableCell>
+                <TableCell>
+                    {kontroll.rapportEgenskaper.kontaktperson}
+                </TableCell>
             </TableRow>
             <TableRow tint>
                 <TableCell isTitle width={180}>
                     Telefonnummer
                 </TableCell>
-                <TableCell>Test sted</TableCell>
+                <TableCell>
+                    {kontroll.rapportEgenskaper.kontaktTelefon}
+                </TableCell>
             </TableRow>
             <TableRow hasBottomBorder>
                 <TableCell isTitle width={180}>
                     E-postadresse
                 </TableCell>
-                <TableCell>Test sted</TableCell>
+                <TableCell>{kontroll.rapportEgenskaper.kontaktEpost}</TableCell>
             </TableRow>
             <Spacer />
 

@@ -13,7 +13,8 @@ export function parseMd(md: string): Array<{ t: string; v: string }> {
 
     md = `[${md}]`;
     md = md.replace(/,]$/gm, ']');
-    md = md.replace(/\r?\n|\r/g, '');
-    console.log(md);
+
+    md = md.replace(/\r?\n|\r/g, ''); // remove line breaks that causes invalid json
+
     return JSON.parse(`${md}`);
 }

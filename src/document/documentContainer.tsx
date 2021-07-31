@@ -74,7 +74,8 @@ export const DocumentContainer = ({
                 toggleModuleVisibilityState,
                 frontPageData,
                 setFrontPageData,
-                infoText: _infoText
+                infoText: _infoText,
+                kontroll: _kontroll
             }}>
             {children}
         </Context.Provider>
@@ -91,6 +92,8 @@ interface ContextInterface {
     >;
 
     infoText: string | undefined;
+
+    kontroll: ReportKontroll | undefined;
 }
 
 export enum ReportModules {

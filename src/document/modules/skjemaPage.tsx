@@ -31,8 +31,9 @@ export const SkjemaPage = ({
             />
 
             <TableHeader title="Kontrollskjema" />
-            {checklists.map((checklist) => (
+            {checklists.map((checklist, index) => (
                 <ChecklistRow
+                    isEvenIndex={index % 2 === 0}
                     key={checklist.id}
                     nr={checklist.checkpoint.prosedyreNr}
                     prosedyre={checklist.checkpoint.prosedyre}

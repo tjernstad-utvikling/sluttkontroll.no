@@ -52,7 +52,7 @@ export interface ReportKontroll {
         oppdragsgiver: string;
         postnr: string;
         poststed: string;
-        rapportUser: { id: number };
+        rapportUser: { email: string; id: number; name: string; phone: string };
         sertifikater: [];
     };
 }

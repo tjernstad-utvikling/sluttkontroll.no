@@ -44,7 +44,9 @@ export const DocumentContainer = ({
 
     useEffect(() => {
         if (users !== undefined) {
-            const user = users.find((u) => u.id === _kontroll?.user.id);
+            const user = users.find(
+                (u) => u.id === _kontroll?.rapportEgenskaper.rapportUser.id
+            );
 
             if (user !== undefined && _kontroll !== undefined) {
                 setFrontPageData({

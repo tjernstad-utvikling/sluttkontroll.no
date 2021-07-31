@@ -80,19 +80,25 @@ export const InfoPage = ({
                 <TableCell isTitle width={180}>
                     Kontrollør
                 </TableCell>
-                <TableCell>Test client AS</TableCell>
+                <TableCell>
+                    {kontroll.rapportEgenskaper.rapportUser.name}
+                </TableCell>
             </TableRow>
             <TableRow>
                 <TableCell isTitle width={180}>
                     Telefonnummer
                 </TableCell>
-                <TableCell>Test client AS</TableCell>
+                <TableCell>
+                    {kontroll.rapportEgenskaper.rapportUser.phone}
+                </TableCell>
             </TableRow>
             <TableRow hasBottomBorder tint>
                 <TableCell isTitle width={180}>
                     E-postadresse
                 </TableCell>
-                <TableCell>Test client AS</TableCell>
+                <TableCell>
+                    {kontroll.rapportEgenskaper.rapportUser.email}
+                </TableCell>
             </TableRow>
 
             <Spacer />

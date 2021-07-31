@@ -1,5 +1,5 @@
 import { Checklist, Skjema } from '../../contracts/kontrollApi';
-import { Page, StyleSheet } from '@react-pdf/renderer';
+import { Page, StyleSheet, Text } from '@react-pdf/renderer';
 import { useEffect, useState } from 'react';
 
 import { ChecklistRow } from './components/skjema';
@@ -44,7 +44,9 @@ export const SkjemaPage = ({
                 location={frontPageData.kontrollsted}
                 date={frontPageData.date}
             />
-
+            <Text style={{ paddingVertical: 5 }}>
+                {skjema.area}, {skjema.omrade}
+            </Text>
             <TableHeader title="Kontrollskjema" />
             {_checklists.map((checklist, index) => (
                 <ChecklistRow

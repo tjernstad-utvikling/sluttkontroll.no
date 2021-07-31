@@ -42,13 +42,13 @@ interface TableCellProps {
 export const TableCell = ({ children, width, isTitle }: TableCellProps) => {
     return (
         <View
-            style={
+            style={[
                 width !== undefined
                     ? {
                           width: width
                       }
-                    : {}
-            }>
+                    : { flexGrow: 1 }
+            ]}>
             <Text
                 style={
                     isTitle

@@ -51,6 +51,18 @@ const KontrollReportView = () => {
                                     {/*
                                     <FrontPageAdjusting /> */}
                                 </div>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                    <ReportSwitch
+                                        id={ReportModules.skjemaPage}
+                                        label="Kontrolldokumentasjon"
+                                    />
+                                    {/*
+                                    <FrontPageAdjusting /> */}
+                                </div>
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={4}>

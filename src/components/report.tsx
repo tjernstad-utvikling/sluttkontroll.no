@@ -43,6 +43,9 @@ export const ReportViewer = () => {
                 )}
                 infoText={infoText}
                 kontroll={kontroll}
+                hasSkjemaPage={visibleReportModules.includes(
+                    ReportModules.skjemaPage
+                )}
             />
         </PDFViewer>
     );

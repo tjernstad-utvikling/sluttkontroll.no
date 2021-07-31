@@ -3,20 +3,22 @@ import { FrontPage } from '../document/modules/frontPage';
 import { FrontPageData } from './documentContainer';
 import { InfoPage } from '../document/modules/infoPage';
 import { ReportKontroll } from '../contracts/kontrollApi';
-
+import { SkjemaPage } from './modules/skjemaPage';
 interface ReportProps {
     hasFrontPage: boolean;
     frontPageData?: FrontPageData;
     hasInfoPage: boolean;
     infoText: string | undefined;
     kontroll: ReportKontroll | undefined;
+    hasSkjemaPage: boolean;
 }
 export const Report = ({
     hasFrontPage,
     frontPageData,
     hasInfoPage,
     infoText,
-    kontroll
+    kontroll,
+    hasSkjemaPage
 }: ReportProps) => {
     return (
         <Document>
@@ -33,6 +35,9 @@ export const Report = ({
                         kontroll={kontroll}
                     />
                 )}
+            {hasSkjemaPage && frontPageData !== undefined && (
+                <SkjemaPage frontPageData={frontPageData} />
+            )}
         </Document>
     );
 };

@@ -1,4 +1,4 @@
-import { ReportKontroll, Skjema } from '../contracts/kontrollApi';
+import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
 import { createContext, useContext, useState } from 'react';
 
 import { getInfoText } from '../api/settingsApi';
@@ -17,11 +17,13 @@ export const useReport = () => {
 export const DocumentContainer = ({
     children,
     reportTypeId,
-    kontrollId
+    kontrollId,
+    objectId
 }: {
     children: React.ReactNode;
     reportTypeId: string;
     kontrollId: number;
+    objectId: number;
 }): JSX.Element => {
     const [visibleReportModules, setVisibleReportModules] = useState<
         ReportModules[]
@@ -31,7 +33,8 @@ export const DocumentContainer = ({
     const [_infoText, setInfoText] = useState<string>();
 
     const {
-        state: { skjemaer }
+        state: { skjemaer, checklists },
+        loadKontrollerByObjekt
     } = useKontroll();
     const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>();
 
@@ -46,6 +49,8 @@ export const DocumentContainer = ({
         const { infoText } = await getInfoText();
         setInfoText(infoText);
         setKontroll(kontroll);
+
+        loadKontrollerByObjekt(objectId);
     });
 
     useEffect(() => {
@@ -90,7 +95,8 @@ export const DocumentContainer = ({
                 setFrontPageData,
                 infoText: _infoText,
                 kontroll: _kontroll,
-                skjemaer: _skjemaer
+                skjemaer: _skjemaer,
+                checklists
             }}>
             {children}
         </Context.Provider>
@@ -110,6 +116,7 @@ interface ContextInterface {
 
     kontroll: ReportKontroll | undefined;
     skjemaer: Skjema[] | undefined;
+    checklists: Checklist[] | undefined;
 }
 
 export enum ReportModules {

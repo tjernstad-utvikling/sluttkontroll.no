@@ -1,11 +1,11 @@
 import { TableCell, TableRow } from './table';
 
-interface SkjemaRowProps {
+interface ChecklistRowProps {
     nr: string;
     prosedyre: string;
     status: string;
 }
-export const SkjemaRow = ({ nr, prosedyre, status }: SkjemaRowProps) => {
+export const ChecklistRow = ({ nr, prosedyre, status }: ChecklistRowProps) => {
     return (
         <TableRow>
             <TableCell width={50}>{nr}</TableCell>

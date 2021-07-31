@@ -1,17 +1,23 @@
+import { Checklist, Skjema } from '../../contracts/kontrollApi';
 import { Page, StyleSheet } from '@react-pdf/renderer';
 
+import { ChecklistRow } from './components/skjema';
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
-import { Skjema } from '../../contracts/kontrollApi';
 import { Spacer } from './components/spacing';
 import { TableHeader } from './components/table';
-import {SkjemaRow} from './components/skjema';
+
 interface SkjemaPageProps {
     frontPageData: FrontPageData;
-    skjemaer: Skjema[];
+    skjema: Skjema;
+    checklists: Checklist[];
 }
-export const SkjemaPage = ({ frontPageData, skjemaer }: SkjemaPageProps) => {
+export const SkjemaPage = ({
+    frontPageData,
+    skjema,
+    checklists
+}: SkjemaPageProps) => {
     return (
         <Page
             style={[
@@ -25,8 +31,13 @@ export const SkjemaPage = ({ frontPageData, skjemaer }: SkjemaPageProps) => {
             />
 
             <TableHeader title="Kontrollskjema" />
-            {skjemaer.map((s) => (
-                <SkjemaRow nr={s.} />
+            {checklists.map((checklist) => (
+                <ChecklistRow
+                    key={checklist.id}
+                    nr={checklist.checkpoint.prosedyreNr}
+                    prosedyre={checklist.checkpoint.prosedyre}
+                    status={'OK still'}
+                />
             ))}
 
             <Spacer />

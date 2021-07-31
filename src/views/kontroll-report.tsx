@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom';
 
 const KontrollReportView = () => {
     const classes = usePageStyles();
-    const { kontrollId } = useParams<KontrollReportViewParams>();
+    const { kontrollId, objectId } = useParams<KontrollReportViewParams>();
 
     return (
         <div>
@@ -22,7 +22,8 @@ const KontrollReportView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <DocumentContainer
                     reportTypeId="kontroll"
-                    kontrollId={Number(kontrollId)}>
+                    kontrollId={Number(kontrollId)}
+                    objectId={Number(objectId)}>
                     <Grid container spacing={0}>
                         <Grid item xs={12} sm={8}>
                             <Card title="Kontroll rapport">

@@ -54,18 +54,34 @@ export const ReportViewer = () => {
                 )}
                 infoText={infoText}
                 kontroll={kontroll}
-                hasSkjemaPage={visibleReportModules.includes(
-                    ReportModules.skjemaPage
-                )}
+                hasSkjemaPage={
+                    visibleReportModules.includes(ReportModules.skjemaPage) &&
+                    visibleReportModules.includes(ReportModules.controlModule)
+                }
                 skjemaer={skjemaer}
                 checklists={checklists}
                 avvik={avvik}
-                hasMeasurementPage={visibleReportModules.includes(
-                    ReportModules.measurementPage
-                )}
+                hasMeasurementPage={
+                    visibleReportModules.includes(
+                        ReportModules.measurementPage
+                    ) &&
+                    visibleReportModules.includes(ReportModules.controlModule)
+                }
                 measurements={measurements}
                 measurementTypes={measurementTypes}
             />
         </PDFViewer>
     );
+};
+
+interface BlockProps {
+    dependency: ReportModules;
+    children: React.ReactNode;
+}
+export const Block = ({ dependency, children }: BlockProps) => {
+    const { visibleReportModules } = useReport();
+    if (visibleReportModules.includes(dependency)) {
+        return <>{children}</>;
+    }
+    return <div />;
 };

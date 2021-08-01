@@ -1,8 +1,8 @@
+import { Block, ReportSwitch, ReportViewer } from '../components/report';
 import {
     DocumentContainer,
     ReportModules
 } from '../document/documentContainer';
-import { ReportSwitch, ReportViewer } from '../components/report';
 
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
@@ -39,7 +39,6 @@ const KontrollReportView = () => {
 
                                     <FrontPageAdjusting />
                                 </div>
-
                                 <div
                                     style={{
                                         display: 'flex',
@@ -58,24 +57,42 @@ const KontrollReportView = () => {
                                         justifyContent: 'space-between'
                                     }}>
                                     <ReportSwitch
-                                        id={ReportModules.skjemaPage}
+                                        id={ReportModules.controlModule}
                                         label="Kontrolldokumentasjon"
                                     />
                                     {/*
                                     <FrontPageAdjusting /> */}
                                 </div>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between'
-                                    }}>
-                                    <ReportSwitch
-                                        id={ReportModules.measurementPage}
-                                        label="Måleprotokoll"
-                                    />
-                                    {/*
+                                <Block dependency={ReportModules.controlModule}>
+                                    <div style={{ paddingLeft: 30 }}>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}>
+                                            <ReportSwitch
+                                                id={ReportModules.skjemaPage}
+                                                label="KontrollSkjema"
+                                            />
+                                            {/*
                                     <FrontPageAdjusting /> */}
-                                </div>
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}>
+                                            <ReportSwitch
+                                                id={
+                                                    ReportModules.measurementPage
+                                                }
+                                                label="Måleprotokoll"
+                                            />
+                                            {/*
+                                    <FrontPageAdjusting /> */}
+                                        </div>
+                                    </div>
+                                </Block>
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={4}>

@@ -144,6 +144,7 @@ interface ContextInterface {
 export enum ReportModules {
     frontPage = 'FrontPage',
     infoPage = 'InfoPage',
+    controlModule = 'controlModule',
     skjemaPage = 'skjemaPage',
     measurementPage = 'measurementPage'
 }

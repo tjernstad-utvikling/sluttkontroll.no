@@ -1,8 +1,8 @@
 import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
+import { Measurement, MeasurementType } from '../contracts/measurementApi';
 import { createContext, useContext, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
-import { Measurement } from '../contracts/measurementApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
 import { useAvvik } from '../data/avvik';
@@ -48,7 +48,7 @@ export const DocumentContainer = ({
     } = useAvvik();
 
     const {
-        state: { measurements }
+        state: { measurements, measurementTypes }
     } = useMeasurement();
 
     const {
@@ -112,7 +112,8 @@ export const DocumentContainer = ({
                 skjemaer: _skjemaer,
                 checklists,
                 avvik,
-                measurements
+                measurements,
+                measurementTypes
             }}>
             {children}
         </Context.Provider>
@@ -137,6 +138,7 @@ interface ContextInterface {
     avvik: Avvik[] | undefined;
 
     measurements: Measurement[] | undefined;
+    measurementTypes: MeasurementType[] | undefined;
 }
 
 export enum ReportModules {

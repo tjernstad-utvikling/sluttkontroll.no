@@ -1,10 +1,10 @@
+import { Measurement, MeasurementType } from '../../contracts/measurementApi';
 import { Page, StyleSheet, Text } from '@react-pdf/renderer';
 import { TableCell, TableRow } from './components/table';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
-import { Measurement } from '../../contracts/measurementApi';
 import { Skjema } from '../../contracts/kontrollApi';
 import { Spacer } from './components/spacing';
 
@@ -13,12 +13,14 @@ interface MeasurementPageProps {
     skjema: Skjema;
     measurements: Measurement[];
     index: number;
+    measurementTypes: MeasurementType[];
 }
 export const MeasurementPage = ({
     frontPageData,
     skjema,
     measurements,
-    index
+    index,
+    measurementTypes
 }: MeasurementPageProps) => {
     return (
         <Page
@@ -52,16 +54,31 @@ export const MeasurementPage = ({
                 </TableCell>
                 <TableCell isTitle>Min</TableCell>
             </TableRow>
-            {measurements.map((m, i) => (
-                <TableRow tint={!(i % 2 === 0)}>
-                    <TableCell
-                        width={230}>{`${m.type} / ${m.element}`}</TableCell>
-                    <TableCell width={90}>{m.resultat}</TableCell>
-                    <TableCell width={50}>{m.enhet}</TableCell>
-                    <TableCell width={90}>{m.maks}</TableCell>
-                    <TableCell width={90}>{m.min}</TableCell>
-                </TableRow>
-            ))}
+            {measurements.map((m, i) => {
+                const mt = measurementTypes.find(
+                    (mt) => mt.shortName === m.type
+                );
+                let typeName = m.type;
+                if (mt !== undefined) {
+                    if (mt.hasPol) {
+                        typeName = mt.longName.replace('#', `${m.pol}p`);
+                    } else {
+                        typeName = mt.longName;
+                    }
+                }
+                return (
+                    <TableRow key={m.id} tint={!(i % 2 === 0)}>
+                        <TableCell
+                            width={
+                                230
+                            }>{`${typeName} / ${m.element}`}</TableCell>
+                        <TableCell width={90}>{m.resultat}</TableCell>
+                        <TableCell width={50}>{m.enhet}</TableCell>
+                        <TableCell width={90}>{m.maks}</TableCell>
+                        <TableCell width={90}>{m.min}</TableCell>
+                    </TableRow>
+                );
+            })}
 
             <Spacer />
 

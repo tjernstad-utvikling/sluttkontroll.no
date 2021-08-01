@@ -1,11 +1,11 @@
 import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
+import { Measurement, MeasurementType } from '../contracts/measurementApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { Document } from '@react-pdf/renderer';
 import { FrontPage } from '../document/modules/frontPage';
 import { FrontPageData } from './documentContainer';
 import { InfoPage } from '../document/modules/infoPage';
-import { Measurement } from '../contracts/measurementApi';
 import { MeasurementPage } from './modules/measurementPage';
 import { SkjemaPage } from './modules/skjemaPage';
 
@@ -21,6 +21,7 @@ interface ReportProps {
     avvik: Avvik[] | undefined;
     hasMeasurementPage: boolean;
     measurements: Measurement[] | undefined;
+    measurementTypes: MeasurementType[] | undefined;
 }
 export const Report = ({
     hasFrontPage,
@@ -33,7 +34,8 @@ export const Report = ({
     checklists,
     avvik,
     hasMeasurementPage,
-    measurements
+    measurements,
+    measurementTypes
 }: ReportProps) => {
     return (
         <Document>
@@ -70,6 +72,7 @@ export const Report = ({
                 frontPageData !== undefined &&
                 skjemaer !== undefined &&
                 measurements !== undefined &&
+                measurementTypes !== undefined &&
                 skjemaer.map((s, i) => (
                     <MeasurementPage
                         key={s.id}
@@ -79,6 +82,7 @@ export const Report = ({
                             (m) => m.Skjema.id === s.id
                         )}
                         frontPageData={frontPageData}
+                        measurementTypes={measurementTypes}
                     />
                 ))}
         </Document>

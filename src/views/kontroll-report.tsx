@@ -5,7 +5,8 @@ import {
 } from '../document/documentContainer';
 import {
     FrontPageAdjusting,
-    KontrollDocAdjusting
+    KontrollDocAdjusting,
+    MeasurementAdjusting
 } from '../document/customizeData/kontrollReportData';
 
 import { Card } from '../components/card';
@@ -93,8 +94,7 @@ const KontrollReportView = () => {
                                                 }
                                                 label="Måleprotokoll"
                                             />
-                                            {/*
-                                    <FrontPageAdjusting /> */}
+                                            <MeasurementAdjusting />
                                         </div>
                                     </div>
                                 </Block>

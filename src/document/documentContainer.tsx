@@ -156,7 +156,8 @@ export enum ReportModules {
     infoPage = 'InfoPage',
     controlModule = 'controlModule',
     skjemaPage = 'skjemaPage',
-    measurementPage = 'measurementPage'
+    measurementPage = 'measurementPage',
+    inlineMeasurementModule = 'inlineMeasurementModule'
 }
 
 export interface FrontPageData {

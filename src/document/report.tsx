@@ -20,6 +20,7 @@ interface ReportProps {
     checklists: Checklist[] | undefined;
     avvik: Avvik[] | undefined;
     hasMeasurementPage: boolean;
+    hasInlineMeasurements: boolean;
     measurements: Measurement[] | undefined;
     measurementTypes: MeasurementType[] | undefined;
 }
@@ -34,6 +35,7 @@ export const Report = ({
     checklists,
     avvik,
     hasMeasurementPage,
+    hasInlineMeasurements,
     measurements,
     measurementTypes
 }: ReportProps) => {
@@ -57,6 +59,8 @@ export const Report = ({
                 skjemaer !== undefined &&
                 checklists !== undefined &&
                 avvik !== undefined &&
+                measurements !== undefined &&
+                measurementTypes !== undefined &&
                 skjemaer.map((s) => (
                     <SkjemaPage
                         key={s.id}
@@ -66,6 +70,11 @@ export const Report = ({
                         )}
                         avvik={avvik}
                         frontPageData={frontPageData}
+                        hasInlineMeasurements={hasInlineMeasurements}
+                        measurements={measurements.filter(
+                            (m) => m.Skjema.id === s.id
+                        )}
+                        measurementTypes={measurementTypes}
                     />
                 ))}
             {hasMeasurementPage &&

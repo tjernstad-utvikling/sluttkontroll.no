@@ -65,7 +65,20 @@ export const ReportViewer = () => {
                     visibleReportModules.includes(
                         ReportModules.measurementPage
                     ) &&
-                    visibleReportModules.includes(ReportModules.controlModule)
+                    visibleReportModules.includes(
+                        ReportModules.controlModule
+                    ) &&
+                    !visibleReportModules.includes(
+                        ReportModules.inlineMeasurementModule
+                    )
+                }
+                hasInlineMeasurements={
+                    visibleReportModules.includes(
+                        ReportModules.measurementPage
+                    ) &&
+                    visibleReportModules.includes(
+                        ReportModules.inlineMeasurementModule
+                    )
                 }
                 measurements={measurements}
                 measurementTypes={measurementTypes}

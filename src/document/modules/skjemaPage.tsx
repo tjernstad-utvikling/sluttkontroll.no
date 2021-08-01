@@ -1,4 +1,5 @@
 import { Checklist, Skjema } from '../../contracts/kontrollApi';
+import { Measurement, MeasurementType } from '../../contracts/measurementApi';
 import { Page, StyleSheet, Text } from '@react-pdf/renderer';
 import { TableCell, TableHeader, TableRow } from './components/table';
 import { useEffect, useState } from 'react';
@@ -8,6 +9,7 @@ import { ChecklistRow } from './components/skjema';
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
+import { MeasurementModule } from './components/measurement';
 import { SjekklisteValueGetter } from '../../tables/sjekkliste';
 import { Spacer } from './components/spacing';
 
@@ -16,12 +18,18 @@ interface SkjemaPageProps {
     skjema: Skjema;
     checklists: Checklist[];
     avvik: Avvik[];
+    hasInlineMeasurements: boolean;
+    measurements: Measurement[];
+    measurementTypes: MeasurementType[];
 }
 export const SkjemaPage = ({
     frontPageData,
     skjema,
     checklists,
-    avvik
+    avvik,
+    hasInlineMeasurements,
+    measurements,
+    measurementTypes
 }: SkjemaPageProps) => {
     const [_checklists, setChecklists] = useState<Checklist[]>([]);
 
@@ -67,6 +75,15 @@ export const SkjemaPage = ({
             )}
 
             <Spacer />
+            {hasInlineMeasurements && (
+                <>
+                    <Text style={{ paddingVertical: 5 }}>Måleprotokoll</Text>
+                    <MeasurementModule
+                        measurementTypes={measurementTypes}
+                        measurements={measurements}
+                    />
+                </>
+            )}
 
             <Footer />
         </Page>

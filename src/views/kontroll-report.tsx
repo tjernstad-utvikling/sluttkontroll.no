@@ -3,10 +3,13 @@ import {
     DocumentContainer,
     ReportModules
 } from '../document/documentContainer';
+import {
+    FrontPageAdjusting,
+    KontrollDocAdjusting
+} from '../document/customizeData/kontrollReportData';
 
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
-import { FrontPageAdjusting } from '../document/customizeData/kontrollReportData';
 import Grid from '@material-ui/core/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -60,8 +63,10 @@ const KontrollReportView = () => {
                                         id={ReportModules.controlModule}
                                         label="Kontrolldokumentasjon"
                                     />
-                                    {/*
-                                    <FrontPageAdjusting /> */}
+
+                                    <KontrollDocAdjusting
+                                        kontrollId={Number(kontrollId)}
+                                    />
                                 </div>
                                 <Block dependency={ReportModules.controlModule}>
                                     <div style={{ paddingLeft: 30 }}>

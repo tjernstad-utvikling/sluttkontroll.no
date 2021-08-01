@@ -110,6 +110,7 @@ export const DocumentContainer = ({
                 infoText: _infoText,
                 kontroll: _kontroll,
                 skjemaer: _skjemaer,
+                setSkjemaer,
                 checklists,
                 avvik,
                 measurements,
@@ -134,6 +135,7 @@ interface ContextInterface {
     kontroll: ReportKontroll | undefined;
     skjemaer: Skjema[] | undefined;
     checklists: Checklist[] | undefined;
+    setSkjemaer: React.Dispatch<React.SetStateAction<Skjema[] | undefined>>;
 
     avvik: Avvik[] | undefined;
 

@@ -61,31 +61,31 @@ export const KontrollDocAdjusting = ({
                     <DialogContentText>
                         Velg kontrollskjemaer som skal med i rapporten. Dette
                         vil også gjelde for målinger
-                        {_skjemaer !== undefined ? (
-                            <TableContainer
-                                columns={columns(
-                                    state.kontroller ?? [],
-                                    avvik ?? [],
-                                    measurements ?? [],
-                                    '',
-                                    true
-                                )}
-                                defaultColumns={defaultColumns}
-                                tableId="skjemaer">
-                                <SkjemaTable
-                                    skjemaer={_skjemaer}
-                                    kontroller={state.kontroller ?? []}
-                                    avvik={avvik ?? []}
-                                    measurements={measurements ?? []}
-                                    onSelected={(skjemaer) =>
-                                        setFilteredSkjemaer(skjemaer)
-                                    }
-                                />
-                            </TableContainer>
-                        ) : (
-                            <div>Laster skjemaer</div>
-                        )}
                     </DialogContentText>
+                    {_skjemaer !== undefined ? (
+                        <TableContainer
+                            columns={columns(
+                                state.kontroller ?? [],
+                                avvik ?? [],
+                                measurements ?? [],
+                                '',
+                                true
+                            )}
+                            defaultColumns={defaultColumns}
+                            tableId="skjemaer">
+                            <SkjemaTable
+                                skjemaer={_skjemaer}
+                                kontroller={state.kontroller ?? []}
+                                avvik={avvik ?? []}
+                                measurements={measurements ?? []}
+                                onSelected={(skjemaer) =>
+                                    setFilteredSkjemaer(skjemaer)
+                                }
+                            />
+                        </TableContainer>
+                    ) : (
+                        <span>Laster skjemaer</span>
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)} color="primary">

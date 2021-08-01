@@ -38,7 +38,7 @@ export const TableRow = ({
     );
 };
 interface TableCellProps {
-    children: string;
+    children: string | number;
     width?: number;
     isTitle?: boolean;
 }

@@ -35,7 +35,8 @@ export const ReportViewer = () => {
         kontroll,
         skjemaer,
         checklists,
-        avvik
+        avvik,
+        measurements
     } = useReport();
 
     const size = useWindowSize();
@@ -58,6 +59,10 @@ export const ReportViewer = () => {
                 skjemaer={skjemaer}
                 checklists={checklists}
                 avvik={avvik}
+                hasMeasurementPage={visibleReportModules.includes(
+                    ReportModules.measurementPage
+                )}
+                measurements={measurements}
             />
         </PDFViewer>
     );

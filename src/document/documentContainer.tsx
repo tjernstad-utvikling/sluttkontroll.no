@@ -2,12 +2,14 @@ import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
 import { createContext, useContext, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
+import { Measurement } from '../contracts/measurementApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
 import { useAvvik } from '../data/avvik';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
+import { useMeasurement } from '../data/measurement';
 import { useUser } from '../data/user';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
@@ -44,6 +46,10 @@ export const DocumentContainer = ({
         state: { avvik },
         loadAvvikByKontroller
     } = useAvvik();
+
+    const {
+        state: { measurements }
+    } = useMeasurement();
 
     const {
         state: { users },
@@ -105,7 +111,8 @@ export const DocumentContainer = ({
                 kontroll: _kontroll,
                 skjemaer: _skjemaer,
                 checklists,
-                avvik
+                avvik,
+                measurements
             }}>
             {children}
         </Context.Provider>
@@ -128,12 +135,15 @@ interface ContextInterface {
     checklists: Checklist[] | undefined;
 
     avvik: Avvik[] | undefined;
+
+    measurements: Measurement[] | undefined;
 }
 
 export enum ReportModules {
     frontPage = 'FrontPage',
     infoPage = 'InfoPage',
-    skjemaPage = 'skjemaPage'
+    skjemaPage = 'skjemaPage',
+    measurementPage = 'measurementPage'
 }
 
 export interface FrontPageData {

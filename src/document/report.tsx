@@ -5,6 +5,8 @@ import { Document } from '@react-pdf/renderer';
 import { FrontPage } from '../document/modules/frontPage';
 import { FrontPageData } from './documentContainer';
 import { InfoPage } from '../document/modules/infoPage';
+import { Measurement } from '../contracts/measurementApi';
+import { MeasurementPage } from './modules/measurementPage';
 import { SkjemaPage } from './modules/skjemaPage';
 
 interface ReportProps {
@@ -17,6 +19,8 @@ interface ReportProps {
     skjemaer: Skjema[] | undefined;
     checklists: Checklist[] | undefined;
     avvik: Avvik[] | undefined;
+    hasMeasurementPage: boolean;
+    measurements: Measurement[] | undefined;
 }
 export const Report = ({
     hasFrontPage,
@@ -27,7 +31,9 @@ export const Report = ({
     hasSkjemaPage,
     skjemaer,
     checklists,
-    avvik
+    avvik,
+    hasMeasurementPage,
+    measurements
 }: ReportProps) => {
     return (
         <Document>
@@ -57,6 +63,21 @@ export const Report = ({
                             (ch) => ch.skjema.id === s.id
                         )}
                         avvik={avvik}
+                        frontPageData={frontPageData}
+                    />
+                ))}
+            {hasMeasurementPage &&
+                frontPageData !== undefined &&
+                skjemaer !== undefined &&
+                measurements !== undefined &&
+                skjemaer.map((s, i) => (
+                    <MeasurementPage
+                        key={s.id}
+                        skjema={s}
+                        index={i}
+                        measurements={measurements.filter(
+                            (m) => m.Skjema.id === s.id
+                        )}
                         frontPageData={frontPageData}
                     />
                 ))}

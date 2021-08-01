@@ -64,6 +64,18 @@ const KontrollReportView = () => {
                                     {/*
                                     <FrontPageAdjusting /> */}
                                 </div>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                    <ReportSwitch
+                                        id={ReportModules.measurementPage}
+                                        label="Måleprotokoll"
+                                    />
+                                    {/*
+                                    <FrontPageAdjusting /> */}
+                                </div>
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={4}>

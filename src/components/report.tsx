@@ -33,7 +33,7 @@ export const ReportViewer = () => {
         frontPageData,
         infoText,
         kontroll,
-        skjemaer,
+        filteredSkjemaer,
         checklists,
         avvik,
         measurements,
@@ -58,7 +58,7 @@ export const ReportViewer = () => {
                     visibleReportModules.includes(ReportModules.skjemaPage) &&
                     visibleReportModules.includes(ReportModules.controlModule)
                 }
-                skjemaer={skjemaer}
+                skjemaer={filteredSkjemaer}
                 checklists={checklists}
                 avvik={avvik}
                 hasMeasurementPage={

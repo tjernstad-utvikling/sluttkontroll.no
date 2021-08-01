@@ -24,7 +24,7 @@ export const KontrollDocAdjusting = ({
 }: KontrollDocAdjustingProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const [_skjemaer, set_Skjemaer] = useState<Skjema[]>();
-    const { setSkjemaer, skjemaer } = useReport();
+    const { setFilteredSkjemaer, skjemaer } = useReport();
     const { state } = useKontroll();
     const {
         state: { avvik }
@@ -61,28 +61,32 @@ export const KontrollDocAdjusting = ({
                     <DialogContentText>
                         Velg kontrollskjemaer som skal med i rapporten. Dette
                         vil også gjelde for målinger
+                        {_skjemaer !== undefined ? (
+                            <TableContainer
+                                columns={columns(
+                                    state.kontroller ?? [],
+                                    avvik ?? [],
+                                    measurements ?? [],
+                                    '',
+                                    true
+                                )}
+                                defaultColumns={defaultColumns}
+                                tableId="skjemaer">
+                                <SkjemaTable
+                                    skjemaer={_skjemaer}
+                                    kontroller={state.kontroller ?? []}
+                                    avvik={avvik ?? []}
+                                    measurements={measurements ?? []}
+                                    onSelected={(skjemaer) =>
+                                        setFilteredSkjemaer(skjemaer)
+                                    }
+                                />
+                            </TableContainer>
+                        ) : (
+                            <div>Laster skjemaer</div>
+                        )}
                     </DialogContentText>
                 </DialogContent>
-                {_skjemaer !== undefined ? (
-                    <TableContainer
-                        columns={columns(
-                            state.kontroller ?? [],
-                            avvik ?? [],
-                            measurements ?? [],
-                            ''
-                        )}
-                        defaultColumns={defaultColumns}
-                        tableId="skjemaer">
-                        <SkjemaTable
-                            skjemaer={_skjemaer}
-                            kontroller={state.kontroller ?? []}
-                            avvik={avvik ?? []}
-                            measurements={measurements ?? []}
-                        />
-                    </TableContainer>
-                ) : (
-                    <div>Laster skjemaer</div>
-                )}
                 <DialogActions>
                     <Button onClick={() => setOpen(false)} color="primary">
                         Lukk

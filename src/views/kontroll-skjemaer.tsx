@@ -83,6 +83,7 @@ const SkjemaerView = () => {
                                         kontroller={kontroller ?? []}
                                         avvik={avvik ?? []}
                                         measurements={measurements ?? []}
+                                        onSelected={() => console.log()}
                                     />
                                 </TableContainer>
                             ) : (

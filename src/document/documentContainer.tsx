@@ -41,6 +41,7 @@ export const DocumentContainer = ({
         loadKontrollerByObjekt
     } = useKontroll();
     const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>();
+    const [filteredSkjemaer, setFilteredSkjemaer] = useState<Array<Skjema>>();
 
     const {
         state: { avvik },
@@ -87,6 +88,9 @@ export const DocumentContainer = ({
     useEffect(() => {
         if (skjemaer !== undefined) {
             setSkjemaer(skjemaer.filter((s) => s.kontroll.id === kontrollId));
+            setFilteredSkjemaer(
+                skjemaer.filter((s) => s.kontroll.id === kontrollId)
+            );
         }
     }, [skjemaer, kontrollId]);
 
@@ -110,7 +114,8 @@ export const DocumentContainer = ({
                 infoText: _infoText,
                 kontroll: _kontroll,
                 skjemaer: _skjemaer,
-                setSkjemaer,
+                filteredSkjemaer,
+                setFilteredSkjemaer,
                 checklists,
                 avvik,
                 measurements,
@@ -134,8 +139,11 @@ interface ContextInterface {
 
     kontroll: ReportKontroll | undefined;
     skjemaer: Skjema[] | undefined;
+    filteredSkjemaer: Skjema[] | undefined;
     checklists: Checklist[] | undefined;
-    setSkjemaer: React.Dispatch<React.SetStateAction<Skjema[] | undefined>>;
+    setFilteredSkjemaer: React.Dispatch<
+        React.SetStateAction<Skjema[] | undefined>
+    >;
 
     avvik: Avvik[] | undefined;
 

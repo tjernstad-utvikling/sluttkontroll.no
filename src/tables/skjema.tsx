@@ -2,6 +2,7 @@ import {
     GridCellParams,
     GridColDef,
     GridRowData,
+    GridRowId,
     GridValueGetterParams
 } from '@material-ui/data-grid';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
@@ -10,6 +11,7 @@ import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
+import { useTable } from './tableContainer';
 
 export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): string => {
@@ -52,7 +54,8 @@ export const columns = (
     kontroller: Kontroll[],
     avvik: Avvik[],
     measurements: Measurement[],
-    url: string
+    url: string,
+    skipLink?: boolean
 ) => {
     const columns: GridColDef[] = [
         {
@@ -64,11 +67,14 @@ export const columns = (
             field: 'area',
             headerName: 'Areal',
             flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <Link to={`${url}/skjema/${params.row.id}`}>
-                    {params.row.area}
-                </Link>
-            )
+            renderCell: (params: GridCellParams) =>
+                skipLink ? (
+                    params.row.area
+                ) : (
+                    <Link to={`${url}/skjema/${params.row.id}`}>
+                        {params.row.area}
+                    </Link>
+                )
         },
         {
             field: 'omrade',
@@ -87,24 +93,36 @@ export const columns = (
             field: 'avvik',
             headerName: 'Avvik (åpne | lukket) ',
             flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <Link to={`${url}/skjema/${params.row.id}/avvik`}>
+            renderCell: (params: GridCellParams) =>
+                skipLink ? (
                     <span>
                         ({SkjemaValueGetter(params.row).avvik(avvik).open} |{' '}
                         {SkjemaValueGetter(params.row).avvik(avvik).closed} ){' '}
                     </span>
-                </Link>
-            )
+                ) : (
+                    <Link to={`${url}/skjema/${params.row.id}/avvik`}>
+                        <span>
+                            ({SkjemaValueGetter(params.row).avvik(avvik).open} |{' '}
+                            {SkjemaValueGetter(params.row).avvik(avvik).closed}{' '}
+                            ){' '}
+                        </span>
+                    </Link>
+                )
         },
         {
             field: 'measurement',
             headerName: 'Målinger',
             flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <Link to={`${url}/skjema/${params.row.id}/measurement`}>
-                    {SkjemaValueGetter(params.row).measurement(measurements)}
-                </Link>
-            )
+            renderCell: (params: GridCellParams) =>
+                skipLink ? (
+                    SkjemaValueGetter(params.row).measurement(measurements)
+                ) : (
+                    <Link to={`${url}/skjema/${params.row.id}/measurement`}>
+                        {SkjemaValueGetter(params.row).measurement(
+                            measurements
+                        )}
+                    </Link>
+                )
         },
         {
             field: 'kommentar',
@@ -123,13 +141,17 @@ interface SkjemaTableProps {
     kontroller: Array<Kontroll>;
     avvik: Avvik[];
     measurements: Measurement[];
+    onSelected: (checkpoints: Array<Skjema>) => void;
 }
 export const SkjemaTable = ({
     skjemaer,
     kontroller,
     avvik,
-    measurements
+    measurements,
+    onSelected
 }: SkjemaTableProps) => {
+    const { apiRef } = useTable();
+
     function CustomSort<T extends keyof Skjema>(
         data: Skjema[],
         field: T
@@ -168,8 +190,27 @@ export const SkjemaTable = ({
         }
     }
 
+    const onSelect = () => {
+        const rows: Map<GridRowId, GridRowData> =
+            apiRef.current.getSelectedRows();
+
+        const sRows: Skjema[] = [];
+
+        rows.forEach((r) =>
+            sRows.push({
+                id: r.id,
+                area: r.area,
+                omrade: r.omrade,
+                kommentar: r.kommentar,
+                kontroll: { id: r.kontroll.id }
+            })
+        );
+        onSelected(sRows);
+    };
+
     return (
         <BaseTable
+            onSelected={onSelect}
             data={skjemaer}
             customSort={CustomSort}
             customSortFields={['kontroll', 'avvik', 'measurement']}

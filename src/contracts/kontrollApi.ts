@@ -14,7 +14,7 @@ export interface Kontroll {
     name: string;
     kommentar: string;
     done: boolean;
-    completedDate: string;
+    completedDate: string | null;
     Objekt: {
         id: number;
         klient: {
@@ -31,7 +31,7 @@ export interface ReportKontroll {
     name: string;
     kommentar: string;
     done: boolean;
-    completedDate: string;
+    completedDate: string | null;
     Objekt: {
         id: number;
         klient: {

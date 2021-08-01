@@ -75,8 +75,12 @@ export const DocumentContainer = ({
             );
 
             if (user !== undefined && _kontroll !== undefined) {
+                let date = '25.07.2021';
+                if (_kontroll.completedDate !== null) {
+                    date = _kontroll.completedDate;
+                }
                 setFrontPageData({
-                    date: '25.07.2021',
+                    date: date,
                     title: '3. Partskontroll',
                     user: user.name,
                     kontrollsted: _kontroll.rapportEgenskaper.kontrollsted

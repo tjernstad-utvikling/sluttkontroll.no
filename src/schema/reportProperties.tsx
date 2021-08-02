@@ -82,6 +82,7 @@ export const ReportPropertiesSchema = ({
             sertifikater: ''
         };
     }, [kontroll, userOptions]);
+
     if (userOptions !== undefined) {
         return (
             <Formik

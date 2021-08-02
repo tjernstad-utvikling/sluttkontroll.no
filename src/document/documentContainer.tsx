@@ -3,6 +3,7 @@ import { Measurement, MeasurementType } from '../contracts/measurementApi';
 import { createContext, useContext, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
+import { format } from 'date-fns';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
 import { useAvvik } from '../data/avvik';
@@ -75,12 +76,12 @@ export const DocumentContainer = ({
             );
 
             if (user !== undefined && _kontroll !== undefined) {
-                let date = '25.07.2021';
+                let date = new Date();
                 if (_kontroll.completedDate !== null) {
-                    date = _kontroll.completedDate;
+                    date = new Date(_kontroll.completedDate);
                 }
                 setFrontPageData({
-                    date: date,
+                    date: format(date, 'dd.MM.yyyy'),
                     title: '3. Partskontroll',
                     user: user.name,
                     kontrollsted: _kontroll.rapportEgenskaper.kontrollsted

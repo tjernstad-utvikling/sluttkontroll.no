@@ -1,14 +1,11 @@
 import * as Yup from 'yup';
 
 import { Form, Formik, useFormikContext } from 'formik';
-import { RapportEgenskaper, ReportKontroll } from '../contracts/kontrollApi';
 import { useEffect, useMemo } from 'react';
 
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import { LoadingButton } from '../components/button';
+import { ReportKontroll } from '../contracts/kontrollApi';
 import Select from 'react-select';
 import { TextField } from '../components/input';
 import Typography from '@material-ui/core/Typography';

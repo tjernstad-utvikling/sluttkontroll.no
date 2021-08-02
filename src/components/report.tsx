@@ -3,6 +3,7 @@ import { ReportModules, useReport } from '../document/documentContainer';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { PDFViewer } from '@react-pdf/renderer';
 import { Report } from '../document/report';
+import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@material-ui/core/Switch';
 import { useWindowSize } from '../hooks/useWindowSize';
 
@@ -85,6 +86,28 @@ export const ReportViewer = () => {
             />
         </PDFViewer>
     );
+};
+
+interface ReportPropertiesViewerProps {
+    children: React.ReactNode;
+}
+export const ReportPropertiesViewer = ({
+    children
+}: ReportPropertiesViewerProps) => {
+    const { kontroll } = useReport();
+    if (kontroll !== undefined) {
+        if (kontroll.rapportEgenskaper === null) {
+            return (
+                <ReportPropertiesSchema
+                    onSubmit={() => console.log()}
+                    kontroll={kontroll}
+                />
+            );
+        } else {
+            return <>{children}</>;
+        }
+    }
+    return <div />;
 };
 
 interface BlockProps {

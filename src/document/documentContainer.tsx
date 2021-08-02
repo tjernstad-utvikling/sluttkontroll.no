@@ -70,9 +70,14 @@ export const DocumentContainer = ({
     });
 
     useEffect(() => {
-        if (users !== undefined) {
+        if (
+            users !== undefined &&
+            _kontroll !== undefined &&
+            _kontroll.rapportEgenskaper !== null
+        ) {
+            const rapportEgenskaper = _kontroll.rapportEgenskaper;
             const user = users.find(
-                (u) => u.id === _kontroll?.rapportEgenskaper.rapportUser.id
+                (u) => u.id === rapportEgenskaper.rapportUser.id
             );
 
             if (user !== undefined && _kontroll !== undefined) {
@@ -84,7 +89,7 @@ export const DocumentContainer = ({
                     date: format(date, 'dd.MM.yyyy'),
                     title: '3. Partskontroll',
                     user: user.name,
-                    kontrollsted: _kontroll.rapportEgenskaper.kontrollsted
+                    kontrollsted: rapportEgenskaper.kontrollsted
                 });
             }
         }

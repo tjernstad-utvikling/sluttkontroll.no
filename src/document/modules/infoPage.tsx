@@ -30,76 +30,85 @@ export const InfoPage = ({
                 date={frontPageData.date}
             />
             <TableHeader title="Informasjon om inspeksjonssted" />
-            <TableRow tint>
-                <TableCell isTitle width={180}>
-                    Oppdragsgiver
-                </TableCell>
-                <TableCell>
-                    {kontroll.rapportEgenskaper.oppdragsgiver}
-                </TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell isTitle width={180}>
-                    Kontrollsted
-                </TableCell>
-                <TableCell>{kontroll.rapportEgenskaper.kontrollsted}</TableCell>
-            </TableRow>
-            <TableRow hasBottomBorder tint>
-                <TableCell isTitle width={180}>
-                    Adresse
-                </TableCell>
-                <TableCell>{kontroll.rapportEgenskaper.adresse}</TableCell>
-            </TableRow>
-            {/* Kontaktperson under */}
-            <TableRow>
-                <TableCell isTitle width={180}>
-                    Kontaktperson
-                </TableCell>
-                <TableCell>
-                    {kontroll.rapportEgenskaper.kontaktperson}
-                </TableCell>
-            </TableRow>
-            <TableRow tint>
-                <TableCell isTitle width={180}>
-                    Telefonnummer
-                </TableCell>
-                <TableCell>
-                    {kontroll.rapportEgenskaper.kontaktTelefon}
-                </TableCell>
-            </TableRow>
-            <TableRow hasBottomBorder>
-                <TableCell isTitle width={180}>
-                    E-postadresse
-                </TableCell>
-                <TableCell>{kontroll.rapportEgenskaper.kontaktEpost}</TableCell>
-            </TableRow>
-            <Spacer />
-
-            <TableHeader title="Kontrollert av" />
-            <TableRow tint>
-                <TableCell isTitle width={180}>
-                    Kontrollør
-                </TableCell>
-                <TableCell>
-                    {kontroll.rapportEgenskaper.rapportUser.name}
-                </TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell isTitle width={180}>
-                    Telefonnummer
-                </TableCell>
-                <TableCell>
-                    {kontroll.rapportEgenskaper.rapportUser.phone}
-                </TableCell>
-            </TableRow>
-            <TableRow hasBottomBorder tint>
-                <TableCell isTitle width={180}>
-                    E-postadresse
-                </TableCell>
-                <TableCell>
-                    {kontroll.rapportEgenskaper.rapportUser.email}
-                </TableCell>
-            </TableRow>
+            {kontroll.rapportEgenskaper !== null && (
+                <>
+                    <TableRow tint>
+                        <TableCell isTitle width={180}>
+                            Oppdragsgiver
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.oppdragsgiver}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell isTitle width={180}>
+                            Kontrollsted
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.kontrollsted}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow hasBottomBorder tint>
+                        <TableCell isTitle width={180}>
+                            Adresse
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.adresse}
+                        </TableCell>
+                    </TableRow>
+                    {/* Kontaktperson under */}
+                    <TableRow>
+                        <TableCell isTitle width={180}>
+                            Kontaktperson
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.kontaktperson}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow tint>
+                        <TableCell isTitle width={180}>
+                            Telefonnummer
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.kontaktTelefon}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow hasBottomBorder>
+                        <TableCell isTitle width={180}>
+                            E-postadresse
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.kontaktEpost}
+                        </TableCell>
+                    </TableRow>
+                    <Spacer />
+                    <TableHeader title="Kontrollert av" />
+                    <TableRow tint>
+                        <TableCell isTitle width={180}>
+                            Kontrollør
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.rapportUser.name}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell isTitle width={180}>
+                            Telefonnummer
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.rapportUser.phone}
+                        </TableCell>
+                    </TableRow>
+                    <TableRow hasBottomBorder tint>
+                        <TableCell isTitle width={180}>
+                            E-postadresse
+                        </TableCell>
+                        <TableCell>
+                            {kontroll.rapportEgenskaper.rapportUser.email}
+                        </TableCell>
+                    </TableRow>{' '}
+                </>
+            )}
 
             <Spacer />
 

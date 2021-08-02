@@ -132,6 +132,7 @@ export const getKontrollReportData = async (
         const { status, data } = await sluttkontrollApi.get(
             `/v3/kontroll/${kontrollId}/report-data`
         );
+        console.log({ ...data });
         if (status === 200) {
             return { status, ...data };
         }

@@ -42,21 +42,23 @@ export interface ReportKontroll {
         id: number;
     };
     avvikUtbedrere: Array<{ id: number }>;
-    rapportEgenskaper: {
-        adresse: string;
-        id: number;
-        kontaktEpost: string;
-        kontaktTelefon: string;
-        kontaktperson: string;
-        kontrollerEpost: string;
-        kontrollerTelefon: string;
-        kontrollsted: string;
-        oppdragsgiver: string;
-        postnr: string;
-        poststed: string;
-        rapportUser: { email: string; id: number; name: string; phone: string };
-        sertifikater: [];
-    };
+    rapportEgenskaper: RapportEgenskaper | null;
+}
+
+export interface RapportEgenskaper {
+    adresse: string;
+    id: number;
+    kontaktEpost: string;
+    kontaktTelefon: string;
+    kontaktperson: string;
+    kontrollerEpost: string;
+    kontrollerTelefon: string;
+    kontrollsted: string;
+    oppdragsgiver: string;
+    postnr: string;
+    poststed: string;
+    rapportUser: { email: string; id: number; name: string; phone: string };
+    sertifikater: [];
 }
 
 export interface Skjema {

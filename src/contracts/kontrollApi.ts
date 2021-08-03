@@ -51,8 +51,6 @@ export interface RapportEgenskaper {
     kontaktEpost: string;
     kontaktTelefon: string;
     kontaktperson: string;
-    kontrollerEpost: string;
-    kontrollerTelefon: string;
     kontrollsted: string;
     oppdragsgiver: string;
     postnr: string;

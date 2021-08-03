@@ -5,6 +5,7 @@ import { PDFViewer } from '@react-pdf/renderer';
 import { Report } from '../document/report';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@material-ui/core/Switch';
+import { useKontroll } from '../data/kontroll';
 import { useWindowSize } from '../hooks/useWindowSize';
 
 interface ReportSwitchProps {
@@ -95,12 +96,16 @@ export const ReportPropertiesViewer = ({
     children
 }: ReportPropertiesViewerProps) => {
     const { kontroll } = useReport();
-    if (kontroll !== undefined) {
+    const {
+        state: { klienter }
+    } = useKontroll();
+    if (kontroll !== undefined && klienter !== undefined) {
         if (kontroll.rapportEgenskaper === null) {
             return (
                 <ReportPropertiesSchema
                     onSubmit={() => console.log()}
                     kontroll={kontroll}
+                    klienter={klienter}
                 />
             );
         } else {

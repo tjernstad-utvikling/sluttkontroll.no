@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
 
 import { Form, Formik, useFormikContext } from 'formik';
+import { Klient, ReportKontroll } from '../contracts/kontrollApi';
 import { useEffect, useMemo } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import { LoadingButton } from '../components/button';
-import { ReportKontroll } from '../contracts/kontrollApi';
 import Select from 'react-select';
 import { TextField } from '../components/input';
 import Typography from '@material-ui/core/Typography';
@@ -36,10 +36,12 @@ interface FormValues {
 interface ReportPropertiesSchemaProps {
     onSubmit: () => void;
     kontroll: ReportKontroll;
+    klienter: Klient[];
 }
 export const ReportPropertiesSchema = ({
     onSubmit,
-    kontroll
+    kontroll,
+    klienter
 }: ReportPropertiesSchemaProps): JSX.Element => {
     const classes = useStyles();
     const {
@@ -63,6 +65,11 @@ export const ReportPropertiesSchema = ({
             kontroll !== undefined
                 ? userOptions?.find((u) => u.value.id === kontroll.user.id)
                 : null;
+
+        const klient = klienter.find((k) => k.id === kontroll.Objekt.klient.id);
+        const location = klient?.objekts.find(
+            (o) => o.id === kontroll.Objekt.id
+        );
         if (kontroll.rapportEgenskaper !== null) {
             return kontroll.rapportEgenskaper;
         }
@@ -74,14 +81,14 @@ export const ReportPropertiesSchema = ({
             kontaktperson: '',
             kontrollerEpost: user !== undefined ? user?.value.email : '',
             kontrollerTelefon: user !== undefined ? user?.value.phone : '',
-            kontrollsted: '',
-            oppdragsgiver: '',
+            kontrollsted: location !== undefined ? location.name : '',
+            oppdragsgiver: klient !== undefined ? klient.name : '',
             postnr: '',
             poststed: '',
             rapportUser: user !== undefined ? user : null,
             sertifikater: ''
         };
-    }, [kontroll, userOptions]);
+    }, [klienter, kontroll, userOptions]);
 
     if (userOptions !== undefined) {
         return (

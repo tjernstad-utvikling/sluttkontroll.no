@@ -12,6 +12,7 @@ interface TextFieldProps {
     autoComplete?: string;
     autoFocus?: boolean;
     type?: string;
+    readonly?: boolean;
 }
 export const TextField = ({
     id,
@@ -21,7 +22,8 @@ export const TextField = ({
     name,
     autoComplete,
     autoFocus,
-    type
+    type,
+    readonly
 }: TextFieldProps) => {
     // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
     // which we can spread on <input>. We can use field meta to show an error
@@ -43,6 +45,7 @@ export const TextField = ({
                 type={type}
                 error={meta.touched && meta.error ? true : false}
                 helperText={meta.error}
+                InputProps={{ readOnly: readonly }}
             />
         </>
     );

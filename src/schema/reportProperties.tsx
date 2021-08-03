@@ -86,6 +86,8 @@ export const ReportPropertiesSchema = ({
                     : null;
             return {
                 ...kontroll.rapportEgenskaper,
+                kontrollerEpost: user !== undefined ? user?.value.email : '',
+                kontrollerTelefon: user !== undefined ? user?.value.phone : '',
                 rapportUser: user !== undefined ? user : null
             };
         }
@@ -113,8 +115,6 @@ export const ReportPropertiesSchema = ({
                 onSubmit={(values, { setSubmitting }) => {
                     onSubmit({
                         ...values,
-                        kontrollerEpost: values.kontrollerEpost ?? '',
-                        kontrollerTelefon: values.kontrollerTelefon ?? '',
                         rapportUser:
                             values.rapportUser !== null
                                 ? values.rapportUser.value
@@ -298,6 +298,7 @@ const KontrollerContactField = ({
 
     return (
         <TextField
+            readonly
             variant="outlined"
             fullWidth
             id={name}

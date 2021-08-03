@@ -1,22 +1,24 @@
 import { Page, StyleSheet } from '@react-pdf/renderer';
+import { RapportEgenskaper, RapportUser } from '../../contracts/kontrollApi';
 import { TableCell, TableHeader, TableRow } from './components/table';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
 import { InfoBox } from './components/box';
-import { ReportKontroll } from '../../contracts/kontrollApi';
 import { Spacer } from './components/spacing';
 
 interface InfoPageProps {
     frontPageData: FrontPageData;
     infoText: string;
-    kontroll: ReportKontroll;
+    rapportEgenskaper: RapportEgenskaper;
+    rapportUser: RapportUser;
 }
 export const InfoPage = ({
     frontPageData,
     infoText,
-    kontroll
+    rapportEgenskaper,
+    rapportUser
 }: InfoPageProps) => {
     return (
         <Page
@@ -30,85 +32,64 @@ export const InfoPage = ({
                 date={frontPageData.date}
             />
             <TableHeader title="Informasjon om inspeksjonssted" />
-            {kontroll.rapportEgenskaper !== null && (
-                <>
-                    <TableRow tint>
-                        <TableCell isTitle width={180}>
-                            Oppdragsgiver
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.oppdragsgiver}
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell isTitle width={180}>
-                            Kontrollsted
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.kontrollsted}
-                        </TableCell>
-                    </TableRow>
-                    <TableRow hasBottomBorder tint>
-                        <TableCell isTitle width={180}>
-                            Adresse
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.adresse}
-                        </TableCell>
-                    </TableRow>
-                    {/* Kontaktperson under */}
-                    <TableRow>
-                        <TableCell isTitle width={180}>
-                            Kontaktperson
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.kontaktperson}
-                        </TableCell>
-                    </TableRow>
-                    <TableRow tint>
-                        <TableCell isTitle width={180}>
-                            Telefonnummer
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.kontaktTelefon}
-                        </TableCell>
-                    </TableRow>
-                    <TableRow hasBottomBorder>
-                        <TableCell isTitle width={180}>
-                            E-postadresse
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.kontaktEpost}
-                        </TableCell>
-                    </TableRow>
-                    <Spacer />
-                    <TableHeader title="Kontrollert av" />
-                    <TableRow tint>
-                        <TableCell isTitle width={180}>
-                            Kontrollør
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.rapportUser.name}
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell isTitle width={180}>
-                            Telefonnummer
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.rapportUser.phone}
-                        </TableCell>
-                    </TableRow>
-                    <TableRow hasBottomBorder tint>
-                        <TableCell isTitle width={180}>
-                            E-postadresse
-                        </TableCell>
-                        <TableCell>
-                            {kontroll.rapportEgenskaper.rapportUser.email}
-                        </TableCell>
-                    </TableRow>{' '}
-                </>
-            )}
+
+            <TableRow tint>
+                <TableCell isTitle width={180}>
+                    Oppdragsgiver
+                </TableCell>
+                <TableCell>{rapportEgenskaper.oppdragsgiver}</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell isTitle width={180}>
+                    Kontrollsted
+                </TableCell>
+                <TableCell>{rapportEgenskaper.kontrollsted}</TableCell>
+            </TableRow>
+            <TableRow hasBottomBorder tint>
+                <TableCell isTitle width={180}>
+                    Adresse
+                </TableCell>
+                <TableCell>{rapportEgenskaper.adresse}</TableCell>
+            </TableRow>
+            {/* Kontaktperson under */}
+            <TableRow>
+                <TableCell isTitle width={180}>
+                    Kontaktperson
+                </TableCell>
+                <TableCell>{rapportEgenskaper.kontaktperson}</TableCell>
+            </TableRow>
+            <TableRow tint>
+                <TableCell isTitle width={180}>
+                    Telefonnummer
+                </TableCell>
+                <TableCell>{rapportEgenskaper.kontaktTelefon}</TableCell>
+            </TableRow>
+            <TableRow hasBottomBorder>
+                <TableCell isTitle width={180}>
+                    E-postadresse
+                </TableCell>
+                <TableCell>{rapportEgenskaper.kontaktEpost}</TableCell>
+            </TableRow>
+            <Spacer />
+            <TableHeader title="Kontrollert av" />
+            <TableRow tint>
+                <TableCell isTitle width={180}>
+                    Kontrollør
+                </TableCell>
+                <TableCell>{rapportUser.name}</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell isTitle width={180}>
+                    Telefonnummer
+                </TableCell>
+                <TableCell>{rapportUser.phone}</TableCell>
+            </TableRow>
+            <TableRow hasBottomBorder tint>
+                <TableCell isTitle width={180}>
+                    E-postadresse
+                </TableCell>
+                <TableCell>{rapportUser.email}</TableCell>
+            </TableRow>
 
             <Spacer />
 

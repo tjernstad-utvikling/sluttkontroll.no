@@ -57,8 +57,15 @@ export interface RapportEgenskaper {
     oppdragsgiver: string;
     postnr: string;
     poststed: string;
-    rapportUser: { email: string; id: number; name: string; phone: string };
+    rapportUser: RapportUser | null;
     sertifikater: [];
+}
+
+export interface RapportUser {
+    email: string;
+    id: number;
+    name: string;
+    phone: string;
 }
 
 export interface Skjema {

@@ -76,11 +76,16 @@ export const DocumentContainer = ({
             _kontroll.rapportEgenskaper !== null
         ) {
             const rapportEgenskaper = _kontroll.rapportEgenskaper;
-            const user = users.find(
-                (u) => u.id === rapportEgenskaper.rapportUser.id
-            );
+            let userName = '';
+            const rapportUser = rapportEgenskaper.rapportUser;
+            if (rapportUser !== null) {
+                const user = users.find((u) => u.id === rapportUser.id);
+                if (user !== undefined) {
+                    userName = user.name;
+                }
+            }
 
-            if (user !== undefined && _kontroll !== undefined) {
+            if (_kontroll !== undefined) {
                 let date = new Date();
                 if (_kontroll.completedDate !== null) {
                     date = new Date(_kontroll.completedDate);
@@ -88,7 +93,7 @@ export const DocumentContainer = ({
                 setFrontPageData({
                     date: format(date, 'dd.MM.yyyy'),
                     title: '3. Partskontroll',
-                    user: user.name,
+                    user: userName,
                     kontrollsted: rapportEgenskaper.kontrollsted
                 });
             }

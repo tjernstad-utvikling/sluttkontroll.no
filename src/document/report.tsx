@@ -47,11 +47,14 @@ export const Report = ({
             {hasInfoPage &&
                 frontPageData !== undefined &&
                 infoText !== undefined &&
-                kontroll !== undefined && (
+                kontroll !== undefined &&
+                kontroll.rapportEgenskaper !== null &&
+                kontroll.rapportEgenskaper.rapportUser !== null && (
                     <InfoPage
                         infoText={infoText}
                         frontPageData={frontPageData}
-                        kontroll={kontroll}
+                        rapportEgenskaper={kontroll.rapportEgenskaper}
+                        rapportUser={kontroll.rapportEgenskaper.rapportUser}
                     />
                 )}
             {hasSkjemaPage &&

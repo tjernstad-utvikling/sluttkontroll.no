@@ -103,7 +103,7 @@ export const ReportPropertiesViewer = ({
         if (kontroll.rapportEgenskaper === null) {
             return (
                 <ReportPropertiesSchema
-                    onSubmit={() => console.log()}
+                    onSubmit={(v) => console.log(v)}
                     kontroll={kontroll}
                     klienter={klienter}
                 />

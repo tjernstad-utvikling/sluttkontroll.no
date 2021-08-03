@@ -1,7 +1,11 @@
 import * as Yup from 'yup';
 
 import { Form, Formik, useFormikContext } from 'formik';
-import { Klient, ReportKontroll } from '../contracts/kontrollApi';
+import {
+    Klient,
+    RapportEgenskaper,
+    ReportKontroll
+} from '../contracts/kontrollApi';
 import { useEffect, useMemo } from 'react';
 
 import Grid from '@material-ui/core/Grid';
@@ -34,7 +38,7 @@ interface FormValues {
     sertifikater: [];
 }
 interface ReportPropertiesSchemaProps {
-    onSubmit: () => void;
+    onSubmit: (reportProperties: RapportEgenskaper) => void;
     kontroll: ReportKontroll;
     klienter: Klient[];
 }
@@ -71,7 +75,19 @@ export const ReportPropertiesSchema = ({
             (o) => o.id === kontroll.Objekt.id
         );
         if (kontroll.rapportEgenskaper !== null) {
-            return kontroll.rapportEgenskaper;
+            const user =
+                kontroll !== undefined &&
+                kontroll.rapportEgenskaper.rapportUser !== null
+                    ? userOptions?.find(
+                          (u) =>
+                              u.value.id ===
+                              kontroll.rapportEgenskaper?.rapportUser?.id
+                      )
+                    : null;
+            return {
+                ...kontroll.rapportEgenskaper,
+                rapportUser: user !== undefined ? user : null
+            };
         }
         return {
             adresse: '',
@@ -85,8 +101,7 @@ export const ReportPropertiesSchema = ({
             oppdragsgiver: klient !== undefined ? klient.name : '',
             postnr: '',
             poststed: '',
-            rapportUser: user !== undefined ? user : null,
-            sertifikater: ''
+            rapportUser: user !== undefined ? user : null
         };
     }, [klienter, kontroll, userOptions]);
 
@@ -96,7 +111,16 @@ export const ReportPropertiesSchema = ({
                 initialValues={initialData}
                 validationSchema={Yup.object({})}
                 onSubmit={(values, { setSubmitting }) => {
-                    onSubmit();
+                    onSubmit({
+                        ...values,
+                        kontrollerEpost: values.kontrollerEpost ?? '',
+                        kontrollerTelefon: values.kontrollerTelefon ?? '',
+                        rapportUser:
+                            values.rapportUser !== null
+                                ? values.rapportUser.value
+                                : null,
+                        sertifikater: []
+                    });
                 }}>
                 {({ isSubmitting, setFieldValue, values, errors }) => {
                     return (

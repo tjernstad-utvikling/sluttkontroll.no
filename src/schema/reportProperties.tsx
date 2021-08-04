@@ -6,6 +6,7 @@ import {
     RapportEgenskaper,
     ReportKontroll
 } from '../contracts/kontrollApi';
+import { Sertifikat, User } from '../contracts/userApi';
 import { useEffect, useMemo } from 'react';
 
 import Grid from '@material-ui/core/Grid';
@@ -13,7 +14,6 @@ import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import { TextField } from '../components/input';
 import Typography from '@material-ui/core/Typography';
-import { User } from '../contracts/userApi';
 import { makeStyles } from '@material-ui/core/styles';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
@@ -21,6 +21,10 @@ import { useUser } from '../data/user';
 
 interface Option {
     value: User;
+    label: string;
+}
+interface SertifikatOption {
+    value: Sertifikat;
     label: string;
 }
 interface FormValues {
@@ -54,6 +58,8 @@ export const ReportPropertiesSchema = ({
     } = useUser();
 
     const [userOptions, setUserOptions] = useState<Array<Option>>();
+    const [sertifikatOptions, setSertifikatOptions] =
+        useState<Array<SertifikatOption>>();
 
     useEffect(() => {
         if (users !== undefined) {
@@ -65,10 +71,33 @@ export const ReportPropertiesSchema = ({
         loadUsers();
     });
     const initialData = useMemo(() => {
-        const user =
+        let user =
             kontroll !== undefined
-                ? userOptions?.find((u) => u.value.id === kontroll.user.id)
+                ? userOptions?.find(
+                      (u) =>
+                          u.value.id ===
+                          kontroll.rapportEgenskaper?.rapportUser?.id
+                  )
                 : null;
+        if (!user) {
+            user =
+                kontroll !== undefined
+                    ? userOptions?.find((u) => u.value.id === kontroll.user.id)
+                    : null;
+        }
+        let sertifikater = null;
+        if (user !== null) {
+            setSertifikatOptions(
+                user?.value.sertifikater.map((s) => ({
+                    value: s,
+                    label: s.type.name
+                }))
+            );
+
+            sertifikater = user?.value.sertifikater.map((s) => {
+                return { value: s, label: s.type.name };
+            });
+        }
 
         const klient = klienter.find((k) => k.id === kontroll.Objekt.klient.id);
         const location = klient?.objekts.find(
@@ -88,7 +117,8 @@ export const ReportPropertiesSchema = ({
                 ...kontroll.rapportEgenskaper,
                 kontrollerEpost: user !== undefined ? user?.value.email : '',
                 kontrollerTelefon: user !== undefined ? user?.value.phone : '',
-                rapportUser: user !== undefined ? user : null
+                rapportUser: user !== undefined ? user : null,
+                sertifikater
             };
         }
         return {
@@ -103,7 +133,8 @@ export const ReportPropertiesSchema = ({
             oppdragsgiver: klient !== undefined ? klient.name : '',
             postnr: '',
             poststed: '',
-            rapportUser: user !== undefined ? user : null
+            rapportUser: user !== undefined ? user : null,
+            sertifikater
         };
     }, [klienter, kontroll, userOptions]);
 
@@ -236,6 +267,40 @@ export const ReportPropertiesSchema = ({
                                         label="Telefon"
                                         name="kontrollerTelefon"
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {sertifikatOptions && (
+                                        <div>
+                                            <label htmlFor="sertifikat-select">
+                                                Sertifikater
+                                            </label>
+                                            <Select
+                                                inputId="sertifikat-select"
+                                                className="basic-single"
+                                                classNamePrefix="select"
+                                                isSearchable
+                                                isMulti
+                                                onChange={(selected) => {
+                                                    if (selected !== null) {
+                                                        setFieldValue(
+                                                            'sertifikater',
+                                                            selected
+                                                        );
+                                                    }
+                                                }}
+                                                value={values.sertifikater}
+                                                name="sertifikater"
+                                                options={sertifikatOptions}
+                                                styles={{
+                                                    menuPortal: (base) => ({
+                                                        ...base,
+                                                        zIndex: 9999
+                                                    })
+                                                }}
+                                                menuPortalTarget={document.body}
+                                            />
+                                        </div>
+                                    )}
                                 </Grid>
                             </Grid>
                             <Grid container spacing={3}>

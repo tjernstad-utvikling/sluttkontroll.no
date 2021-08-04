@@ -1,3 +1,5 @@
+import { Sertifikat } from './userApi';
+
 export interface Klient {
     id: number;
     name: string;
@@ -56,7 +58,7 @@ export interface RapportEgenskaper {
     postnr: string;
     poststed: string;
     rapportUser: RapportUser | null;
-    sertifikater: [];
+    sertifikater: Sertifikat[];
 }
 
 export interface RapportUser {

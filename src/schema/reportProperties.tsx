@@ -39,7 +39,7 @@ interface FormValues {
     oppdragsgiver: string;
     postnr: string;
     poststed: string;
-    sertifikater: [];
+    sertifikater: SertifikatOption | null;
 }
 interface ReportPropertiesSchemaProps {
     onSubmit: (reportProperties: RapportEgenskaper) => void;
@@ -94,7 +94,7 @@ export const ReportPropertiesSchema = ({
                 }))
             );
 
-            sertifikater = user?.value.sertifikater.map((s) => {
+            sertifikater = kontroll.rapportEgenskaper?.sertifikater.map((s) => {
                 return { value: s, label: s.type.name };
             });
         }
@@ -270,36 +270,14 @@ export const ReportPropertiesSchema = ({
                                 </Grid>
                                 <Grid item xs={12}>
                                     {sertifikatOptions && (
-                                        <div>
-                                            <label htmlFor="sertifikat-select">
-                                                Sertifikater
-                                            </label>
-                                            <Select
-                                                inputId="sertifikat-select"
-                                                className="basic-single"
-                                                classNamePrefix="select"
-                                                isSearchable
-                                                isMulti
-                                                onChange={(selected) => {
-                                                    if (selected !== null) {
-                                                        setFieldValue(
-                                                            'sertifikater',
-                                                            selected
-                                                        );
-                                                    }
-                                                }}
-                                                value={values.sertifikater}
-                                                name="sertifikater"
-                                                options={sertifikatOptions}
-                                                styles={{
-                                                    menuPortal: (base) => ({
-                                                        ...base,
-                                                        zIndex: 9999
-                                                    })
-                                                }}
-                                                menuPortalTarget={document.body}
-                                            />
-                                        </div>
+                                        <KontrollerSertifikatField
+                                            sertifikatOptions={
+                                                sertifikatOptions
+                                            }
+                                            setSertifikatOptions={
+                                                setSertifikatOptions
+                                            }
+                                        />
                                     )}
                                 </Grid>
                             </Grid>
@@ -370,5 +348,61 @@ const KontrollerContactField = ({
             label={label}
             name={name}
         />
+    );
+};
+
+interface KontrollerSertifikatFieldProps {
+    sertifikatOptions: SertifikatOption[];
+    setSertifikatOptions: React.Dispatch<
+        React.SetStateAction<SertifikatOption[] | undefined>
+    >;
+}
+const KontrollerSertifikatField = ({
+    sertifikatOptions,
+    setSertifikatOptions
+}: KontrollerSertifikatFieldProps) => {
+    const {
+        values: { sertifikater, rapportUser },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    useEffect(() => {
+        if (rapportUser !== null) {
+            setFieldValue('sertifikater', null);
+            setSertifikatOptions(
+                rapportUser?.value.sertifikater.map((s) => ({
+                    value: s,
+                    label: s.type.name
+                }))
+            );
+        }
+    }, [rapportUser, setFieldValue, setSertifikatOptions]);
+
+    return (
+        <div>
+            <label htmlFor="sertifikat-select">Sertifikater</label>
+            <Select
+                inputId="sertifikat-select"
+                className="basic-single"
+                classNamePrefix="select"
+                isSearchable
+                isMulti
+                onChange={(selected) => {
+                    if (selected !== null) {
+                        setFieldValue('sertifikater', selected);
+                    }
+                }}
+                value={sertifikater}
+                name="sertifikater"
+                options={sertifikatOptions}
+                styles={{
+                    menuPortal: (base) => ({
+                        ...base,
+                        zIndex: 9999
+                    })
+                }}
+                menuPortalTarget={document.body}
+            />
+        </div>
     );
 };

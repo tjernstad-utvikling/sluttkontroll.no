@@ -3,6 +3,7 @@ import {
     Klient,
     Kontroll,
     Location,
+    RapportEgenskaper,
     ReportKontroll,
     Skjema
 } from '../contracts/kontrollApi';
@@ -122,6 +123,7 @@ export const getKontroller = async (): Promise<{
         throw new Error(error);
     }
 };
+
 export const getKontrollReportData = async (
     kontrollId: number
 ): Promise<{
@@ -138,6 +140,31 @@ export const getKontrollReportData = async (
         }
         throw new Error('not 200');
     } catch (error) {
+        throw new Error(error);
+    }
+};
+
+export const saveKontrollReportData = async (
+    kontrollId: number,
+    reportProperties: RapportEgenskaper
+): Promise<{
+    status: number;
+    kontroll: ReportKontroll | undefined;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/rapport/egenskaper/${kontrollId}`,
+            { ...reportProperties }
+        );
+        console.log({ ...data });
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, kontroll: undefined };
+        }
         throw new Error(error);
     }
 };

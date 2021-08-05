@@ -42,7 +42,7 @@ interface FormValues {
     sertifikater: SertifikatOption | null;
 }
 interface ReportPropertiesSchemaProps {
-    onSubmit: (reportProperties: RapportEgenskaper) => void;
+    onSubmit: (reportProperties: RapportEgenskaper) => Promise<boolean>;
     kontroll: ReportKontroll;
     klienter: Klient[];
 }
@@ -58,8 +58,9 @@ export const ReportPropertiesSchema = ({
     } = useUser();
 
     const [userOptions, setUserOptions] = useState<Array<Option>>();
-    const [sertifikatOptions, setSertifikatOptions] =
-        useState<Array<SertifikatOption>>();
+    const [sertifikatOptions, setSertifikatOptions] = useState<
+        Array<SertifikatOption>
+    >([]);
 
     useEffect(() => {
         if (users !== undefined) {
@@ -87,11 +88,13 @@ export const ReportPropertiesSchema = ({
         }
         let sertifikater = null;
         if (user !== null) {
-            setSertifikatOptions(
+            const userSertifikater: Array<SertifikatOption> | undefined =
                 user?.value.sertifikater.map((s) => ({
                     value: s,
                     label: s.type.name
-                }))
+                }));
+            setSertifikatOptions(
+                userSertifikater !== undefined ? userSertifikater : []
             );
 
             sertifikater = kontroll.rapportEgenskaper?.sertifikater.map((s) => {
@@ -143,15 +146,21 @@ export const ReportPropertiesSchema = ({
             <Formik
                 initialValues={initialData}
                 validationSchema={Yup.object({})}
-                onSubmit={(values, { setSubmitting }) => {
-                    onSubmit({
+                onSubmit={async (values, { setSubmitting }) => {
+                    const sertifikater =
+                        values.sertifikater !== null
+                            ? values.sertifikater?.map((a) => a.value)
+                            : undefined;
+                    await onSubmit({
                         ...values,
                         rapportUser:
                             values.rapportUser !== null
                                 ? values.rapportUser.value
                                 : null,
-                        sertifikater: []
+                        sertifikater:
+                            sertifikater !== undefined ? sertifikater : []
                     });
+                    setSubmitting(false);
                 }}>
                 {({ isSubmitting, setFieldValue, values, errors }) => {
                     return (
@@ -354,7 +363,7 @@ const KontrollerContactField = ({
 interface KontrollerSertifikatFieldProps {
     sertifikatOptions: SertifikatOption[];
     setSertifikatOptions: React.Dispatch<
-        React.SetStateAction<SertifikatOption[] | undefined>
+        React.SetStateAction<SertifikatOption[]>
     >;
 }
 const KontrollerSertifikatField = ({

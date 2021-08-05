@@ -2,10 +2,13 @@ import { ReportModules, useReport } from '../document/documentContainer';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { PDFViewer } from '@react-pdf/renderer';
+import { RapportEgenskaper } from '../contracts/kontrollApi';
 import { Report } from '../document/report';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@material-ui/core/Switch';
+import { saveKontrollReportData } from '../api/kontrollApi';
 import { useKontroll } from '../data/kontroll';
+import { useSnackbar } from 'notistack';
 import { useWindowSize } from '../hooks/useWindowSize';
 
 interface ReportSwitchProps {
@@ -96,14 +99,40 @@ export const ReportPropertiesViewer = ({
     children
 }: ReportPropertiesViewerProps) => {
     const { kontroll } = useReport();
+    const { enqueueSnackbar } = useSnackbar();
     const {
         state: { klienter }
     } = useKontroll();
+
+    const saveReportProperties = async (
+        reportProperties: RapportEgenskaper
+    ) => {
+        try {
+            if (kontroll !== undefined) {
+                const { status } = await saveKontrollReportData(
+                    kontroll.id,
+                    reportProperties
+                );
+                if (status === 400) {
+                    enqueueSnackbar('Et eller flere felter mangler data', {
+                        variant: 'warning'
+                    });
+                }
+                return true;
+            }
+            return false;
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av kontrollegenskaper', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
     if (kontroll !== undefined && klienter !== undefined) {
         if (kontroll.rapportEgenskaper === null) {
             return (
                 <ReportPropertiesSchema
-                    onSubmit={(v) => console.log(v)}
+                    onSubmit={saveReportProperties}
                     kontroll={kontroll}
                     klienter={klienter}
                 />

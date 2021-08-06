@@ -219,6 +219,34 @@ export const ReportPropertiesSchema = ({
                                         name="poststed"
                                     />
                                 </Grid>
+                                {/* Kontakt person  */}
+                                <Grid item xs={12}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="kontaktperson"
+                                        label="Navn kontaktperson"
+                                        name="kontaktperson"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="kontaktTelefon"
+                                        label="Telefon kontaktperson"
+                                        name="kontaktTelefon"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="kontaktEpost"
+                                        label="Epost kontaktperson"
+                                        name="kontaktEpost"
+                                    />
+                                </Grid>
                             </Grid>
                             {/* Kontrollert av under */}
                             <Grid
@@ -260,6 +288,10 @@ export const ReportPropertiesSchema = ({
                                                 }}
                                                 menuPortalTarget={document.body}
                                             />
+                                            <Typography component="span">
+                                                Epost og telefon må endres på
+                                                den enkeltes profil
+                                            </Typography>
                                         </div>
                                     )}
                                 </Grid>

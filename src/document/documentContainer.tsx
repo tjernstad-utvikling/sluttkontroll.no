@@ -43,6 +43,7 @@ export const DocumentContainer = ({
     } = useKontroll();
     const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>();
     const [filteredSkjemaer, setFilteredSkjemaer] = useState<Array<Skjema>>();
+    const [savedReportData, setSavedReportData] = useState<number>(0);
 
     const {
         state: { avvik },
@@ -119,6 +120,11 @@ export const DocumentContainer = ({
         }
     };
 
+    const updateKontroll = (reportKontroll: ReportKontroll) => {
+        setKontroll(reportKontroll);
+        setSavedReportData(savedReportData + 1);
+    };
+
     return (
         <Context.Provider
             value={{
@@ -128,6 +134,7 @@ export const DocumentContainer = ({
                 setFrontPageData,
                 infoText: _infoText,
                 kontroll: _kontroll,
+                updateKontroll,
                 skjemaer: _skjemaer,
                 filteredSkjemaer,
                 setFilteredSkjemaer,
@@ -153,6 +160,7 @@ interface ContextInterface {
     infoText: string | undefined;
 
     kontroll: ReportKontroll | undefined;
+    updateKontroll: (reportKontroll: ReportKontroll) => void;
     skjemaer: Skjema[] | undefined;
     filteredSkjemaer: Skjema[] | undefined;
     checklists: Checklist[] | undefined;

@@ -154,9 +154,11 @@ export const saveKontrollReportData = async (
     try {
         const { status, data } = await sluttkontrollApi.post(
             `/v3/rapport/egenskaper/${kontrollId}`,
-            { ...reportProperties }
+            {
+                ...reportProperties,
+                sertifikater: reportProperties.sertifikater.map((s) => s.id)
+            }
         );
-        console.log({ ...data });
         if (status === 200) {
             return { status, ...data };
         }

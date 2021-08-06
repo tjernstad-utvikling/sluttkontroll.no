@@ -145,24 +145,42 @@ export const ReportPropertiesSchema = ({
         return (
             <Formik
                 initialValues={initialData}
-                validationSchema={Yup.object({})}
+                validationSchema={Yup.object({
+                    postnr: Yup.number()
+                        .typeError('Postnr må være et tall på 4 siffer')
+                        .required('Postnr er påkrevd'),
+                    poststed: Yup.string().required('Poststed er påkrevd'),
+                    kontaktperson: Yup.string().required(
+                        'Kontaktperson er påkrevd'
+                    ),
+                    kontrollsted: Yup.string().required(
+                        'Kontrollsted er påkrevd'
+                    ),
+                    oppdragsgiver: Yup.string().required(
+                        'Oppdragsgiver er påkrevd'
+                    ),
+                    adresse: Yup.string().required('Adresse er påkrevd')
+                })}
                 onSubmit={async (values, { setSubmitting }) => {
                     const sertifikater =
                         values.sertifikater !== null
                             ? values.sertifikater?.map((a) => a.value)
                             : undefined;
-                    await onSubmit({
-                        ...values,
-                        rapportUser:
-                            values.rapportUser !== null
-                                ? values.rapportUser.value
-                                : null,
-                        sertifikater:
-                            sertifikater !== undefined ? sertifikater : []
-                    });
-                    setSubmitting(false);
+                    if (
+                        !(await onSubmit({
+                            ...values,
+                            rapportUser:
+                                values.rapportUser !== null
+                                    ? values.rapportUser.value
+                                    : null,
+                            sertifikater:
+                                sertifikater !== undefined ? sertifikater : []
+                        }))
+                    ) {
+                        setSubmitting(false);
+                    }
                 }}>
-                {({ isSubmitting, setFieldValue, values, errors }) => {
+                {({ isSubmitting, setFieldValue, values }) => {
                     return (
                         <Form>
                             <Grid

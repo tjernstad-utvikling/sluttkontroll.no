@@ -7,8 +7,10 @@ import { Report } from '../document/report';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@material-ui/core/Switch';
 import { saveKontrollReportData } from '../api/kontrollApi';
+import { useEffect } from 'react';
 import { useKontroll } from '../data/kontroll';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 import { useWindowSize } from '../hooks/useWindowSize';
 
 interface ReportSwitchProps {
@@ -98,27 +100,39 @@ interface ReportPropertiesViewerProps {
 export const ReportPropertiesViewer = ({
     children
 }: ReportPropertiesViewerProps) => {
-    const { kontroll } = useReport();
+    const { kontroll, updateKontroll } = useReport();
     const { enqueueSnackbar } = useSnackbar();
     const {
         state: { klienter }
     } = useKontroll();
+
+    const [showPropertiesForm, setShowPropertiesForm] = useState<boolean>(true);
 
     const saveReportProperties = async (
         reportProperties: RapportEgenskaper
     ) => {
         try {
             if (kontroll !== undefined) {
-                const { status } = await saveKontrollReportData(
+                const response = await saveKontrollReportData(
                     kontroll.id,
                     reportProperties
                 );
-                if (status === 400) {
+                if (response.status === 400) {
                     enqueueSnackbar('Et eller flere felter mangler data', {
                         variant: 'warning'
                     });
                 }
-                return true;
+                if (
+                    response.status === 200 &&
+                    response.kontroll !== undefined
+                ) {
+                    updateKontroll(response.kontroll);
+                    setShowPropertiesForm(false);
+                    enqueueSnackbar('Rapportegenskaper er lagret', {
+                        variant: 'success'
+                    });
+                    return true;
+                }
             }
             return false;
         } catch (error) {
@@ -128,8 +142,17 @@ export const ReportPropertiesViewer = ({
             return false;
         }
     };
+
+    useEffect(() => {
+        if (kontroll !== undefined) {
+            if (kontroll.rapportEgenskaper !== null) {
+                setShowPropertiesForm(false);
+            }
+        }
+    }, [kontroll]);
+
     if (kontroll !== undefined && klienter !== undefined) {
-        if (kontroll.rapportEgenskaper === null) {
+        if (showPropertiesForm) {
             return (
                 <ReportPropertiesSchema
                     onSubmit={saveReportProperties}

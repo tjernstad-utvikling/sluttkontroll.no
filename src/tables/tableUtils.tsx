@@ -82,6 +82,7 @@ export interface ActionItem {
     action?: () => void;
     to?: string;
     skip?: boolean;
+    icon?: React.ReactNode;
 }
 interface RowActionProps {
     actionItems: Array<ActionItem>;
@@ -126,14 +127,16 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
                                             ai.action();
                                         }
                                     }}
-                                    color="primary">
+                                    color="primary"
+                                    startIcon={ai.icon}>
                                     {ai.name}
                                 </Button>
                             ) : ai.to !== undefined ? (
                                 <Button
                                     color="primary"
                                     component={RouterLink}
-                                    to={ai.to}>
+                                    to={ai.to}
+                                    startIcon={ai.icon}>
                                     {ai.name}
                                 </Button>
                             ) : (

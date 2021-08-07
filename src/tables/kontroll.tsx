@@ -8,6 +8,9 @@ import { Klient, Kontroll } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
+import DescriptionIcon from '@material-ui/icons/Description';
+import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
+import EditIcon from '@material-ui/icons/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from '../tables/tableUtils';
@@ -159,15 +162,18 @@ export const kontrollColumns = (
                         {
                             name: 'Rediger',
                             action: () => edit(params.row.id),
-                            skip: params.row.done
+                            skip: params.row.done,
+                            icon: <EditIcon />
                         },
                         {
                             name: params.row.done ? 'Åpne' : 'Sett som utført',
-                            action: () => toggleStatus(params.row.id)
+                            action: () => toggleStatus(params.row.id),
+                            icon: <DoneOutlineIcon />
                         },
                         {
                             name: 'Kontrollrapport',
-                            to: `/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/report`
+                            to: `/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/report`,
+                            icon: <DescriptionIcon />
                         }
                     ]}
                 />

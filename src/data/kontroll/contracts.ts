@@ -123,6 +123,7 @@ export interface ContextInterface {
         user: User
     ) => Promise<boolean>;
     updateKontroll: (kontroll: Kontroll) => Promise<boolean>;
+    toggleStatusKontroll: (kontrollId: number) => Promise<boolean>;
     saveNewSkjema: (
         area: string,
         omrade: string,

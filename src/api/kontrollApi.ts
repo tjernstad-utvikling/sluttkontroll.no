@@ -170,6 +170,21 @@ export const saveKontrollReportData = async (
         throw new Error(error);
     }
 };
+export const toggleKontrollStatus = async (
+    kontrollId: number
+): Promise<number> => {
+    try {
+        const { status } = await sluttkontrollApi.put(
+            `/v3/kontroll/status/${kontrollId}`
+        );
+        if (status === 204) {
+            return status;
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 
 export const getKontrollerByKlient = async (
     klientId: number

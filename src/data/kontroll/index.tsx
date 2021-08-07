@@ -14,6 +14,7 @@ import {
     newKontroll,
     newLocation,
     newSkjema,
+    toggleKontrollStatus,
     updateKontroll as updateKontrollApi
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
@@ -247,6 +248,32 @@ export const KontrollContextProvider = ({
         }
         return false;
     };
+
+    const toggleStatusKontroll = async (
+        kontrollId: number
+    ): Promise<boolean> => {
+        try {
+            const resStatus = await toggleKontrollStatus(kontrollId);
+
+            const kontroll = state.kontroller?.find((k) => k.id === kontrollId);
+            if (resStatus === 204 && kontroll !== undefined) {
+                dispatch({
+                    type: ActionType.updateKontroll,
+                    payload: { ...kontroll, done: !kontroll.done }
+                });
+
+                enqueueSnackbar('Kontroll satt som utført', {
+                    variant: 'success'
+                });
+            }
+            return true;
+        } catch (error) {
+            enqueueSnackbar('Problemer med oppdatering av kontrollen', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
     const saveNewKontroll = async (
         name: string,
         avvikUtbedrere: Array<User>,
@@ -349,6 +376,7 @@ export const KontrollContextProvider = ({
                 saveNewKlient,
                 saveEditKlient,
                 updateKontroll,
+                toggleStatusKontroll,
                 saveNewKontroll,
                 saveNewLocation,
                 saveEditLocation,

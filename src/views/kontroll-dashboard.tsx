@@ -30,7 +30,8 @@ const KontrollerView = () => {
 
     const {
         state: { kontroller, klienter },
-        loadKontroller
+        loadKontroller,
+        toggleStatusKontroll
     } = useKontroll();
     const {
         loadUsers,
@@ -60,6 +61,7 @@ const KontrollerView = () => {
     const editKontroll = (id: number) => {
         setEditId(id);
     };
+
     const closeEdit = () => {
         setEditId(undefined);
     };
@@ -90,7 +92,8 @@ const KontrollerView = () => {
                                         klienter ?? [],
                                         avvik ?? [],
                                         measurements ?? [],
-                                        editKontroll
+                                        editKontroll,
+                                        toggleStatusKontroll
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">

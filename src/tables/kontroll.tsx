@@ -76,7 +76,8 @@ export const kontrollColumns = (
     klienter: Klient[],
     avvik: Avvik[],
     measurements: Measurement[],
-    edit: (id: number) => void
+    edit: (id: number) => void,
+    toggleStatus: (id: number) => void
 ) => {
     const columns: GridColDef[] = [
         {
@@ -158,6 +159,10 @@ export const kontrollColumns = (
                         {
                             name: 'Rediger',
                             action: () => edit(params.row.id)
+                        },
+                        {
+                            name: 'Sett som utført',
+                            action: () => toggleStatus(params.row.id)
                         },
                         {
                             name: 'Kontrollrapport',

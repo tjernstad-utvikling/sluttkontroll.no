@@ -39,7 +39,8 @@ const KontrollKlientView = () => {
     const {
         state: { kontroller, klienter },
         loadKontrollerByKlient,
-        saveEditKlient
+        saveEditKlient,
+        toggleStatusKontroll
     } = useKontroll();
     const {
         loadUsers,
@@ -152,7 +153,8 @@ const KontrollKlientView = () => {
                                         klienter ?? [],
                                         avvik ?? [],
                                         measurements ?? [],
-                                        editKontroll
+                                        editKontroll,
+                                        toggleStatusKontroll
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">

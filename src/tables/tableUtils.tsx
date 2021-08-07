@@ -7,11 +7,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormLabel from '@material-ui/core/FormLabel';
 import IconButton from '@material-ui/core/IconButton';
-import { Link } from 'react-router-dom';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@material-ui/core/Switch';
 import { useTable } from './tableContainer';
 
@@ -125,7 +125,12 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
                                 {ai.name}
                             </Button>
                         ) : ai.to !== undefined ? (
-                            <Link to={ai.to}>{ai.name}</Link>
+                            <Button
+                                color="primary"
+                                component={RouterLink}
+                                to={ai.to}>
+                                {ai.name}
+                            </Button>
                         ) : (
                             <div />
                         )}

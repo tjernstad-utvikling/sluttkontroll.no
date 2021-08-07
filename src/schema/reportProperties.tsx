@@ -97,9 +97,15 @@ export const ReportPropertiesSchema = ({
                 userSertifikater !== undefined ? userSertifikater : []
             );
 
-            sertifikater = kontroll.rapportEgenskaper?.sertifikater.map((s) => {
-                return { value: s, label: s.type.name };
-            });
+            if (
+                kontroll.rapportEgenskaper?.sertifikater &&
+                kontroll.rapportEgenskaper?.sertifikater.length > 0
+            )
+                sertifikater = kontroll.rapportEgenskaper?.sertifikater.map(
+                    (s) => {
+                        return { value: s, label: s.type.name };
+                    }
+                );
         }
 
         const klient = klienter.find((k) => k.id === kontroll.Objekt.klient.id);

@@ -1,3 +1,4 @@
+import { RapportEgenskaper, Skjema } from '../../contracts/kontrollApi';
 import { ReportModules, useReport } from '../documentContainer';
 import { SkjemaTable, columns, defaultColumns } from '../../tables/skjema';
 
@@ -8,14 +9,16 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
-import { Skjema } from '../../contracts/kontrollApi';
+import { ReportPropertiesSchema } from '../../schema/reportProperties';
 import Switch from '@material-ui/core/Switch';
 import { TableContainer } from '../../tables/tableContainer';
 import TextField from '@material-ui/core/TextField';
+import { saveKontrollReportData } from '../../api/kontrollApi';
 import { useAvvik } from '../../data/avvik';
 import { useEffect } from 'react';
 import { useKontroll } from '../../data/kontroll';
 import { useMeasurement } from '../../data/measurement';
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 export const FrontPageAdjusting = () => {
@@ -196,6 +199,83 @@ export const MeasurementAdjusting = () => {
                             Måleprotokoll ved tilhørende kontrollskjema
                         </Grid>
                     </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)} color="primary">
+                        Lukk
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+};
+export const ReportProperties = () => {
+    const [open, setOpen] = useState<boolean>(false);
+
+    const { kontroll, updateKontroll } = useReport();
+    const { enqueueSnackbar } = useSnackbar();
+    const {
+        state: { klienter }
+    } = useKontroll();
+
+    const saveReportProperties = async (
+        reportProperties: RapportEgenskaper
+    ) => {
+        try {
+            if (kontroll !== undefined) {
+                const response = await saveKontrollReportData(
+                    kontroll.id,
+                    reportProperties
+                );
+                if (response.status === 400) {
+                    enqueueSnackbar('Et eller flere felter mangler data', {
+                        variant: 'warning'
+                    });
+                }
+                if (
+                    response.status === 200 &&
+                    response.kontroll !== undefined
+                ) {
+                    updateKontroll(response.kontroll);
+                    setOpen(false);
+                    enqueueSnackbar('Rapportegenskaper er lagret', {
+                        variant: 'success'
+                    });
+                    return true;
+                }
+            }
+            return false;
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av kontrollegenskaper', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
+    return (
+        <>
+            <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => setOpen(!open)}>
+                Tilpass
+            </Button>
+            <Dialog
+                fullScreen
+                open={open}
+                onClose={() => setOpen(false)}
+                aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">
+                    Tilpass rapportegenskaper
+                </DialogTitle>
+                <DialogContent>
+                    {kontroll !== undefined && klienter !== undefined && (
+                        <ReportPropertiesSchema
+                            onSubmit={saveReportProperties}
+                            kontroll={kontroll}
+                            klienter={klienter}
+                        />
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)} color="primary">

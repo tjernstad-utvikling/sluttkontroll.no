@@ -11,7 +11,8 @@ import {
 import {
     FrontPageAdjusting,
     KontrollDocAdjusting,
-    MeasurementAdjusting
+    MeasurementAdjusting,
+    ReportProperties
 } from '../document/customizeData/kontrollReportData';
 
 import { Card } from '../components/card';
@@ -58,8 +59,7 @@ const KontrollReportView = () => {
                                             id={ReportModules.infoPage}
                                             label="Infoside"
                                         />
-                                        {/*
-                                    <FrontPageAdjusting /> */}
+                                        <ReportProperties />
                                     </div>
                                     <div
                                         style={{

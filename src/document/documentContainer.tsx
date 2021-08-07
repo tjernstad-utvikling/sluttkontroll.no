@@ -43,7 +43,6 @@ export const DocumentContainer = ({
     } = useKontroll();
     const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>();
     const [filteredSkjemaer, setFilteredSkjemaer] = useState<Array<Skjema>>();
-    const [savedReportData, setSavedReportData] = useState<number>(0);
 
     const {
         state: { avvik },
@@ -122,7 +121,30 @@ export const DocumentContainer = ({
 
     const updateKontroll = (reportKontroll: ReportKontroll) => {
         setKontroll(reportKontroll);
-        setSavedReportData(savedReportData + 1);
+        const rapportEgenskaper = reportKontroll.rapportEgenskaper;
+        let userName = '';
+        if (rapportEgenskaper !== null && users !== undefined) {
+            const rapportUser = rapportEgenskaper.rapportUser;
+            if (rapportUser !== null) {
+                const user = users.find((u) => u.id === rapportUser.id);
+                if (user !== undefined) {
+                    userName = user.name;
+                }
+            }
+
+            if (_kontroll !== undefined) {
+                let date = new Date();
+                if (_kontroll.completedDate !== null) {
+                    date = new Date(_kontroll.completedDate);
+                }
+                setFrontPageData({
+                    date: format(date, 'dd.MM.yyyy'),
+                    title: '3. Partskontroll',
+                    user: userName,
+                    kontrollsted: rapportEgenskaper.kontrollsted
+                });
+            }
+        }
     };
 
     return (

@@ -158,10 +158,11 @@ export const kontrollColumns = (
                     actionItems={[
                         {
                             name: 'Rediger',
-                            action: () => edit(params.row.id)
+                            action: () => edit(params.row.id),
+                            skip: params.row.done
                         },
                         {
-                            name: 'Sett som utført',
+                            name: params.row.done ? 'Åpne' : 'Sett som utført',
                             action: () => toggleStatus(params.row.id)
                         },
                         {

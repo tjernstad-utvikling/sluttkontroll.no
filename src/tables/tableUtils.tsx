@@ -81,6 +81,7 @@ export interface ActionItem {
     name: string;
     action?: () => void;
     to?: string;
+    skip?: boolean;
 }
 interface RowActionProps {
     actionItems: Array<ActionItem>;
@@ -111,31 +112,36 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={close}>
-                {actionItems.map((ai) => (
-                    <MenuItem key={ai.name}>
-                        {ai.action !== undefined ? (
-                            <Button
-                                onClick={() => {
-                                    close();
-                                    if (ai.action !== undefined) {
-                                        ai.action();
-                                    }
-                                }}
-                                color="primary">
-                                {ai.name}
-                            </Button>
-                        ) : ai.to !== undefined ? (
-                            <Button
-                                color="primary"
-                                component={RouterLink}
-                                to={ai.to}>
-                                {ai.name}
-                            </Button>
-                        ) : (
-                            <div />
-                        )}
-                    </MenuItem>
-                ))}
+                {actionItems.map((ai) => {
+                    if (ai.skip) {
+                        return <div />;
+                    }
+                    return (
+                        <MenuItem key={ai.name}>
+                            {ai.action !== undefined ? (
+                                <Button
+                                    onClick={() => {
+                                        close();
+                                        if (ai.action !== undefined) {
+                                            ai.action();
+                                        }
+                                    }}
+                                    color="primary">
+                                    {ai.name}
+                                </Button>
+                            ) : ai.to !== undefined ? (
+                                <Button
+                                    color="primary"
+                                    component={RouterLink}
+                                    to={ai.to}>
+                                    {ai.name}
+                                </Button>
+                            ) : (
+                                <div />
+                            )}
+                        </MenuItem>
+                    );
+                })}
             </Menu>
         </div>
     );

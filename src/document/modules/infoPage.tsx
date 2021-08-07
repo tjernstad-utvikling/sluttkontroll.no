@@ -6,6 +6,7 @@ import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
 import { InfoBox } from './components/box';
+import { SertifikatBlock } from './components/sertifikat';
 import { Spacer } from './components/spacing';
 
 interface InfoPageProps {
@@ -91,6 +92,12 @@ export const InfoPage = ({
                 <TableCell>{rapportUser.email}</TableCell>
             </TableRow>
 
+            <Spacer />
+            {rapportEgenskaper.sertifikater.length > 0 && (
+                <SertifikatBlock
+                    sertifikater={rapportEgenskaper.sertifikater}
+                />
+            )}
             <Spacer />
 
             <InfoBox text={infoText} />

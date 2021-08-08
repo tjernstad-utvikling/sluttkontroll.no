@@ -27,6 +27,7 @@ export enum ActionType {
     updateKontroll,
     addSkjemaer,
     newSkjema,
+    removeSkjema,
     addChecklists,
     editChecklists
 }
@@ -74,6 +75,10 @@ export interface newSkjema {
     type: ActionType.newSkjema;
     payload: Skjema;
 }
+export interface removeSkjema {
+    type: ActionType.removeSkjema;
+    payload: { skjemaId: number };
+}
 export interface addChecklists {
     type: ActionType.addChecklists;
     payload: Array<Checklist>;
@@ -94,6 +99,7 @@ export type KontrollActions =
     | updateKontroll
     | addSkjemaer
     | newSkjema
+    | removeSkjema
     | addChecklists
     | editChecklists;
 
@@ -130,6 +136,7 @@ export interface ContextInterface {
         checkpoints: Checkpoint[],
         kontrollId: number
     ) => Promise<boolean>;
+    removeSkjema: (skjemaId: number) => Promise<boolean>;
     saveEditChecklist: (
         skjemaId: number,
         checkpoints: Checkpoint[]

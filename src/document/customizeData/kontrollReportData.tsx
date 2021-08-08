@@ -125,6 +125,7 @@ export const KontrollDocAdjusting = ({
                                 avvik ?? [],
                                 measurements ?? [],
                                 '',
+                                (a) => console.log(a),
                                 true
                             )}
                             defaultColumns={defaultColumns}

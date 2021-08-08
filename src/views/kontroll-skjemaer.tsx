@@ -9,6 +9,7 @@ import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaerViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
+import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { useMeasurement } from '../data/measurement';
@@ -21,10 +22,13 @@ const SkjemaerView = () => {
 
     const history = useHistory();
 
+    const { confirm } = useConfirm();
+
     const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>([]);
     const {
         state: { skjemaer, kontroller },
-        loadKontroller
+        loadKontroller,
+        removeSkjema
     } = useKontroll();
 
     const {
@@ -46,6 +50,19 @@ const SkjemaerView = () => {
             );
         }
     }, [skjemaer, kontrollId]);
+
+    const deleteSkjema = async (skjemaId: number) => {
+        const skjema = skjemaer?.find((s) => s.id === skjemaId);
+        if (skjema !== undefined) {
+            const isConfirmed = await confirm(
+                `Slette ${skjema.area} - ${skjema.omrade}?`
+            );
+
+            if (isConfirmed) {
+                removeSkjema(skjemaId);
+            }
+        }
+    };
 
     return (
         <div>
@@ -74,7 +91,8 @@ const SkjemaerView = () => {
                                         kontroller ?? [],
                                         avvik ?? [],
                                         measurements ?? [],
-                                        url
+                                        url,
+                                        deleteSkjema
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="skjemaer">

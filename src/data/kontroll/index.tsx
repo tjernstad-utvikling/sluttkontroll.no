@@ -2,6 +2,7 @@ import { ActionType, ContextInterface } from './contracts';
 import { Klient, Kontroll, Location } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
+    deleteSkjemaById,
     editChecklist,
     editClient,
     editLocation,
@@ -337,6 +338,35 @@ export const KontrollContextProvider = ({
         }
         return false;
     };
+    const removeSkjema = async (skjemaId: number): Promise<boolean> => {
+        try {
+            const res = await deleteSkjemaById(skjemaId);
+            console.log(res);
+            if (res.status === 204) {
+                dispatch({
+                    type: ActionType.removeSkjema,
+                    payload: { skjemaId }
+                });
+                enqueueSnackbar('Skjema slettet', {
+                    variant: 'success'
+                });
+            }
+            if (res.status === 400) {
+                enqueueSnackbar('Avvik og måleresultater må slettes først', {
+                    variant: 'warning'
+                });
+            }
+
+            return true;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med sletting av skjema', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
     const saveEditChecklist = async (
         skjemaId: number,
         checkpoints: Checkpoint[]
@@ -381,6 +411,7 @@ export const KontrollContextProvider = ({
                 saveNewLocation,
                 saveEditLocation,
                 saveNewSkjema,
+                removeSkjema,
                 saveEditChecklist
             }}>
             {children}

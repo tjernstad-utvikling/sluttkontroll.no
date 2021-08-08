@@ -106,6 +106,13 @@ export const kontrollReducer = (
                         ? [...state.skjemaer, action.payload]
                         : [action.payload]
             };
+        case ActionType.removeSkjema:
+            return {
+                ...state,
+                skjemaer: state.skjemaer?.filter(
+                    (s) => s.id !== action.payload.skjemaId
+                )
+            };
         case ActionType.addChecklists:
             return {
                 ...state,

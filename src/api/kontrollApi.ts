@@ -331,3 +331,24 @@ export const getChecklistsBySkjema = async (
         throw new Error(error);
     }
 };
+export const deleteSkjemaById = async (
+    skjemaId: number
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.delete(
+            `v3/skjema/${skjemaId}`
+        );
+        if (status === 204) {
+            return { status, message: '' };
+        }
+        throw new Error('not 204');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};

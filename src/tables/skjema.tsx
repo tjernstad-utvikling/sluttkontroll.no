@@ -9,8 +9,10 @@ import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
+import { RowAction } from './tableUtils';
 import { useTable } from './tableContainer';
 
 export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
@@ -55,6 +57,7 @@ export const columns = (
     avvik: Avvik[],
     measurements: Measurement[],
     url: string,
+    deleteSkjema: (skjemaId: number) => void,
     skipLink?: boolean
 ) => {
     const columns: GridColDef[] = [
@@ -128,6 +131,25 @@ export const columns = (
             field: 'kommentar',
             headerName: 'Kommentar',
             flex: 1
+        },
+        {
+            field: 'action',
+            headerName: ' ',
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) => (
+                <RowAction
+                    actionItems={[
+                        {
+                            name: 'Slett',
+                            action: () => deleteSkjema(params.row.id),
+                            skip: params.row.done,
+                            icon: <DeleteForeverIcon />
+                        }
+                    ]}
+                />
+            )
         }
     ];
 

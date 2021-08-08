@@ -10,18 +10,15 @@ import { Kontroll, Skjema } from '../contracts/kontrollApi';
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import EditIcon from '@material-ui/icons/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from './tableUtils';
 import { useTable } from './tableContainer';
 
 export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
-    const kontroll = (kontroller: Kontroll[]): string => {
-        const kontroll = kontroller.find((k) => k.id === data.kontroll.id);
-        if (kontroll !== undefined) {
-            return kontroll?.name || '';
-        }
-        return '';
+    const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
+        return kontroller.find((k) => k.id === data.kontroll.id);
     };
 
     const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
@@ -58,6 +55,7 @@ export const columns = (
     measurements: Measurement[],
     url: string,
     deleteSkjema: (skjemaId: number) => void,
+    edit: (skjemaId: number) => void,
     skipLink?: boolean
 ) => {
     const columns: GridColDef[] = [
@@ -90,7 +88,7 @@ export const columns = (
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                SkjemaValueGetter(params.row).kontroll(kontroller)
+                SkjemaValueGetter(params.row).kontroll(kontroller)?.name || ''
         },
         {
             field: 'avvik',
@@ -138,18 +136,29 @@ export const columns = (
             sortable: false,
             filterable: false,
             disableColumnMenu: true,
-            renderCell: (params: GridCellParams) => (
-                <RowAction
-                    actionItems={[
-                        {
-                            name: 'Slett',
-                            action: () => deleteSkjema(params.row.id),
-                            skip: params.row.done,
-                            icon: <DeleteForeverIcon />
-                        }
-                    ]}
-                />
-            )
+            renderCell: (params: GridCellParams) => {
+                const kontroll = SkjemaValueGetter(params.row).kontroll(
+                    kontroller
+                );
+                return (
+                    <RowAction
+                        actionItems={[
+                            {
+                                name: 'Rediger',
+                                action: () => edit(params.row.id),
+                                skip: kontroll?.done || false,
+                                icon: <EditIcon />
+                            },
+                            {
+                                name: 'Slett',
+                                action: () => deleteSkjema(params.row.id),
+                                skip: kontroll?.done || false,
+                                icon: <DeleteForeverIcon />
+                            }
+                        ]}
+                    />
+                );
+            }
         }
     ];
 

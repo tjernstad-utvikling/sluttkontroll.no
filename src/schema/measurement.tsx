@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 
 import { Form, Formik, useFormikContext } from 'formik';
 import {
+    Measurement,
     MeasurementType,
     NewFormMeasurement
 } from '../contracts/measurementApi';
@@ -36,9 +37,11 @@ interface FormValues {
 }
 interface MeasurementSchemaProps {
     onSubmit: (measurement: NewFormMeasurement) => Promise<boolean>;
+    measurement?: Measurement;
 }
 export const MeasurementSchema = ({
-    onSubmit
+    onSubmit,
+    measurement
 }: MeasurementSchemaProps): JSX.Element => {
     const {
         state: { measurementTypes }
@@ -62,25 +65,30 @@ export const MeasurementSchema = ({
     }, [measurementTypes]);
 
     const selectedType = useMemo(() => {
-        const option = options?.find((o) => o.value.shortName === 'kont');
+        let preSelectedType = 'kont';
+        if (measurement !== undefined) {
+            preSelectedType = measurement.type;
+        }
+        const option = options?.find(
+            (o) => o.value.shortName === preSelectedType
+        );
         if (option !== undefined) {
             return option;
         }
         return null;
-    }, [options]);
+    }, [measurement, options]);
 
     if (options !== undefined) {
         return (
             <Formik
                 initialValues={{
-                    name: '',
                     type: selectedType,
-                    pol: '1',
-                    element: '',
-                    resultat: '',
-                    enhet: '',
-                    maks: '',
-                    min: ''
+                    pol: measurement?.pol || '1',
+                    element: measurement?.element || '',
+                    resultat: measurement?.resultat || '',
+                    enhet: measurement?.enhet || '',
+                    maks: measurement?.maks || '',
+                    min: measurement?.min || ''
                 }}
                 validationSchema={Yup.object({
                     resultat: Yup.number()

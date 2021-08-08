@@ -12,6 +12,7 @@ import { Measurement } from '../contracts/measurementApi';
 import { MeasurementModal } from '../modal/measurement';
 import { MeasurementsViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
+import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { useMeasurement } from '../data/measurement';
@@ -29,8 +30,11 @@ const MeasurementsView = () => {
         loadKontroller
     } = useKontroll();
 
+    const { confirm } = useConfirm();
+
     const {
-        state: { measurements }
+        state: { measurements, measurementTypes },
+        removeMeasurement
     } = useMeasurement();
 
     useEffectOnce(() => {
@@ -52,6 +56,31 @@ const MeasurementsView = () => {
             }
         }
     }, [skjemaId, measurements, kontrollId]);
+
+    const deleteMeasurement = async (measurementId: number) => {
+        const measurement = measurements?.find((m) => m.id === measurementId);
+        if (measurement !== undefined && measurementTypes !== undefined) {
+            let mType = measurement.type;
+
+            let type = measurementTypes.find(
+                (type) => type.shortName === measurement.type
+            );
+            if (type) {
+                if (type.hasPol) {
+                    mType = type.longName.replace('#', measurement.pol + 'p');
+                } else {
+                    mType = type.longName;
+                }
+            }
+            const isConfirmed = await confirm(
+                `Slette (ID: ${measurement.id}) ${mType} ${measurement.element} ${measurement.resultat} ${measurement.enhet}?`
+            );
+
+            if (isConfirmed) {
+                removeMeasurement(measurementId);
+            }
+        }
+    };
 
     return (
         <div>
@@ -80,7 +109,9 @@ const MeasurementsView = () => {
                                 <TableContainer
                                     columns={columns(
                                         kontroller ?? [],
-                                        skjemaer ?? []
+                                        skjemaer ?? [],
+                                        deleteMeasurement,
+                                        (a) => console.log(a)
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="measurements">

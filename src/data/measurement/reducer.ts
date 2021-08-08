@@ -21,6 +21,13 @@ export const userReducer = (
                     'id'
                 )
             };
+        case ActionType.removeMeasurement:
+            return {
+                ...state,
+                measurements: state.measurements?.filter(
+                    (m) => m.id !== action.payload.measurementId
+                )
+            };
         case ActionType.setMeasurementTypes:
             return {
                 ...state,

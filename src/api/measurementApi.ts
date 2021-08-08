@@ -60,3 +60,21 @@ export const newMeasurement = async (
         throw new Error(error);
     }
 };
+export const deleteMeasurement = async (
+    measurementId: number
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.delete(
+            `/v3/measurement/${measurementId}`
+        );
+        if (status === 204) {
+            return { status, message: '' };
+        }
+        throw new Error('not 204');
+    } catch (error) {
+        throw new Error(error);
+    }
+};

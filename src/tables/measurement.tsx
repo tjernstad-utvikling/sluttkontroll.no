@@ -1,4 +1,5 @@
 import {
+    GridCellParams,
     GridColDef,
     GridRowData,
     GridValueGetterParams
@@ -6,17 +7,14 @@ import {
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { BaseTable } from './baseTable';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import EditIcon from '@material-ui/icons/Edit';
 import { Measurement } from '../contracts/measurementApi';
+import { RowAction } from './tableUtils';
 
 export const MeasurementValueGetter = (data: Measurement | GridRowData) => {
-    const kontroll = (kontroller: Kontroll[]): string => {
-        const kontroll = kontroller.find(
-            (k) => k.id === data.Skjema.kontroll.id
-        );
-        if (kontroll !== undefined) {
-            return kontroll?.name || '';
-        }
-        return '';
+    const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
+        return kontroller.find((k) => k.id === data.Skjema.kontroll.id);
     };
     const skjema = (skjemaer: Skjema[]): string => {
         const skjema = skjemaer.find((s) => s.id === data.Skjema.id);
@@ -28,7 +26,12 @@ export const MeasurementValueGetter = (data: Measurement | GridRowData) => {
 
     return { kontroll, skjema };
 };
-export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
+export const columns = (
+    kontroller: Kontroll[],
+    skjemaer: Skjema[],
+    deleteMeasurement: (MeasurementId: number) => void,
+    edit: (MeasurementId: number) => void
+) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -70,7 +73,8 @@ export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                MeasurementValueGetter(params.row).kontroll(kontroller)
+                MeasurementValueGetter(params.row).kontroll(kontroller)?.name ||
+                ''
         },
         {
             field: 'skjema',
@@ -78,6 +82,36 @@ export const columns = (kontroller: Kontroll[], skjemaer: Skjema[]) => {
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 MeasurementValueGetter(params.row).skjema(skjemaer)
+        },
+        {
+            field: 'action',
+            headerName: ' ',
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) => {
+                const kontroll = MeasurementValueGetter(params.row).kontroll(
+                    kontroller
+                );
+                return (
+                    <RowAction
+                        actionItems={[
+                            {
+                                name: 'Rediger',
+                                action: () => edit(params.row.id),
+                                skip: kontroll?.done || false,
+                                icon: <EditIcon />
+                            },
+                            {
+                                name: 'Slett',
+                                action: () => deleteMeasurement(params.row.id),
+                                skip: kontroll?.done || false,
+                                icon: <DeleteForeverIcon />
+                            }
+                        ]}
+                    />
+                );
+            }
         }
     ];
 

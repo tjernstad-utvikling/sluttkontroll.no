@@ -1,6 +1,7 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
+    deleteMeasurement,
     getMeasurementByKontrollList,
     getMeasurementTypes,
     newMeasurement
@@ -83,6 +84,30 @@ export const MeasurementContextProvider = ({
         }
         return false;
     };
+    const removeMeasurement = async (
+        measurementId: number
+    ): Promise<boolean> => {
+        try {
+            const { status } = await deleteMeasurement(measurementId);
+
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.removeMeasurement,
+                    payload: { measurementId }
+                });
+
+                enqueueSnackbar('Måling slettet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av måling', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
 
     return (
         <MeasurementContext.Provider
@@ -90,6 +115,7 @@ export const MeasurementContextProvider = ({
                 state,
 
                 loadMeasurementByKontroller,
+                removeMeasurement,
                 saveNewMeasurement
             }}>
             {children}

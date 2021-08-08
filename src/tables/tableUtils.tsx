@@ -115,7 +115,7 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
                 onClose={close}>
                 {actionItems.map((ai) => {
                     if (ai.skip) {
-                        return <div />;
+                        return <div key={ai.name} />;
                     }
                     return (
                         <MenuItem key={ai.name}>

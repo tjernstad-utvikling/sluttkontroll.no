@@ -126,6 +126,7 @@ export const KontrollDocAdjusting = ({
                                 measurements ?? [],
                                 '',
                                 (a) => console.log(a),
+                                (a) => console.log(a),
                                 true
                             )}
                             defaultColumns={defaultColumns}

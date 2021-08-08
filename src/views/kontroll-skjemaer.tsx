@@ -92,7 +92,8 @@ const SkjemaerView = () => {
                                         avvik ?? [],
                                         measurements ?? [],
                                         url,
-                                        deleteSkjema
+                                        deleteSkjema,
+                                        (a) => console.log(a)
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="skjemaer">

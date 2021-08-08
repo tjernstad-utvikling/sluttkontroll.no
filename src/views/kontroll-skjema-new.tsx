@@ -37,7 +37,9 @@ const SkjemaNewView = () => {
                     )
                 );
             }
-        } catch (error) {}
+        } catch (error) {
+            console.error(error);
+        }
     });
 
     const onSaveSkjema = async (
@@ -52,7 +54,7 @@ const SkjemaNewView = () => {
     };
 
     return (
-        <div>
+        <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
@@ -82,7 +84,7 @@ const SkjemaNewView = () => {
                     </Grid>
                 </Grid>
             </Container>
-        </div>
+        </>
     );
 };
 

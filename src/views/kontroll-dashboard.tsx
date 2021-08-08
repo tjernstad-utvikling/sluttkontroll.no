@@ -67,7 +67,7 @@ const KontrollerView = () => {
     };
 
     return (
-        <div>
+        <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
@@ -113,7 +113,7 @@ const KontrollerView = () => {
                 </Grid>
             </Container>
             <KontrollEditModal editId={editId} close={closeEdit} />
-        </div>
+        </>
     );
 };
 

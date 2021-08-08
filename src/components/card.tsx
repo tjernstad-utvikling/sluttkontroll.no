@@ -1,13 +1,14 @@
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Paper from '@material-ui/core/Paper';
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-
 interface CardProps {
     children: React.ReactNode;
     title: string;
@@ -32,7 +33,9 @@ export const Card = ({ children, title, menu }: CardProps) => {
 
 interface CardMenuItem {
     label: string;
-    action: () => void;
+    action?: () => void;
+    to?: string;
+    icon?: React.ReactNode;
 }
 interface CardMenuProps {
     items: Array<CardMenuItem>;
@@ -66,9 +69,31 @@ export const CardMenu = ({ items }: CardMenuProps) => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}>
-                {items.map((item) => (
-                    <MenuItem key={item.label} onClick={item.action}>
-                        {item.label}
+                {items.map((ai) => (
+                    <MenuItem key={ai.label}>
+                        {ai.action !== undefined ? (
+                            <Button
+                                onClick={() => {
+                                    handleClose();
+                                    if (ai.action !== undefined) {
+                                        ai.action();
+                                    }
+                                }}
+                                color="primary"
+                                startIcon={ai.icon}>
+                                {ai.label}
+                            </Button>
+                        ) : ai.to !== undefined ? (
+                            <Button
+                                color="primary"
+                                component={RouterLink}
+                                to={ai.to}
+                                startIcon={ai.icon}>
+                                {ai.label}
+                            </Button>
+                        ) : (
+                            <div />
+                        )}
                     </MenuItem>
                 ))}
             </Menu>

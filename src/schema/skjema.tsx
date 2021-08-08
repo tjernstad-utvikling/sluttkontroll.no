@@ -12,14 +12,15 @@ interface SkjemaSchemaProps {
     checkpointCount?: number;
 }
 export const SkjemaSchema = ({
+    skjema,
     onSubmit,
     checkpointCount
 }: SkjemaSchemaProps): JSX.Element => {
     return (
         <Formik
             initialValues={{
-                omrade: '',
-                area: ''
+                omrade: skjema?.omrade || '',
+                area: skjema?.area || ''
             }}
             validationSchema={Yup.object({
                 omrade: Yup.string().required('Område navn er påkrevd'),

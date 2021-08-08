@@ -1,11 +1,12 @@
 import { Card, CardMenu } from '../components/card';
 import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { useParams, useRouteMatch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { Skjema } from '../contracts/kontrollApi';
+import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
@@ -19,8 +20,6 @@ const SkjemaerView = () => {
     const classes = usePageStyles();
     const { kontrollId } = useParams<SkjemaerViewParams>();
     const { url } = useRouteMatch();
-
-    const history = useHistory();
 
     const { confirm } = useConfirm();
 
@@ -42,6 +41,8 @@ const SkjemaerView = () => {
     useEffectOnce(() => {
         loadKontroller();
     });
+
+    const [editId, setEditId] = useState<number>();
 
     useEffect(() => {
         if (skjemaer !== undefined) {
@@ -65,7 +66,7 @@ const SkjemaerView = () => {
     };
 
     return (
-        <div>
+        <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
@@ -77,10 +78,7 @@ const SkjemaerView = () => {
                                     items={[
                                         {
                                             label: 'Nytt skjema',
-                                            action: () =>
-                                                history.push(
-                                                    `/kontroll/${kontrollId}/skjema/new`
-                                                )
+                                            to: `${url}/skjema/new`
                                         }
                                     ]}
                                 />
@@ -93,7 +91,7 @@ const SkjemaerView = () => {
                                         measurements ?? [],
                                         url,
                                         deleteSkjema,
-                                        (a) => console.log(a)
+                                        setEditId
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="skjemaer">
@@ -112,7 +110,11 @@ const SkjemaerView = () => {
                     </Grid>
                 </Grid>
             </Container>
-        </div>
+            <SkjemaEditModal
+                editId={editId}
+                close={() => setEditId(undefined)}
+            />
+        </>
     );
 };
 

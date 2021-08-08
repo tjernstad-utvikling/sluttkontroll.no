@@ -19,7 +19,8 @@ export const SkjemaEditModal = ({
     const [skjema, setSkjema] = useState<Skjema>();
 
     const {
-        state: { skjemaer }
+        state: { skjemaer },
+        updateSkjema
     } = useKontroll();
 
     useEffect(() => {
@@ -33,7 +34,7 @@ export const SkjemaEditModal = ({
         area: string
     ): Promise<boolean> => {
         if (skjema !== undefined) {
-            if (true) {
+            if (await updateSkjema({ ...skjema, area, omrade })) {
                 close();
             }
         }

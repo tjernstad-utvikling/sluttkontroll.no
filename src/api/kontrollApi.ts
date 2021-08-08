@@ -352,3 +352,28 @@ export const deleteSkjemaById = async (
         throw new Error(error);
     }
 };
+export const updateSkjemaApi = async (
+    skjema: Skjema
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(
+            `v3/skjema/${skjema.id}`,
+            {
+                area: skjema.area,
+                omrade: skjema.omrade
+            }
+        );
+        if (status === 204) {
+            return { status, message: '' };
+        }
+        throw new Error('not 204');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};

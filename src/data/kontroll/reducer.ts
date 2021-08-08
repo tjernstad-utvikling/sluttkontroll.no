@@ -106,6 +106,17 @@ export const kontrollReducer = (
                         ? [...state.skjemaer, action.payload]
                         : [action.payload]
             };
+        case ActionType.updateSkjema:
+            return {
+                ...state,
+                skjemaer: state.skjemaer?.map((s) => {
+                    if (s.id === action.payload.id) {
+                        return action.payload;
+                    } else {
+                        return s;
+                    }
+                })
+            };
         case ActionType.removeSkjema:
             return {
                 ...state,

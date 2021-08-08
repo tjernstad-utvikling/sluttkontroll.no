@@ -1,5 +1,10 @@
 import { ActionType, ContextInterface } from './contracts';
-import { Klient, Kontroll, Location } from '../../contracts/kontrollApi';
+import {
+    Klient,
+    Kontroll,
+    Location,
+    Skjema
+} from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     deleteSkjemaById,
@@ -16,7 +21,8 @@ import {
     newLocation,
     newSkjema,
     toggleKontrollStatus,
-    updateKontroll as updateKontrollApi
+    updateKontroll as updateKontrollApi,
+    updateSkjemaApi
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
 
@@ -338,6 +344,39 @@ export const KontrollContextProvider = ({
         }
         return false;
     };
+
+    const updateSkjema = async (skjema: Skjema): Promise<boolean> => {
+        try {
+            const res = await updateSkjemaApi(skjema);
+
+            if (res.status === 204) {
+                dispatch({
+                    type: ActionType.updateSkjema,
+                    payload: skjema
+                });
+
+                enqueueSnackbar('Skjema oppdatert', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (res.status === 400) {
+                enqueueSnackbar(
+                    'Areal eller området mangler, se at alle felter er fylt ut',
+                    {
+                        variant: 'warning'
+                    }
+                );
+            }
+            return false;
+        } catch (error) {
+            enqueueSnackbar('Problemer med oppdatering av skjema', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
     const removeSkjema = async (skjemaId: number): Promise<boolean> => {
         try {
             const res = await deleteSkjemaById(skjemaId);
@@ -411,6 +450,7 @@ export const KontrollContextProvider = ({
                 saveNewLocation,
                 saveEditLocation,
                 saveNewSkjema,
+                updateSkjema,
                 removeSkjema,
                 saveEditChecklist
             }}>

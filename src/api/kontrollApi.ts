@@ -321,7 +321,7 @@ export const toggleAktuellStatusChecklist = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.put(
-            `/v3/checklist/aktuell/${checklistId}/${aktuell}`
+            `/v3/checklist/aktuell/${checklistId}/${aktuell ? 1 : 0}`
         );
         if (status === 204) {
             return { status, ...data };

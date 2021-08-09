@@ -1,5 +1,6 @@
 import {
     GridColumns,
+    GridRowData,
     GridRowSelectedParams,
     GridSortDirection,
     GridSortModelParams
@@ -8,6 +9,7 @@ import { useEffect, useState } from 'react';
 
 import { ColumnSelect } from './tableUtils';
 import { DataGrid } from '@material-ui/data-grid';
+import { makeStyles } from '@material-ui/core/styles';
 import { useTable } from './tableContainer';
 
 interface Data {
@@ -20,13 +22,15 @@ interface BaseTableProps<T, K extends keyof T> {
     customSortFields: any[];
     selectionModel?: number[] | undefined;
     onSelected?: () => void;
+    getRowStyling?: (row: GridRowData) => 'completed' | 'disabled' | undefined;
 }
 export const BaseTable = <T extends Data, K extends keyof T>({
     data,
     customSort,
     customSortFields,
     selectionModel,
-    onSelected
+    onSelected,
+    getRowStyling
 }: BaseTableProps<T, K>) => {
     const { columns, apiRef } = useTable();
     const [isShift, setIsShift] = useState<boolean>(false);
@@ -122,8 +126,9 @@ export const BaseTable = <T extends Data, K extends keyof T>({
             setLastSelectedIndex(index);
         }
     };
+    const classes = useTableStyles();
     return (
-        <div>
+        <div className={classes.root}>
             <ColumnSelect />
             {sortedData && (
                 <DataGrid
@@ -138,8 +143,32 @@ export const BaseTable = <T extends Data, K extends keyof T>({
                     sortingMode="server"
                     onSortModelChange={handleSortMode}
                     onRowSelected={handleSelect}
+                    getRowClassName={(params) => {
+                        console.log(getRowStyling);
+                        if (getRowStyling !== undefined) {
+                            const className = getRowStyling(params.row);
+                            if (className !== undefined) {
+                                return `slk-table--${className}`;
+                            }
+                        }
+                        return '';
+                    }}
                 />
             )}
         </div>
     );
 };
+
+const useTableStyles = makeStyles((theme) => ({
+    root: {
+        '& .slk-table--disabled': {
+            backgroundColor: '#7A7A7A'
+        },
+        '& .slk-table--completed': {
+            backgroundColor: '#8FC93A',
+            '&:hover': {
+                backgroundColor: '#ACD76C'
+            }
+        }
+    }
+}));

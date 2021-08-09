@@ -180,11 +180,18 @@ export const SjekklisteTable = ({
         }
     }
 
+    const getRowStyling = (row: GridRowData) => {
+        if (!row.aktuell) {
+            return 'disabled';
+        }
+    };
+
     return (
         <BaseTable
             data={checklists}
             customSort={CustomSort}
             customSortFields={['prosedyre', 'prosedyreNr', 'avvik']}
+            getRowStyling={getRowStyling}
         />
     );
 };

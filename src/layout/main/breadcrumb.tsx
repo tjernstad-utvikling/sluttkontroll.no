@@ -78,7 +78,7 @@ const ControlClientBreadCrumb = () => {
             return (
                 <MuiBreadcrumbs aria-label="breadcrumb">
                     <Typography color="textPrimary" className={classes.link}>
-                        <LocationCityIcon className={classes.icon} />
+                        <BusinessCenterIcon className={classes.icon} />
                         {klient.name}
                     </Typography>
                 </MuiBreadcrumbs>

@@ -1,3 +1,4 @@
+import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
@@ -6,7 +7,6 @@ import {
 } from '@material-ui/data-grid';
 
 import { Avvik } from '../contracts/avvikApi';
-import { BaseTable } from './baseTable';
 import { Checklist } from '../contracts/kontrollApi';
 import { Link } from 'react-router-dom';
 import { RowAction } from './tableUtils';
@@ -180,9 +180,9 @@ export const SjekklisteTable = ({
         }
     }
 
-    const getRowStyling = (row: GridRowData) => {
+    const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
         if (!row.aktuell) {
-            return 'disabled';
+            return RowStylingEnum.disabled;
         }
     };
 

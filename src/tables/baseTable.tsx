@@ -15,6 +15,10 @@ import { useTable } from './tableContainer';
 interface Data {
     id: number;
 }
+export enum RowStylingEnum {
+    completed = 'completed',
+    disabled = 'disabled'
+}
 
 interface BaseTableProps<T, K extends keyof T> {
     data: Array<T>;
@@ -22,7 +26,7 @@ interface BaseTableProps<T, K extends keyof T> {
     customSortFields: any[];
     selectionModel?: number[] | undefined;
     onSelected?: () => void;
-    getRowStyling?: (row: GridRowData) => 'completed' | 'disabled' | undefined;
+    getRowStyling?: (row: GridRowData) => RowStylingEnum | undefined;
 }
 export const BaseTable = <T extends Data, K extends keyof T>({
     data,
@@ -144,7 +148,6 @@ export const BaseTable = <T extends Data, K extends keyof T>({
                     onSortModelChange={handleSortMode}
                     onRowSelected={handleSelect}
                     getRowClassName={(params) => {
-                        console.log(getRowStyling);
                         if (getRowStyling !== undefined) {
                             const className = getRowStyling(params.row);
                             if (className !== undefined) {
@@ -162,7 +165,10 @@ export const BaseTable = <T extends Data, K extends keyof T>({
 const useTableStyles = makeStyles((theme) => ({
     root: {
         '& .slk-table--disabled': {
-            backgroundColor: '#7A7A7A'
+            backgroundColor: '#7A7A7A',
+            '&:hover': {
+                backgroundColor: '#7A7A7A'
+            }
         },
         '& .slk-table--completed': {
             backgroundColor: '#8FC93A',

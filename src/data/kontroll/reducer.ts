@@ -143,6 +143,17 @@ export const kontrollReducer = (
                           ]
                         : [...action.payload.checklists]
             };
+        case ActionType.updateChecklist:
+            return {
+                ...state,
+                checklists: state.checklists?.map((c) => {
+                    if (c.id === action.payload.id) {
+                        return action.payload;
+                    } else {
+                        return c;
+                    }
+                })
+            };
         default:
             throw new Error('unknown action');
     }

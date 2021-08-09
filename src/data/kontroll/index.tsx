@@ -20,6 +20,7 @@ import {
     newKontroll,
     newLocation,
     newSkjema,
+    toggleAktuellStatusChecklist,
     toggleKontrollStatus,
     updateKontroll as updateKontrollApi,
     updateSkjemaApi
@@ -433,6 +434,37 @@ export const KontrollContextProvider = ({
         return false;
     };
 
+    const toggleAktuellChecklist = async (
+        checklistId: number
+    ): Promise<boolean> => {
+        try {
+            const checklist = state.checklists?.find(
+                (c) => c.id === checklistId
+            );
+            if (checklist !== undefined) {
+                await toggleAktuellStatusChecklist(
+                    checklistId,
+                    !checklist.aktuell
+                );
+
+                dispatch({
+                    type: ActionType.updateChecklist,
+                    payload: { ...checklist, aktuell: !checklist.aktuell }
+                });
+
+                enqueueSnackbar('Sjekkliste lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av sjekkliste', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
     return (
         <KontrollContext.Provider
             value={{
@@ -452,7 +484,8 @@ export const KontrollContextProvider = ({
                 saveNewSkjema,
                 updateSkjema,
                 removeSkjema,
-                saveEditChecklist
+                saveEditChecklist,
+                toggleAktuellChecklist
             }}>
             {children}
         </KontrollContext.Provider>

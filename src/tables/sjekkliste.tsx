@@ -9,6 +9,10 @@ import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
 import { Checklist } from '../contracts/kontrollApi';
 import { Link } from 'react-router-dom';
+import { RowAction } from './tableUtils';
+import Typography from '@material-ui/core/Typography';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 export const SjekklisteValueGetter = (data: Checklist | GridRowData) => {
     const prosedyre = (): string => {
@@ -30,7 +34,11 @@ export const SjekklisteValueGetter = (data: Checklist | GridRowData) => {
     };
     return { prosedyre, prosedyreNr, avvik };
 };
-export const columns = (avvik: Avvik[], url: string) => {
+export const columns = (
+    avvik: Avvik[],
+    url: string,
+    toggleAktuell: (id: number) => void
+) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -73,7 +81,48 @@ export const columns = (avvik: Avvik[], url: string) => {
         {
             field: 'aktuell',
             headerName: 'Aktuell',
-            flex: 1
+            flex: 1,
+            renderCell: (params: GridCellParams) =>
+                params.row.aktuell ? (
+                    <VisibilityIcon />
+                ) : (
+                    <>
+                        <VisibilityOffIcon />
+                        <Typography style={{ paddingLeft: 10 }}>
+                            Ikke aktuell
+                        </Typography>
+                    </>
+                )
+        },
+        {
+            field: 'action',
+            headerName: ' ',
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) => {
+                // const kontroll = SkjemaValueGetter(params.row).kontroll(
+                //     kontroller
+                // );
+                return (
+                    <RowAction
+                        actionItems={[
+                            {
+                                name: params.row.aktuell
+                                    ? 'sett: Ikke aktuell'
+                                    : 'sett: aktuell',
+                                action: () => toggleAktuell(params.row.id),
+                                // skip: kontroll?.done || false,
+                                icon: params.row.aktuell ? (
+                                    <VisibilityOffIcon />
+                                ) : (
+                                    <VisibilityIcon />
+                                )
+                            }
+                        ]}
+                    />
+                );
+            }
         }
     ];
 

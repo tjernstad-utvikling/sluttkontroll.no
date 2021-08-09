@@ -30,7 +30,8 @@ export enum ActionType {
     updateSkjema,
     removeSkjema,
     addChecklists,
-    editChecklists
+    editChecklists,
+    updateChecklist
 }
 
 export interface setKlienter {
@@ -92,6 +93,10 @@ export interface editChecklists {
     type: ActionType.editChecklists;
     payload: { checklists: Array<Checklist>; skjemaId: number };
 }
+export interface updateChecklist {
+    type: ActionType.updateChecklist;
+    payload: Checklist;
+}
 
 export type KontrollActions =
     | setKlienter
@@ -107,7 +112,8 @@ export type KontrollActions =
     | updateSkjema
     | removeSkjema
     | addChecklists
-    | editChecklists;
+    | editChecklists
+    | updateChecklist;
 
 export interface ContextInterface {
     state: kontrollState;
@@ -148,4 +154,5 @@ export interface ContextInterface {
         skjemaId: number,
         checkpoints: Checkpoint[]
     ) => Promise<boolean>;
+    toggleAktuellChecklist: (checklistId: number) => Promise<boolean>;
 }

@@ -28,7 +28,8 @@ const SjekklisterView = () => {
     const [_checklists, setChecklists] = useState<Array<Checklist>>([]);
     const {
         state: { checklists },
-        loadKontroller
+        loadKontroller,
+        toggleAktuellChecklist
     } = useKontroll();
 
     const {
@@ -80,7 +81,11 @@ const SjekklisterView = () => {
                             }>
                             {checklists !== undefined ? (
                                 <TableContainer
-                                    columns={columns(avvik ?? [], url)}
+                                    columns={columns(
+                                        avvik ?? [],
+                                        url,
+                                        toggleAktuellChecklist
+                                    )}
                                     defaultColumns={defaultColumns}
                                     tableId="checklists">
                                     <SjekklisteTable

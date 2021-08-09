@@ -13,6 +13,7 @@ export interface MeasurementState {
 
 export enum ActionType {
     addMeasurement,
+    updateMeasurement,
     setMeasurementTypes,
     removeMeasurement
 }
@@ -20,6 +21,10 @@ export enum ActionType {
 export interface addMeasurement {
     type: ActionType.addMeasurement;
     payload: Array<Measurement>;
+}
+export interface updateMeasurement {
+    type: ActionType.updateMeasurement;
+    payload: Measurement;
 }
 export interface removeMeasurement {
     type: ActionType.removeMeasurement;
@@ -32,6 +37,7 @@ export interface setMeasurementTypes {
 
 export type MeasurementActions =
     | addMeasurement
+    | updateMeasurement
     | removeMeasurement
     | setMeasurementTypes;
 
@@ -42,5 +48,6 @@ export interface ContextInterface {
         measurement: NewFormMeasurement,
         skjemaID: number
     ) => Promise<boolean>;
+    updateMeasurement: (measurement: Measurement) => Promise<boolean>;
     removeMeasurement: (measurementId: number) => Promise<boolean>;
 }

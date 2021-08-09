@@ -24,13 +24,16 @@ const MeasurementsView = () => {
     const { kontrollId, skjemaId } = useParams<MeasurementsViewParams>();
 
     const [_measurements, setMeasurements] = useState<Array<Measurement>>([]);
-    const [newModalOpen, setNewModalOpen] = useState<boolean>(false);
+    const [measurementModalOpen, setMeasurementModalOpen] =
+        useState<boolean>(false);
     const {
         state: { skjemaer, kontroller },
         loadKontroller
     } = useKontroll();
 
     const { confirm } = useConfirm();
+
+    const [editId, setEditId] = useState<number>();
 
     const {
         state: { measurements, measurementTypes },
@@ -97,8 +100,8 @@ const MeasurementsView = () => {
                                             {
                                                 label: 'Ny måling',
                                                 action: () =>
-                                                    setNewModalOpen(
-                                                        !newModalOpen
+                                                    setMeasurementModalOpen(
+                                                        true
                                                     )
                                             }
                                         ]}
@@ -111,7 +114,10 @@ const MeasurementsView = () => {
                                         kontroller ?? [],
                                         skjemaer ?? [],
                                         deleteMeasurement,
-                                        (a) => console.log(a)
+                                        (id) => {
+                                            setEditId(id);
+                                            setMeasurementModalOpen(true);
+                                        }
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="measurements">
@@ -129,9 +135,13 @@ const MeasurementsView = () => {
                 </Grid>
             </Container>
             <MeasurementModal
-                open={newModalOpen}
-                close={() => setNewModalOpen(!newModalOpen)}
+                open={measurementModalOpen}
+                close={() => {
+                    setMeasurementModalOpen(!measurementModalOpen);
+                    setEditId(undefined);
+                }}
                 skjemaId={Number(skjemaId)}
+                editId={editId}
             />
         </div>
     );

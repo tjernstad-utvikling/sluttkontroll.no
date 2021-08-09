@@ -9,7 +9,7 @@ import { useModalStyles } from '../styles/modal';
 interface MeasurementModalProps {
     open: boolean;
     close: () => void;
-    editId?: number;
+    editId?: number | undefined;
     skjemaId?: number;
 }
 
@@ -25,7 +25,8 @@ export const MeasurementModal = ({
 
     const {
         state: { measurements },
-        saveNewMeasurement
+        saveNewMeasurement,
+        updateMeasurement
     } = useMeasurement();
 
     useEffect(() => {
@@ -35,14 +36,26 @@ export const MeasurementModal = ({
     }, [editId, measurements]);
 
     const handleSave = async (
-        measurement: NewFormMeasurement
+        measurementToSave: NewFormMeasurement
     ): Promise<boolean> => {
+        if (editId !== undefined && measurement !== undefined) {
+            if (
+                await updateMeasurement({
+                    ...measurement,
+                    ...measurementToSave
+                })
+            ) {
+                close();
+                return true;
+            }
+            return false;
+        }
         if (
-            measurement !== undefined &&
+            measurementToSave !== undefined &&
             skjemaId !== undefined &&
             !isNaN(skjemaId)
         ) {
-            if (await saveNewMeasurement(measurement, skjemaId)) {
+            if (await saveNewMeasurement(measurementToSave, skjemaId)) {
                 close();
             }
         }
@@ -55,8 +68,14 @@ export const MeasurementModal = ({
                 <h2 id="modal-title">
                     {editId !== undefined ? 'Rediger Måling' : 'Ny måling'}
                 </h2>
-
-                <MeasurementSchema onSubmit={handleSave} />
+                {measurement !== undefined || editId === undefined ? (
+                    <MeasurementSchema
+                        onSubmit={handleSave}
+                        measurement={measurement}
+                    />
+                ) : (
+                    <div />
+                )}
             </div>
         </Modal>
     );

@@ -21,6 +21,17 @@ export const userReducer = (
                     'id'
                 )
             };
+        case ActionType.updateMeasurement:
+            return {
+                ...state,
+                measurements: state.measurements?.map((m) => {
+                    if (m.id === action.payload.id) {
+                        return action.payload;
+                    } else {
+                        return m;
+                    }
+                })
+            };
         case ActionType.removeMeasurement:
             return {
                 ...state,

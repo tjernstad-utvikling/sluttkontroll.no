@@ -1,15 +1,19 @@
 import { ActionType, ContextInterface } from './contracts';
+import {
+    Measurement,
+    NewFormMeasurement
+} from '../../contracts/measurementApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     deleteMeasurement,
     getMeasurementByKontrollList,
     getMeasurementTypes,
-    newMeasurement
+    newMeasurement,
+    updateMeasurementApi
 } from '../../api/measurementApi';
 import { initialState, userReducer } from './reducer';
 
 import { Kontroll } from '../../contracts/kontrollApi';
-import { NewFormMeasurement } from '../../contracts/measurementApi';
 import { useSnackbar } from 'notistack';
 
 export const useMeasurement = () => {
@@ -84,6 +88,29 @@ export const MeasurementContextProvider = ({
         }
         return false;
     };
+    const updateMeasurement = async (
+        measurementData: Measurement
+    ): Promise<boolean> => {
+        try {
+            const { status } = await updateMeasurementApi(measurementData);
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.updateMeasurement,
+                    payload: measurementData
+                });
+
+                enqueueSnackbar('Måling lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av måling', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
     const removeMeasurement = async (
         measurementId: number
     ): Promise<boolean> => {
@@ -102,7 +129,7 @@ export const MeasurementContextProvider = ({
                 return true;
             }
         } catch (error) {
-            enqueueSnackbar('Problemer med lagring av måling', {
+            enqueueSnackbar('Problemer med sletting av måling', {
                 variant: 'error'
             });
         }
@@ -115,6 +142,7 @@ export const MeasurementContextProvider = ({
                 state,
 
                 loadMeasurementByKontroller,
+                updateMeasurement,
                 removeMeasurement,
                 saveNewMeasurement
             }}>

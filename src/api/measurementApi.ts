@@ -60,6 +60,25 @@ export const newMeasurement = async (
         throw new Error(error);
     }
 };
+export const updateMeasurementApi = async (
+    measurement: Measurement
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.put(
+            `/v3/measurement/`,
+            { measurement }
+        );
+        if (status === 204) {
+            return { status, ...data };
+        }
+        throw new Error('not 204');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 export const deleteMeasurement = async (
     measurementId: number
 ): Promise<{

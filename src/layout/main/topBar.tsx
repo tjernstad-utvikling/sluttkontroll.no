@@ -1,11 +1,10 @@
 import AppBar from '@material-ui/core/AppBar';
+import { Breadcrumbs } from './breadcrumb';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import { useMainStyles } from '../../styles/layout/main';
-
 interface TopBarProps {
     isOpenLeftDrawerOpen: boolean;
     toggleLeftDrawer: () => void;
@@ -33,9 +32,7 @@ export const TopBar = ({
                     className={classes.menuButton}>
                     <MenuIcon />
                 </IconButton>
-                <Typography variant="h6" noWrap>
-                    Persistent drawer
-                </Typography>
+                <Breadcrumbs />
                 <div className={classes.toolbarContainer}></div>
                 <IconButton
                     color="inherit"

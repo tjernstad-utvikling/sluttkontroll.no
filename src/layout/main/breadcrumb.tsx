@@ -39,22 +39,6 @@ export function KontrollBreadcrumbs() {
             {breadcrumbs.map((br) => br)}
         </MuiBreadcrumbs>
     );
-    // return (
-    //     <>
-    //         <YourControlBreadCrumb />
-    //         <ControlClientBreadCrumb />
-    //         {/*
-    //         <Link
-    //             color="inherit"
-    //             href="/getting-started/installation/"
-    //             onClick={handleClick}
-    //             className={classes.link}>
-    //             <WhatshotIcon className={classes.icon} />
-    //             Core
-    //         </Link>
-    //         {breadCrumbs} */}
-    //     </>
-    // );
 }
 
 const YourControl = () => {

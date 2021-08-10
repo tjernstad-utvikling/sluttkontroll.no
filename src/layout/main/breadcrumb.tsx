@@ -5,6 +5,7 @@ import {
     SkjemaerViewParams
 } from '../../contracts/navigation';
 import React, { useMemo } from 'react';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
@@ -16,12 +17,6 @@ import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import Typography from '@material-ui/core/Typography';
 import { useKontroll } from '../../data/kontroll';
-import { useRouteMatch } from 'react-router-dom';
-
-function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-    event.preventDefault();
-    console.info('You clicked a breadcrumb.');
-}
 
 export function KontrollBreadcrumbs() {
     const pages = [
@@ -68,7 +63,7 @@ const YourControl = () => {
     const match = useRouteMatch('/kontroll');
     if (match !== null && match.isExact) {
         return (
-            <Breadcrumb isExact={match.isExact}>
+            <Breadcrumb key={match.path} to="/kontroll" isExact={match.isExact}>
                 <HomeIcon className={classes.icon} />
                 Dine kontroller
             </Breadcrumb>
@@ -92,7 +87,7 @@ const Client = () => {
 
     if (match !== null && klient !== undefined) {
         return (
-            <Breadcrumb isExact={match.isExact}>
+            <Breadcrumb key={match.path} to={match.url} isExact={match.isExact}>
                 <BusinessCenterIcon className={classes.icon} />
                 {klient.name}
             </Breadcrumb>
@@ -108,7 +103,6 @@ const Location = () => {
     const match = useRouteMatch<KontrollObjectViewParams>(
         '/kontroll/kl/:klientId/obj/:objectId'
     );
-
     const location = useMemo(() => {
         const klient = klienter?.find(
             (k) => k.id === Number(match?.params.klientId)
@@ -120,7 +114,7 @@ const Location = () => {
 
     if (match !== null && location !== undefined) {
         return (
-            <Breadcrumb isExact={match.isExact}>
+            <Breadcrumb key={match.path} to={match.url} isExact={match.isExact}>
                 <LocationOnIcon className={classes.icon} />
                 {location.name}
             </Breadcrumb>
@@ -146,7 +140,7 @@ const Control = () => {
 
     if (match !== null && kontroll !== undefined) {
         return (
-            <Breadcrumb isExact={match.isExact}>
+            <Breadcrumb key={match.path} to={match.url} isExact={match.isExact}>
                 <PlaylistAddCheckIcon className={classes.icon} />
                 {kontroll.name}
             </Breadcrumb>
@@ -170,7 +164,7 @@ const Skjema = () => {
 
     if (match !== null && skjema !== undefined) {
         return (
-            <Breadcrumb isExact={match.isExact}>
+            <Breadcrumb key={match.path} to={match.url} isExact={match.isExact}>
                 <ListIcon className={classes.icon} />
                 {skjema.area} - {skjema.omrade}
             </Breadcrumb>
@@ -182,8 +176,13 @@ const Skjema = () => {
 interface BreadcrumbProps {
     isExact: boolean;
     children: React.ReactNode;
+    to: string;
 }
-const Breadcrumb = ({ isExact, children }: BreadcrumbProps): JSX.Element => {
+const Breadcrumb = ({
+    isExact,
+    children,
+    to
+}: BreadcrumbProps): JSX.Element => {
     const classes = useStyles();
     if (isExact) {
         return (
@@ -195,9 +194,9 @@ const Breadcrumb = ({ isExact, children }: BreadcrumbProps): JSX.Element => {
     return (
         <Link
             color="inherit"
-            href="/getting-started/installation/"
-            onClick={handleClick}
-            className={classes.link}>
+            className={classes.link}
+            component={RouterLink}
+            to={to}>
             {children}
         </Link>
     );

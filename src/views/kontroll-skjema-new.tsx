@@ -47,7 +47,7 @@ const SkjemaNewView = () => {
         area: string
     ): Promise<boolean> => {
         if (await saveNewSkjema(area, omrade, selected, Number(kontrollId))) {
-            history.push(`/kontroll/${kontrollId}`);
+            history.goBack();
             return true;
         }
         return false;

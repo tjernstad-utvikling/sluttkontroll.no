@@ -1,69 +1,87 @@
+import {
+    KontrollKlientViewParams,
+    KontrollObjectViewParams,
+    SjekklisterViewParams,
+    SkjemaerViewParams
+} from '../../contracts/navigation';
 import React, { useMemo } from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import { match, useRouteMatch } from 'react-router-dom';
 
-import AddLocationIcon from '@material-ui/icons/AddLocation';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
-import { ClassNameMap } from '@material-ui/core/styles/withStyles';
-import GrainIcon from '@material-ui/icons/Grain';
 import HomeIcon from '@material-ui/icons/Home';
-import { KontrollKlientViewParams } from '../../contracts/navigation';
 import Link from '@material-ui/core/Link';
-import LocationCityIcon from '@material-ui/icons/LocationCity';
+import ListIcon from '@material-ui/icons/List';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import Typography from '@material-ui/core/Typography';
-import WhatshotIcon from '@material-ui/icons/Whatshot';
 import { useKontroll } from '../../data/kontroll';
+import { useRouteMatch } from 'react-router-dom';
 
 function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     event.preventDefault();
     console.info('You clicked a breadcrumb.');
 }
 
-export function Breadcrumbs() {
+export function KontrollBreadcrumbs() {
+    const pages = [
+        { getter: YourControl },
+        { getter: Client },
+        { getter: Location },
+        { getter: Control },
+        { getter: Skjema }
+    ];
+    const breadcrumbs: JSX.Element[] = [];
+
+    pages.forEach((p) => {
+        const res = p.getter();
+        if (res !== undefined) {
+            breadcrumbs.push(res);
+        }
+    });
     return (
-        <>
-            <YourControlBreadCrumb />
-            <ControlClientBreadCrumb />
-            {/*
-            <Link
-                color="inherit"
-                href="/getting-started/installation/"
-                onClick={handleClick}
-                className={classes.link}>
-                <WhatshotIcon className={classes.icon} />
-                Core
-            </Link>
-            {breadCrumbs} */}
-        </>
+        <MuiBreadcrumbs aria-label="breadcrumb">
+            {breadcrumbs.map((br) => br)}
+        </MuiBreadcrumbs>
     );
+    // return (
+    //     <>
+    //         <YourControlBreadCrumb />
+    //         <ControlClientBreadCrumb />
+    //         {/*
+    //         <Link
+    //             color="inherit"
+    //             href="/getting-started/installation/"
+    //             onClick={handleClick}
+    //             className={classes.link}>
+    //             <WhatshotIcon className={classes.icon} />
+    //             Core
+    //         </Link>
+    //         {breadCrumbs} */}
+    //     </>
+    // );
 }
 
-const YourControlBreadCrumb = () => {
+const YourControl = () => {
     const classes = useStyles();
 
     const match = useRouteMatch('/kontroll');
-    if (match !== null) {
-        console.log({ match });
-        if (match.isExact) {
-            return (
-                <MuiBreadcrumbs aria-label="breadcrumb">
-                    <Typography color="textPrimary" className={classes.link}>
-                        <LocationCityIcon className={classes.icon} />
-                        Dine kontroller
-                    </Typography>
-                </MuiBreadcrumbs>
-            );
-        }
+    if (match !== null && match.isExact) {
+        return (
+            <Breadcrumb isExact={match.isExact}>
+                <HomeIcon className={classes.icon} />
+                Dine kontroller
+            </Breadcrumb>
+        );
     }
-    return <div />;
+    return undefined;
 };
-const ControlClientBreadCrumb = () => {
+
+const Client = () => {
     const classes = useStyles();
     const {
         state: { klienter }
     } = useKontroll();
-
     const match = useRouteMatch<KontrollKlientViewParams>(
         '/kontroll/kl/:klientId'
     );
@@ -73,19 +91,116 @@ const ControlClientBreadCrumb = () => {
     }, [klienter, match?.params.klientId]);
 
     if (match !== null && klient !== undefined) {
-        console.log({ match });
-        if (match.isExact) {
-            return (
-                <MuiBreadcrumbs aria-label="breadcrumb">
-                    <Typography color="textPrimary" className={classes.link}>
-                        <BusinessCenterIcon className={classes.icon} />
-                        {klient.name}
-                    </Typography>
-                </MuiBreadcrumbs>
-            );
-        }
+        return (
+            <Breadcrumb isExact={match.isExact}>
+                <BusinessCenterIcon className={classes.icon} />
+                {klient.name}
+            </Breadcrumb>
+        );
     }
-    return <div />;
+    return undefined;
+};
+const Location = () => {
+    const classes = useStyles();
+    const {
+        state: { klienter }
+    } = useKontroll();
+    const match = useRouteMatch<KontrollObjectViewParams>(
+        '/kontroll/kl/:klientId/obj/:objectId'
+    );
+
+    const location = useMemo(() => {
+        const klient = klienter?.find(
+            (k) => k.id === Number(match?.params.klientId)
+        );
+        return klient?.objekts.find(
+            (l) => l.id === Number(match?.params.objectId)
+        );
+    }, [klienter, match?.params.klientId, match?.params.objectId]);
+
+    if (match !== null && location !== undefined) {
+        return (
+            <Breadcrumb isExact={match.isExact}>
+                <LocationOnIcon className={classes.icon} />
+                {location.name}
+            </Breadcrumb>
+        );
+    }
+    return undefined;
+};
+
+const Control = () => {
+    const classes = useStyles();
+    const {
+        state: { kontroller }
+    } = useKontroll();
+    const match = useRouteMatch<SkjemaerViewParams>(
+        '/kontroll/kl/:klientId/obj/:objectId/:kontrollId'
+    );
+
+    const kontroll = useMemo(() => {
+        return kontroller?.find(
+            (k) => k.id === Number(match?.params.kontrollId)
+        );
+    }, [kontroller, match?.params.kontrollId]);
+
+    if (match !== null && kontroll !== undefined) {
+        return (
+            <Breadcrumb isExact={match.isExact}>
+                <PlaylistAddCheckIcon className={classes.icon} />
+                {kontroll.name}
+            </Breadcrumb>
+        );
+    }
+    return undefined;
+};
+
+const Skjema = () => {
+    const classes = useStyles();
+    const {
+        state: { skjemaer }
+    } = useKontroll();
+    const match = useRouteMatch<SjekklisterViewParams>(
+        '/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId'
+    );
+
+    const skjema = useMemo(() => {
+        return skjemaer?.find((s) => s.id === Number(match?.params.skjemaId));
+    }, [skjemaer, match?.params.skjemaId]);
+
+    if (match !== null && skjema !== undefined) {
+        return (
+            <Breadcrumb isExact={match.isExact}>
+                <ListIcon className={classes.icon} />
+                {skjema.area} - {skjema.omrade}
+            </Breadcrumb>
+        );
+    }
+    return undefined;
+};
+
+interface BreadcrumbProps {
+    isExact: boolean;
+    children: React.ReactNode;
+}
+const Breadcrumb = ({ isExact, children }: BreadcrumbProps): JSX.Element => {
+    const classes = useStyles();
+    if (isExact) {
+        return (
+            <Typography color="textPrimary" className={classes.link}>
+                {children}
+            </Typography>
+        );
+    }
+    return (
+        <Link
+            color="inherit"
+            href="/getting-started/installation/"
+            onClick={handleClick}
+            className={classes.link}>
+            {children}
+        </Link>
+    );
 };
 
 const useStyles = makeStyles((theme: Theme) =>

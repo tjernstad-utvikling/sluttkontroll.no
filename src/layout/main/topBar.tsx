@@ -1,6 +1,6 @@
 import AppBar from '@material-ui/core/AppBar';
-import { Breadcrumbs } from './breadcrumb';
 import IconButton from '@material-ui/core/IconButton';
+import { KontrollBreadcrumbs } from './breadcrumb';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import clsx from 'clsx';
@@ -32,7 +32,7 @@ export const TopBar = ({
                     className={classes.menuButton}>
                     <MenuIcon />
                 </IconButton>
-                <Breadcrumbs />
+                <KontrollBreadcrumbs />
                 <div className={classes.toolbarContainer}></div>
                 <IconButton
                     color="inherit"

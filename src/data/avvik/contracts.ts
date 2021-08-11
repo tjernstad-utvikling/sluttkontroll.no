@@ -6,17 +6,23 @@ export interface AvvikState {
 }
 
 export enum ActionType {
-    addAvvik
+    addAvvik,
+    deleteAvvik
 }
 
 export interface addAvvik {
     type: ActionType.addAvvik;
     payload: Array<Avvik>;
 }
+export interface deleteAvvik {
+    type: ActionType.deleteAvvik;
+    payload: { avvikId: number };
+}
 
-export type AvvikActions = addAvvik;
+export type AvvikActions = addAvvik | deleteAvvik;
 
 export interface ContextInterface {
     state: AvvikState;
     loadAvvikByKontroller: (kontroller: Kontroll[]) => Promise<void>;
+    deleteAvvik: (avvikId: number) => Promise<boolean>;
 }

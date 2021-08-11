@@ -19,6 +19,27 @@ export const getAvvikByKontrollList = async (
         throw new Error(error);
     }
 };
+export const deleteAvvikById = async (
+    avvikId: number
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.delete(
+            `/v3/avvik/${avvikId}`
+        );
+        if (status === 204) {
+            return { status, message: '' };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
 
 export const getImageFile = async (
     nameOrId: number | string

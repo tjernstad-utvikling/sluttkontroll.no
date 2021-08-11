@@ -16,6 +16,13 @@ export const userReducer = (
                 ...state,
                 avvik: _.unionBy(action.payload, state.avvik, 'id')
             };
+        case ActionType.deleteAvvik:
+            return {
+                ...state,
+                avvik: state.avvik?.filter(
+                    (a) => a.id !== action.payload.avvikId
+                )
+            };
 
         default:
             throw new Error('unknown action');

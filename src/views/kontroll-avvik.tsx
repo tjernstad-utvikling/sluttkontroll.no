@@ -8,6 +8,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
+import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -24,8 +25,10 @@ const AvvikView = () => {
         loadKontroller
     } = useKontroll();
 
+    const { confirm } = useConfirm();
     const {
-        state: { avvik }
+        state: { avvik },
+        deleteAvvik
     } = useAvvik();
 
     useEffectOnce(() => {
@@ -56,6 +59,14 @@ const AvvikView = () => {
         }
     }, [avvik, checklistId, kontrollId, skjemaId]);
 
+    const askToDeleteAvvik = async (avvikId: number) => {
+        const isConfirmed = await confirm(`Slette avvikID: ${avvikId}?`);
+
+        if (isConfirmed) {
+            deleteAvvik(avvikId);
+        }
+    };
+
     return (
         <div>
             <div className={classes.appBarSpacer} />
@@ -83,7 +94,9 @@ const AvvikView = () => {
                                 <TableContainer
                                     columns={columns(
                                         kontroller ?? [],
-                                        skjemaer ?? []
+                                        skjemaer ?? [],
+                                        askToDeleteAvvik,
+                                        (edit) => console.log(edit)
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="avvik">

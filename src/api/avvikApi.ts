@@ -1,4 +1,5 @@
 import { Avvik } from '../contracts/avvikApi';
+import { User } from '../contracts/userApi';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getAvvikByKontrollList = async (
@@ -42,6 +43,7 @@ export const deleteAvvikById = async (
         throw new Error(error);
     }
 };
+
 export const updateAvvikById = async (
     avvik: Avvik
 ): Promise<{
@@ -54,6 +56,32 @@ export const updateAvvikById = async (
             kommentar: avvik.kommentar,
             utbedrer: avvik.utbedrer
         });
+        if (status === 204) {
+            return { status, message: '' };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
+export const setUtbedrereApi = async (
+    avvikList: Array<number>,
+    utbedrer: Array<User>
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.post(
+            '/v3/avvik/set-utbedrere',
+            {
+                avvikList,
+                utbedrer
+            }
+        );
         if (status === 204) {
             return { status, message: '' };
         }

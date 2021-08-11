@@ -3,12 +3,14 @@ import React, { createContext, useContext, useReducer } from 'react';
 import {
     deleteAvvikById,
     getAvvikByKontrollList,
+    setUtbedrereApi,
     updateAvvikById
 } from '../../api/avvikApi';
 import { initialState, userReducer } from './reducer';
 
 import { Avvik } from '../../contracts/avvikApi';
 import { Kontroll } from '../../contracts/kontrollApi';
+import { User } from '../../contracts/userApi';
 import { useSnackbar } from 'notistack';
 
 export const useAvvik = () => {
@@ -80,6 +82,36 @@ export const AvvikContextProvider = ({
             return false;
         }
     };
+    const setUtbedrere = async (
+        avvik: Avvik[],
+        utbedrere: User[]
+    ): Promise<boolean> => {
+        try {
+            const { status } = await setUtbedrereApi(
+                avvik.map((a) => a.id),
+                utbedrere
+            );
+
+            if (status === 204) {
+                avvik.forEach((a) => {
+                    dispatch({
+                        type: ActionType.updateAvvik,
+                        payload: { ...a, utbedrer: utbedrere }
+                    });
+                });
+                enqueueSnackbar('Utbedrere er satt', {
+                    variant: 'success'
+                });
+            }
+            return true;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med oppdatering av avvik', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
 
     const deleteAvvik = async (avvikId: number): Promise<boolean> => {
         try {
@@ -125,7 +157,8 @@ export const AvvikContextProvider = ({
 
                 loadAvvikByKontroller,
                 deleteAvvik,
-                updateAvvik
+                updateAvvik,
+                setUtbedrere
             }}>
             {children}
         </AvvikContext.Provider>

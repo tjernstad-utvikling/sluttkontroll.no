@@ -1,5 +1,6 @@
 import { Avvik } from '../../contracts/avvikApi';
 import { Kontroll } from '../../contracts/kontrollApi';
+import { User } from '../../contracts/userApi';
 
 export interface AvvikState {
     avvik: Array<Avvik> | undefined;
@@ -31,4 +32,5 @@ export interface ContextInterface {
     loadAvvikByKontroller: (kontroller: Kontroll[]) => Promise<void>;
     deleteAvvik: (avvikId: number) => Promise<boolean>;
     updateAvvik: (avvik: Avvik) => Promise<boolean>;
+    setUtbedrere: (avvik: Avvik[], utbedrere: User[]) => Promise<boolean>;
 }

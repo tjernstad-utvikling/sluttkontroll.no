@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikEditModal } from '../modal/avvik';
+import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -24,7 +25,10 @@ const AvvikView = () => {
     const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
     const [selected, setSelected] = useState<Avvik[]>([]);
 
-    const [newModalOpen, setNewModalOpen] = useState<boolean>(false);
+    enum Modals {
+        utbedrer = 'utbedrer'
+    }
+    const [modalOpen, setModalOpen] = useState<Modals>();
 
     const [editId, setEditId] = useState<number>();
 
@@ -90,14 +94,13 @@ const AvvikView = () => {
                                             label: 'Nytt avvik',
                                             skip: checklistId === undefined,
                                             icon: <AddIcon />,
-                                            action: () =>
-                                                setNewModalOpen(!newModalOpen)
+                                            action: () => console.log('new')
                                         },
                                         {
                                             label: `Sett utbedrere (${selected.length})`,
                                             icon: <PersonIcon />,
                                             action: () =>
-                                                setNewModalOpen(!newModalOpen)
+                                                setModalOpen(Modals.utbedrer)
                                         }
                                     ]}
                                 />
@@ -133,6 +136,11 @@ const AvvikView = () => {
                     setEditId(undefined);
                 }}
                 editId={editId}
+            />
+            <AvvikUtbedrereModal
+                open={modalOpen === Modals.utbedrer}
+                close={() => setModalOpen(undefined)}
+                selectedAvvik={selected}
             />
         </div>
     );

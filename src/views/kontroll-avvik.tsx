@@ -89,6 +89,7 @@ const AvvikView = () => {
                             title="Avvik"
                             menu={
                                 <CardMenu
+                                    count={selected.length}
                                     items={[
                                         {
                                             label: 'Nytt avvik',

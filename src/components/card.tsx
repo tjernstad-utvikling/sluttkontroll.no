@@ -40,8 +40,9 @@ interface CardMenuItem {
 }
 interface CardMenuProps {
     items: Array<CardMenuItem>;
+    count?: number;
 }
-export const CardMenu = ({ items }: CardMenuProps) => {
+export const CardMenu = ({ items, count }: CardMenuProps) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -62,7 +63,7 @@ export const CardMenu = ({ items }: CardMenuProps) => {
                 aria-haspopup="true"
                 onMouseOver={handleClick}
                 onClick={handleClick}>
-                <MoreVertIcon />
+                <MoreVertIcon /> {count !== undefined && `(${count})`}
             </IconButton>
             <Menu
                 id="simple-menu"

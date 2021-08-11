@@ -2,11 +2,13 @@ import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
 
+import AddIcon from '@material-ui/icons/Add';
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikViewParams } from '../contracts/navigation';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import PersonIcon from '@material-ui/icons/Person';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
@@ -20,6 +22,8 @@ const AvvikView = () => {
     const { kontrollId, skjemaId, checklistId } = useParams<AvvikViewParams>();
 
     const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
+    const [selected, setSelected] = useState<Avvik[]>([]);
+
     const [newModalOpen, setNewModalOpen] = useState<boolean>(false);
 
     const [editId, setEditId] = useState<number>();
@@ -80,19 +84,23 @@ const AvvikView = () => {
                         <Card
                             title="Avvik"
                             menu={
-                                checklistId !== undefined && (
-                                    <CardMenu
-                                        items={[
-                                            {
-                                                label: 'Nytt avvik',
-                                                action: () =>
-                                                    setNewModalOpen(
-                                                        !newModalOpen
-                                                    )
-                                            }
-                                        ]}
-                                    />
-                                )
+                                <CardMenu
+                                    items={[
+                                        {
+                                            label: 'Nytt avvik',
+                                            skip: checklistId === undefined,
+                                            icon: <AddIcon />,
+                                            action: () =>
+                                                setNewModalOpen(!newModalOpen)
+                                        },
+                                        {
+                                            label: `Sett utbedrere (${selected.length})`,
+                                            icon: <PersonIcon />,
+                                            action: () =>
+                                                setNewModalOpen(!newModalOpen)
+                                        }
+                                    ]}
+                                />
                             }>
                             {skjemaer !== undefined ? (
                                 <TableContainer
@@ -108,6 +116,9 @@ const AvvikView = () => {
                                         skjemaer={skjemaer}
                                         kontroller={kontroller ?? []}
                                         avvik={_avvik ?? []}
+                                        onSelected={(avvik) =>
+                                            setSelected(avvik)
+                                        }
                                     />
                                 </TableContainer>
                             ) : (

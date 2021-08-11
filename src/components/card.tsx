@@ -34,6 +34,7 @@ export const Card = ({ children, title, menu }: CardProps) => {
 interface CardMenuItem {
     label: string;
     action?: () => void;
+    skip?: boolean;
     to?: string;
     icon?: React.ReactNode;
 }
@@ -69,33 +70,38 @@ export const CardMenu = ({ items }: CardMenuProps) => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}>
-                {items.map((ai) => (
-                    <MenuItem key={ai.label}>
-                        {ai.action !== undefined ? (
-                            <Button
-                                onClick={() => {
-                                    handleClose();
-                                    if (ai.action !== undefined) {
-                                        ai.action();
-                                    }
-                                }}
-                                color="primary"
-                                startIcon={ai.icon}>
-                                {ai.label}
-                            </Button>
-                        ) : ai.to !== undefined ? (
-                            <Button
-                                color="primary"
-                                component={RouterLink}
-                                to={ai.to}
-                                startIcon={ai.icon}>
-                                {ai.label}
-                            </Button>
-                        ) : (
-                            <div />
-                        )}
-                    </MenuItem>
-                ))}
+                {items.map((ai) => {
+                    if (ai.skip) {
+                        return <div key={ai.label} />;
+                    }
+                    return (
+                        <MenuItem key={ai.label}>
+                            {ai.action !== undefined ? (
+                                <Button
+                                    onClick={() => {
+                                        handleClose();
+                                        if (ai.action !== undefined) {
+                                            ai.action();
+                                        }
+                                    }}
+                                    color="primary"
+                                    startIcon={ai.icon}>
+                                    {ai.label}
+                                </Button>
+                            ) : ai.to !== undefined ? (
+                                <Button
+                                    color="primary"
+                                    component={RouterLink}
+                                    to={ai.to}
+                                    startIcon={ai.icon}>
+                                    {ai.label}
+                                </Button>
+                            ) : (
+                                <div />
+                            )}
+                        </MenuItem>
+                    );
+                })}
             </Menu>
         </div>
     );

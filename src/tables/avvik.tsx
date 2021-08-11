@@ -2,6 +2,7 @@ import {
     GridCellParams,
     GridColDef,
     GridRowData,
+    GridRowId,
     GridValueGetterParams
 } from '@material-ui/data-grid';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
@@ -11,6 +12,7 @@ import { BaseTable } from './baseTable';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import { RowAction } from './tableUtils';
+import { useTable } from './tableContainer';
 
 export const AvvikValueGetter = (data: Avvik | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): string => {
@@ -148,12 +150,16 @@ interface AvvikTableProps {
     avvik: Avvik[];
     kontroller: Kontroll[];
     skjemaer: Skjema[];
+    onSelected: (checkpoints: Array<Avvik>) => void;
 }
 export const AvvikTable = ({
     kontroller,
     avvik,
-    skjemaer
+    skjemaer,
+    onSelected
 }: AvvikTableProps) => {
+    const { apiRef } = useTable();
+
     function CustomSort<T extends keyof Avvik>(
         data: Avvik[],
         field: T
@@ -202,9 +208,32 @@ export const AvvikTable = ({
         }
     }
 
+    const onSelect = () => {
+        const rows: Map<GridRowId, GridRowData> =
+            apiRef.current.getSelectedRows();
+
+        const cpRows: Avvik[] = [];
+
+        rows.forEach((r) =>
+            cpRows.push({
+                id: r.id,
+                beskrivelse: r.beskrivelse,
+                avvikBilder: r.avvikBilder,
+                checklist: r.checklist,
+                kommentar: r.kommentar,
+                registrertDato: r.registrertDato,
+                status: r.status,
+                oppdagetAv: r.oppdagetAv,
+                utbedrer: r.utbedrer
+            })
+        );
+        onSelected(cpRows);
+    };
+
     return (
         <BaseTable
             data={avvik}
+            onSelected={onSelect}
             customSort={CustomSort}
             customSortFields={['kontroll', 'area', 'omrade']}
         />

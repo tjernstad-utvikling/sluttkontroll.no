@@ -51,7 +51,6 @@ export const CheckpointTable = ({
     }, [checklists]);
 
     useEffect(() => {
-        console.log({ apiRef, checklists, skjemaId });
         if (
             checklists !== undefined &&
             skjemaId !== undefined &&

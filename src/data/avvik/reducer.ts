@@ -23,6 +23,17 @@ export const userReducer = (
                     (a) => a.id !== action.payload.avvikId
                 )
             };
+        case ActionType.updateAvvik:
+            return {
+                ...state,
+                avvik: state.avvik?.map((a) => {
+                    if (a.id === action.payload.id) {
+                        return action.payload;
+                    } else {
+                        return a;
+                    }
+                })
+            };
 
         default:
             throw new Error('unknown action');

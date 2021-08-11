@@ -1,8 +1,13 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
-import { deleteAvvikById, getAvvikByKontrollList } from '../../api/avvikApi';
+import {
+    deleteAvvikById,
+    getAvvikByKontrollList,
+    updateAvvikById
+} from '../../api/avvikApi';
 import { initialState, userReducer } from './reducer';
 
+import { Avvik } from '../../contracts/avvikApi';
 import { Kontroll } from '../../contracts/kontrollApi';
 import { useSnackbar } from 'notistack';
 
@@ -37,6 +42,42 @@ export const AvvikContextProvider = ({
             }
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const updateAvvik = async (avvik: Avvik): Promise<boolean> => {
+        try {
+            const { status, message } = await updateAvvikById(avvik);
+
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.updateAvvik,
+                    payload: avvik
+                });
+            }
+            if (status === 400) {
+                if (message === 'avvik closed') {
+                    enqueueSnackbar('Avvik er lukket og kan ikke slettes', {
+                        variant: 'warning'
+                    });
+                } else if (message === 'beskrivelse missing') {
+                    enqueueSnackbar('Kan ikke lagre avviket uten beskrivelse', {
+                        variant: 'warning'
+                    });
+                } else {
+                    enqueueSnackbar('Kan ikke oppdatere avviket', {
+                        variant: 'warning'
+                    });
+                }
+                return false;
+            }
+            return true;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med oppdatering av avvik', {
+                variant: 'error'
+            });
+            return false;
         }
     };
 
@@ -83,7 +124,8 @@ export const AvvikContextProvider = ({
                 state,
 
                 loadAvvikByKontroller,
-                deleteAvvik
+                deleteAvvik,
+                updateAvvik
             }}>
             {children}
         </AvvikContext.Provider>

@@ -12,9 +12,14 @@ export interface Avvik {
         };
     };
     kommentar: string;
-    laderModus: string | null;
     registrertDato: string;
     status: string | null;
+    oppdagetAv: {
+        id: number;
+    };
+    utbedrer: {
+        id: number;
+    }[];
 }
 
 export interface AvvikBilde {

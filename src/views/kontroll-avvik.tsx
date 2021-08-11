@@ -3,6 +3,7 @@ import { Card, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
+import { AvvikEditModal } from '../modal/avvik';
 import { AvvikViewParams } from '../contracts/navigation';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -20,6 +21,9 @@ const AvvikView = () => {
 
     const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
     const [newModalOpen, setNewModalOpen] = useState<boolean>(false);
+
+    const [editId, setEditId] = useState<number>();
+
     const {
         state: { skjemaer, kontroller },
         loadKontroller
@@ -96,7 +100,7 @@ const AvvikView = () => {
                                         kontroller ?? [],
                                         skjemaer ?? [],
                                         askToDeleteAvvik,
-                                        (edit) => console.log(edit)
+                                        setEditId
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="avvik">
@@ -113,6 +117,12 @@ const AvvikView = () => {
                     </Grid>
                 </Grid>
             </Container>
+            <AvvikEditModal
+                close={() => {
+                    setEditId(undefined);
+                }}
+                editId={editId}
+            />
         </div>
     );
 };

@@ -11,6 +11,7 @@ export const getAvvikByKontrollList = async (
         const { status, data } = await sluttkontrollApi.get(
             `/v3/avvik/kontroll-list/${ids.join()}`
         );
+
         if (status === 200) {
             return { status, ...data };
         }
@@ -19,6 +20,7 @@ export const getAvvikByKontrollList = async (
         throw new Error(error);
     }
 };
+
 export const deleteAvvikById = async (
     avvikId: number
 ): Promise<{
@@ -29,6 +31,29 @@ export const deleteAvvikById = async (
         const { status } = await sluttkontrollApi.delete(
             `/v3/avvik/${avvikId}`
         );
+        if (status === 204) {
+            return { status, message: '' };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
+export const updateAvvikById = async (
+    avvik: Avvik
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(`/v3/avvik/${avvik.id}`, {
+            beskrivelse: avvik.beskrivelse,
+            kommentar: avvik.kommentar,
+            utbedrer: avvik.utbedrer
+        });
         if (status === 204) {
             return { status, message: '' };
         }

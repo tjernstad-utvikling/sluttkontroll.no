@@ -43,7 +43,8 @@ const AvvikView = () => {
     const { confirm } = useConfirm();
     const {
         state: { avvik },
-        deleteAvvik
+        deleteAvvik,
+        openAvvik
     } = useAvvik();
 
     useEffectOnce(() => {
@@ -79,6 +80,14 @@ const AvvikView = () => {
 
         if (isConfirmed) {
             deleteAvvik(avvikId);
+        }
+    };
+
+    const close = async (avvikId: number) => {
+        const avvikToClose = avvik?.find((a) => a.id === avvikId);
+        if (avvikToClose !== undefined) {
+            setSelected([avvikToClose]);
+            setModalOpen(Modals.comment);
         }
     };
 
@@ -121,7 +130,9 @@ const AvvikView = () => {
                                         kontroller ?? [],
                                         skjemaer ?? [],
                                         askToDeleteAvvik,
-                                        setEditId
+                                        setEditId,
+                                        openAvvik,
+                                        close
                                     )}
                                     defaultColumns={defaultColumns}
                                     tableId="avvik">

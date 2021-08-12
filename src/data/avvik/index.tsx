@@ -4,6 +4,7 @@ import {
     closeAvvikApi,
     deleteAvvikById,
     getAvvikByKontrollList,
+    openAvvikApi,
     setUtbedrereApi,
     updateAvvikById
 } from '../../api/avvikApi';
@@ -148,6 +149,32 @@ export const AvvikContextProvider = ({
             return false;
         }
     };
+    const openAvvik = async (avvikId: number): Promise<boolean> => {
+        try {
+            const { status } = await openAvvikApi(avvikId);
+
+            const avvik = state.avvik?.find((a) => a.id === avvikId);
+            if (status === 204 && avvik !== undefined) {
+                dispatch({
+                    type: ActionType.updateAvvik,
+                    payload: {
+                        ...avvik,
+                        status: null
+                    }
+                });
+                enqueueSnackbar('Avvik er åpnet', {
+                    variant: 'success'
+                });
+            }
+            return true;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med oppdatering av avvik', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
 
     const deleteAvvik = async (avvikId: number): Promise<boolean> => {
         try {
@@ -195,7 +222,8 @@ export const AvvikContextProvider = ({
                 deleteAvvik,
                 updateAvvik,
                 setUtbedrere,
-                closeAvvik
+                closeAvvik,
+                openAvvik
             }}>
             {children}
         </AvvikContext.Provider>

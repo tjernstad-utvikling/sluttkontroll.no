@@ -141,6 +141,7 @@
       "p",
       "plassering",
       "pne",
+      "pnet",
       "postadresse",
       "postnr",
       "poststed",
@@ -185,6 +186,7 @@
       "vuedraggable",
       "vurdert",
       "være",
-      "åpne"
+      "åpne",
+      "åpnet"
     ]
 }

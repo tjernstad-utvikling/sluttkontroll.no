@@ -9,8 +9,10 @@ import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
+import BuildIcon from '@material-ui/icons/Build';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { RowAction } from './tableUtils';
 import { useTable } from './tableContainer';
 
@@ -51,7 +53,9 @@ export const columns = (
     kontroller: Kontroll[],
     skjemaer: Skjema[],
     deleteSkjema: (avvikId: number) => void,
-    edit: (avvikId: number) => void
+    edit: (avvikId: number) => void,
+    open: (avvikId: number) => void,
+    close: (avvikId: number) => void
 ) => {
     const columns: GridColDef[] = [
         {
@@ -117,6 +121,18 @@ export const columns = (
                 return (
                     <RowAction
                         actionItems={[
+                            {
+                                name: 'Åpne',
+                                action: () => open(params.row.id),
+                                skip: params.row.status !== 'lukket',
+                                icon: <LockOpenIcon />
+                            },
+                            {
+                                name: 'Lukke',
+                                action: () => close(params.row.id),
+                                skip: params.row.status === 'lukket',
+                                icon: <BuildIcon />
+                            },
                             {
                                 name: 'Rediger',
                                 action: () => edit(params.row.id),

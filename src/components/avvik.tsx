@@ -54,7 +54,10 @@ export function AvvikCard({ avvik }: AvvikCardProps) {
                 <Button size="small" color="primary">
                     Share
                 </Button>
-                <Button size="small" color="primary">
+                <Button
+                    style={{ marginLeft: 'auto' }}
+                    size="small"
+                    color="primary">
                     Learn More
                 </Button>
             </CardActions>

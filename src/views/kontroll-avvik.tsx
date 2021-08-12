@@ -4,9 +4,11 @@ import { useEffect, useState } from 'react';
 
 import AddIcon from '@material-ui/icons/Add';
 import { Avvik } from '../contracts/avvikApi';
+import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
+import BuildIcon from '@material-ui/icons/Build';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import PersonIcon from '@material-ui/icons/Person';
@@ -26,7 +28,8 @@ const AvvikView = () => {
     const [selected, setSelected] = useState<Avvik[]>([]);
 
     enum Modals {
-        utbedrer = 'utbedrer'
+        utbedrer,
+        comment
     }
     const [modalOpen, setModalOpen] = useState<Modals>();
 
@@ -102,6 +105,12 @@ const AvvikView = () => {
                                             icon: <PersonIcon />,
                                             action: () =>
                                                 setModalOpen(Modals.utbedrer)
+                                        },
+                                        {
+                                            label: `Lukk valgte avvik (${selected.length})`,
+                                            icon: <BuildIcon />,
+                                            action: () =>
+                                                setModalOpen(Modals.comment)
                                         }
                                     ]}
                                 />
@@ -140,6 +149,11 @@ const AvvikView = () => {
             />
             <AvvikUtbedrereModal
                 open={modalOpen === Modals.utbedrer}
+                close={() => setModalOpen(undefined)}
+                selectedAvvik={selected}
+            />
+            <AvvikCommentModal
+                open={modalOpen === Modals.comment}
                 close={() => setModalOpen(undefined)}
                 selectedAvvik={selected}
             />

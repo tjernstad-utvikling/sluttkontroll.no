@@ -1,6 +1,7 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
+    closeAvvikApi,
     deleteAvvikById,
     getAvvikByKontrollList,
     setUtbedrereApi,
@@ -113,6 +114,41 @@ export const AvvikContextProvider = ({
         }
     };
 
+    const closeAvvik = async (
+        avvik: Avvik[],
+        kommentar: string
+    ): Promise<boolean> => {
+        try {
+            const { status } = await closeAvvikApi(
+                avvik.map((a) => a.id),
+                kommentar
+            );
+
+            if (status === 204) {
+                avvik.forEach((a) => {
+                    dispatch({
+                        type: ActionType.updateAvvik,
+                        payload: {
+                            ...a,
+                            status: 'lukket',
+                            kommentar: `${a.kommentar} ${kommentar}`
+                        }
+                    });
+                });
+                enqueueSnackbar('Avvik er lukket', {
+                    variant: 'success'
+                });
+            }
+            return true;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med oppdatering av avvik', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
+
     const deleteAvvik = async (avvikId: number): Promise<boolean> => {
         try {
             const { status, message } = await deleteAvvikById(avvikId);
@@ -158,7 +194,8 @@ export const AvvikContextProvider = ({
                 loadAvvikByKontroller,
                 deleteAvvik,
                 updateAvvik,
-                setUtbedrere
+                setUtbedrere,
+                closeAvvik
             }}>
             {children}
         </AvvikContext.Provider>

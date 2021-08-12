@@ -33,4 +33,5 @@ export interface ContextInterface {
     deleteAvvik: (avvikId: number) => Promise<boolean>;
     updateAvvik: (avvik: Avvik) => Promise<boolean>;
     setUtbedrere: (avvik: Avvik[], utbedrere: User[]) => Promise<boolean>;
+    closeAvvik: (avvik: Avvik[], kommentar: string) => Promise<boolean>;
 }

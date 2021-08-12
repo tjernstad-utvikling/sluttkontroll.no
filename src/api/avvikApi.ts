@@ -67,6 +67,7 @@ export const updateAvvikById = async (
         throw new Error(error);
     }
 };
+
 export const setUtbedrereApi = async (
     avvikList: Array<number>,
     utbedrer: Array<User>
@@ -82,6 +83,30 @@ export const setUtbedrereApi = async (
                 utbedrer
             }
         );
+        if (status === 204) {
+            return { status, message: '' };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
+
+export const closeAvvikApi = async (
+    avvikList: Array<number>,
+    kommentar: string
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.post('/v3/avvik/close', {
+            avvikList,
+            kommentar
+        });
         if (status === 204) {
             return { status, message: '' };
         }

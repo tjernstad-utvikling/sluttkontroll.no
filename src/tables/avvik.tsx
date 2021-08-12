@@ -1,3 +1,4 @@
+import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
@@ -8,12 +9,12 @@ import {
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import { BaseTable } from './baseTable';
 import BuildIcon from '@material-ui/icons/Build';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { RowAction } from './tableUtils';
+import { format } from 'date-fns';
 import { useTable } from './tableContainer';
 
 export const AvvikValueGetter = (data: Avvik | GridRowData) => {
@@ -97,7 +98,9 @@ export const columns = (
         {
             field: 'registrertDato',
             headerName: 'Registrert dato',
-            flex: 1
+            flex: 1,
+            renderCell: (params: GridCellParams) =>
+                format(new Date(params.row.registrertDato), 'dd.MM.yyyy')
         },
         {
             field: 'status',
@@ -245,6 +248,11 @@ export const AvvikTable = ({
         );
         onSelected(cpRows);
     };
+    const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
+        if (row.status === 'lukket') {
+            return RowStylingEnum.completed;
+        }
+    };
 
     return (
         <BaseTable
@@ -252,6 +260,7 @@ export const AvvikTable = ({
             onSelected={onSelect}
             customSort={CustomSort}
             customSortFields={['kontroll', 'area', 'omrade']}
+            getRowStyling={getRowStyling}
         />
     );
 };

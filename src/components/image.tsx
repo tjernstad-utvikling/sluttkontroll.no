@@ -8,8 +8,9 @@ interface ImageProps {
     width: number;
     height: number;
     alt: string;
+    objectFit?: boolean;
 }
-export const Image = ({ src, width, height, alt }: ImageProps) => {
+export const Image = ({ src, width, height, alt, objectFit }: ImageProps) => {
     const [objectUrl, setObjectUrl] = useState<string>('');
 
     useEffect(() => {
@@ -30,13 +31,17 @@ export const Image = ({ src, width, height, alt }: ImageProps) => {
     return (
         <img
             src={objectUrl}
-            width={width}
-            height={height}
             alt={alt}
+            style={
+                objectFit
+                    ? { objectFit: 'cover', width: '100%', height: '100%' }
+                    : {}
+            }
             onLoad={() => URL.revokeObjectURL(objectUrl)}
         />
     );
 };
+
 export const PdfImage = ({ src }: { src: string }) => {
     const [objectUrl, setObjectUrl] = useState<string>('');
 

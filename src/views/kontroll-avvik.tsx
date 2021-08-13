@@ -14,6 +14,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import PersonIcon from '@material-ui/icons/Person';
 import ReorderIcon from '@material-ui/icons/Reorder';
+import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/tableContainer';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import { useAvvik } from '../data/avvik';
@@ -97,8 +98,20 @@ const AvvikView = () => {
         }
     };
 
+    const changeViewMode = () => {
+        localStorage.setItem(StorageKeys.avvikView, JSON.stringify(!showTable));
+        setShowTable(!showTable);
+    };
+
+    useEffectOnce(() => {
+        const jsonShowTable = localStorage.getItem(StorageKeys.avvikView);
+        if (jsonShowTable !== null) {
+            setShowTable(JSON.parse(jsonShowTable));
+        }
+    });
+
     return (
-        <div>
+        <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
@@ -124,8 +137,7 @@ const AvvikView = () => {
                                             ) : (
                                                 <ReorderIcon />
                                             ),
-                                            action: () =>
-                                                setShowTable(!showTable)
+                                            action: () => changeViewMode()
                                         },
                                         {
                                             label: `Sett utbedrere (${selected.length})`,
@@ -205,7 +217,7 @@ const AvvikView = () => {
                 close={() => setModalOpen(undefined)}
                 selectedAvvik={selected}
             />
-        </div>
+        </>
     );
 };
 

@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 
 import AddIcon from '@material-ui/icons/Add';
 import { Avvik } from '../contracts/avvikApi';
-import { AvvikCard } from '../components/avvik';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
+import { AvvikGrid } from '../components/avvik';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
 import BuildIcon from '@material-ui/icons/Build';
@@ -98,9 +98,14 @@ const AvvikView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        {selected.length > 0 && (
-                            <AvvikCard avvik={selected[0]} />
-                        )}
+                        <AvvikGrid
+                            deleteAvvik={askToDeleteAvvik}
+                            edit={setEditId}
+                            open={openAvvik}
+                            close={close}
+                            avvik={_avvik ?? []}
+                        />
+
                         <Card
                             title="Avvik"
                             menu={

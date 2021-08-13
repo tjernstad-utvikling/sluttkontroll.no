@@ -51,22 +51,22 @@ export function AvvikCard({
     return (
         <Card className={classes.cardRoot}>
             <CardActionArea>
-                {avvik.avvikBilder.length > 0 && (
-                    <CardMedia
-                        component="article"
-                        className={classes.media}
-                        title={avvik.beskrivelse}>
-                        <div style={{ width: 250, height: 155 }}>
-                            <Image
-                                src={avvik.avvikBilder[0].image}
-                                height={avvik.avvikBilder[0].height}
-                                width={avvik.avvikBilder[0].width}
-                                alt={`avvik bilde for avvik id: ${avvik.id}`}
-                                objectFit
-                            />
-                        </div>
-                    </CardMedia>
-                )}
+                <CardMedia
+                    component="article"
+                    className={classes.media}
+                    title={avvik.beskrivelse}>
+                    <div style={{ width: 250, height: 155 }}>
+                        <Image
+                            src={
+                                avvik.avvikBilder.length > 0
+                                    ? avvik.avvikBilder[0].image
+                                    : undefined
+                            }
+                            alt={`avvik bilde for avvik id: ${avvik.id}`}
+                            objectFit
+                        />
+                    </div>
+                </CardMedia>
                 <CardContent>
                     <Typography
                         style={{ fontWeight: 'bold' }}

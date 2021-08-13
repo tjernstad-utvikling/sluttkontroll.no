@@ -10,6 +10,7 @@ import { AvvikGrid } from '../components/avvik';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
 import BuildIcon from '@material-ui/icons/Build';
+import CallMergeIcon from '@material-ui/icons/CallMerge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import PersonIcon from '@material-ui/icons/Person';
@@ -33,6 +34,7 @@ const AvvikView = () => {
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
     const [showTable, setShowTable] = useState<boolean>(false);
+    const [showAll, setShowAll] = useState<boolean>(false); // Also show closed avvik
 
     enum Modals {
         utbedrer,
@@ -60,27 +62,28 @@ const AvvikView = () => {
 
     useEffect(() => {
         if (avvik !== undefined) {
+            let filteredAvvik;
             if (checklistId !== undefined) {
-                setAvvik(
-                    avvik.filter((a) => a.checklist.id === Number(checklistId))
+                filteredAvvik = avvik.filter(
+                    (a) => a.checklist.id === Number(checklistId)
                 );
             } else if (skjemaId !== undefined) {
-                setAvvik(
-                    avvik.filter(
-                        (a) => a.checklist.skjema.id === Number(skjemaId)
-                    )
+                filteredAvvik = avvik.filter(
+                    (a) => a.checklist.skjema.id === Number(skjemaId)
                 );
             } else {
-                setAvvik(
-                    avvik.filter(
-                        (a) =>
-                            a.checklist.skjema.kontroll.id ===
-                            Number(kontrollId)
-                    )
+                filteredAvvik = avvik.filter(
+                    (a) => a.checklist.skjema.kontroll.id === Number(kontrollId)
                 );
             }
+
+            if (!showAll) {
+                setAvvik(filteredAvvik.filter((a) => a.status !== 'lukket'));
+            } else {
+                setAvvik(filteredAvvik);
+            }
         }
-    }, [avvik, checklistId, kontrollId, skjemaId]);
+    }, [avvik, checklistId, kontrollId, showAll, skjemaId]);
 
     const askToDeleteAvvik = async (avvikId: number) => {
         const isConfirmed = await confirm(`Slette avvikID: ${avvikId}?`);
@@ -138,6 +141,13 @@ const AvvikView = () => {
                                                 <ReorderIcon />
                                             ),
                                             action: () => changeViewMode()
+                                        },
+                                        {
+                                            label: showAll
+                                                ? 'Vis kun åpne avvik'
+                                                : 'Vis alle avvik',
+                                            icon: <CallMergeIcon />,
+                                            action: () => setShowAll(!showAll)
                                         },
                                         {
                                             label: `Sett utbedrere (${selected.length})`,

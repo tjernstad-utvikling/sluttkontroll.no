@@ -27,6 +27,7 @@ interface BaseTableProps<T, K extends keyof T> {
     selectionModel?: number[] | undefined;
     onSelected?: () => void;
     getRowStyling?: (row: GridRowData) => RowStylingEnum | undefined;
+    skipShift?: boolean;
 }
 export const BaseTable = <T extends Data, K extends keyof T>({
     data,
@@ -34,7 +35,8 @@ export const BaseTable = <T extends Data, K extends keyof T>({
     customSortFields,
     selectionModel,
     onSelected,
-    getRowStyling
+    getRowStyling,
+    skipShift
 }: BaseTableProps<T, K>) => {
     const { columns, apiRef } = useTable();
     const [isShift, setIsShift] = useState<boolean>(false);
@@ -85,7 +87,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
 
     useEffect(() => {
         const handleKey = (event: KeyboardEvent, down: boolean) => {
-            if (event.key === 'Shift') {
+            if (event.key === 'Shift' && !skipShift) {
                 setIsShift(down);
             }
         };
@@ -97,7 +99,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
             window.removeEventListener('keydown', (e) => handleKey(e, true));
             window.removeEventListener('keyup', (e) => handleKey(e, false));
         };
-    }, []);
+    }, [skipShift]);
 
     useEffect(() => {
         setSortedData(data);

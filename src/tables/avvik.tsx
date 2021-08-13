@@ -15,6 +15,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
+import { useEffect } from 'react';
 import { useTable } from './tableContainer';
 
 export const AvvikValueGetter = (data: Avvik | GridRowData) => {
@@ -170,12 +171,16 @@ interface AvvikTableProps {
     kontroller: Kontroll[];
     skjemaer: Skjema[];
     onSelected: (checkpoints: Array<Avvik>) => void;
+    selected: Avvik[];
+    selectedFromGrid: boolean;
 }
 export const AvvikTable = ({
     kontroller,
     avvik,
     skjemaer,
-    onSelected
+    onSelected,
+    selected,
+    selectedFromGrid
 }: AvvikTableProps) => {
     const { apiRef } = useTable();
 
@@ -248,6 +253,21 @@ export const AvvikTable = ({
         );
         onSelected(cpRows);
     };
+    useEffect(() => {
+        function checkSelected() {
+            if (apiRef.current !== null && selectedFromGrid) {
+                console.log('set selected in table');
+                const selectArray = selected.map((a) => a.id);
+                apiRef.current.selectRows(selectArray);
+            }
+        }
+        if (apiRef.current === null && selectedFromGrid) {
+            setTimeout(checkSelected, 1000);
+        } else if (apiRef.current !== null && selectedFromGrid) {
+            checkSelected();
+        }
+    }, [selected, apiRef, selectedFromGrid]);
+
     const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
         if (row.status === 'lukket') {
             return RowStylingEnum.completed;
@@ -261,6 +281,7 @@ export const AvvikTable = ({
             customSort={CustomSort}
             customSortFields={['kontroll', 'area', 'omrade']}
             getRowStyling={getRowStyling}
+            skipShift={selectedFromGrid}
         />
     );
 };

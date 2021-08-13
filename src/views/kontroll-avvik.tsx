@@ -27,6 +27,7 @@ const AvvikView = () => {
 
     const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
     const [selected, setSelected] = useState<Avvik[]>([]);
+    const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
     const [showTable, setShowTable] = useState<boolean>(false);
 
@@ -132,41 +133,48 @@ const AvvikView = () => {
                                     ]}
                                 />
                             }>
-                            {showTable ? (
-                                skjemaer !== undefined ? (
-                                    <TableContainer
-                                        columns={columns(
-                                            kontroller ?? [],
-                                            skjemaer ?? [],
-                                            askToDeleteAvvik,
-                                            setEditId,
-                                            openAvvik,
-                                            close
-                                        )}
-                                        defaultColumns={defaultColumns}
-                                        tableId="avvik">
+                            {skjemaer !== undefined ? (
+                                <TableContainer
+                                    columns={columns(
+                                        kontroller ?? [],
+                                        skjemaer ?? [],
+                                        askToDeleteAvvik,
+                                        setEditId,
+                                        openAvvik,
+                                        close
+                                    )}
+                                    defaultColumns={defaultColumns}
+                                    tableId="avvik">
+                                    {showTable ? (
                                         <AvvikTable
                                             skjemaer={skjemaer}
                                             kontroller={kontroller ?? []}
                                             avvik={_avvik ?? []}
-                                            onSelected={(avvik) =>
-                                                setSelected(avvik)
-                                            }
+                                            selected={selected}
+                                            onSelected={(avvik) => {
+                                                setSelected(avvik);
+                                                setSelectedFromGrid(false);
+                                            }}
+                                            selectedFromGrid={selectedFromGrid}
                                         />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster avvik</div>
-                                )
+                                    ) : (
+                                        <AvvikGrid
+                                            deleteAvvik={askToDeleteAvvik}
+                                            edit={setEditId}
+                                            open={openAvvik}
+                                            close={close}
+                                            avvik={_avvik ?? []}
+                                            selected={selected}
+                                            setSelected={(a) => {
+                                                setSelected(a);
+                                                setSelectedFromGrid(true);
+                                            }}
+                                            selectedFromGrid={selectedFromGrid}
+                                        />
+                                    )}
+                                </TableContainer>
                             ) : (
-                                <AvvikGrid
-                                    deleteAvvik={askToDeleteAvvik}
-                                    edit={setEditId}
-                                    open={openAvvik}
-                                    close={close}
-                                    avvik={_avvik ?? []}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                />
+                                <div>Laster avvik</div>
                             )}
                         </Card>
                     </Grid>

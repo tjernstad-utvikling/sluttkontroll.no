@@ -144,7 +144,6 @@ export const getImageFile = async (
     nameOrId: number | string
 ): Promise<{ status: number; data: Blob }> => {
     try {
-        console.log('getImageOnServer start');
         const { status, data } = await sluttkontrollApi.get(
             `/v3/avvik/bilder/${nameOrId}`,
             {

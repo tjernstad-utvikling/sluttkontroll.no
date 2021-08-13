@@ -133,6 +133,7 @@ interface AvvikGridProps {
     open: (avvikId: number) => void;
     close: (avvikId: number) => void;
     setSelected: (selected: Avvik[]) => void;
+    selectedFromGrid: boolean;
 }
 export function AvvikGrid(props: AvvikGridProps) {
     const classes = useStyles();
@@ -141,7 +142,7 @@ export function AvvikGrid(props: AvvikGridProps) {
 
     useEffect(() => {
         const handleKey = (event: KeyboardEvent, down: boolean) => {
-            if (event.key === 'Shift') {
+            if (event.key === 'Shift' && props.selectedFromGrid) {
                 setIsShift(down);
             }
         };
@@ -153,7 +154,7 @@ export function AvvikGrid(props: AvvikGridProps) {
             window.removeEventListener('keydown', (e) => handleKey(e, true));
             window.removeEventListener('keyup', (e) => handleKey(e, false));
         };
-    }, []);
+    }, [props.selectedFromGrid]);
 
     const handleSelected = (checked: boolean, selection: Avvik[]) => {
         if (checked) {

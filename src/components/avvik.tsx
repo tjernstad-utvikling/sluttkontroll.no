@@ -14,6 +14,7 @@ import { Image } from './image';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { RowAction } from '../tables/tableUtils';
 import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 
 interface AvvikCardProps {
@@ -83,7 +84,10 @@ export function AvvikCard({
                     </Typography>
                 </CardContent>
             </CardActionArea>
-            <CardActions>
+            <CardActions
+                className={clsx(classes.cardActions, {
+                    [classes.cardActionClosed]: avvik.status === 'lukket'
+                })}>
                 <Checkbox
                     onChange={(e) => onSelect(e, avvik)}
                     checked={checked}
@@ -221,5 +225,13 @@ const useStyles = makeStyles({
     },
     media: {
         height: 140
+    },
+    cardActions: {
+        background:
+            'linear-gradient(180deg, rgba(255,255,255,1) 75%, #F3A712 100%)'
+    },
+    cardActionClosed: {
+        background:
+            'linear-gradient(180deg, rgba(255,255,255,1) 75%, #8FC93A 100%)'
     }
 });

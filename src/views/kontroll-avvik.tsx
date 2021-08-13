@@ -13,7 +13,9 @@ import BuildIcon from '@material-ui/icons/Build';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import PersonIcon from '@material-ui/icons/Person';
+import ReorderIcon from '@material-ui/icons/Reorder';
 import { TableContainer } from '../tables/tableContainer';
+import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -114,7 +116,14 @@ const AvvikView = () => {
                                             action: () => console.log('new')
                                         },
                                         {
-                                            label: 'Visningsmodus',
+                                            label: showTable
+                                                ? 'Bytt visningsmodus (Grid)'
+                                                : 'Bytt visningsmodus (Tabell)',
+                                            icon: showTable ? (
+                                                <ViewComfyIcon />
+                                            ) : (
+                                                <ReorderIcon />
+                                            ),
                                             action: () =>
                                                 setShowTable(!showTable)
                                         },

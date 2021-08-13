@@ -28,6 +28,8 @@ const AvvikView = () => {
     const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
     const [selected, setSelected] = useState<Avvik[]>([]);
 
+    const [showTable, setShowTable] = useState<boolean>(false);
+
     enum Modals {
         utbedrer,
         comment
@@ -98,14 +100,6 @@ const AvvikView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <AvvikGrid
-                            deleteAvvik={askToDeleteAvvik}
-                            edit={setEditId}
-                            open={openAvvik}
-                            close={close}
-                            avvik={_avvik ?? []}
-                        />
-
                         <Card
                             title="Avvik"
                             menu={
@@ -117,6 +111,11 @@ const AvvikView = () => {
                                             skip: checklistId === undefined,
                                             icon: <AddIcon />,
                                             action: () => console.log('new')
+                                        },
+                                        {
+                                            label: 'Visningsmodus',
+                                            action: () =>
+                                                setShowTable(!showTable)
                                         },
                                         {
                                             label: `Sett utbedrere (${selected.length})`,
@@ -133,29 +132,39 @@ const AvvikView = () => {
                                     ]}
                                 />
                             }>
-                            {skjemaer !== undefined ? (
-                                <TableContainer
-                                    columns={columns(
-                                        kontroller ?? [],
-                                        skjemaer ?? [],
-                                        askToDeleteAvvik,
-                                        setEditId,
-                                        openAvvik,
-                                        close
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="avvik">
-                                    <AvvikTable
-                                        skjemaer={skjemaer}
-                                        kontroller={kontroller ?? []}
-                                        avvik={_avvik ?? []}
-                                        onSelected={(avvik) =>
-                                            setSelected(avvik)
-                                        }
-                                    />
-                                </TableContainer>
+                            {showTable ? (
+                                skjemaer !== undefined ? (
+                                    <TableContainer
+                                        columns={columns(
+                                            kontroller ?? [],
+                                            skjemaer ?? [],
+                                            askToDeleteAvvik,
+                                            setEditId,
+                                            openAvvik,
+                                            close
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="avvik">
+                                        <AvvikTable
+                                            skjemaer={skjemaer}
+                                            kontroller={kontroller ?? []}
+                                            avvik={_avvik ?? []}
+                                            onSelected={(avvik) =>
+                                                setSelected(avvik)
+                                            }
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster avvik</div>
+                                )
                             ) : (
-                                <div>Laster avvik</div>
+                                <AvvikGrid
+                                    deleteAvvik={askToDeleteAvvik}
+                                    edit={setEditId}
+                                    open={openAvvik}
+                                    close={close}
+                                    avvik={_avvik ?? []}
+                                />
                             )}
                         </Card>
                     </Grid>

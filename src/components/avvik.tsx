@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useState } from 'react';
+
 import { Avvik } from '../contracts/avvikApi';
 import BuildIcon from '@material-ui/icons/Build';
 import Card from '@material-ui/core/Card';
@@ -13,20 +15,27 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { RowAction } from '../tables/tableUtils';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { useMemo } from 'react';
+
 interface AvvikCardProps {
     avvik: Avvik;
     deleteAvvik: (avvikId: number) => void;
     edit: (avvikId: number) => void;
     open: (avvikId: number) => void;
     close: (avvikId: number) => void;
+    onSelect: (
+        event: React.ChangeEvent<HTMLInputElement>,
+        avvik: Avvik
+    ) => void;
+    checked: boolean;
 }
 export function AvvikCard({
     avvik,
     deleteAvvik,
     edit,
     open,
-    close
+    close,
+    onSelect,
+    checked
 }: AvvikCardProps) {
     const classes = useStyles();
 
@@ -63,7 +72,7 @@ export function AvvikCard({
                         style={{ fontWeight: 'bold' }}
                         gutterBottom
                         variant="h5"
-                        component="h2">
+                        component="h3">
                         ID: {avvik.id}
                     </Typography>
                     <Typography
@@ -76,9 +85,10 @@ export function AvvikCard({
             </CardActionArea>
             <CardActions>
                 <Checkbox
-                    defaultChecked
+                    onChange={(e) => onSelect(e, avvik)}
+                    checked={checked}
                     color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    inputProps={{ 'aria-label': 'Velg avvik' }}
                 />
                 <div style={{ marginLeft: 'auto' }}>
                     <RowAction
@@ -117,17 +127,81 @@ export function AvvikCard({
 
 interface AvvikGridProps {
     avvik: Avvik[];
+    selected: Avvik[];
     deleteAvvik: (avvikId: number) => void;
     edit: (avvikId: number) => void;
     open: (avvikId: number) => void;
     close: (avvikId: number) => void;
+    setSelected: (selected: Avvik[]) => void;
 }
 export function AvvikGrid(props: AvvikGridProps) {
     const classes = useStyles();
+    const [isShift, setIsShift] = useState<boolean>(false);
+    const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
+
+    useEffect(() => {
+        const handleKey = (event: KeyboardEvent, down: boolean) => {
+            if (event.key === 'Shift') {
+                setIsShift(down);
+            }
+        };
+        window.addEventListener('keydown', (e) => handleKey(e, true));
+        window.addEventListener('keyup', (e) => handleKey(e, false));
+
+        // cleanup this component
+        return () => {
+            window.removeEventListener('keydown', (e) => handleKey(e, true));
+            window.removeEventListener('keyup', (e) => handleKey(e, false));
+        };
+    }, []);
+
+    const handleSelected = (checked: boolean, selection: Avvik[]) => {
+        if (checked) {
+            props.setSelected([...props.selected, ...selection]);
+        } else {
+            const ids = selection.map((a) => a.id);
+            props.setSelected(
+                props.selected.filter((item) => ids.indexOf(item.id) === -1)
+            );
+        }
+    };
+
+    const handleSelect = (
+        event: React.ChangeEvent<HTMLInputElement>,
+        selectedAvvik: Avvik
+    ) => {
+        const index = props.avvik.findIndex((k) => k.id === selectedAvvik.id);
+
+        if (isShift) {
+            if (lastSelectedIndex === undefined) {
+                return;
+            }
+
+            if (index === lastSelectedIndex) {
+                return;
+            }
+            const subsetArray = props.avvik.slice(
+                Math.min(index, lastSelectedIndex),
+                Math.max(index, lastSelectedIndex) + 1
+            );
+
+            handleSelected(event.target.checked, subsetArray);
+        } else {
+            handleSelected(event.target.checked, [selectedAvvik]);
+        }
+
+        setLastSelectedIndex(index);
+    };
     return (
         <div className={classes.container}>
             {props.avvik.map((a) => (
-                <AvvikCard key={a.id} {...props} avvik={a} />
+                <AvvikCard
+                    key={a.id}
+                    {...props}
+                    avvik={a}
+                    onSelect={handleSelect}
+                    checked={props.selected.some((s) => s.id === a.id)}
+                />
             ))}
         </div>
     );

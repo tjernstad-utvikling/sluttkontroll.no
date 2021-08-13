@@ -164,6 +164,8 @@ const AvvikView = () => {
                                     open={openAvvik}
                                     close={close}
                                     avvik={_avvik ?? []}
+                                    selected={selected}
+                                    setSelected={setSelected}
                                 />
                             )}
                         </Card>

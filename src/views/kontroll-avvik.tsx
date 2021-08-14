@@ -107,11 +107,22 @@ const AvvikView = () => {
         localStorage.setItem(StorageKeys.avvikView, JSON.stringify(!showTable));
         setShowTable(!showTable);
     };
+    const changeViewAll = () => {
+        localStorage.setItem(
+            StorageKeys.avvikViewAll,
+            JSON.stringify(!showAll)
+        );
+        setShowAll(!showAll);
+    };
 
     useEffectOnce(() => {
         const jsonShowTable = localStorage.getItem(StorageKeys.avvikView);
         if (jsonShowTable !== null) {
             setShowTable(JSON.parse(jsonShowTable));
+        }
+        const jsonShowAll = localStorage.getItem(StorageKeys.avvikViewAll);
+        if (jsonShowAll !== null) {
+            setShowAll(JSON.parse(jsonShowAll));
         }
     });
 
@@ -149,7 +160,7 @@ const AvvikView = () => {
                                                 ? 'Vis kun åpne avvik'
                                                 : 'Vis alle avvik',
                                             icon: <CallMergeIcon />,
-                                            action: () => setShowAll(!showAll)
+                                            action: () => changeViewAll()
                                         },
                                         {
                                             label: `Sett utbedrere (${selected.length})`,

@@ -3,6 +3,6 @@ export enum StorageKeys {
     refreshToken = '@slk:refreshToken',
     currentUser = '@slk:currentUser',
     tableColumns = '@slk:table:',
-    avvikView = '@slk:avvikView',
-    avvikViewAll = '@slk:avvikViewAll'
+    avvikViewMode = '@slk:avvik:view:mode',
+    avvikViewAll = '@slk:avvik:view:all'
 }

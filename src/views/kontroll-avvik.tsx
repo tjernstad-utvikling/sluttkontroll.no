@@ -104,7 +104,10 @@ const AvvikView = () => {
     };
 
     const changeViewMode = () => {
-        localStorage.setItem(StorageKeys.avvikView, JSON.stringify(!showTable));
+        localStorage.setItem(
+            StorageKeys.avvikViewMode,
+            JSON.stringify(!showTable)
+        );
         setShowTable(!showTable);
     };
     const changeViewAll = () => {
@@ -116,7 +119,7 @@ const AvvikView = () => {
     };
 
     useEffectOnce(() => {
-        const jsonShowTable = localStorage.getItem(StorageKeys.avvikView);
+        const jsonShowTable = localStorage.getItem(StorageKeys.avvikViewMode);
         if (jsonShowTable !== null) {
             setShowTable(JSON.parse(jsonShowTable));
         }

@@ -3,6 +3,7 @@ import React, { createContext, useContext, useReducer } from 'react';
 import {
     closeAvvikApi,
     deleteAvvikById,
+    deleteImage,
     getAvvikByKontrollList,
     openAvvikApi,
     setUtbedrereApi,
@@ -213,6 +214,39 @@ export const AvvikContextProvider = ({
         }
     };
 
+    const deleteAvvikImage = async (
+        avvik: Avvik,
+        imageId: number
+    ): Promise<boolean> => {
+        try {
+            const { status } = await deleteImage(imageId);
+
+            if (status === 204) {
+                enqueueSnackbar('Bilde er slettet', {
+                    variant: 'success'
+                });
+                dispatch({
+                    type: ActionType.updateAvvik,
+                    payload: {
+                        ...avvik,
+                        avvikBilder: avvik.avvikBilder.filter(
+                            (ab) => ab.id !== imageId
+                        )
+                    }
+                });
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med sletting av bilde', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
+
     return (
         <AvvikContext.Provider
             value={{
@@ -223,7 +257,8 @@ export const AvvikContextProvider = ({
                 updateAvvik,
                 setUtbedrere,
                 closeAvvik,
-                openAvvik
+                openAvvik,
+                deleteAvvikImage
             }}>
             {children}
         </AvvikContext.Provider>

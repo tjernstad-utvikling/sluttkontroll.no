@@ -17,6 +17,7 @@ import { RowAction } from '../tables/tableUtils';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
+import { useAvvik } from '../data/avvik';
 
 interface AvvikCardProps {
     avvik: Avvik;
@@ -219,15 +220,11 @@ export function AvvikGrid(props: AvvikGridProps) {
 
 interface AvvikImageCardProps {
     avvikBilde: AvvikBilde;
-    avvikStatus: string | null;
-    avvikId: number;
+    avvik: Avvik;
 }
-export const AvvikImageCard = ({
-    avvikStatus,
-    avvikBilde,
-    avvikId
-}: AvvikImageCardProps) => {
+export const AvvikImageCard = ({ avvikBilde, avvik }: AvvikImageCardProps) => {
     const classes = useStyles();
+    const { deleteAvvikImage } = useAvvik();
     return (
         <Card className={classes.cardRoot}>
             <CardActionArea>
@@ -235,7 +232,7 @@ export const AvvikImageCard = ({
                     <div style={{ width: 250 }}>
                         <Image
                             src={avvikBilde.image}
-                            alt={`avvik bilde for avvik id: ${avvikId}`}
+                            alt={`avvik bilde for avvik id: ${avvik.id}`}
                         />
                     </div>
                 </CardMedia>
@@ -246,8 +243,9 @@ export const AvvikImageCard = ({
                         actionItems={[
                             {
                                 name: 'Slett',
-                                action: () => console.log(avvikId),
-                                skip: avvikStatus === 'lukket',
+                                action: () =>
+                                    deleteAvvikImage(avvik, avvikBilde.id),
+                                skip: avvik.status === 'lukket',
                                 icon: <DeleteForeverIcon />
                             }
                         ]}

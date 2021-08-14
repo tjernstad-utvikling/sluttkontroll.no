@@ -157,3 +157,18 @@ export const getImageFile = async (
         throw new Error(error);
     }
 };
+
+export const deleteImage = async (
+    imageId: number
+): Promise<{ status: number; message: string }> => {
+    try {
+        const { status, data } = await sluttkontrollApi.delete(
+            `/v3/avvik/bilder/${imageId}`
+        );
+
+        return { status, ...data };
+    } catch (error) {
+        console.log(error);
+        throw new Error(error);
+    }
+};

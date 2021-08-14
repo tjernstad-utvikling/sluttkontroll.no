@@ -179,8 +179,7 @@ const AvvikView = () => {
                                                 <AvvikImageCard
                                                     key={ab.id}
                                                     avvikBilde={ab}
-                                                    avvikId={_avvik.id}
-                                                    avvikStatus={_avvik.status}
+                                                    avvik={_avvik}
                                                 />
                                             ))}
                                         </div>

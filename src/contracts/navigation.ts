@@ -10,6 +10,9 @@ export interface AvvikViewParams {
     skjemaId?: string;
     checklistId?: string;
 }
+export interface AvvikPageViewParams {
+    avvikId: string;
+}
 export interface SjekklisterViewParams {
     skjemaId: string;
 }

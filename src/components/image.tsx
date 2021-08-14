@@ -35,7 +35,7 @@ export const Image = ({ src, alt, objectFit }: ImageProps) => {
             style={
                 objectFit
                     ? { objectFit: 'cover', width: '100%', height: '100%' }
-                    : {}
+                    : { objectFit: 'contain', width: '100%', height: '100%' }
             }
             onLoad={() => URL.revokeObjectURL(objectUrl)}
         />

@@ -1,6 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
 
 import { AvvikContextProvider } from '../data/avvik';
+import AvvikPageView from '../views/kontroll-avvikPage';
 import AvvikView from '../views/kontroll-avvik';
 import { KontrollContextProvider } from '../data/kontroll';
 import KontrollKlientView from '../views/kontroll-klient';
@@ -34,6 +35,10 @@ export const Main = () => {
                                 <SjekklisteEditView />
                             </Route>
                             <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/checklist/:checklistId/avvik/:avvikId`}>
+                                <AvvikPageView />
+                            </Route>
+                            <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/checklist/:checklistId/avvik`}>
                                 <AvvikView />
                             </Route>
@@ -46,6 +51,10 @@ export const Main = () => {
                                 <MeasurementsView />
                             </Route>
                             <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/avvik/:avvikId`}>
+                                <AvvikPageView />
+                            </Route>
+                            <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/avvik`}>
                                 <AvvikView />
                             </Route>
@@ -56,6 +65,10 @@ export const Main = () => {
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/measurement`}>
                                 <MeasurementsView />
+                            </Route>
+                            <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/avvik/:avvikId`}>
+                                <AvvikPageView />
                             </Route>
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/avvik`}>

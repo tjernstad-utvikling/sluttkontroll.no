@@ -1,6 +1,6 @@
+import { Avvik, AvvikBilde } from '../contracts/avvikApi';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Avvik } from '../contracts/avvikApi';
 import BuildIcon from '@material-ui/icons/Build';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -211,6 +211,47 @@ export function AvvikGrid(props: AvvikGridProps) {
         </div>
     );
 }
+
+interface AvvikImageCardProps {
+    avvikBilde: AvvikBilde;
+    avvikStatus: string | null;
+    avvikId: number;
+}
+export const AvvikImageCard = ({
+    avvikStatus,
+    avvikBilde,
+    avvikId
+}: AvvikImageCardProps) => {
+    const classes = useStyles();
+    return (
+        <Card className={classes.cardRoot}>
+            <CardActionArea>
+                <CardMedia component="div">
+                    <div style={{ width: 250 }}>
+                        <Image
+                            src={avvikBilde.image}
+                            alt={`avvik bilde for avvik id: ${avvikId}`}
+                        />
+                    </div>
+                </CardMedia>
+            </CardActionArea>
+            <CardActions>
+                <div style={{ marginLeft: 'auto' }}>
+                    <RowAction
+                        actionItems={[
+                            {
+                                name: 'Slett',
+                                action: () => console.log(avvikId),
+                                skip: avvikStatus === 'lukket',
+                                icon: <DeleteForeverIcon />
+                            }
+                        ]}
+                    />
+                </div>
+            </CardActions>
+        </Card>
+    );
+};
 
 const useStyles = makeStyles({
     cardRoot: {

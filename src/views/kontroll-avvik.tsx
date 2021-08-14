@@ -1,6 +1,7 @@
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
+import { useParams, useRouteMatch } from 'react-router-dom';
 
 import AddIcon from '@material-ui/icons/Add';
 import { Avvik } from '../contracts/avvikApi';
@@ -23,11 +24,12 @@ import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useParams } from 'react-router-dom';
 
 const AvvikView = () => {
     const classes = usePageStyles();
     const { kontrollId, skjemaId, checklistId } = useParams<AvvikViewParams>();
+
+    const { url } = useRouteMatch();
 
     const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
     const [selected, setSelected] = useState<Avvik[]>([]);
@@ -169,6 +171,7 @@ const AvvikView = () => {
                                     columns={columns(
                                         kontroller ?? [],
                                         skjemaer ?? [],
+                                        url,
                                         askToDeleteAvvik,
                                         setEditId,
                                         openAvvik,
@@ -201,6 +204,7 @@ const AvvikView = () => {
                                                 setSelectedFromGrid(true);
                                             }}
                                             selectedFromGrid={selectedFromGrid}
+                                            url={url}
                                         />
                                     )}
                                 </TableContainer>

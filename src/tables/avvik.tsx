@@ -12,6 +12,7 @@ import { Avvik } from '../contracts/avvikApi';
 import BuildIcon from '@material-ui/icons/Build';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
+import { Link } from 'react-router-dom';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
@@ -54,6 +55,7 @@ export const AvvikValueGetter = (data: Avvik | GridRowData) => {
 export const columns = (
     kontroller: Kontroll[],
     skjemaer: Skjema[],
+    url: string,
     deleteSkjema: (avvikId: number) => void,
     edit: (avvikId: number) => void,
     open: (avvikId: number) => void,
@@ -68,7 +70,12 @@ export const columns = (
         {
             field: 'beskrivelse',
             headerName: 'Beskrivelse',
-            flex: 1
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <Link to={`${url}/${params.row.id}`}>
+                    {params.row.beskrivelse}
+                </Link>
+            )
         },
         {
             field: 'areal',

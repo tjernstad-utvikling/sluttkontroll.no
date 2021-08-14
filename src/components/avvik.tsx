@@ -11,6 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import { Image } from './image';
+import { Link } from 'react-router-dom';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { RowAction } from '../tables/tableUtils';
 import Typography from '@material-ui/core/Typography';
@@ -28,6 +29,7 @@ interface AvvikCardProps {
         avvik: Avvik
     ) => void;
     checked: boolean;
+    url: string;
 }
 export function AvvikCard({
     avvik,
@@ -36,7 +38,8 @@ export function AvvikCard({
     open,
     close,
     onSelect,
-    checked
+    checked,
+    url
 }: AvvikCardProps) {
     const classes = useStyles();
 
@@ -51,7 +54,7 @@ export function AvvikCard({
 
     return (
         <Card className={classes.cardRoot}>
-            <CardActionArea>
+            <CardActionArea component={Link} to={`${url}/${avvik.id}`}>
                 <CardMedia
                     component="article"
                     className={classes.media}
@@ -138,6 +141,7 @@ interface AvvikGridProps {
     close: (avvikId: number) => void;
     setSelected: (selected: Avvik[]) => void;
     selectedFromGrid: boolean;
+    url: string;
 }
 export function AvvikGrid(props: AvvikGridProps) {
     const classes = useStyles();
@@ -206,6 +210,7 @@ export function AvvikGrid(props: AvvikGridProps) {
                     avvik={a}
                     onSelect={handleSelect}
                     checked={props.selected.some((s) => s.id === a.id)}
+                    url={props.url}
                 />
             ))}
         </div>

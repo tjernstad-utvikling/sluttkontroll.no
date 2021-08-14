@@ -149,6 +149,7 @@ const AvvikView = () => {
                                             className={classes2.imageContainer}>
                                             {_avvik.avvikBilder.map((ab) => (
                                                 <AvvikImageCard
+                                                    key={ab.id}
                                                     avvikBilde={ab}
                                                     avvikId={_avvik.id}
                                                     avvikStatus={_avvik.status}

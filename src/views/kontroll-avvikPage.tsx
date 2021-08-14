@@ -1,6 +1,7 @@
 import { Card, CardMenu } from '../components/card';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
@@ -11,22 +12,26 @@ import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikValueGetter } from '../tables/avvik';
 import BuildIcon from '@material-ui/icons/Build';
 import Container from '@material-ui/core/Container';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 import PersonIcon from '@material-ui/icons/Person';
 import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
 import { format } from 'date-fns';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useParams } from 'react-router-dom';
 
 const AvvikView = () => {
     const classes = usePageStyles();
     const classes2 = useStyles();
     const { avvikId } = useParams<AvvikPageViewParams>();
+
+    const history = useHistory();
 
     const [_avvik, setAvvik] = useState<Avvik>();
 
@@ -60,18 +65,15 @@ const AvvikView = () => {
         }
     }, [avvik, avvikId]);
 
-    const askToDeleteAvvik = async (avvikId: number) => {
-        const isConfirmed = await confirm(`Slette avvikID: ${avvikId}?`);
+    const askToDeleteAvvik = async () => {
+        if (_avvik !== undefined) {
+            const isConfirmed = await confirm(`Slette avvikID: ${_avvik.id}?`);
 
-        if (isConfirmed) {
-            deleteAvvik(avvikId);
-        }
-    };
-
-    const close = async (avvikId: number) => {
-        const avvikToClose = avvik?.find((a) => a.id === Number(avvikId));
-        if (avvikToClose !== undefined) {
-            setModalOpen(Modals.comment);
+            if (isConfirmed) {
+                if (await deleteAvvik(_avvik.id)) {
+                    history.goBack();
+                }
+            }
         }
     };
 
@@ -95,8 +97,24 @@ const AvvikView = () => {
                                         {
                                             label: 'Lukk avvik',
                                             icon: <BuildIcon />,
+                                            skip: _avvik?.status === 'lukket',
                                             action: () =>
                                                 setModalOpen(Modals.comment)
+                                        },
+                                        {
+                                            label: 'Slett',
+                                            icon: <DeleteForeverIcon />,
+                                            skip: _avvik?.status === 'lukket',
+                                            action: () => askToDeleteAvvik()
+                                        },
+                                        {
+                                            label: 'Åpne',
+                                            icon: <LockOpenIcon />,
+                                            skip: _avvik?.status !== 'lukket',
+                                            action: () => {
+                                                if (_avvik !== undefined)
+                                                    openAvvik(_avvik.id);
+                                            }
                                         }
                                     ]}
                                 />
@@ -105,6 +123,16 @@ const AvvikView = () => {
                             kontroller !== undefined &&
                             skjemaer !== undefined ? (
                                 <Grid container>
+                                    <Grid
+                                        item
+                                        className={clsx(
+                                            classes2.topDecoration,
+                                            {
+                                                [classes2.topDecorationClosed]:
+                                                    _avvik.status === 'lukket'
+                                            }
+                                        )}
+                                        xs={12}></Grid>
                                     <Grid item xs={12} sm={5}>
                                         <dl className={classes2.list}>
                                             <dt>Oppdaget</dt>
@@ -210,6 +238,15 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: 'row',
             flexWrap: 'wrap',
             alignItems: 'flex-start'
+        },
+        topDecoration: {
+            height: 15,
+            background:
+                'linear-gradient(0deg, rgba(255,255,255,1) 0%, #F3A712 100%)'
+        },
+        topDecorationClosed: {
+            background:
+                'linear-gradient(0deg, rgba(255,255,255,1) 0%, #8FC93A 100%)'
         }
     })
 );

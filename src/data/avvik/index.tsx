@@ -2,6 +2,7 @@ import { ActionType, ContextInterface } from './contracts';
 import { Avvik, AvvikBilde } from '../../contracts/avvikApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
+    addAvvikApi,
     addImage,
     closeAvvikApi,
     deleteAvvikById,
@@ -81,6 +82,36 @@ export const AvvikContextProvider = ({
         } catch (error) {
             console.log(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
+    const newAvvik = async (
+        beskrivelse: string,
+        kommentar: string,
+        utbedrer: User[] | null,
+        checklistId: number
+    ): Promise<Avvik | false> => {
+        try {
+            const { status, avvik } = await addAvvikApi({
+                beskrivelse,
+                kommentar,
+                utbedrer,
+                checklistId
+            });
+
+            if (status === 200) {
+                dispatch({
+                    type: ActionType.addAvvik,
+                    payload: [avvik]
+                });
+                return avvik;
+            }
+            return false;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med lagring av avvik', {
                 variant: 'error'
             });
             return false;
@@ -310,6 +341,7 @@ export const AvvikContextProvider = ({
                 loadAvvikByKontroller,
                 deleteAvvik,
                 updateAvvik,
+                newAvvik,
                 setUtbedrere,
                 closeAvvik,
                 openAvvik,

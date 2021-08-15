@@ -35,6 +35,12 @@ export interface ContextInterface {
     setUtbedrere: (avvik: Avvik[], utbedrere: User[]) => Promise<boolean>;
     closeAvvik: (avvik: Avvik[], kommentar: string) => Promise<boolean>;
     openAvvik: (avvikId: number) => Promise<boolean>;
+    newAvvik: (
+        beskrivelse: string,
+        kommentar: string,
+        utbedrer: User[] | null,
+        checklistId: number
+    ) => Promise<Avvik | false>;
     deleteAvvikImage: (avvik: Avvik, imageId: number) => Promise<boolean>;
     addAvvikImages: (avvik: Avvik, images: File[]) => Promise<boolean>;
 }

@@ -145,7 +145,7 @@ const AvvikView = () => {
                                             label: 'Nytt avvik',
                                             skip: checklistId === undefined,
                                             icon: <AddIcon />,
-                                            action: () => console.log('new')
+                                            to: `${url}/new`
                                         },
                                         {
                                             label: showTable

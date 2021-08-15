@@ -68,6 +68,30 @@ export const updateAvvikById = async (
         throw new Error(error);
     }
 };
+export const addAvvikApi = async (newAvvik: {
+    beskrivelse: string;
+    kommentar: string;
+    utbedrer: User[] | null;
+    checklistId: number;
+}): Promise<{
+    status: number;
+    avvik: Avvik;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/avvik/${newAvvik.checklistId}`,
+            {
+                ...newAvvik
+            }
+        );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 
 export const setUtbedrereApi = async (
     avvikList: Array<number>,

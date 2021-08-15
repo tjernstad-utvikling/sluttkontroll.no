@@ -1,6 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
 
 import { AvvikContextProvider } from '../data/avvik';
+import AvvikNewView from '../views/kontroll-avvikNew';
 import AvvikPageView from '../views/kontroll-avvikPage';
 import AvvikView from '../views/kontroll-avvik';
 import { KontrollContextProvider } from '../data/kontroll';
@@ -33,6 +34,10 @@ export const Main = () => {
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/edit-checklist`}>
                                 <SjekklisteEditView />
+                            </Route>
+                            <Route
+                                path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/checklist/:checklistId/avvik/new`}>
+                                <AvvikNewView />
                             </Route>
                             <Route
                                 path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId/checklist/:checklistId/avvik/:avvikId`}>

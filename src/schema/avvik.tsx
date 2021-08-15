@@ -14,6 +14,7 @@ import { useUser } from '../data/user';
 
 interface AvvikSchemaProps {
     avvik?: Avvik;
+    beskrivelse?: string;
     onSubmit: (
         beskrivelse: string,
         kommentar: string,
@@ -22,6 +23,7 @@ interface AvvikSchemaProps {
 }
 export const AvvikSchema = ({
     avvik,
+    beskrivelse,
     onSubmit
 }: AvvikSchemaProps): JSX.Element => {
     const {
@@ -49,7 +51,10 @@ export const AvvikSchema = ({
         return (
             <Formik
                 initialValues={{
-                    beskrivelse: avvik?.beskrivelse || '',
+                    beskrivelse:
+                        beskrivelse !== undefined
+                            ? beskrivelse
+                            : avvik?.beskrivelse || '',
                     kommentar: avvik?.kommentar || '',
                     utbedrer:
                         avvik !== undefined

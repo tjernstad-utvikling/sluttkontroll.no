@@ -106,6 +106,9 @@ export const AvvikContextProvider = ({
                     type: ActionType.addAvvik,
                     payload: [avvik]
                 });
+                enqueueSnackbar('Nytt avvik lagret', {
+                    variant: 'success'
+                });
                 return avvik;
             }
             return false;

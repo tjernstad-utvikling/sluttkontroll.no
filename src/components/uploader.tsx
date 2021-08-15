@@ -7,10 +7,24 @@ interface DropZoneProps {
     accept: 'image/png, image/jpeg' | 'image/*';
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
     children?: React.ReactNode;
+    files: File[];
 }
-export function DropZone({ accept, setFiles, children }: DropZoneProps) {
+export function DropZone({ accept, setFiles, children, files }: DropZoneProps) {
     const classes = useStyles();
+
+    function duplicateFileValidator(file: File) {
+        const simFile = files.filter((f) => f.name === file.name);
+        if (simFile.length > 0) {
+            return {
+                code: 'duplicate-name',
+                message: 'Bildet er allerede lagt til.'
+            };
+        }
+
+        return null;
+    }
     const {
+        fileRejections,
         getRootProps,
         getInputProps,
         isDragActive,
@@ -20,8 +34,20 @@ export function DropZone({ accept, setFiles, children }: DropZoneProps) {
         accept,
         onDrop: (acceptedFiles) => {
             setFiles((prev) => [...prev, ...acceptedFiles]);
-        }
+        },
+        validator: duplicateFileValidator
     });
+
+    const fileRejectionItems = fileRejections.map(({ file, errors }) => (
+        <li key={file.name}>
+            {file.name} - {file.size} bytes
+            <ul>
+                {errors.map((e) => (
+                    <li key={e.code}>{e.message}</li>
+                ))}
+            </ul>
+        </li>
+    ));
 
     return (
         <section className="container">
@@ -38,7 +64,15 @@ export function DropZone({ accept, setFiles, children }: DropZoneProps) {
                     Dra og slipp filer her, eller klikk og velg
                 </Button>
             </div>
-            <aside>{children}</aside>
+            <aside>
+                {fileRejections.length > 0 && (
+                    <>
+                        <h4>Rejected files</h4>
+                        <ul>{fileRejectionItems}</ul>
+                    </>
+                )}
+                {children}
+            </aside>
         </section>
     );
 }

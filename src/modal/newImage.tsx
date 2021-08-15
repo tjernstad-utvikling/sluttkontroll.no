@@ -36,7 +36,10 @@ export function NewImageModal({ open, close, avvik }: NewImageModalProps) {
             aria-labelledby="add-Picture-Dialog">
             <DialogTitle id="add-Picture-Dialog">Legg til bilder</DialogTitle>
             <DialogContent>
-                <DropZone accept="image/png, image/jpeg" setFiles={setImages}>
+                <DropZone
+                    accept="image/png, image/jpeg"
+                    setFiles={setImages}
+                    files={images}>
                     <div className={classes.imageContainer}>
                         {images.map((img) => (
                             <NewImageCard

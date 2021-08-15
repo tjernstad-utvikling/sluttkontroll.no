@@ -6,9 +6,12 @@ import {
     GridValueGetterParams
 } from '@material-ui/data-grid';
 
+import AddIcon from '@material-ui/icons/Add';
 import { Avvik } from '../contracts/avvikApi';
 import { Checklist } from '../contracts/kontrollApi';
+import IconButton from '@material-ui/core/IconButton';
 import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { RowAction } from './tableUtils';
 import Typography from '@material-ui/core/Typography';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -51,11 +54,6 @@ export const columns = (
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 SjekklisteValueGetter(params.row).prosedyreNr()
-            // renderCell: (params: GridCellParams) => (
-            //     <Link to={`${url}/skjema/${params.row.id}`}>
-            //         {params.row.area}
-            //     </Link>
-            // )
         },
         {
             field: 'prosedyre',
@@ -69,13 +67,29 @@ export const columns = (
             headerName: 'Avvik (åpne | lukket) ',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <Link to={`${url}/checklist/${params.row.id}/avvik`}>
-                    <span>
-                        ({SjekklisteValueGetter(params.row).avvik(avvik).open} |{' '}
-                        {SjekklisteValueGetter(params.row).avvik(avvik).closed}{' '}
-                        ){' '}
-                    </span>
-                </Link>
+                <>
+                    <Link to={`${url}/checklist/${params.row.id}/avvik`}>
+                        <span>
+                            ({' '}
+                            {
+                                SjekklisteValueGetter(params.row).avvik(avvik)
+                                    .open
+                            }{' '}
+                            |{' '}
+                            {
+                                SjekklisteValueGetter(params.row).avvik(avvik)
+                                    .closed
+                            }{' '}
+                            ){' '}
+                        </span>
+                    </Link>
+                    <IconButton
+                        to={`${url}/checklist/${params.row.id}/avvik/new`}
+                        component={RouterLink}
+                        aria-label="nytt avvik">
+                        <AddIcon />
+                    </IconButton>
+                </>
             )
         },
         {

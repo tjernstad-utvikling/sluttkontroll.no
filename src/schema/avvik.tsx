@@ -97,7 +97,6 @@ export const AvvikSchema = ({
                                 id="kommentar"
                                 label="Kommentar"
                                 name="kommentar"
-                                autoFocus
                             />
                             {users && (
                                 <>

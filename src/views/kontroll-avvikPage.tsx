@@ -16,6 +16,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import { NewImageModal } from '../modal/newImage';
 import PersonIcon from '@material-ui/icons/Person';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
@@ -192,6 +193,10 @@ const AvvikView = () => {
                     </Grid>
                 </Grid>
             </Container>
+            <NewImageModal
+                open={true}
+                close={() => console.log("don't close")}
+            />
             <AvvikEditModal
                 close={() => {
                     setEditId(undefined);

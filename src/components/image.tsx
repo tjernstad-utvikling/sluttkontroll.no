@@ -5,10 +5,11 @@ import { getImageFile } from '../api/avvikApi';
 
 interface ImageProps {
     src?: string;
+    file?: File;
     alt: string;
     objectFit?: boolean;
 }
-export const Image = ({ src, alt, objectFit }: ImageProps) => {
+export const Image = ({ src, file, alt, objectFit }: ImageProps) => {
     const [objectUrl, setObjectUrl] = useState<string>('');
 
     useEffect(() => {
@@ -22,15 +23,21 @@ export const Image = ({ src, alt, objectFit }: ImageProps) => {
                 } catch (error) {
                     console.log(error);
                 }
+            } else if (file !== undefined) {
+                setObjectUrl(URL.createObjectURL(file));
             }
         };
 
         loadImage();
-    }, [src]);
+    }, [file, src]);
 
     return (
         <img
-            src={src !== undefined ? objectUrl : placeholderImage}
+            src={
+                src !== undefined || file !== undefined
+                    ? objectUrl
+                    : placeholderImage
+            }
             alt={alt}
             style={
                 objectFit

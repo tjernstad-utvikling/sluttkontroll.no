@@ -2,6 +2,7 @@ import { Avvik, AvvikBilde } from '../contracts/avvikApi';
 import { useEffect, useMemo, useState } from 'react';
 
 import BuildIcon from '@material-ui/icons/Build';
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -45,7 +46,7 @@ export function AvvikCard({
     const classes = useStyles();
 
     const textLength = 60;
-    var trimmedBeskrivelse = useMemo(
+    const trimmedBeskrivelse = useMemo(
         () =>
             avvik.beskrivelse.length > textLength
                 ? avvik.beskrivelse.substring(0, textLength - 3) + '...'
@@ -250,6 +251,37 @@ export const AvvikImageCard = ({ avvikBilde, avvik }: AvvikImageCardProps) => {
                             }
                         ]}
                     />
+                </div>
+            </CardActions>
+        </Card>
+    );
+};
+interface NewImageCardProps {
+    file: File;
+    setFiles: React.Dispatch<React.SetStateAction<File[]>>;
+}
+export const NewImageCard = ({ file, setFiles }: NewImageCardProps) => {
+    const classes = useStyles();
+    const deleteFile = () => {
+        setFiles((images) => images.filter((img) => img.name !== file.name));
+    };
+    return (
+        <Card className={classes.cardRoot}>
+            <CardActionArea>
+                <CardMedia component="div">
+                    <div style={{ width: 250 }}>
+                        <Image file={file} alt="Nytt bilde" />
+                    </div>
+                </CardMedia>
+            </CardActionArea>
+            <CardActions>
+                <div style={{ marginLeft: 'auto' }}>
+                    <Button
+                        onClick={() => deleteFile()}
+                        color="primary"
+                        startIcon={<DeleteForeverIcon />}>
+                        Slett
+                    </Button>
                 </div>
             </CardActions>
         </Card>

@@ -1,0 +1,60 @@
+import { Theme, createStyles, makeStyles } from '@material-ui/core';
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { DropZone } from '../components/uploader';
+import { NewImageCard } from '../components/avvik';
+import { useState } from 'react';
+
+interface NewImageModalProps {
+    open: boolean;
+    close: () => void;
+}
+export function NewImageModal({ open, close }: NewImageModalProps) {
+    const classes = useStyles();
+    const [images, setImages] = useState<File[]>([]);
+
+    return (
+        <Dialog
+            open={open}
+            onClose={close}
+            aria-labelledby="add-Picture-Dialog">
+            <DialogTitle id="add-Picture-Dialog">Legg til bilder</DialogTitle>
+            <DialogContent>
+                <DropZone accept="image/png, image/jpeg" setFiles={setImages}>
+                    <div className={classes.imageContainer}>
+                        {images.map((img) => (
+                            <NewImageCard
+                                key={img.name}
+                                file={img}
+                                setFiles={setImages}
+                            />
+                        ))}
+                    </div>
+                </DropZone>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={close} color="primary">
+                    Avbryt
+                </Button>
+                <Button onClick={close} color="primary">
+                    Lagre
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        imageContainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            alignItems: 'flex-start'
+        }
+    })
+);

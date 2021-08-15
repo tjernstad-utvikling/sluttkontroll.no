@@ -1,6 +1,8 @@
 import { ActionType, ContextInterface } from './contracts';
+import { Avvik, AvvikBilde } from '../../contracts/avvikApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
+    addImage,
     closeAvvikApi,
     deleteAvvikById,
     deleteImage,
@@ -11,7 +13,6 @@ import {
 } from '../../api/avvikApi';
 import { initialState, userReducer } from './reducer';
 
-import { Avvik } from '../../contracts/avvikApi';
 import { Kontroll } from '../../contracts/kontrollApi';
 import { User } from '../../contracts/userApi';
 import { useSnackbar } from 'notistack';
@@ -246,6 +247,60 @@ export const AvvikContextProvider = ({
             return false;
         }
     };
+    const addAvvikImages = async (
+        avvik: Avvik,
+        images: File[]
+    ): Promise<boolean> => {
+        const newAvvikBilder: AvvikBilde[] = [];
+        let status = 200;
+
+        await Promise.all(
+            images.map(async (image) => {
+                try {
+                    const { status, avvikBilde, message } = await addImage(
+                        avvik.id,
+                        image
+                    );
+                    if (status === 200 && avvikBilde !== undefined) {
+                        newAvvikBilder.push(avvikBilde);
+                    } else if (status === 400 && message === 'missing file') {
+                        enqueueSnackbar(
+                            'Bildet mangler ved opplastning, prøv igjen eller kontakt support',
+                            {
+                                variant: 'warning'
+                            }
+                        );
+                    } else if (status === 400) {
+                        enqueueSnackbar('Ukjent feil ved opplastning', {
+                            variant: 'warning'
+                        });
+                    }
+                } catch (error) {
+                    enqueueSnackbar('Problemer med opplastning av bilde', {
+                        variant: 'error'
+                    });
+                    status = 500;
+                }
+            })
+        );
+
+        if (status === 200) {
+            dispatch({
+                type: ActionType.updateAvvik,
+                payload: {
+                    ...avvik,
+                    avvikBilder: [...avvik.avvikBilder, ...newAvvikBilder]
+                }
+            });
+
+            enqueueSnackbar('Bilder er lastet opp', {
+                variant: 'success'
+            });
+            return true;
+        }
+
+        return false;
+    };
 
     return (
         <AvvikContext.Provider
@@ -258,7 +313,8 @@ export const AvvikContextProvider = ({
                 setUtbedrere,
                 closeAvvik,
                 openAvvik,
-                deleteAvvikImage
+                deleteAvvikImage,
+                addAvvikImages
             }}>
             {children}
         </AvvikContext.Provider>

@@ -1,4 +1,5 @@
-import { Avvik } from '../contracts/avvikApi';
+import { Avvik, AvvikBilde } from '../contracts/avvikApi';
+
 import { User } from '../contracts/userApi';
 import sluttkontrollApi from './sluttkontroll';
 
@@ -168,6 +169,34 @@ export const deleteImage = async (
 
         return { status, ...data };
     } catch (error) {
+        console.log(error);
+        throw new Error(error);
+    }
+};
+export const addImage = async (
+    avvikId: number,
+    image: File
+): Promise<{ status: number; avvikBilde?: AvvikBilde; message?: string }> => {
+    try {
+        const formData = new FormData();
+
+        formData.append('image', image);
+
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/avvik/bilder/add/${avvikId}`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+
+        return { status, ...data };
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
         console.log(error);
         throw new Error(error);
     }

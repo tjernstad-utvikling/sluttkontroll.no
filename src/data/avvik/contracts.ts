@@ -36,4 +36,5 @@ export interface ContextInterface {
     closeAvvik: (avvik: Avvik[], kommentar: string) => Promise<boolean>;
     openAvvik: (avvikId: number) => Promise<boolean>;
     deleteAvvikImage: (avvik: Avvik, imageId: number) => Promise<boolean>;
+    addAvvikImages: (avvik: Avvik, images: File[]) => Promise<boolean>;
 }

@@ -3,6 +3,7 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
@@ -38,7 +39,8 @@ const AvvikView = () => {
 
     enum Modals {
         utbedrer,
-        comment
+        comment,
+        addImage
     }
     const [modalOpen, setModalOpen] = useState<Modals>();
 
@@ -94,6 +96,12 @@ const AvvikView = () => {
                                             icon: <PersonIcon />,
                                             action: () =>
                                                 setModalOpen(Modals.utbedrer)
+                                        },
+                                        {
+                                            label: 'Legg til bilde(r)',
+                                            icon: <AddPhotoAlternateIcon />,
+                                            action: () =>
+                                                setModalOpen(Modals.addImage)
                                         },
                                         {
                                             label: 'Lukk avvik',
@@ -193,10 +201,6 @@ const AvvikView = () => {
                     </Grid>
                 </Grid>
             </Container>
-            <NewImageModal
-                open={true}
-                close={() => console.log("don't close")}
-            />
             <AvvikEditModal
                 close={() => {
                     setEditId(undefined);
@@ -205,6 +209,11 @@ const AvvikView = () => {
             />
             {_avvik !== undefined && (
                 <>
+                    <NewImageModal
+                        avvik={_avvik}
+                        open={modalOpen === Modals.addImage}
+                        close={() => setModalOpen(undefined)}
+                    />
                     <AvvikUtbedrereModal
                         open={modalOpen === Modals.utbedrer}
                         close={() => setModalOpen(undefined)}

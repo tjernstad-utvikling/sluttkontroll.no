@@ -1,5 +1,6 @@
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardMenu } from '../components/card';
+import { Document, Page, Text, pdf } from '@react-pdf/renderer';
 import { useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 
@@ -11,6 +12,7 @@ import { AvvikGrid } from '../components/avvik';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
 import BuildIcon from '@material-ui/icons/Build';
+import Button from '@material-ui/core/Button';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -24,6 +26,14 @@ import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+
+const MyDoc = ({ someString }: { someString: string }) => (
+    <Document>
+        <Page>
+            <Text>Hey look at this string: {someString}</Text>
+        </Page>
+    </Document>
+);
 
 const AvvikView = () => {
     const classes = usePageStyles();
@@ -129,6 +139,26 @@ const AvvikView = () => {
         }
     });
 
+    async function getProps() {
+        await delay(1_000);
+        return {
+            someString: 'You waited 1 second for this'
+        };
+    }
+
+    const delay = (t: number) =>
+        new Promise((resolve) => setTimeout(resolve, t));
+
+    interface DocumentProps {
+        title?: string;
+        author?: string;
+        subject?: string;
+        creator?: string;
+        keywords?: string;
+        producer?: string;
+        language?: string;
+    }
+
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -180,6 +210,27 @@ const AvvikView = () => {
                                     ]}
                                 />
                             }>
+                            <button
+                                onClick={async () => {
+                                    const props = await getProps();
+                                    const doc = <MyDoc {...props} />;
+                                    const asPdf = pdf(doc); // {} is important, throws without an argument
+                                    //asPdf.updateContainer(doc);
+                                    const blob = await asPdf.toBlob();
+
+                                    var fileURL =
+                                        window.URL.createObjectURL(blob);
+                                    var fileLink = document.createElement('a');
+                                    fileLink.href = fileURL;
+                                    fileLink.setAttribute(
+                                        'download',
+                                        'Test.pdf'
+                                    );
+                                    document.body.appendChild(fileLink);
+                                    fileLink.click();
+                                }}>
+                                Download PDF
+                            </button>
                             {skjemaer !== undefined ? (
                                 <TableContainer
                                     columns={columns(

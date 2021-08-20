@@ -36,16 +36,19 @@ export const AvvikReport = ({
                 }
             });
         }
-    });
+    }, [avvik, skjemaer]);
     return (
         <Document>
-            {avvikModules.map((am) => (
-                <AvvikPage
-                    frontPageData={frontPageData}
-                    skjema={am.skjema}
-                    avvik={am.avvik}
-                />
-            ))}
+            {avvikModules.length > 0 &&
+                frontPageData !== undefined &&
+                avvikModules.map((am, i) => (
+                    <AvvikPage
+                        key={i}
+                        frontPageData={frontPageData}
+                        skjema={am.skjema}
+                        avvik={am.avvik}
+                    />
+                ))}
         </Document>
     );
 };

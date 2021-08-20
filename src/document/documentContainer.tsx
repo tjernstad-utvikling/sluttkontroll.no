@@ -23,12 +23,14 @@ export const DocumentContainer = ({
     children,
     reportTypeId,
     kontrollId,
-    objectId
+    objectId,
+    selectedAvvik
 }: {
     children: React.ReactNode;
     reportTypeId: string;
     kontrollId: number;
     objectId: number;
+    selectedAvvik?: Avvik[];
 }): JSX.Element => {
     const [visibleReportModules, setVisibleReportModules] = useState<
         ReportModules[]
@@ -61,12 +63,14 @@ export const DocumentContainer = ({
     useEffectOnce(async () => {
         loadUsers();
         const { kontroll } = await getKontrollReportData(Number(kontrollId));
-        const { infoText } = await getInfoText();
-        setInfoText(infoText);
-        setKontroll(kontroll);
 
-        loadKontrollerByObjekt(objectId);
-        loadAvvikByKontroller([kontroll]);
+        setKontroll(kontroll);
+        if (selectedAvvik === undefined) {
+            const { infoText } = await getInfoText();
+            setInfoText(infoText);
+            loadKontrollerByObjekt(objectId);
+            loadAvvikByKontroller([kontroll]);
+        }
     });
 
     useEffect(() => {

@@ -8,6 +8,7 @@ export interface MeasurementsViewParams {
 export interface AvvikViewParams {
     kontrollId: string;
     skjemaId?: string;
+    objectId: string;
     checklistId?: string;
 }
 export interface AvvikPageViewParams {

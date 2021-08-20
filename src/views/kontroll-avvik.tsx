@@ -1,6 +1,5 @@
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardMenu } from '../components/card';
-import { Document, Page, Text, pdf } from '@react-pdf/renderer';
 import { useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 
@@ -9,35 +8,31 @@ import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikGrid } from '../components/avvik';
+import { AvvikReport } from '../document/avvik-report';
+import { AvvikReportViewer } from '../components/report';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
 import BuildIcon from '@material-ui/icons/Build';
-import Button from '@material-ui/core/Button';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 import Container from '@material-ui/core/Container';
+import { DocumentContainer } from '../document/documentContainer';
 import Grid from '@material-ui/core/Grid';
 import PersonIcon from '@material-ui/icons/Person';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/tableContainer';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import { pdf } from '@react-pdf/renderer';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
-const MyDoc = ({ someString }: { someString: string }) => (
-    <Document>
-        <Page>
-            <Text>Hey look at this string: {someString}</Text>
-        </Page>
-    </Document>
-);
-
 const AvvikView = () => {
     const classes = usePageStyles();
-    const { kontrollId, skjemaId, checklistId } = useParams<AvvikViewParams>();
+    const { kontrollId, skjemaId, checklistId, objectId } =
+        useParams<AvvikViewParams>();
 
     const { url } = useRouteMatch();
 
@@ -46,6 +41,7 @@ const AvvikView = () => {
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
     const [showTable, setShowTable] = useState<boolean>(false);
+    const [showPdf, setShowPdf] = useState<boolean>(false);
     const [showAll, setShowAll] = useState<boolean>(false); // Also show closed avvik
 
     enum Modals {
@@ -139,31 +135,22 @@ const AvvikView = () => {
         }
     });
 
-    async function getProps() {
-        await delay(1_000);
-        return {
-            someString: 'You waited 1 second for this'
-        };
-    }
-
-    const delay = (t: number) =>
-        new Promise((resolve) => setTimeout(resolve, t));
-
-    interface DocumentProps {
-        title?: string;
-        author?: string;
-        subject?: string;
-        creator?: string;
-        keywords?: string;
-        producer?: string;
-        language?: string;
-    }
-
     return (
         <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
+                    {showPdf && (
+                        <Grid item xs={12}>
+                            <DocumentContainer
+                                reportTypeId="avvik"
+                                kontrollId={Number(kontrollId)}
+                                objectId={Number(objectId)}
+                                selectedAvvik={selected}>
+                                <AvvikReportViewer />
+                            </DocumentContainer>
+                        </Grid>
+                    )}
                     <Grid item xs={12}>
                         <Card
                             title="Avvik"
@@ -206,14 +193,30 @@ const AvvikView = () => {
                                             icon: <BuildIcon />,
                                             action: () =>
                                                 setModalOpen(Modals.comment)
+                                        },
+                                        {
+                                            label: `Hent avviksliste (${selected.length})`,
+                                            icon: <BuildIcon />,
+                                            action: () => setShowPdf(!showPdf)
                                         }
                                     ]}
                                 />
                             }>
                             <button
                                 onClick={async () => {
-                                    const props = await getProps();
-                                    const doc = <MyDoc {...props} />;
+                                    const doc = (
+                                        <AvvikReport
+                                            skjemaer={skjemaer}
+                                            avvik={selected}
+                                            frontPageData={{
+                                                date: '66.66.6666',
+                                                title: 'Avviksliste',
+                                                user: 'userName',
+                                                kontrollsted:
+                                                    'rapportEgenskaper.kontrollsted'
+                                            }}
+                                        />
+                                    );
                                     const asPdf = pdf(doc); // {} is important, throws without an argument
                                     //asPdf.updateContainer(doc);
                                     const blob = await asPdf.toBlob();

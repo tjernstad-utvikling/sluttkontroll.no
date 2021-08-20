@@ -1,5 +1,6 @@
 import { ReportModules, useReport } from '../document/documentContainer';
 
+import { AvvikReport } from '../document/avvik-report';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { PDFViewer } from '@react-pdf/renderer';
 import { RapportEgenskaper } from '../contracts/kontrollApi';
@@ -89,6 +90,21 @@ export const ReportViewer = () => {
                 }
                 measurements={measurements}
                 measurementTypes={measurementTypes}
+            />
+        </PDFViewer>
+    );
+};
+export const AvvikReportViewer = () => {
+    const { frontPageData, filteredSkjemaer, avvik } = useReport();
+
+    const size = useWindowSize();
+
+    return (
+        <PDFViewer width={size.width - 400} height={size.height - 200}>
+            <AvvikReport
+                frontPageData={frontPageData}
+                skjemaer={filteredSkjemaer}
+                avvik={avvik}
             />
         </PDFViewer>
     );

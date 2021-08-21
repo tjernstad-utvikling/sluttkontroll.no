@@ -50,7 +50,7 @@ export const Image = ({ src, file, alt, objectFit }: ImageProps) => {
 };
 
 export const PdfImage = ({ src }: { src: string }) => {
-    const [objectUrl, setObjectUrl] = useState<string>('');
+    const [objectUrl, setObjectUrl] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         const loadImage = async () => {
@@ -67,6 +67,9 @@ export const PdfImage = ({ src }: { src: string }) => {
         loadImage();
     }, [src]);
 
+    if (objectUrl === undefined) {
+        return <></>;
+    }
     return <RPRImage src={objectUrl} />;
 };
 

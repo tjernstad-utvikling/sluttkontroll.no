@@ -165,7 +165,7 @@ export const DocumentContainer = ({
                 filteredSkjemaer,
                 setFilteredSkjemaer,
                 checklists,
-                avvik,
+                avvik: selectedAvvik === undefined ? avvik : selectedAvvik,
                 measurements,
                 measurementTypes
             }}>

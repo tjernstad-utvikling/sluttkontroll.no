@@ -28,7 +28,10 @@ export const AvvikPage = ({ frontPageData, skjema, avvik }: AvvikPageProps) => {
             <Text style={{ paddingVertical: 5 }}>
                 {skjema.area}, {skjema.omrade}
             </Text>
-            <AvvikModule avvik={avvik} />
+            {avvik.map((a) => (
+                <AvvikModule key={a.id} avvik={a} />
+            ))}
+
             <Spacer />
 
             <Footer />

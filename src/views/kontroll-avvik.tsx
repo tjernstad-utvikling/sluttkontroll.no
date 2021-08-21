@@ -41,7 +41,7 @@ const AvvikView = () => {
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
     const [showTable, setShowTable] = useState<boolean>(false);
-    const [showPdf, setShowPdf] = useState<boolean>(false);
+    const [showPdf, setShowPdf] = useState<boolean>(true);
     const [showAll, setShowAll] = useState<boolean>(false); // Also show closed avvik
 
     enum Modals {

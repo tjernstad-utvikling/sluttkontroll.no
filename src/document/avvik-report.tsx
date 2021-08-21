@@ -24,7 +24,6 @@ export const AvvikReport = ({
 
     useEffect(() => {
         if (avvik !== undefined && skjemaer !== undefined) {
-            console.log({ avvik, skjemaer });
             skjemaer.forEach((skjema) => {
                 const filteredAvvik = avvik.filter(
                     (a) => a.checklist.skjema.id === skjema.id

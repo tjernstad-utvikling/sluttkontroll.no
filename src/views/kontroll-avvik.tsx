@@ -8,7 +8,6 @@ import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikGrid } from '../components/avvik';
-import { AvvikReport } from '../document/avvik-report';
 import { AvvikReportViewer } from '../components/report';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
@@ -22,7 +21,6 @@ import ReorderIcon from '@material-ui/icons/Reorder';
 import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/tableContainer';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
-import { pdf } from '@react-pdf/renderer';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -202,38 +200,6 @@ const AvvikView = () => {
                                     ]}
                                 />
                             }>
-                            <button
-                                onClick={async () => {
-                                    const doc = (
-                                        <AvvikReport
-                                            skjemaer={skjemaer}
-                                            avvik={selected}
-                                            frontPageData={{
-                                                date: '66.66.6666',
-                                                title: 'Avviksliste',
-                                                user: 'userName',
-                                                kontrollsted:
-                                                    'rapportEgenskaper.kontrollsted'
-                                            }}
-                                        />
-                                    );
-                                    const asPdf = pdf(doc); // {} is important, throws without an argument
-                                    //asPdf.updateContainer(doc);
-                                    const blob = await asPdf.toBlob();
-
-                                    var fileURL =
-                                        window.URL.createObjectURL(blob);
-                                    var fileLink = document.createElement('a');
-                                    fileLink.href = fileURL;
-                                    fileLink.setAttribute(
-                                        'download',
-                                        'Test.pdf'
-                                    );
-                                    document.body.appendChild(fileLink);
-                                    fileLink.click();
-                                }}>
-                                Download PDF
-                            </button>
                             {skjemaer !== undefined ? (
                                 <TableContainer
                                     columns={columns(

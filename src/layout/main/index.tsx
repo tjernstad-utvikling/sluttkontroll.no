@@ -9,8 +9,12 @@ import { useMainStyles } from '../../styles/layout/main';
 
 interface MainLayoutProps {
     children: React.ReactNode;
+    module: 'kontroll' | 'instrument';
 }
-export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
+export const MainLayout = ({
+    children,
+    module
+}: MainLayoutProps): JSX.Element => {
     const classes = useMainStyles();
     const [open, setOpen] = useState<boolean>(true);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -22,6 +26,7 @@ export const MainLayout = ({ children }: MainLayoutProps): JSX.Element => {
                 isOpenLeftDrawerOpen={open}
                 toggleLeftDrawer={() => setOpen(!open)}
                 toggleRightDrawer={() => setIsMenuOpen(!isMenuOpen)}
+                module={module}
             />
             <LeftDrawer isOpen={open} />
             <RightDrawer

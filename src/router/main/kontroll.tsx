@@ -27,7 +27,7 @@ export const Kontroll = () => {
         <AvvikContextProvider>
             <MeasurementContextProvider>
                 <KontrollContextProvider>
-                    <MainLayout>
+                    <MainLayout module="kontroll">
                         <Suspense fallback={<div>Loading...</div>}>
                             <Switch>
                                 <Route exact path={`/kontroll`}>

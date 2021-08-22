@@ -3,15 +3,15 @@ import { Suspense, lazy } from 'react';
 
 import { MainLayout } from '../../layout/main';
 
-const KontrollerView = lazy(() => import('../../views/kontroll-dashboard'));
+const InstrumentsView = lazy(() => import('../../views/instrument-dashboard'));
 
 export const Instrument = () => {
     return (
-        <MainLayout>
+        <MainLayout module="instrument">
             <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
                     <Route path={'/'}>
-                        <KontrollerView />
+                        <InstrumentsView />
                     </Route>
                 </Switch>
             </Suspense>

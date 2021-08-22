@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import { ListItemLink } from '../../components/links';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
+import SpeedIcon from '@material-ui/icons/Speed';
 import { useMainStyles } from '../../styles/layout/main';
 
 interface RightDrawerProps {
@@ -38,6 +39,11 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                     to="/kontroll"
                     primary="Kontroll"
                     icon={<LocationCityIcon />}
+                />
+                <ListItemLink
+                    to="/instrument"
+                    primary="Instrumenter"
+                    icon={<SpeedIcon />}
                 />
             </List>
         </Drawer>

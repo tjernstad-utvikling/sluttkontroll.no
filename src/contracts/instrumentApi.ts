@@ -3,7 +3,7 @@ export interface Instrument {
     disponent: UserRef | null;
     gruppe: string;
     id: number;
-    name: number;
+    name: string;
     needCalibrating: boolean;
     passedCalibrationDate: boolean;
     serienr: string;

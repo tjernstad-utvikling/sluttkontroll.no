@@ -7,7 +7,7 @@ export interface Instrument {
     needCalibrating: boolean;
     passedCalibrationDate: boolean;
     serienr: string;
-    sisteKalibrert: Kalibrering;
+    sisteKalibrert: Kalibrering | null;
     toCalibrate: boolean;
     user: UserRef | null;
 }

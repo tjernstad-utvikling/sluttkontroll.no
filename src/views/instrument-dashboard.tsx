@@ -1,7 +1,13 @@
 import { Card, CardMenu } from '../components/card';
+import {
+    InstrumentTable,
+    defaultColumns,
+    instrumentColumns
+} from '../tables/instrument';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useInstrument } from '../data/instrument';
@@ -28,19 +34,32 @@ const InstrumentsView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card
-                            title="Dine kontroller"
+                            title="Instrumenter"
                             menu={
                                 <CardMenu
                                     items={[
                                         {
-                                            label: 'Ny kontroll',
+                                            label: 'Nytt instrument',
                                             action: () =>
                                                 history.push('/kontroll/new')
                                         }
                                     ]}
                                 />
                             }>
-                            <p>Instruments here</p>
+                            {instruments !== undefined ? (
+                                <TableContainer
+                                    columns={instrumentColumns((id: number) =>
+                                        console.log(id)
+                                    )}
+                                    defaultColumns={defaultColumns}
+                                    tableId="instruments">
+                                    <InstrumentTable
+                                        instruments={instruments ?? []}
+                                    />
+                                </TableContainer>
+                            ) : (
+                                <div>Laster instrumenter</div>
+                            )}
                         </Card>
                     </Grid>
                 </Grid>

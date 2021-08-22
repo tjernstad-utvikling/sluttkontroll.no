@@ -1,4 +1,4 @@
-import { Instrument } from '../contracts/instrument';
+import { Instrument } from '../contracts/instrumentApi';
 import sluttkontrollApi from './sluttkontroll';
 
 interface InstrumentResponse {

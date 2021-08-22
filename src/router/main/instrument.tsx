@@ -1,9 +1,9 @@
 import { Route, Switch } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
-import { MainLayout } from '../layout/main';
+import { MainLayout } from '../../layout/main';
 
-const KontrollerView = lazy(() => import('../views/kontroll-dashboard'));
+const KontrollerView = lazy(() => import('../../views/kontroll-dashboard'));
 
 export const Instrument = () => {
     return (

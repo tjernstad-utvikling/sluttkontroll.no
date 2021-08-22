@@ -2,13 +2,24 @@ import { Card, CardMenu } from '../components/card';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
+import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const InstrumentsView = () => {
     const classes = usePageStyles();
 
     const history = useHistory();
+
+    const {
+        state: { instruments },
+        loadInstruments
+    } = useInstrument();
+
+    useEffectOnce(() => {
+        loadInstruments();
+    });
 
     return (
         <>

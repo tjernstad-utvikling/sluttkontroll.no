@@ -1,6 +1,5 @@
 import {
     Checklist,
-    Klient,
     Kontroll,
     Location,
     Skjema
@@ -10,18 +9,12 @@ import { Checkpoint } from '../../contracts/checkpointApi';
 import { User } from '../../contracts/userApi';
 
 export interface kontrollState {
-    klienter: Array<Klient> | undefined;
     kontroller: Array<Kontroll> | undefined;
     skjemaer: Array<Skjema> | undefined;
     checklists: Array<Checklist> | undefined;
 }
 
 export enum ActionType {
-    setKlienter,
-    newKlient,
-    updateKlient,
-    newLocation,
-    updateLocation,
     addKontroller,
     newKontroll,
     updateKontroll,
@@ -32,28 +25,6 @@ export enum ActionType {
     addChecklists,
     editChecklists,
     updateChecklist
-}
-
-export interface setKlienter {
-    type: ActionType.setKlienter;
-    payload: Array<Klient>;
-}
-
-export interface newKlient {
-    type: ActionType.newKlient;
-    payload: Klient;
-}
-export interface updateKlient {
-    type: ActionType.updateKlient;
-    payload: Klient;
-}
-export interface newLocation {
-    type: ActionType.newLocation;
-    payload: { location: Location; klient: Klient };
-}
-export interface updateLocation {
-    type: ActionType.updateLocation;
-    payload: { location: Location; klientId: number };
 }
 
 export interface addKontroller {
@@ -99,11 +70,6 @@ export interface updateChecklist {
 }
 
 export type KontrollActions =
-    | setKlienter
-    | newKlient
-    | updateKlient
-    | newLocation
-    | updateLocation
     | addKontroller
     | newKontroll
     | updateKontroll
@@ -117,20 +83,6 @@ export type KontrollActions =
 
 export interface ContextInterface {
     state: kontrollState;
-    loadKlienter: () => Promise<void>;
-    saveNewKlient: (
-        name: string
-    ) => Promise<{ status: boolean; klient?: Klient }>;
-    saveEditKlient: (name: string, klient: Klient) => Promise<boolean>;
-    saveNewLocation: (
-        name: string,
-        klient: Klient
-    ) => Promise<{ status: boolean; location?: Location }>;
-    saveEditLocation: (
-        name: string,
-        klientId: number,
-        location: Location
-    ) => Promise<boolean>;
     loadKontroller: () => Promise<void>;
     loadKontrollerByKlient: (klientId: number) => Promise<void>;
     loadKontrollerByObjekt: (objektId: number) => Promise<void>;

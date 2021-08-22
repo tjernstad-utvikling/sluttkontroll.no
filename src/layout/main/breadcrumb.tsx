@@ -16,6 +16,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import Typography from '@material-ui/core/Typography';
+import { useClient } from '../../data/klient';
 import { useKontroll } from '../../data/kontroll';
 
 export function KontrollBreadcrumbs() {
@@ -60,7 +61,7 @@ const Client = () => {
     const classes = useStyles();
     const {
         state: { klienter }
-    } = useKontroll();
+    } = useClient();
     const match = useRouteMatch<KontrollKlientViewParams>(
         '/kontroll/kl/:klientId'
     );
@@ -83,7 +84,7 @@ const Location = () => {
     const classes = useStyles();
     const {
         state: { klienter }
-    } = useKontroll();
+    } = useClient();
     const match = useRouteMatch<KontrollObjectViewParams>(
         '/kontroll/kl/:klientId/obj/:objectId'
     );

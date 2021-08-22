@@ -15,15 +15,15 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Omit } from '@material-ui/types';
+import { useClient } from '../data/klient';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
 import { useMainStyles } from '../styles/layout/main';
 
 export const KlientMenu = (): JSX.Element => {
     const {
         state: { klienter },
         loadKlienter
-    } = useKontroll();
+    } = useClient();
     useEffectOnce(() => {
         loadKlienter();
     });

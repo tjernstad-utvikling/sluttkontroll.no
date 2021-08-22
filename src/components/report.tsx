@@ -8,8 +8,8 @@ import { Report } from '../document/report';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@material-ui/core/Switch';
 import { saveKontrollReportData } from '../api/kontrollApi';
+import { useClient } from '../data/klient';
 import { useEffect } from 'react';
-import { useKontroll } from '../data/kontroll';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useWindowSize } from '../hooks/useWindowSize';
@@ -120,7 +120,7 @@ export const ReportPropertiesViewer = ({
     const { enqueueSnackbar } = useSnackbar();
     const {
         state: { klienter }
-    } = useKontroll();
+    } = useClient();
 
     const [showPropertiesForm, setShowPropertiesForm] = useState<boolean>(true);
 

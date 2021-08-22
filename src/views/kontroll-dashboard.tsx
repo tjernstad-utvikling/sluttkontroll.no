@@ -13,6 +13,7 @@ import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
 import { useAuth } from '../hooks/useAuth';
 import { useAvvik } from '../data/avvik';
+import { useClient } from '../data/klient';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
@@ -29,10 +30,13 @@ const KontrollerView = () => {
     const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
 
     const {
-        state: { kontroller, klienter },
+        state: { kontroller },
         loadKontroller,
         toggleStatusKontroll
     } = useKontroll();
+    const {
+        state: { klienter }
+    } = useClient();
     const {
         loadUsers,
         state: { users }

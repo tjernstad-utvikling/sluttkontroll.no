@@ -1,24 +1,14 @@
 import { ActionType, ContextInterface } from './contracts';
-import {
-    Klient,
-    Kontroll,
-    Location,
-    Skjema
-} from '../../contracts/kontrollApi';
+import { Kontroll, Location, Skjema } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     deleteSkjemaById,
     editChecklist,
-    editClient,
-    editLocation,
     getChecklistsBySkjema,
-    getClients,
     getKontroller,
     getKontrollerByKlient,
     getKontrollerByObjekt,
-    newClient,
     newKontroll,
-    newLocation,
     newSkjema,
     toggleAktuellStatusChecklist,
     toggleKontrollStatus,
@@ -54,106 +44,6 @@ export const KontrollContextProvider = ({
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const loadKlienter = async (): Promise<void> => {
-        try {
-            const { status, klienter } = await getClients();
-
-            if (status === 200) {
-                dispatch({
-                    type: ActionType.setKlienter,
-                    payload: klienter
-                });
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const saveNewKlient = async (name: string) => {
-        try {
-            const { klient } = await newClient(name);
-
-            dispatch({
-                type: ActionType.newKlient,
-                payload: klient
-            });
-
-            enqueueSnackbar('Klient lagret', {
-                variant: 'success'
-            });
-            return { status: true, klient };
-        } catch (error) {
-            enqueueSnackbar('Problemer med lagring av klient', {
-                variant: 'error'
-            });
-        }
-        return { status: false };
-    };
-    const saveEditKlient = async (name: string, klient: Klient) => {
-        try {
-            await editClient(klient.id, name);
-
-            dispatch({
-                type: ActionType.updateKlient,
-                payload: { ...klient, name }
-            });
-
-            enqueueSnackbar('Klient lagret', {
-                variant: 'success'
-            });
-            return true;
-        } catch (error) {
-            enqueueSnackbar('Problemer med lagring av klient', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
-
-    const saveNewLocation = async (name: string, klient: Klient) => {
-        try {
-            const { location } = await newLocation(name, klient);
-
-            dispatch({
-                type: ActionType.newLocation,
-                payload: { location, klient }
-            });
-
-            enqueueSnackbar('Lokasjon lagret', {
-                variant: 'success'
-            });
-            return { status: true, location };
-        } catch (error) {
-            enqueueSnackbar('Problemer med lagring av lokasjon', {
-                variant: 'error'
-            });
-        }
-        return { status: false };
-    };
-    const saveEditLocation = async (
-        name: string,
-        klientId: number,
-        location: Location
-    ): Promise<boolean> => {
-        try {
-            await editLocation(name, location.id);
-
-            dispatch({
-                type: ActionType.updateLocation,
-                payload: { location: { ...location, name }, klientId }
-            });
-
-            enqueueSnackbar('Lokasjon lagret', {
-                variant: 'success'
-            });
-            return true;
-        } catch (error) {
-            enqueueSnackbar('Problemer med lagring av lokasjon', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
     const loadKontroller = async (): Promise<void> => {
         if (!hasLoadedMyKontroller) {
             try {
@@ -473,14 +363,11 @@ export const KontrollContextProvider = ({
                 loadKontroller,
                 loadKontrollerByKlient,
                 loadKontrollerByObjekt,
-                loadKlienter,
-                saveNewKlient,
-                saveEditKlient,
+
                 updateKontroll,
                 toggleStatusKontroll,
                 saveNewKontroll,
-                saveNewLocation,
-                saveEditLocation,
+
                 saveNewSkjema,
                 updateSkjema,
                 removeSkjema,

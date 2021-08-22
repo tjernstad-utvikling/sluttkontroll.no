@@ -18,6 +18,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Stepper from '@material-ui/core/Stepper';
 import { User } from '../contracts/userApi';
 import clsx from 'clsx';
+import { useClient } from '../data/klient';
 import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -28,7 +29,8 @@ const KontrollNewView = () => {
 
     const history = useHistory();
 
-    const { saveNewKlient, saveNewLocation, saveNewKontroll } = useKontroll();
+    const { saveNewKontroll } = useKontroll();
+    const { saveNewKlient, saveNewLocation } = useClient();
     const [activeStep, setActiveStep] = useState(0);
     const [selectedKlient, setSelectedKlient] = useState<Klient>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();

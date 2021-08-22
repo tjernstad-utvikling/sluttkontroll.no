@@ -19,6 +19,7 @@ import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@material-ui/core/Typography';
 import { useAvvik } from '../data/avvik';
+import { useClient } from '../data/klient';
 import { useKontroll } from '../data/kontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -37,11 +38,14 @@ const KontrollKlientView = () => {
     const [editKlient, setEditKlient] = useState<boolean>(false);
 
     const {
-        state: { kontroller, klienter },
+        state: { kontroller },
         loadKontrollerByKlient,
-        saveEditKlient,
         toggleStatusKontroll
     } = useKontroll();
+    const {
+        state: { klienter },
+        saveEditKlient
+    } = useClient();
     const {
         loadUsers,
         state: { users }

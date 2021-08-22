@@ -15,6 +15,7 @@ import { TableContainer } from '../../tables/tableContainer';
 import TextField from '@material-ui/core/TextField';
 import { saveKontrollReportData } from '../../api/kontrollApi';
 import { useAvvik } from '../../data/avvik';
+import { useClient } from '../../data/klient';
 import { useEffect } from 'react';
 import { useKontroll } from '../../data/kontroll';
 import { useMeasurement } from '../../data/measurement';
@@ -218,7 +219,7 @@ export const ReportProperties = () => {
     const { enqueueSnackbar } = useSnackbar();
     const {
         state: { klienter }
-    } = useKontroll();
+    } = useClient();
 
     const saveReportProperties = async (
         reportProperties: RapportEgenskaper

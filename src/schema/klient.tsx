@@ -6,8 +6,8 @@ import CreatableSelect from 'react-select/creatable';
 import { Klient } from '../contracts/kontrollApi';
 import { LoadingButton } from '../components/button';
 import { TextField } from '../components/input';
+import { useClient } from '../data/klient';
 import { useEffect } from 'react';
-import { useKontroll } from '../data/kontroll';
 import { useState } from 'react';
 
 interface KlientSchemaProps {
@@ -22,7 +22,7 @@ export const KlientSchema = ({
 }: KlientSchemaProps): JSX.Element => {
     const {
         state: { klienter }
-    } = useKontroll();
+    } = useClient();
     interface Option {
         value: Klient;
         label: string;

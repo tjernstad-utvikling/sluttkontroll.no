@@ -1,3 +1,4 @@
+import { ClientContextProvider } from '../data/klient';
 import { Instrument } from './main/instrument';
 import { Kontroll } from './main/kontroll';
 import { PrivateRoute } from './privateRoute';
@@ -11,13 +12,15 @@ export const Main = () => {
         loadUserFromStorage();
     });
     return (
-        <Switch>
-            <PrivateRoute path="/instrument">
-                <Instrument />
-            </PrivateRoute>
-            <PrivateRoute path="/">
-                <Kontroll />
-            </PrivateRoute>
-        </Switch>
+        <ClientContextProvider>
+            <Switch>
+                <PrivateRoute path="/instrument">
+                    <Instrument />
+                </PrivateRoute>
+                <PrivateRoute path="/">
+                    <Kontroll />
+                </PrivateRoute>
+            </Switch>
+        </ClientContextProvider>
     );
 };

@@ -49,7 +49,7 @@ export const InstrumentSchema = ({
 
     const user =
         instrument !== undefined
-            ? userOptions?.find((u) => u.value.id === instrument.user.id)
+            ? userOptions?.find((u) => u.value.id === instrument?.user.id)
             : null;
     if (userOptions !== undefined) {
         return (

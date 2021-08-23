@@ -7,14 +7,17 @@ import {
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { InstrumentModal } from '../modal/instrument';
 import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useState } from 'react';
 
 const InstrumentsView = () => {
     const classes = usePageStyles();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const history = useHistory();
 
@@ -40,8 +43,7 @@ const InstrumentsView = () => {
                                     items={[
                                         {
                                             label: 'Nytt instrument',
-                                            action: () =>
-                                                history.push('/kontroll/new')
+                                            action: () => setIsModalOpen(true)
                                         }
                                     ]}
                                 />
@@ -64,6 +66,10 @@ const InstrumentsView = () => {
                     </Grid>
                 </Grid>
             </Container>
+            <InstrumentModal
+                open={isModalOpen}
+                close={() => setIsModalOpen(!isModalOpen)}
+            />
         </>
     );
 };

@@ -1,17 +1,29 @@
 import * as Yup from 'yup';
 
-import { Form, Formik } from 'formik';
+import { Checkbox, TextField } from '../components/input';
+import { Form, Formik, useFormikContext } from 'formik';
 
+import Grid from '@material-ui/core/Grid';
 import { Instrument } from '../contracts/instrumentApi';
 import { LoadingButton } from '../components/button';
 import Select from 'react-select';
-import { TextField } from '../components/input';
 import { User } from '../contracts/userApi';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
 import { useUser } from '../data/user';
 
+interface FormValues {
+    name: string;
+    serienr: string;
+    user: Option | null;
+    toCalibrate: boolean;
+    calibrationInterval: number;
+}
+interface Option {
+    value: User;
+    label: string;
+}
 interface InstrumentSchemaProps {
     instrument?: Instrument;
     onSubmit: (
@@ -31,10 +43,6 @@ export const InstrumentSchema = ({
         loadUsers
     } = useUser();
 
-    interface Option {
-        value: User;
-        label: string;
-    }
     const [userOptions, setUserOptions] = useState<Option[]>();
 
     useEffect(() => {
@@ -62,9 +70,11 @@ export const InstrumentSchema = ({
                     calibrationInterval: instrument?.calibrationInterval || 12
                 }}
                 validationSchema={Yup.object({
-                    beskrivelse: Yup.string().required('Beskrivelse er påkrevd')
+                    name: Yup.string().required('Instrument er påkrevd'),
+                    serienr: Yup.string().required('Serienummer er påkrevd')
                 })}
                 onSubmit={async (values, { setSubmitting }) => {
+                    console.log({ values });
                     await onSubmit(
                         values.name,
                         values.serienr,
@@ -117,6 +127,19 @@ export const InstrumentSchema = ({
                                     />
                                 </>
                             )}
+                            <div style={{ marginTop: 10 }} />
+
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                    <Checkbox
+                                        label="Kalibrering av instrument"
+                                        name="toCalibrate"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <CalibrationIntervalField />
+                                </Grid>
+                            </Grid>
 
                             <LoadingButton
                                 isLoading={isSubmitting}
@@ -132,6 +155,25 @@ export const InstrumentSchema = ({
             </Formik>
         );
     } else {
-        return <div>mangler options</div>;
+        return <div>Laster brukere</div>;
     }
+};
+
+const CalibrationIntervalField = () => {
+    const {
+        values: { toCalibrate }
+    } = useFormikContext<FormValues>();
+
+    if (toCalibrate) {
+        return (
+            <TextField
+                variant="outlined"
+                fullWidth
+                id="calibrationInterval"
+                label="Kalibreringsinterval (mnd)"
+                name="calibrationInterval"
+            />
+        );
+    }
+    return <div />;
 };

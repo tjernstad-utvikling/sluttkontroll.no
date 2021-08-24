@@ -4,7 +4,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { InstrumentSchema } from '../schema/instrument';
-import { User } from '../contracts/userApi';
 import { useInstrument } from '../data/instrument';
 
 interface InstrumentModalProps {
@@ -12,7 +11,7 @@ interface InstrumentModalProps {
     close: () => void;
 }
 export function InstrumentModal({ open, close }: InstrumentModalProps) {
-    // const {} = useInstrument();
+    const { addNewInstrument } = useInstrument();
 
     return (
         <Dialog
@@ -21,18 +20,7 @@ export function InstrumentModal({ open, close }: InstrumentModalProps) {
             aria-labelledby="add-Picture-Dialog">
             <DialogTitle id="add-Picture-Dialog">Nytt instrument </DialogTitle>
             <DialogContent>
-                <InstrumentSchema
-                    onSubmit={async (
-                        name: string,
-                        serienr: string,
-                        user: User | null,
-                        toCalibrate: boolean,
-                        calibrationInterval: number
-                    ) => {
-                        console.log();
-                        return true;
-                    }}
-                />
+                <InstrumentSchema onSubmit={addNewInstrument} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={close} color="primary">

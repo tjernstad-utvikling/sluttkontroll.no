@@ -1,8 +1,10 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer, useState } from 'react';
+import { getInstruments, newInstrument } from '../../api/instrument';
 import { initialState, instrumentReducer } from './reducer';
 
-import { getInstruments } from '../../api/instrument';
+import { User } from '../../contracts/userApi';
+import { useSnackbar } from 'notistack';
 
 export const useInstrument = () => {
     return useContext(InstrumentContext);
@@ -21,6 +23,8 @@ export const InstrumentContextProvider = ({
     const [hasLoadedInstruments, setHasLoadedInstruments] =
         useState<boolean>(false);
 
+    const { enqueueSnackbar } = useSnackbar();
+
     const loadInstruments = async (): Promise<void> => {
         if (!hasLoadedInstruments) {
             try {
@@ -28,7 +32,7 @@ export const InstrumentContextProvider = ({
 
                 if (status === 200) {
                     dispatch({
-                        type: ActionType.setInstruments,
+                        type: ActionType.addInstruments,
                         payload: instruments
                     });
                 }
@@ -39,12 +43,54 @@ export const InstrumentContextProvider = ({
         }
     };
 
+    const addNewInstrument = async (
+        name: string,
+        serienr: string,
+        user: User | null,
+        toCalibrate: boolean,
+        calibrationInterval: number
+    ): Promise<boolean> => {
+        try {
+            const { status, instrument, message } = await newInstrument({
+                name,
+                serienr,
+                user,
+                toCalibrate,
+                calibrationInterval
+            });
+            if (status === 400 && message !== undefined) {
+                enqueueSnackbar('Ikke alle nødvendige felter er fylt ut', {
+                    variant: 'warning'
+                });
+            }
+
+            if (status === 200 && instrument !== undefined) {
+                dispatch({
+                    type: ActionType.addInstruments,
+                    payload: [instrument]
+                });
+                enqueueSnackbar('Nytt avvik lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med lagring av avvik', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
+
     return (
         <InstrumentContext.Provider
             value={{
                 state,
 
-                loadInstruments
+                loadInstruments,
+                addNewInstrument
             }}>
             {children}
         </InstrumentContext.Provider>

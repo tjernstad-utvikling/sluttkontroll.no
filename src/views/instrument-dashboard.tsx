@@ -10,7 +10,6 @@ import Grid from '@material-ui/core/Grid';
 import { InstrumentModal } from '../modal/instrument';
 import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useHistory } from 'react-router-dom';
 import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
@@ -18,8 +17,6 @@ import { useState } from 'react';
 const InstrumentsView = () => {
     const classes = usePageStyles();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-    const history = useHistory();
 
     const {
         state: { instruments },

@@ -1,4 +1,5 @@
 import { Instrument } from '../contracts/instrumentApi';
+import { User } from '../contracts/userApi';
 import sluttkontrollApi from './sluttkontroll';
 
 interface InstrumentResponse {
@@ -15,6 +16,26 @@ export const getInstruments = async (): Promise<InstrumentResponse> => {
     }
 };
 
+export const newInstrument = async (instrument: {
+    name: string;
+    serienr: string;
+    user: User | null;
+    toCalibrate: boolean;
+    calibrationInterval: number;
+}): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            '/v3/instrument/',
+            instrument
+        );
+        return { status, ...data };
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
 export const setDisponent = async (
     instrumentId: number,
     userId: number

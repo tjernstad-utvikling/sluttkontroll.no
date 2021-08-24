@@ -16,6 +16,17 @@ export const instrumentReducer = (
                 ...state,
                 instruments: _.unionBy(action.payload, state.instruments, 'id')
             };
+        case ActionType.updateInstrument:
+            return {
+                ...state,
+                instruments: state.instruments?.map((i) => {
+                    if (i.id === action.payload.id) {
+                        return action.payload;
+                    } else {
+                        return i;
+                    }
+                })
+            };
 
         default:
             throw new Error('unknown action');

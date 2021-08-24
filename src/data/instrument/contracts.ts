@@ -6,19 +6,25 @@ export interface InstrumentState {
 }
 
 export enum ActionType {
-    addInstruments
+    addInstruments,
+    updateInstrument
 }
 
 export interface addInstruments {
     type: ActionType.addInstruments;
     payload: Instrument[];
 }
+export interface updateInstrument {
+    type: ActionType.updateInstrument;
+    payload: Instrument;
+}
 
-export type UserActions = addInstruments;
+export type UserActions = addInstruments | updateInstrument;
 
 export interface ContextInterface {
     state: InstrumentState;
     loadInstruments: () => Promise<void>;
+    updateInstruments: (instrument: Instrument) => Promise<boolean>;
     addNewInstrument: (
         name: string,
         serienr: string,

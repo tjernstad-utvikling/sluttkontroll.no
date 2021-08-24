@@ -36,6 +36,24 @@ export const newInstrument = async (instrument: {
         throw new Error(error);
     }
 };
+
+export const editInstrument = async (
+    instrument: Instrument
+): Promise<{ status: number; message: string }> => {
+    try {
+        const { status, data } = await sluttkontrollApi.put(
+            `/v3/instrument/${instrument.id}`,
+            instrument
+        );
+        return { status, ...data };
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
+
 export const setDisponent = async (
     instrumentId: number,
     userId: number

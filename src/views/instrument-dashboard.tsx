@@ -17,6 +17,7 @@ import { useState } from 'react';
 const InstrumentsView = () => {
     const classes = usePageStyles();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [editId, setEditId] = useState<number>();
 
     const {
         state: { instruments },
@@ -47,9 +48,12 @@ const InstrumentsView = () => {
                             }>
                             {instruments !== undefined ? (
                                 <TableContainer
-                                    columns={instrumentColumns((id: number) =>
-                                        console.log(id)
-                                    )}
+                                    columns={instrumentColumns({
+                                        edit: (id: number) => {
+                                            setEditId(id);
+                                            setIsModalOpen(true);
+                                        }
+                                    })}
                                     defaultColumns={defaultColumns}
                                     tableId="instruments">
                                     <InstrumentTable
@@ -64,8 +68,12 @@ const InstrumentsView = () => {
                 </Grid>
             </Container>
             <InstrumentModal
+                editId={editId}
                 open={isModalOpen}
-                close={() => setIsModalOpen(!isModalOpen)}
+                close={() => {
+                    setIsModalOpen(!isModalOpen);
+                    setEditId(undefined);
+                }}
             />
         </>
     );

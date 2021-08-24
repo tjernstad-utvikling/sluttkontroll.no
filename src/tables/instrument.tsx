@@ -28,7 +28,10 @@ export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
 
     return { sisteKalibrert, user };
 };
-export const instrumentColumns = (edit: (id: number) => void) => {
+interface instrumentColumnsOptions {
+    edit: (id: number) => void;
+}
+export const instrumentColumns = ({ edit }: instrumentColumnsOptions) => {
     const columns: GridColDef[] = [
         {
             field: 'id',

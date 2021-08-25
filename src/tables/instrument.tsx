@@ -10,6 +10,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { Instrument } from '../contracts/instrumentApi';
 import { Link } from 'react-router-dom';
 import { RowAction } from '../tables/tableUtils';
+import TodayIcon from '@material-ui/icons/Today';
 import { format } from 'date-fns';
 
 export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
@@ -30,8 +31,12 @@ export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
 };
 interface instrumentColumnsOptions {
     edit: (id: number) => void;
+    regCalibration: (id: number) => void;
 }
-export const instrumentColumns = ({ edit }: instrumentColumnsOptions) => {
+export const instrumentColumns = ({
+    edit,
+    regCalibration
+}: instrumentColumnsOptions) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -96,6 +101,12 @@ export const instrumentColumns = ({ edit }: instrumentColumnsOptions) => {
                             action: () => edit(params.row.id),
                             skip: params.row.done,
                             icon: <EditIcon />
+                        },
+                        {
+                            name: 'Registrer kalibrering',
+                            action: () => regCalibration(params.row.id),
+                            skip: params.row.done,
+                            icon: <TodayIcon />
                         }
                     ]}
                 />

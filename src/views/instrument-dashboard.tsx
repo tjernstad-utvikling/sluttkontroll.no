@@ -7,6 +7,7 @@ import {
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
 import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -17,6 +18,9 @@ import { useState } from 'react';
 const InstrumentsView = () => {
     const classes = usePageStyles();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [calibrationModalId, setCalibrationModalId] = useState<
+        number | undefined
+    >(undefined);
     const [editId, setEditId] = useState<number>();
 
     const {
@@ -52,6 +56,9 @@ const InstrumentsView = () => {
                                         edit: (id: number) => {
                                             setEditId(id);
                                             setIsModalOpen(true);
+                                        },
+                                        regCalibration: (id: number) => {
+                                            setCalibrationModalId(id);
                                         }
                                     })}
                                     defaultColumns={defaultColumns}
@@ -67,6 +74,10 @@ const InstrumentsView = () => {
                     </Grid>
                 </Grid>
             </Container>
+            <InstrumentCalibrationModal
+                close={() => setCalibrationModalId(undefined)}
+                regId={calibrationModalId}
+            />
             <InstrumentModal
                 editId={editId}
                 open={isModalOpen}

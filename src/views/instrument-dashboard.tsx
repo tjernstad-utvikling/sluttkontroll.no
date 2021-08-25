@@ -18,9 +18,7 @@ import { useState } from 'react';
 const InstrumentsView = () => {
     const classes = usePageStyles();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [calibrationModalId, setCalibrationModalId] = useState<
-        number | undefined
-    >(undefined);
+    const [calibrationModalId, setCalibrationModalId] = useState<number>();
     const [editId, setEditId] = useState<number>();
 
     const {

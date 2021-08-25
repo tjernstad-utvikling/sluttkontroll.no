@@ -23,7 +23,7 @@ export const AvvikModule = ({ avvik }: AvvikModuleProps) => {
                     <Text>ID: {avvik.id}</Text>
                     <Text>
                         Oppdaget:{' '}
-                        {format(new Date(avvik.registrertDato), 'd.m.Y')}
+                        {format(new Date(avvik.registrertDato), 'dd.MM.Y')}
                     </Text>
                 </View>
                 <View

@@ -5,12 +5,19 @@ import { makeStyles } from '@material-ui/core';
 import { useDropzone } from 'react-dropzone';
 
 interface DropZoneProps {
-    accept: 'image/png, image/jpeg' | 'image/*';
+    accept: 'image/png, image/jpeg' | 'image/*' | 'application/pdf';
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
     children?: React.ReactNode;
     files: File[];
+    multiple?: boolean;
 }
-export function DropZone({ accept, setFiles, children, files }: DropZoneProps) {
+export function DropZone({
+    accept,
+    setFiles,
+    children,
+    files,
+    multiple = false
+}: DropZoneProps) {
     const classes = useStyles();
 
     function duplicateFileValidator(file: File) {
@@ -18,7 +25,7 @@ export function DropZone({ accept, setFiles, children, files }: DropZoneProps) {
         if (simFile.length > 0) {
             return {
                 code: 'duplicate-name',
-                message: 'Bildet er allerede lagt til.'
+                message: 'Fil er allerede lagt til.'
             };
         }
 
@@ -32,9 +39,14 @@ export function DropZone({ accept, setFiles, children, files }: DropZoneProps) {
         isDragAccept,
         isDragReject
     } = useDropzone({
+        multiple,
         accept,
         onDrop: (acceptedFiles) => {
-            setFiles((prev) => [...prev, ...acceptedFiles]);
+            if (multiple) {
+                setFiles((prev) => [...prev, ...acceptedFiles]);
+            } else {
+                setFiles(acceptedFiles);
+            }
         },
         validator: duplicateFileValidator
     });
@@ -62,7 +74,7 @@ export function DropZone({ accept, setFiles, children, files }: DropZoneProps) {
                 })}>
                 <input {...getInputProps()} />
                 <Button color="primary" startIcon={<BackupIcon />}>
-                    Dra og slipp filer her, eller klikk og velg
+                    Dra og slipp fil(er) her, eller klikk og velg
                 </Button>
             </div>
             <aside>

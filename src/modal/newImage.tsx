@@ -37,6 +37,7 @@ export function NewImageModal({ open, close, avvik }: NewImageModalProps) {
             <DialogTitle id="add-Picture-Dialog">Legg til bilder</DialogTitle>
             <DialogContent>
                 <DropZone
+                    multiple
                     accept="image/png, image/jpeg"
                     setFiles={setImages}
                     files={images}>

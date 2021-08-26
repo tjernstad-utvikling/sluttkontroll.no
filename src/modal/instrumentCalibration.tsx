@@ -13,6 +13,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { DropZone } from '../components/uploader';
 import { Instrument } from '../contracts/instrumentApi';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import nbLocale from 'date-fns/locale/nb';
 import { useInstrument } from '../data/instrument';
 
@@ -31,7 +32,7 @@ export function InstrumentCalibrationModal({
     const [instrument, setInstrument] = useState<Instrument>();
     const [newCalibrationDate, setNewCalibrationDate] =
         useState<MaterialUiPickersDate>(new Date());
-    const [images, setImages] = useState<File[]>([]);
+    const [files, setFiles] = useState<File[]>([]);
 
     useEffect(() => {
         if (regId !== undefined) {
@@ -65,11 +66,18 @@ export function InstrumentCalibrationModal({
                         format="dd.MM.yyyy"
                     />
                 </MuiPickersUtilsProvider>
+                <div style={{ padding: 10 }} />
                 <DropZone
-                    accept="image/png, image/jpeg"
-                    setFiles={setImages}
-                    files={images}>
-                    <div></div>
+                    accept="application/pdf"
+                    setFiles={setFiles}
+                    files={files}>
+                    <ul>
+                        {files.map((f) => (
+                            <li key={f.name}>
+                                <PictureAsPdfIcon /> {f.name}
+                            </li>
+                        ))}
+                    </ul>
                 </DropZone>
             </DialogContent>
             <DialogActions>

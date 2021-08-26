@@ -36,6 +36,23 @@ export const newInstrument = async (instrument: {
         throw new Error(error);
     }
 };
+export const addCalibration = async (
+    instrumentId: number,
+    kalibrertDate: string
+): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/instrument/kalibrering/${instrumentId}`,
+            { kalibrertDate }
+        );
+        return { status, ...data };
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
 
 export const editInstrument = async (
     instrument: Instrument

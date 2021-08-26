@@ -14,6 +14,7 @@ import { DropZone } from '../components/uploader';
 import { Instrument } from '../contracts/instrumentApi';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import Typography from '@material-ui/core/Typography';
 import nbLocale from 'date-fns/locale/nb';
 import { useInstrument } from '../data/instrument';
 
@@ -31,20 +32,12 @@ export function InstrumentCalibrationModal({
 
     const [instrument, setInstrument] = useState<Instrument>();
     const [newCalibrationDate, setNewCalibrationDate] =
-        useState<MaterialUiPickersDate>(new Date());
+        useState<MaterialUiPickersDate>();
     const [files, setFiles] = useState<File[]>([]);
 
     useEffect(() => {
         if (regId !== undefined) {
-            const _instrument = instruments?.find((i) => i.id === regId);
-            if (_instrument !== undefined) {
-                setInstrument(_instrument);
-                if (_instrument.sisteKalibrert !== null) {
-                    setNewCalibrationDate(
-                        new Date(_instrument.sisteKalibrert.date)
-                    );
-                }
-            }
+            setInstrument(instruments?.find((i) => i.id === regId));
         }
     }, [regId, instruments]);
 
@@ -59,6 +52,8 @@ export function InstrumentCalibrationModal({
             <DialogContent>
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={nbLocale}>
                     <KeyboardDatePicker
+                        clearable
+                        fullWidth
                         label="Kalibreringsdato"
                         inputVariant="outlined"
                         value={newCalibrationDate}
@@ -67,6 +62,7 @@ export function InstrumentCalibrationModal({
                     />
                 </MuiPickersUtilsProvider>
                 <div style={{ padding: 10 }} />
+                <Typography>Kalibreringsbevis</Typography>
                 <DropZone
                     accept="application/pdf"
                     setFiles={setFiles}

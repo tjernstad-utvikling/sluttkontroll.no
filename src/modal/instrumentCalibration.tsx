@@ -15,8 +15,10 @@ import { Instrument } from '../contracts/instrumentApi';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import Typography from '@material-ui/core/Typography';
+import { format } from 'date-fns';
 import nbLocale from 'date-fns/locale/nb';
 import { useInstrument } from '../data/instrument';
+import { useSnackbar } from 'notistack';
 
 interface InstrumentCalibrationModalProps {
     regId: number | undefined;
@@ -27,19 +29,47 @@ export function InstrumentCalibrationModal({
     regId
 }: InstrumentCalibrationModalProps) {
     const {
-        state: { instruments }
+        state: { instruments },
+        addCalibration
     } = useInstrument();
 
     const [instrument, setInstrument] = useState<Instrument>();
     const [newCalibrationDate, setNewCalibrationDate] =
-        useState<MaterialUiPickersDate>();
+        useState<MaterialUiPickersDate>(null);
     const [files, setFiles] = useState<File[]>([]);
+
+    const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         if (regId !== undefined) {
             setInstrument(instruments?.find((i) => i.id === regId));
         }
     }, [regId, instruments]);
+
+    const saveCalibration = async () => {
+        if (
+            instrument !== undefined &&
+            newCalibrationDate !== null &&
+            newCalibrationDate !== undefined
+        ) {
+            if (
+                await addCalibration(
+                    instrument.id,
+                    format(newCalibrationDate, 'yyyy-MM-dd'),
+                    files[0]
+                )
+            ) {
+                close();
+            }
+        } else {
+            enqueueSnackbar(
+                'Kan ikke lagre kalibrering grunnet manglende data',
+                {
+                    variant: 'error'
+                }
+            );
+        }
+    };
 
     return (
         <Dialog
@@ -80,7 +110,7 @@ export function InstrumentCalibrationModal({
                 <Button onClick={close} color="primary">
                     Avbryt
                 </Button>
-                <Button onClick={close} color="primary">
+                <Button onClick={saveCalibration} color="primary">
                     Lagre
                 </Button>
             </DialogActions>

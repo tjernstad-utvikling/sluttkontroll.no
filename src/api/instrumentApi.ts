@@ -97,3 +97,32 @@ export const removeDisponent = async (
         throw new Error('Error Instrument API set Disponent');
     }
 };
+
+export const addCalibrationFile = async (
+    kalibreringId: number,
+    sertifikatFile: File
+): Promise<{ status: number; message?: string }> => {
+    try {
+        const formData = new FormData();
+
+        formData.append('sertifikatFile', sertifikatFile);
+
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/instrument/upload-kalibrering-sertifikat/${kalibreringId}`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+
+        return { status, ...data };
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        console.log(error);
+        throw new Error(error);
+    }
+};

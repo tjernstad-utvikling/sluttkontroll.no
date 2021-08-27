@@ -1,6 +1,8 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import {
+    addCalibration as addCalibrationApi,
+    addCalibrationFile,
     editInstrument,
     getInstruments,
     newInstrument
@@ -89,6 +91,57 @@ export const InstrumentContextProvider = ({
         }
     };
 
+    const addCalibration = async (
+        instrumentId: number,
+        kalibrertDate: string,
+        sertifikatFile: File
+    ): Promise<boolean> => {
+        try {
+            const { status, message, instrument } = await addCalibrationApi(
+                instrumentId,
+                kalibrertDate
+            );
+
+            if (status === 400 && message !== undefined) {
+                enqueueSnackbar('Ikke alle nødvendige felter er fylt ut', {
+                    variant: 'warning'
+                });
+            }
+
+            if (
+                status === 200 &&
+                instrument !== undefined &&
+                instrument.sisteKalibrert !== null
+            ) {
+                const { status } = await addCalibrationFile(
+                    instrument.sisteKalibrert.id,
+                    sertifikatFile
+                );
+                if (status === 204) {
+                    dispatch({
+                        type: ActionType.addInstruments,
+                        payload: [instrument]
+                    });
+                    enqueueSnackbar('Kalibrering registrert', {
+                        variant: 'success'
+                    });
+                    return true;
+                }
+                if (status === 400) {
+                    enqueueSnackbar('Kalibreringsbevis mangler', {
+                        variant: 'warning'
+                    });
+                }
+            }
+            return false;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med lagring av instrument', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
     const updateInstruments = async (
         instrument: Instrument
     ): Promise<boolean> => {
@@ -128,6 +181,7 @@ export const InstrumentContextProvider = ({
 
                 loadInstruments,
                 addNewInstrument,
+                addCalibration,
                 updateInstruments
             }}>
             {children}

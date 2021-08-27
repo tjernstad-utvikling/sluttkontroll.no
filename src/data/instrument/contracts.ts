@@ -25,6 +25,11 @@ export interface ContextInterface {
     state: InstrumentState;
     loadInstruments: () => Promise<void>;
     updateInstruments: (instrument: Instrument) => Promise<boolean>;
+    addCalibration: (
+        instrumentId: number,
+        kalibrertDate: string,
+        sertifikatFile: File
+    ) => Promise<boolean>;
     addNewInstrument: (
         name: string,
         serienr: string,

@@ -1,4 +1,5 @@
-import { Instrument } from '../contracts/instrumentApi';
+import { Instrument, Kalibrering } from '../contracts/instrumentApi';
+
 import { User } from '../contracts/userApi';
 import sluttkontrollApi from './sluttkontroll';
 
@@ -27,23 +28,6 @@ export const newInstrument = async (instrument: {
         const { status, data } = await sluttkontrollApi.post(
             '/v3/instrument/',
             instrument
-        );
-        return { status, ...data };
-    } catch (error) {
-        if (error.response.status === 400) {
-            return { status: 400, message: error.response.data.message };
-        }
-        throw new Error(error);
-    }
-};
-export const addCalibration = async (
-    instrumentId: number,
-    kalibrertDate: string
-): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
-    try {
-        const { status, data } = await sluttkontrollApi.post(
-            `/v3/instrument/kalibrering/${instrumentId}`,
-            { kalibrertDate }
         );
         return { status, ...data };
     } catch (error) {
@@ -108,7 +92,7 @@ export const addCalibrationFile = async (
         formData.append('sertifikatFile', sertifikatFile);
 
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/instrument/upload-kalibrering-sertifikat/${kalibreringId}`,
+            `/v3/instrument/kalibrering/upload-sertifikat/${kalibreringId}`,
             formData,
             {
                 headers: {
@@ -123,6 +107,44 @@ export const addCalibrationFile = async (
             return { status: 400, message: error.response.data.message };
         }
         console.log(error);
+        throw new Error(error);
+    }
+};
+
+export const addCalibration = async (
+    instrumentId: number,
+    kalibrertDate: string
+): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            `/v3/instrument/kalibrering/${instrumentId}`,
+            { kalibrertDate }
+        );
+        return { status, ...data };
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
+
+export const getCalibrationsByInstrument = async (
+    instrumentId: number
+): Promise<{
+    status: number;
+    calibrations?: Kalibrering[];
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `/v3/instrument/kalibrering/${instrumentId}`
+        );
+        return { status, ...data };
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
         throw new Error(error);
     }
 };

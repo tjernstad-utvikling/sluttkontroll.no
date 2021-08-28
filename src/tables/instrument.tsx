@@ -58,7 +58,7 @@ export const instrumentColumns = ({
             headerName: 'Siste kalibrering',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <Link to={`/instrument`}>
+                <Link to={`/instrument/calibration/${params.row.id}`}>
                     {InstrumentValueGetter(params.row).sisteKalibrert(
                         'dd.MM.Y'
                     )}

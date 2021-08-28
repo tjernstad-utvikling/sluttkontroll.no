@@ -55,7 +55,7 @@ const InstrumentsView = () => {
                                         openCertificate: 0
                                     })}
                                     defaultColumns={defaultColumns}
-                                    tableId="instruments">
+                                    tableId="calibrations">
                                     <CalibrationTable
                                         calibrations={_calibrations ?? []}
                                     />

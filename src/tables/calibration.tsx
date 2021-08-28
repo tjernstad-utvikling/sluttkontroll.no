@@ -7,6 +7,7 @@ import { Instrument, Kalibrering } from '../contracts/instrumentApi';
 
 import { BaseTable } from './baseTable';
 import { RowAction } from '../tables/tableUtils';
+import { format } from 'date-fns';
 
 export const CalibrationValueGetter = (data: Instrument | GridRowData) => {
     return {};

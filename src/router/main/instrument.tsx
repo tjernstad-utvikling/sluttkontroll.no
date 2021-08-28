@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
 import { InstrumentContextProvider } from '../../data/instrument';
@@ -10,15 +10,16 @@ const InstrumentCalibrationView = lazy(
 );
 
 export const Instrument = () => {
+    let { path } = useRouteMatch();
     return (
         <InstrumentContextProvider>
             <MainLayout module="instrument">
                 <Suspense fallback={<div>Loading...</div>}>
                     <Switch>
-                        <Route path={'/calibration/:instrumentId'}>
+                        <Route path={`${path}/calibration/:instrumentId`}>
                             <InstrumentCalibrationView />
                         </Route>
-                        <Route path={'/'}>
+                        <Route exact path={path}>
                             <InstrumentsView />
                         </Route>
                     </Switch>

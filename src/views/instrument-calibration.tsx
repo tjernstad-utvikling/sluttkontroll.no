@@ -19,6 +19,7 @@ import Grid from '@material-ui/core/Grid';
 import { InstrumentCalibrationViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { Viewer } from '@react-pdf-viewer/core';
+import { Worker } from '@react-pdf-viewer/core';
 import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
@@ -36,10 +37,14 @@ const InstrumentsView = () => {
     const [openCertificateId, setOpenCertificateId] = useState<number>();
 
     const openCertificate = async (calibrationId: number) => {
+        console.log({ calibrationId });
         try {
             const response = await getCalibrationCertificate(calibrationId);
-            if (response.status === 200) {
-                setObjectUrl(URL.createObjectURL(response.data));
+            console.log({ response });
+            if (response.status === 200 && response.data !== undefined) {
+                const blob = new Blob([response.data]);
+                console.log(URL.createObjectURL(blob));
+                setObjectUrl(URL.createObjectURL(blob));
                 setOpenCertificateId(calibrationId);
             }
         } catch (error) {
@@ -100,11 +105,14 @@ const InstrumentsView = () => {
                             )}
                         </Card>
                     </Grid>
-                    {objectUrl !== undefined && (
-                        <Grid item xs={12} style={{ height: 750 }}>
-                            <Viewer fileUrl={objectUrl} />
-                        </Grid>
-                    )}
+
+                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
+                        {objectUrl !== undefined && (
+                            <Grid item xs={12} style={{ height: 1250 }}>
+                                <Viewer fileUrl={objectUrl} />
+                            </Grid>
+                        )}
+                    </Worker>
                 </Grid>
             </Container>
         </>

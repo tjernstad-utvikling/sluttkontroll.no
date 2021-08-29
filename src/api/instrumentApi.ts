@@ -163,7 +163,7 @@ export const getCalibrationCertificate = async (
                 responseType: 'blob'
             }
         );
-        return { status, ...data };
+        return { status, data };
     } catch (error) {
         if (error.response.status === 404) {
             return { status: 404, message: error.response.data.message };

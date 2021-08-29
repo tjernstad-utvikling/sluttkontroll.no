@@ -10,6 +10,7 @@ import { BaseTable } from './baseTable';
 import Button from '@material-ui/core/Button';
 import Chip from '@material-ui/core/Chip';
 import { Kalibrering } from '../contracts/instrumentApi';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import { format } from 'date-fns';
 
 export const CalibrationValueGetter = (data: Kalibrering | GridRowData) => {
@@ -64,8 +65,8 @@ export const calibrationColumns = ({
                             <Chip
                                 variant="outlined"
                                 color="primary"
-                                avatar={<Avatar>Ny</Avatar>}
-                                label="Siste kalibrering"
+                                icon={<VisibilityIcon />}
+                                label="Åpen"
                             />
                         )}
                     </>

@@ -1,22 +1,31 @@
 import {
     GridCellParams,
     GridColDef,
-    GridRowData
+    GridRowData,
+    GridValueGetterParams
 } from '@material-ui/data-grid';
-import { Instrument, Kalibrering } from '../contracts/instrumentApi';
 
+import Avatar from '@material-ui/core/Avatar';
 import { BaseTable } from './baseTable';
+import Chip from '@material-ui/core/Chip';
+import { Kalibrering } from '../contracts/instrumentApi';
 import { RowAction } from '../tables/tableUtils';
 import { format } from 'date-fns';
 
-export const CalibrationValueGetter = (data: Instrument | GridRowData) => {
-    return {};
+export const CalibrationValueGetter = (data: Kalibrering | GridRowData) => {
+    const date = (formatString: string): string => {
+        return format(new Date(data.date), formatString);
+    };
+
+    return { date };
 };
 interface calibrationColumnsOptions {
     openCertificate: number;
+    instrumentLastCalibration: Kalibrering | null;
 }
 export const calibrationColumns = ({
-    openCertificate
+    openCertificate,
+    instrumentLastCalibration
 }: calibrationColumnsOptions) => {
     const columns: GridColDef[] = [
         {
@@ -27,7 +36,9 @@ export const calibrationColumns = ({
         {
             field: 'date',
             headerName: 'Dato',
-            flex: 1
+            width: 180,
+            valueGetter: (params: GridValueGetterParams) =>
+                CalibrationValueGetter(params.row).date('dd.MM.Y')
         },
         {
             field: 'status',
@@ -36,7 +47,28 @@ export const calibrationColumns = ({
             sortable: false,
             filterable: false,
             disableColumnMenu: true,
-            renderCell: (params: GridCellParams) => <div>status</div>
+            renderCell: (params: GridCellParams) => {
+                return (
+                    <>
+                        {instrumentLastCalibration?.id === params.row.id && (
+                            <Chip
+                                variant="outlined"
+                                color="primary"
+                                avatar={<Avatar>Ny</Avatar>}
+                                label="Siste kalibrering"
+                            />
+                        )}
+                        {openCertificate === params.row.id && (
+                            <Chip
+                                variant="outlined"
+                                color="primary"
+                                avatar={<Avatar>Ny</Avatar>}
+                                label="Siste kalibrering"
+                            />
+                        )}
+                    </>
+                );
+            }
         },
 
         {

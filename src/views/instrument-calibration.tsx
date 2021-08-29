@@ -3,15 +3,16 @@ import {
     calibrationColumns,
     defaultColumns
 } from '../tables/calibration';
+import { Instrument, Kalibrering } from '../contracts/instrumentApi';
 import { useEffect, useState } from 'react';
 
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { InstrumentCalibrationViewParams } from '../contracts/navigation';
-import { Kalibrering } from '../contracts/instrumentApi';
 import { TableContainer } from '../tables/tableContainer';
 import { getCalibrationsByInstrument } from '../api/instrumentApi';
+import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -22,11 +23,19 @@ const InstrumentsView = () => {
 
     const [_calibrations, setCalibrations] = useState<Kalibrering[]>();
     const [loadedInstrumentId, setLoadedInstrumentId] = useState<number>();
+    const [instrument, setInstrument] = useState<Instrument>();
+
+    const {
+        state: { instruments }
+    } = useInstrument();
 
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         const get = async () => {
+            setInstrument(
+                instruments?.find((i) => i.id === Number(instrumentId))
+            );
             const { calibrations, status } = await getCalibrationsByInstrument(
                 Number(instrumentId)
             );
@@ -40,7 +49,7 @@ const InstrumentsView = () => {
             }
         };
         if (Number(instrumentId) !== loadedInstrumentId) get();
-    }, [enqueueSnackbar, instrumentId, loadedInstrumentId]);
+    }, [enqueueSnackbar, instrumentId, instruments, loadedInstrumentId]);
 
     return (
         <>
@@ -49,10 +58,13 @@ const InstrumentsView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Kalibreringer">
-                            {_calibrations !== undefined ? (
+                            {_calibrations !== undefined &&
+                            instrument !== undefined ? (
                                 <TableContainer
                                     columns={calibrationColumns({
-                                        openCertificate: 0
+                                        openCertificate: 0,
+                                        instrumentLastCalibration:
+                                            instrument?.sisteKalibrert
                                     })}
                                     defaultColumns={defaultColumns}
                                     tableId="calibrations">

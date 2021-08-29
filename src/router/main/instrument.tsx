@@ -16,7 +16,7 @@ export const Instrument = () => {
             <MainLayout module="instrument">
                 <Suspense fallback={<div>Loading...</div>}>
                     <Switch>
-                        <Route path={`${path}/calibration/:instrumentId`}>
+                        <Route path={`${path}/:instrumentId/calibration`}>
                             <InstrumentCalibrationView />
                         </Route>
                         <Route exact path={path}>

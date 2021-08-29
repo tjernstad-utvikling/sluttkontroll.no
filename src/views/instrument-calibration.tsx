@@ -37,17 +37,29 @@ const InstrumentsView = () => {
     const [openCertificateId, setOpenCertificateId] = useState<number>();
 
     const openCertificate = async (calibrationId: number) => {
-        console.log({ calibrationId });
+        if (objectUrl !== undefined) {
+            URL.revokeObjectURL(objectUrl);
+        }
+        setObjectUrl(undefined);
+        setOpenCertificateId(undefined);
         try {
             const response = await getCalibrationCertificate(calibrationId);
-            console.log({ response });
+
             if (response.status === 200 && response.data !== undefined) {
                 const blob = new Blob([response.data]);
-                console.log(URL.createObjectURL(blob));
+
                 setObjectUrl(URL.createObjectURL(blob));
                 setOpenCertificateId(calibrationId);
             }
+            if (response.status === 404) {
+                enqueueSnackbar('Kalibreringssertifikat ikke funnet', {
+                    variant: 'warning'
+                });
+            }
         } catch (error) {
+            enqueueSnackbar('Ukjent problem med lasting av sertifikat', {
+                variant: 'error'
+            });
             console.log(error);
         }
     };

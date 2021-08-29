@@ -1,5 +1,6 @@
 // Import the styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 import {
     CalibrationTable,
@@ -20,6 +21,7 @@ import { InstrumentCalibrationViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { Viewer } from '@react-pdf-viewer/core';
 import { Worker } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
@@ -35,6 +37,8 @@ const InstrumentsView = () => {
 
     const [objectUrl, setObjectUrl] = useState<string | undefined>(undefined);
     const [openCertificateId, setOpenCertificateId] = useState<number>();
+
+    const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
     const openCertificate = async (calibrationId: number) => {
         if (objectUrl !== undefined) {
@@ -121,7 +125,10 @@ const InstrumentsView = () => {
                     <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
                         {objectUrl !== undefined && (
                             <Grid item xs={12} style={{ height: 1250 }}>
-                                <Viewer fileUrl={objectUrl} />
+                                <Viewer
+                                    fileUrl={objectUrl}
+                                    plugins={[defaultLayoutPluginInstance]}
+                                />
                             </Grid>
                         )}
                     </Worker>

@@ -148,3 +148,26 @@ export const getCalibrationsByInstrument = async (
         throw new Error(error);
     }
 };
+
+export const getCalibrationCertificate = async (
+    calibrationId: number
+): Promise<{
+    status: number;
+    data?: Blob;
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `/v3/instrument/kalibrering-sertifikat/${calibrationId}`,
+            {
+                responseType: 'blob'
+            }
+        );
+        return { status, ...data };
+    } catch (error) {
+        if (error.response.status === 404) {
+            return { status: 404, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};

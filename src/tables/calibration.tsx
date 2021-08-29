@@ -7,9 +7,9 @@ import {
 
 import Avatar from '@material-ui/core/Avatar';
 import { BaseTable } from './baseTable';
+import Button from '@material-ui/core/Button';
 import Chip from '@material-ui/core/Chip';
 import { Kalibrering } from '../contracts/instrumentApi';
-import { RowAction } from '../tables/tableUtils';
 import { format } from 'date-fns';
 
 export const CalibrationValueGetter = (data: Kalibrering | GridRowData) => {
@@ -20,12 +20,14 @@ export const CalibrationValueGetter = (data: Kalibrering | GridRowData) => {
     return { date };
 };
 interface calibrationColumnsOptions {
-    openCertificate: number;
+    openCertificateId: number | undefined;
     instrumentLastCalibration: Kalibrering | null;
+    openCertificate: (calibrationId: number) => Promise<void>;
 }
 export const calibrationColumns = ({
     openCertificate,
-    instrumentLastCalibration
+    instrumentLastCalibration,
+    openCertificateId
 }: calibrationColumnsOptions) => {
     const columns: GridColDef[] = [
         {
@@ -58,7 +60,7 @@ export const calibrationColumns = ({
                                 label="Siste kalibrering"
                             />
                         )}
-                        {openCertificate === params.row.id && (
+                        {openCertificateId === params.row.id && (
                             <Chip
                                 variant="outlined"
                                 color="primary"
@@ -78,7 +80,12 @@ export const calibrationColumns = ({
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => (
-                <RowAction actionItems={[]} />
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => openCertificate(params.row.id)}>
+                    Åpne
+                </Button>
             )
         }
     ];

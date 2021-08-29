@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
 import { TableContainer } from '../tables/tableContainer';
+import { useAuth } from '../hooks/useAuth';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -21,14 +22,23 @@ const InstrumentsView = () => {
     const [calibrationModalId, setCalibrationModalId] = useState<number>();
     const [editId, setEditId] = useState<number>();
 
+    const { user } = useAuth();
     const {
         state: { instruments },
-        loadInstruments
+        loadInstruments,
+        updateInstrumentDisponent
     } = useInstrument();
 
     useEffectOnce(() => {
         loadInstruments();
     });
+
+    const handleInstrumentBooking = (instrumentId: number) => {
+        const instrument = instruments?.find((i) => i.id === instrumentId);
+        if (user !== undefined && instrument !== undefined) {
+            updateInstrumentDisponent(instrument, user);
+        }
+    };
 
     return (
         <>
@@ -57,7 +67,9 @@ const InstrumentsView = () => {
                                         },
                                         regCalibration: (id: number) => {
                                             setCalibrationModalId(id);
-                                        }
+                                        },
+                                        currentUser: user,
+                                        changeDisponent: handleInstrumentBooking
                                     })}
                                     defaultColumns={defaultColumns}
                                     tableId="instruments">

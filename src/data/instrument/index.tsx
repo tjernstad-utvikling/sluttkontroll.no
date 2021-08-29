@@ -5,11 +5,14 @@ import {
     addCalibrationFile,
     editInstrument,
     getInstruments,
-    newInstrument
+    newInstrument,
+    removeDisponent,
+    setDisponent
 } from '../../api/instrumentApi';
 import { initialState, instrumentReducer } from './reducer';
 
 import { Instrument } from '../../contracts/instrumentApi';
+import { SlkUser } from '../../contracts/user';
 import { User } from '../../contracts/userApi';
 import { useSnackbar } from 'notistack';
 
@@ -173,6 +176,46 @@ export const InstrumentContextProvider = ({
             return false;
         }
     };
+    const updateInstrumentDisponent = async (
+        instrument: Instrument,
+        user: SlkUser
+    ): Promise<boolean> => {
+        try {
+            if (instrument.disponent?.id === user.id) {
+                const { status } = await removeDisponent(instrument.id);
+                if (status === 204 && instrument !== undefined) {
+                    dispatch({
+                        type: ActionType.addInstruments,
+                        payload: [{ ...instrument, disponent: null }]
+                    });
+                    enqueueSnackbar('Instrument er levert', {
+                        variant: 'success'
+                    });
+                    return true;
+                }
+            } else {
+                const { status } = await setDisponent(instrument.id, user.id);
+                if (status === 204 && instrument !== undefined) {
+                    dispatch({
+                        type: ActionType.addInstruments,
+                        payload: [{ ...instrument, disponent: user }]
+                    });
+                    enqueueSnackbar('Instrumentet er booket', {
+                        variant: 'success'
+                    });
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (error) {
+            console.log(error);
+            enqueueSnackbar('Problemer med lagring av instrument', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
 
     return (
         <InstrumentContext.Provider
@@ -182,7 +225,8 @@ export const InstrumentContextProvider = ({
                 loadInstruments,
                 addNewInstrument,
                 addCalibration,
-                updateInstruments
+                updateInstruments,
+                updateInstrumentDisponent
             }}>
             {children}
         </InstrumentContext.Provider>

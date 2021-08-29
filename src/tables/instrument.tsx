@@ -6,11 +6,17 @@ import {
 } from '@material-ui/data-grid';
 
 import { BaseTable } from './baseTable';
+import Button from '@material-ui/core/Button';
+import Chip from '@material-ui/core/Chip';
+import CompassCalibrationIcon from '@material-ui/icons/CompassCalibration';
 import EditIcon from '@material-ui/icons/Edit';
 import { Instrument } from '../contracts/instrumentApi';
 import { Link } from 'react-router-dom';
+import NotInterestedIcon from '@material-ui/icons/NotInterested';
 import { RowAction } from '../tables/tableUtils';
+import { SlkUser } from '../contracts/user';
 import TodayIcon from '@material-ui/icons/Today';
+import { Typography } from '@material-ui/core';
 import { format } from 'date-fns';
 
 export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
@@ -29,13 +35,59 @@ export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
 
     return { sisteKalibrert, user };
 };
+
+const RenderDisponentField = ({
+    row,
+    user,
+    onClick
+}: {
+    row: Instrument | GridRowData;
+    user: SlkUser | undefined;
+    onClick: (id: number) => void;
+}) => {
+    if (user !== undefined) {
+        if (row.disponent !== null) {
+            return (
+                <>
+                    <Button
+                        onClick={() => onClick(row.id)}
+                        variant="outlined"
+                        color="primary"
+                        size="small">
+                        {user.id === row.disponent.id ? 'Lever' : 'Overta'}
+                    </Button>{' '}
+                    <Typography style={{ paddingLeft: 5 }}>
+                        {row.disponent.name}
+                    </Typography>
+                </>
+            );
+        }
+        return (
+            <>
+                <Button
+                    onClick={() => onClick(row.id)}
+                    variant="outlined"
+                    color="primary"
+                    size="small">
+                    Book
+                </Button>{' '}
+                <Typography style={{ paddingLeft: 5 }}>Ingen</Typography>
+            </>
+        );
+    }
+    return <div />;
+};
 interface instrumentColumnsOptions {
     edit: (id: number) => void;
     regCalibration: (id: number) => void;
+    currentUser: SlkUser | undefined;
+    changeDisponent: (instrumentId: number) => void;
 }
 export const instrumentColumns = ({
     edit,
-    regCalibration
+    regCalibration,
+    currentUser,
+    changeDisponent
 }: instrumentColumnsOptions) => {
     const columns: GridColDef[] = [
         {
@@ -76,8 +128,13 @@ export const instrumentColumns = ({
             field: 'disponent',
             headerName: 'Disponerer instrumentet',
             flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                InstrumentValueGetter(params.row).user('Ingen')
+            renderCell: (params: GridCellParams) => (
+                <RenderDisponentField
+                    onClick={changeDisponent}
+                    row={params.row}
+                    user={currentUser}
+                />
+            )
         },
         {
             field: 'calibrationInterval',
@@ -87,7 +144,18 @@ export const instrumentColumns = ({
         {
             field: 'toCalibrate',
             headerName: 'Skal kalibreres',
-            flex: 1
+            flex: 1,
+            renderCell: (params: GridCellParams) => {
+                return params.row.toCalibrate ? (
+                    <Chip
+                        variant="outlined"
+                        icon={<CompassCalibrationIcon />}
+                        label="Skal kalibreres"
+                    />
+                ) : (
+                    <Chip variant="outlined" icon={<NotInterestedIcon />} />
+                );
+            }
         },
         {
             field: 'action',
@@ -141,10 +209,10 @@ export const InstrumentTable = ({ instruments }: InstrumentTableProps) => {
                     .slice()
                     .sort((a, b) =>
                         String(
-                            InstrumentValueGetter(a).sisteKalibrert('Y-m-d')
+                            InstrumentValueGetter(a).sisteKalibrert('Y-M-d')
                         ).localeCompare(
                             String(
-                                InstrumentValueGetter(b).sisteKalibrert('Y-m-d')
+                                InstrumentValueGetter(b).sisteKalibrert('Y-M-d')
                             )
                         )
                     );

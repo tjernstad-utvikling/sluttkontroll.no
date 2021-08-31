@@ -1,5 +1,4 @@
 import { Instrument } from '../../contracts/instrumentApi';
-import { SlkUser } from '../../contracts/user';
 import { User } from '../../contracts/userApi';
 
 export interface InstrumentState {
@@ -28,7 +27,7 @@ export interface ContextInterface {
     updateInstruments: (instrument: Instrument) => Promise<boolean>;
     updateInstrumentDisponent: (
         instrument: Instrument,
-        user: SlkUser
+        user: User
     ) => Promise<boolean>;
     addCalibration: (
         instrumentId: number,

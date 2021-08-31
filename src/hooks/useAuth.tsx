@@ -1,8 +1,8 @@
 import { createContext, useContext, useState } from 'react';
 import { getCurrentUser, getLogin } from '../api/auth';
 
-import { SlkUser } from '../contracts/user';
 import { StorageKeys } from '../contracts/keys';
+import { User } from '../contracts/userApi';
 import { refreshLoginToken } from '../api/sluttkontroll';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
@@ -16,7 +16,7 @@ export const AuthProvider = ({
 }: {
     children: React.ReactNode;
 }): JSX.Element => {
-    const [user, setUser] = useState<SlkUser>();
+    const [user, setUser] = useState<User>();
     const [hasCheckedLocal, setHasCheckedLocal] = useState(false);
 
     const signIn = async (
@@ -50,7 +50,7 @@ export const AuthProvider = ({
         if (token !== null) {
             await refreshLoginToken();
             const jsonValue = localStorage.getItem(StorageKeys.currentUser);
-            const currentUser: SlkUser =
+            const currentUser: User =
                 jsonValue != null ? JSON.parse(jsonValue) : undefined;
             setUser(currentUser);
             setHasCheckedLocal(true);
@@ -75,7 +75,7 @@ export const AuthProvider = ({
 };
 
 interface ContextInterface {
-    user: SlkUser | undefined;
+    user: User | undefined;
     hasCheckedLocal: boolean;
     signIn: (email: string, password: string) => Promise<boolean>;
     signOut: () => void;

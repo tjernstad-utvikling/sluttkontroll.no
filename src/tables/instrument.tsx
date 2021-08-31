@@ -14,9 +14,9 @@ import { Instrument } from '../contracts/instrumentApi';
 import { Link } from 'react-router-dom';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
 import { RowAction } from '../tables/tableUtils';
-import { SlkUser } from '../contracts/user';
 import TodayIcon from '@material-ui/icons/Today';
 import { Typography } from '@material-ui/core';
+import { User } from '../contracts/userApi';
 import { format } from 'date-fns';
 
 export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
@@ -42,7 +42,7 @@ const RenderDisponentField = ({
     onClick
 }: {
     row: Instrument | GridRowData;
-    user: SlkUser | undefined;
+    user: User | undefined;
     onClick: (id: number) => void;
 }) => {
     if (user !== undefined) {
@@ -80,7 +80,7 @@ const RenderDisponentField = ({
 interface instrumentColumnsOptions {
     edit: (id: number) => void;
     regCalibration: (id: number) => void;
-    currentUser: SlkUser | undefined;
+    currentUser: User | undefined;
     changeDisponent: (instrumentId: number) => void;
 }
 export const instrumentColumns = ({

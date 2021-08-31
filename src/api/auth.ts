@@ -1,5 +1,5 @@
-import { SlkUser } from '../contracts/user';
 import { StorageKeys } from '../contracts/keys';
+import { User } from '../contracts/userApi';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getLogin = async (
@@ -31,7 +31,7 @@ export const getLogin = async (
 };
 interface returnValue {
     status: number;
-    user?: SlkUser;
+    user?: User;
 }
 export const getCurrentUser = async (): Promise<returnValue> => {
     try {

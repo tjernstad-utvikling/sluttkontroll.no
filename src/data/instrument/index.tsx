@@ -12,7 +12,6 @@ import {
 import { initialState, instrumentReducer } from './reducer';
 
 import { Instrument } from '../../contracts/instrumentApi';
-import { SlkUser } from '../../contracts/user';
 import { User } from '../../contracts/userApi';
 import { useSnackbar } from 'notistack';
 
@@ -178,7 +177,7 @@ export const InstrumentContextProvider = ({
     };
     const updateInstrumentDisponent = async (
         instrument: Instrument,
-        user: SlkUser
+        user: User
     ): Promise<boolean> => {
         try {
             if (instrument.disponent?.id === user.id) {

@@ -2,6 +2,7 @@ import { Card, CardMenu } from '../components/card';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { UserProfileSchema } from '../schema/userProfile';
 import { useAuth } from '../hooks/useAuth';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -17,7 +18,15 @@ const ProfileView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Profil" menu={<CardMenu items={[]} />}>
-                            <div />
+                            {user !== undefined && (
+                                <UserProfileSchema
+                                    onSubmit={async () => {
+                                        console.log();
+                                        return false;
+                                    }}
+                                    user={user}
+                                />
+                            )}
                         </Card>
                     </Grid>
                 </Grid>

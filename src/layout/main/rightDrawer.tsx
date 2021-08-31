@@ -5,9 +5,10 @@ import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import { ListItemLink } from '../../components/links';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
+import PersonIcon from '@material-ui/icons/Person';
 import SpeedIcon from '@material-ui/icons/Speed';
+import { useAuth } from '../../hooks/useAuth';
 import { useMainStyles } from '../../styles/layout/main';
-
 interface RightDrawerProps {
     isOpen: boolean;
     toggle: () => void;
@@ -15,6 +16,8 @@ interface RightDrawerProps {
 
 export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
     const classes = useMainStyles();
+    const { user } = useAuth();
+
     return (
         <Drawer
             className={classes.drawer}
@@ -33,6 +36,14 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                     <CloseIcon />
                 </IconButton>
             </div>
+            <Divider />
+            <List aria-label="hoved meny">
+                <ListItemLink
+                    to="/user"
+                    primary={user?.name || 'Profil'}
+                    icon={<PersonIcon />}
+                />
+            </List>
             <Divider />
             <List aria-label="hoved meny">
                 <ListItemLink

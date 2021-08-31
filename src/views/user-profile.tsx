@@ -19,13 +19,15 @@ const ProfileView = () => {
                     <Grid item xs={12}>
                         <Card title="Profil" menu={<CardMenu items={[]} />}>
                             {user !== undefined && (
-                                <UserProfileSchema
-                                    onSubmit={async () => {
-                                        console.log();
-                                        return false;
-                                    }}
-                                    user={user}
-                                />
+                                <div style={{ padding: 15 }}>
+                                    <UserProfileSchema
+                                        onSubmit={async () => {
+                                            console.log();
+                                            return false;
+                                        }}
+                                        user={user}
+                                    />
+                                </div>
                             )}
                         </Card>
                     </Grid>

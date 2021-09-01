@@ -10,10 +10,12 @@ import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import Switch from '@material-ui/core/Switch';
 import { TextField } from '../components/input';
+import Typography from '@material-ui/core/Typography';
 import { useState } from 'react';
 
 interface Option {
     value: Roles;
+    isDisabled?: boolean;
     label: string;
 }
 
@@ -23,6 +25,7 @@ interface FormValues {
     email: string;
     password: string;
     changePassword: boolean;
+    roles: Option[] | null;
 }
 interface UserProfileSchemaProps {
     onSubmit: () => Promise<boolean>;
@@ -32,12 +35,6 @@ export const UserProfileSchema = ({
     onSubmit,
     user
 }: UserProfileSchemaProps): JSX.Element => {
-    const [options, setOptions] = useState<Array<Option>>();
-
-    useEffect(() => {
-        setOptions(RolesOptions);
-    }, []);
-
     const selectedRoles = useMemo(() => {
         let selectedRoles = [
             { value: Roles.ROLE_LUKKE_AVVIK, label: RolesDesc.ROLE_LUKKE_AVVIK }
@@ -53,14 +50,19 @@ export const UserProfileSchema = ({
     return (
         <Formik
             initialValues={{
-                name: '',
-                phone: '',
-                email: '',
+                name: user?.name || '',
+                phone: user?.phone || '',
+                email: user?.email || '',
                 password: '',
                 changePassword: false,
                 roles: selectedRoles
             }}
-            validationSchema={Yup.object({})}
+            validationSchema={Yup.object({
+                name: Yup.string().required('Navn er påkrevd'),
+                email: Yup.string()
+                    .email('Epost er ikke gyldig')
+                    .required('Epost er påkrevd')
+            })}
             onSubmit={async (values, { setSubmitting }) => {
                 await onSubmit();
             }}>
@@ -101,36 +103,7 @@ export const UserProfileSchema = ({
                                 <PasswordField />
                             </Grid>
                             <Grid item xs={12}>
-                                {options && (
-                                    <>
-                                        <label htmlFor="roller-select">
-                                            Bruker roller
-                                        </label>
-                                        <Select
-                                            inputId="roller-select"
-                                            className="basic-single"
-                                            classNamePrefix="select"
-                                            isSearchable
-                                            isMulti
-                                            onChange={(selected) => {
-                                                setFieldValue(
-                                                    'roles',
-                                                    selected
-                                                );
-                                            }}
-                                            value={values.roles}
-                                            name="roles"
-                                            options={options}
-                                            styles={{
-                                                menuPortal: (base) => ({
-                                                    ...base,
-                                                    zIndex: 9999
-                                                })
-                                            }}
-                                            menuPortalTarget={document.body}
-                                        />
-                                    </>
-                                )}
+                                <RoleSelectField />
                             </Grid>
 
                             <Grid item xs={12}>
@@ -181,6 +154,73 @@ const PasswordField = () => {
                     name="password"
                     type="password"
                 />
+            )}
+        </>
+    );
+};
+const RoleSelectField = () => {
+    const {
+        values: { roles },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    const [options, setOptions] = useState<Array<Option>>();
+
+    useEffect(() => {
+        setOptions(RolesOptions);
+    }, []);
+
+    useEffect(() => {
+        if (roles !== null) {
+            if (roles.find((opt) => opt.value === Roles.ROLE_LUKKE_AVVIK)) {
+                setOptions(
+                    RolesOptions.map((opt) => {
+                        if (opt.value !== Roles.ROLE_LUKKE_AVVIK) {
+                            return { ...opt, isDisabled: true };
+                        }
+                        return opt;
+                    })
+                );
+            } else {
+                setOptions(RolesOptions);
+            }
+        }
+    }, [roles]);
+
+    return (
+        <>
+            {options && (
+                <>
+                    <label htmlFor="roller-select">Bruker roller</label>
+                    <Select
+                        inputId="roller-select"
+                        className="basic-single"
+                        classNamePrefix="select"
+                        isSearchable
+                        isMulti
+                        onChange={(selected) => {
+                            setFieldValue('roles', selected);
+                        }}
+                        value={roles}
+                        name="roles"
+                        options={options}
+                        styles={{
+                            menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999
+                            })
+                        }}
+                        menuPortalTarget={document.body}
+                    />
+                    {roles?.find(
+                        (opt) => opt.value === Roles.ROLE_LUKKE_AVVIK
+                    ) && (
+                        <Typography>
+                            Ved brukerrolle "lukke avvik" kan ikke andre roller
+                            registreres
+                        </Typography>
+                    )}
+                </>
             )}
         </>
     );

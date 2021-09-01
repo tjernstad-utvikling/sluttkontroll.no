@@ -72,6 +72,16 @@ export const AuthProvider = ({
                         phone,
                         roles: newRoles
                     });
+                    localStorage.setItem(
+                        StorageKeys.currentUser,
+                        JSON.stringify({
+                            ...user,
+                            name,
+                            email,
+                            phone,
+                            roles: newRoles
+                        })
+                    );
                     enqueueSnackbar('Profil er oppdatert', {
                         variant: 'success'
                     });

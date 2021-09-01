@@ -124,6 +124,15 @@ export const AuthProvider = ({
         return false;
     };
 
+    const userHasRole = (requiredRole: Roles): boolean => {
+        if (user !== undefined) {
+            if (user.roles.includes(requiredRole)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     return (
         <Context.Provider
             value={{
@@ -132,7 +141,8 @@ export const AuthProvider = ({
                 signIn,
                 signOut,
                 loadUserFromStorage,
-                updateUser
+                updateUser,
+                userHasRole
             }}>
             {children}
         </Context.Provider>
@@ -151,4 +161,5 @@ interface ContextInterface {
         phone: string,
         roles: Roles[] | undefined
     ) => Promise<boolean>;
+    userHasRole: (requiredRole: Roles) => boolean;
 }

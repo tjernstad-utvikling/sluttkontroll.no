@@ -11,6 +11,7 @@ import Select from 'react-select';
 import Switch from '@material-ui/core/Switch';
 import { TextField } from '../components/input';
 import Typography from '@material-ui/core/Typography';
+import { useAuth } from '../hooks/useAuth';
 import { useState } from 'react';
 
 interface Option {
@@ -184,6 +185,7 @@ const RoleSelectField = () => {
     } = useFormikContext<FormValues>();
 
     const [options, setOptions] = useState<Array<Option>>();
+    const { userHasRole } = useAuth();
 
     useEffect(() => {
         setOptions(RolesOptions);
@@ -217,6 +219,7 @@ const RoleSelectField = () => {
                         classNamePrefix="select"
                         isSearchable
                         isMulti
+                        isDisabled={!userHasRole(Roles.ROLE_EDIT_ROLES)}
                         onChange={(selected) => {
                             setFieldValue('roles', selected);
                         }}

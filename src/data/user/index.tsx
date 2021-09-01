@@ -2,6 +2,7 @@ import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { initialState, userReducer } from './reducer';
 
+import { User } from '../../contracts/userApi';
 import { getUsers } from '../../api/userApi';
 
 export const useUser = () => {
@@ -36,12 +37,20 @@ export const UserContextProvider = ({
         }
     };
 
+    const updateUserInState = (user: User): void => {
+        dispatch({
+            type: ActionType.UpdateUser,
+            payload: user
+        });
+    };
+
     return (
         <UserContext.Provider
             value={{
                 state,
 
-                loadUsers
+                loadUsers,
+                updateUserInState
             }}>
             {children}
         </UserContext.Provider>

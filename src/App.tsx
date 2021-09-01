@@ -10,18 +10,18 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <ConfirmationDialogProvider>
-                <AuthProvider>
+                <SnackbarProvider
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center'
+                    }}
+                    maxSnack={3}>
                     <UserContextProvider>
-                        <SnackbarProvider
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'center'
-                            }}
-                            maxSnack={3}>
+                        <AuthProvider>
                             <AppRouter />
-                        </SnackbarProvider>
+                        </AuthProvider>
                     </UserContextProvider>
-                </AuthProvider>
+                </SnackbarProvider>
             </ConfirmationDialogProvider>
         </ThemeProvider>
     );

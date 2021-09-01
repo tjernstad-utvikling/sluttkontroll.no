@@ -28,7 +28,14 @@ interface FormValues {
     roles: Option[] | null;
 }
 interface UserProfileSchemaProps {
-    onSubmit: () => Promise<boolean>;
+    onSubmit: (
+        name: string,
+        phone: string,
+        email: string,
+        password: string,
+        changePassword: boolean,
+        roles: Roles[] | undefined
+    ) => Promise<boolean>;
     user?: User | undefined;
 }
 export const UserProfileSchema = ({
@@ -64,7 +71,19 @@ export const UserProfileSchema = ({
                     .required('Epost er påkrevd')
             })}
             onSubmit={async (values, { setSubmitting }) => {
-                await onSubmit();
+                const roles = values.roles?.find(
+                    (opt) => opt.value === Roles.ROLE_LUKKE_AVVIK
+                )
+                    ? [Roles.ROLE_LUKKE_AVVIK]
+                    : values.roles.map((opt) => opt.value);
+                await onSubmit(
+                    values.name,
+                    values.phone,
+                    values.email,
+                    values.password,
+                    values.changePassword,
+                    roles
+                );
             }}>
             {({ isSubmitting, setFieldValue, values, errors }) => {
                 return (

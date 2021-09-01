@@ -1,7 +1,7 @@
-import { Card, CardMenu } from '../components/card';
-
+import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { Roles } from '../contracts/userApi';
 import { UserProfileSchema } from '../schema/userProfile';
 import { useAuth } from '../hooks/useAuth';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -9,22 +9,32 @@ import { usePageStyles } from '../styles/kontroll/page';
 const ProfileView = () => {
     const classes = usePageStyles();
 
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
 
+    const handleUpdateUser = async (
+        name: string,
+        phone: string,
+        email: string,
+        password: string,
+        changePassword: boolean,
+        roles: Roles[] | undefined
+    ) => {
+        if (await updateUser(name, email, phone, roles)) {
+            return true;
+        }
+        return false;
+    };
     return (
         <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Profil" menu={<CardMenu items={[]} />}>
+                        <Card title="Profil">
                             {user !== undefined && (
                                 <div style={{ padding: 15 }}>
                                     <UserProfileSchema
-                                        onSubmit={async () => {
-                                            console.log();
-                                            return false;
-                                        }}
+                                        onSubmit={handleUpdateUser}
                                         user={user}
                                     />
                                 </div>

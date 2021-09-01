@@ -5,7 +5,8 @@ export interface UserState {
 }
 
 export enum ActionType {
-    setUsers
+    setUsers,
+    UpdateUser
 }
 
 export interface setUsers {
@@ -13,9 +14,15 @@ export interface setUsers {
     payload: Array<User>;
 }
 
-export type UserActions = setUsers;
+export interface UpdateUser {
+    type: ActionType.UpdateUser;
+    payload: User;
+}
+
+export type UserActions = setUsers | UpdateUser;
 
 export interface ContextInterface {
     state: UserState;
     loadUsers: () => Promise<void>;
+    updateUserInState: (user: User) => void;
 }

@@ -1,9 +1,12 @@
+import { Roles, User } from '../contracts/userApi';
 import { createContext, useContext, useState } from 'react';
 import { getCurrentUser, getLogin } from '../api/auth';
 
 import { StorageKeys } from '../contracts/keys';
-import { User } from '../contracts/userApi';
 import { refreshLoginToken } from '../api/sluttkontroll';
+import { updateUser as updateUserApi } from '../api/userApi';
+import { useSnackbar } from 'notistack';
+import { useUser } from '../data/user';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
 
@@ -18,6 +21,10 @@ export const AuthProvider = ({
 }): JSX.Element => {
     const [user, setUser] = useState<User>();
     const [hasCheckedLocal, setHasCheckedLocal] = useState(false);
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const { updateUserInState } = useUser();
 
     const signIn = async (
         email: string,
@@ -36,6 +43,53 @@ export const AuthProvider = ({
             }
         }
         return false;
+    };
+
+    const updateUser = async (
+        name: string,
+        email: string,
+        phone: string,
+        roles: Roles[] | undefined
+    ) => {
+        try {
+            const { status } = await updateUserApi(
+                name,
+                email,
+                phone,
+                roles !== undefined ? roles : [Roles.ROLE_USER]
+            );
+
+            if (status === 204) {
+                if (user !== undefined) {
+                    const newRoles =
+                        roles !== undefined ? roles : [Roles.ROLE_USER];
+
+                    setUser({ ...user, name, email, phone, roles: newRoles });
+                    updateUserInState({
+                        ...user,
+                        name,
+                        email,
+                        phone,
+                        roles: newRoles
+                    });
+                    enqueueSnackbar('Profil er oppdatert', {
+                        variant: 'success'
+                    });
+                    return true;
+                }
+            } else if (status === 400) {
+                enqueueSnackbar('Mangler ett eller flere felter', {
+                    variant: 'warning'
+                });
+            }
+            return false;
+        } catch (error) {
+            enqueueSnackbar('Ukjent feil ved lagring av profil', {
+                variant: 'error'
+            });
+            console.error(error);
+            return false;
+        }
     };
 
     const signOut = () => {
@@ -67,7 +121,8 @@ export const AuthProvider = ({
                 hasCheckedLocal,
                 signIn,
                 signOut,
-                loadUserFromStorage
+                loadUserFromStorage,
+                updateUser
             }}>
             {children}
         </Context.Provider>
@@ -80,4 +135,10 @@ interface ContextInterface {
     signIn: (email: string, password: string) => Promise<boolean>;
     signOut: () => void;
     loadUserFromStorage: () => Promise<boolean>;
+    updateUser: (
+        name: string,
+        email: string,
+        phone: string,
+        roles: Roles[] | undefined
+    ) => Promise<boolean>;
 }

@@ -1,10 +1,13 @@
 import { Roles, User } from '../contracts/userApi';
 import { createContext, useContext, useState } from 'react';
 import { getCurrentUser, getLogin } from '../api/auth';
+import {
+    updatePassword as updatePasswordApi,
+    updateUser as updateUserApi
+} from '../api/userApi';
 
 import { StorageKeys } from '../contracts/keys';
 import { refreshLoginToken } from '../api/sluttkontroll';
-import { updateUser as updateUserApi } from '../api/userApi';
 import { useSnackbar } from 'notistack';
 import { useUser } from '../data/user';
 
@@ -102,6 +105,26 @@ export const AuthProvider = ({
         }
     };
 
+    const updatePassword = async (password: string) => {
+        try {
+            const { status } = await updatePasswordApi(password);
+
+            if (status === 204) {
+                enqueueSnackbar('Passord er endret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            return false;
+        } catch (error) {
+            enqueueSnackbar('Ukjent feil ved lagring av passord', {
+                variant: 'error'
+            });
+            console.error(error);
+            return false;
+        }
+    };
+
     const signOut = () => {
         setUser(undefined);
         localStorage.removeItem(StorageKeys.token);
@@ -142,7 +165,8 @@ export const AuthProvider = ({
                 signOut,
                 loadUserFromStorage,
                 updateUser,
-                userHasRole
+                userHasRole,
+                updatePassword
             }}>
             {children}
         </Context.Provider>
@@ -162,4 +186,5 @@ interface ContextInterface {
         roles: Roles[] | undefined
     ) => Promise<boolean>;
     userHasRole: (requiredRole: Roles) => boolean;
+    updatePassword: (password: string) => Promise<boolean>;
 }

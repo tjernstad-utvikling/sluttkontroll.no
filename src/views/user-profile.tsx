@@ -9,7 +9,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 const ProfileView = () => {
     const classes = usePageStyles();
 
-    const { user, updateUser } = useAuth();
+    const { user, updateUser, updatePassword } = useAuth();
 
     const handleUpdateUser = async (
         name: string,
@@ -19,6 +19,10 @@ const ProfileView = () => {
         changePassword: boolean,
         roles: Roles[] | undefined
     ) => {
+        if (changePassword) {
+            if (await updatePassword(password)) {
+            }
+        }
         if (await updateUser(name, email, phone, roles)) {
             return true;
         }

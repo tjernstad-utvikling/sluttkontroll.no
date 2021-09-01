@@ -36,6 +36,7 @@ interface returnValue {
 export const getCurrentUser = async (): Promise<returnValue> => {
     try {
         const { status, data } = await sluttkontrollApi.get('/v3/user/me');
+        console.log({ data });
         if (status === 200) {
             localStorage.setItem(
                 StorageKeys.currentUser,

@@ -75,14 +75,12 @@ export const UserContextProvider = ({
         try {
             const { status, message } = await updateByIdUser(user);
 
-            if (status === 200) {
-                if (user !== undefined) {
-                    updateUserInState(user);
-                    enqueueSnackbar('Bruker er lagret', {
-                        variant: 'success'
-                    });
-                    return true;
-                }
+            if (status === 204) {
+                updateUserInState(user);
+                enqueueSnackbar('Bruker er lagret', {
+                    variant: 'success'
+                });
+                return true;
             } else if (status === 400) {
                 if (message === 'user_exists') {
                     enqueueSnackbar(

@@ -1,16 +1,15 @@
-import {
-    GridCellParams,
-    GridColDef,
-    GridRowData,
-    GridRowId
-} from '@material-ui/data-grid';
+import { GridCellParams, GridColDef } from '@material-ui/data-grid';
 import { Roles, RolesDesc, Sertifikat, User } from '../contracts/userApi';
 
 import { BaseTable } from './baseTable';
 import Chip from '@material-ui/core/Chip';
-import { useTable } from './tableContainer';
+import EditIcon from '@material-ui/icons/Edit';
+import { RowAction } from './tableUtils';
 
-export const columns = () => {
+interface columnsOptions {
+    currentUser: User;
+}
+export const columns = ({ currentUser }: columnsOptions) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -62,6 +61,29 @@ export const columns = () => {
                     ))}
                 </>
             )
+        },
+        {
+            field: 'action',
+            headerName: ' ',
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) => {
+                return (
+                    <RowAction
+                        actionItems={[
+                            {
+                                name: 'Rediger',
+                                to: `/admin/users/${params.row.id}`,
+                                skip: !currentUser.roles.includes(
+                                    Roles.ROLE_EDIT_USER
+                                ),
+                                icon: <EditIcon />
+                            }
+                        ]}
+                    />
+                );
+            }
         }
     ];
 
@@ -74,8 +96,6 @@ interface UserTableProps {
     users: User[];
 }
 export const UserTable = ({ users }: UserTableProps) => {
-    const { apiRef } = useTable();
-
     function CustomSort<T extends keyof User>(data: User[], field: T): User[] {
         switch (field.toString()) {
             default:

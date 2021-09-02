@@ -4,6 +4,7 @@ import { UserTable, columns, defaultColumns } from '../tables/user';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { TableContainer } from '../tables/tableContainer';
+import { useAuth } from '../hooks/useAuth';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
@@ -15,6 +16,8 @@ const UsersView = () => {
         state: { users },
         loadUsers
     } = useUser();
+
+    const { user } = useAuth();
 
     useEffectOnce(() => {
         loadUsers();
@@ -38,9 +41,9 @@ const UsersView = () => {
                                     ]}
                                 />
                             }>
-                            {users !== undefined ? (
+                            {users !== undefined && user !== undefined ? (
                                 <TableContainer
-                                    columns={columns()}
+                                    columns={columns({ currentUser: user })}
                                     defaultColumns={defaultColumns}
                                     tableId="users">
                                     <UserTable users={users ?? []} />

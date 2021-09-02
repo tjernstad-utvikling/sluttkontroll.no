@@ -49,12 +49,14 @@ const NewUserView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Ny bruker">
+                        <Card title="Rediger bruker">
                             <div style={{ padding: 15 }}>
-                                <UserSchema
-                                    onSubmit={handleEditUser}
-                                    user={user}
-                                />
+                                {user !== undefined && (
+                                    <UserSchema
+                                        onSubmit={handleEditUser}
+                                        user={user}
+                                    />
+                                )}
                             </div>
                         </Card>
                     </Grid>

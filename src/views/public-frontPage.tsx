@@ -93,10 +93,12 @@ const FrontPage = () => {
                         })}
                         onSubmit={async (values, { setSubmitting }) => {
                             try {
-                                if (
-                                    await signIn(values.email, values.password)
-                                ) {
-                                    history.push('/kontroll');
+                                const loginResponse = await signIn(
+                                    values.email,
+                                    values.password
+                                );
+                                if (loginResponse.status) {
+                                    history.push(loginResponse.redirect);
                                 } else {
                                     setLoginError(
                                         'Innlogging feilet, epost eller passord eksisterer ikke'

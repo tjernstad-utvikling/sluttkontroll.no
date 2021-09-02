@@ -21,6 +21,7 @@ export interface SertifikatType {
 }
 
 export enum Roles {
+    ROLE_KONTROLL = 'ROLE_KONTROLL',
     ROLE_ADMIN = 'ROLE_ADMIN',
     ROLE_EDIT_USER = 'ROLE_EDIT_USER',
     ROLE_EDIT_ROLES = 'ROLE_EDIT_ROLES',
@@ -31,6 +32,7 @@ export enum Roles {
 }
 
 export const RolesDesc = {
+    [Roles.ROLE_KONTROLL]: 'Kontrollør',
     [Roles.ROLE_ADMIN]: 'Administrator',
     [Roles.ROLE_EDIT_USER]: 'Rediger brukere',
     [Roles.ROLE_EDIT_ROLES]: 'Rediger brukerroller',
@@ -40,6 +42,7 @@ export const RolesDesc = {
     [Roles.ROLE_USER]: 'Bruker'
 };
 export const RolesOptions = [
+    { value: Roles.ROLE_KONTROLL, label: 'Kontrollør' },
     { value: Roles.ROLE_ADMIN, label: 'Administrator' },
     { value: Roles.ROLE_EDIT_USER, label: 'Rediger brukere' },
     { value: Roles.ROLE_EDIT_ROLES, label: 'Rediger brukerroller' },

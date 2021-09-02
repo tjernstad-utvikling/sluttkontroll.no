@@ -32,7 +32,7 @@ export const AuthProvider = ({
     const signIn = async (
         email: string,
         password: string
-    ): Promise<boolean> => {
+    ): Promise<{ redirect: string; status: boolean }> => {
         const loginResponse = await getLogin(email, password);
         if (loginResponse.status === 200) {
             const userResponse = await getCurrentUser();
@@ -42,10 +42,13 @@ export const AuthProvider = ({
                 loginResponse.token !== undefined
             ) {
                 setUser(userResponse.user);
-                return true;
+                return {
+                    redirect: redirectRole(userResponse.user),
+                    status: true
+                };
             }
         }
-        return false;
+        return { redirect: '/', status: false };
     };
 
     const updateUser = async (
@@ -156,6 +159,19 @@ export const AuthProvider = ({
         return false;
     };
 
+    const redirectRole = (user: User): string => {
+        if (user !== undefined) {
+            if (
+                user.roles.includes(Roles.ROLE_KONTROLL) ||
+                user.roles.includes(Roles.ROLE_ADMIN)
+            ) {
+                return '/kontroll';
+            }
+        }
+
+        return '/';
+    };
+
     return (
         <Context.Provider
             value={{
@@ -176,7 +192,10 @@ export const AuthProvider = ({
 interface ContextInterface {
     user: User | undefined;
     hasCheckedLocal: boolean;
-    signIn: (email: string, password: string) => Promise<boolean>;
+    signIn: (
+        email: string,
+        password: string
+    ) => Promise<{ redirect: string; status: boolean }>;
     signOut: () => void;
     loadUserFromStorage: () => Promise<boolean>;
     updateUser: (

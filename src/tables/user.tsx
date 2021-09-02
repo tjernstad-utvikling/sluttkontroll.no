@@ -1,7 +1,13 @@
-import { GridColDef, GridRowData, GridRowId } from '@material-ui/data-grid';
+import {
+    GridCellParams,
+    GridColDef,
+    GridRowData,
+    GridRowId
+} from '@material-ui/data-grid';
+import { Roles, RolesDesc, Sertifikat, User } from '../contracts/userApi';
 
 import { BaseTable } from './baseTable';
-import { User } from '../contracts/userApi';
+import Chip from '@material-ui/core/Chip';
 import { useTable } from './tableContainer';
 
 export const columns = () => {
@@ -24,12 +30,38 @@ export const columns = () => {
         {
             field: 'roles',
             headerName: 'Roller',
-            flex: 1
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <>
+                    {params.row.roles
+                        .filter((role: Roles) => role !== Roles.ROLE_USER)
+                        .map((role: Roles) => (
+                            <Chip
+                                key={role}
+                                variant="outlined"
+                                size="small"
+                                label={RolesDesc[role]}
+                            />
+                        ))}
+                </>
+            )
         },
         {
             field: 'sertifikater',
             headerName: 'Sertifikater',
-            flex: 1
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <>
+                    {params.row.sertifikater.map((sertifikat: Sertifikat) => (
+                        <Chip
+                            key={sertifikat.id}
+                            variant="outlined"
+                            size="small"
+                            label={`${sertifikat.type.name} - ${sertifikat.number}`}
+                        />
+                    ))}
+                </>
+            )
         }
     ];
 

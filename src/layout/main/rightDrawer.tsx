@@ -1,6 +1,7 @@
 import CloseIcon from '@material-ui/icons/Close';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
+import GroupIcon from '@material-ui/icons/Group';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import { ListItemLink } from '../../components/links';
@@ -37,7 +38,7 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                 </IconButton>
             </div>
             <Divider />
-            <List aria-label="hoved meny">
+            <List aria-label="Bruker meny">
                 <ListItemLink
                     to="/user"
                     primary={user?.name || 'Profil'}
@@ -55,6 +56,14 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                     to="/instrument"
                     primary="Instrumenter"
                     icon={<SpeedIcon />}
+                />
+            </List>
+            <Divider />
+            <List aria-label="admin meny">
+                <ListItemLink
+                    to="/admin/users"
+                    primary="Brukere"
+                    icon={<GroupIcon />}
                 />
             </List>
         </Drawer>

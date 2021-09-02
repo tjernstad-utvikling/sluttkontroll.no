@@ -4,17 +4,17 @@ import { Suspense, lazy } from 'react';
 import { InstrumentContextProvider } from '../../data/instrument';
 import { MainLayout } from '../../layout/main';
 
-const ProfileView = lazy(() => import('../../views/user-profile'));
+const UsersView = lazy(() => import('../../views/admin-users'));
 
-export const User = () => {
+export const Admin = () => {
     let { path } = useRouteMatch();
     return (
         <InstrumentContextProvider>
             <MainLayout module="instrument">
                 <Suspense fallback={<div>Loading...</div>}>
                     <Switch>
-                        <Route exact path={path}>
-                            <ProfileView />
+                        <Route path={`${path}/users`}>
+                            <UsersView />
                         </Route>
                     </Switch>
                 </Suspense>

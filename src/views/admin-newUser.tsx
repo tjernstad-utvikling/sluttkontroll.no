@@ -3,14 +3,27 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { Roles } from '../contracts/userApi';
 import { UserSchema } from '../schema/user';
+import { useHistory } from 'react-router-dom';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const NewUserView = () => {
     const classes = usePageStyles();
 
+    const history = useHistory();
     const { newUser } = useUser();
-
+    const handleNewUser = async (
+        name: string,
+        phone: string,
+        email: string,
+        roles: Roles[] | undefined
+    ) => {
+        if (await newUser(name, email, phone, roles)) {
+            history.goBack();
+            return true;
+        }
+        return false;
+    };
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -19,7 +32,7 @@ const NewUserView = () => {
                     <Grid item xs={12}>
                         <Card title="Ny bruker">
                             <div style={{ padding: 15 }}>
-                                <UserSchema onSubmit={newUser} />
+                                <UserSchema onSubmit={handleNewUser} />
                             </div>
                         </Card>
                     </Grid>

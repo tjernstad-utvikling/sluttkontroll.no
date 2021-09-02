@@ -3,10 +3,10 @@ import Drawer from '@material-ui/core/Drawer';
 import GroupIcon from '@material-ui/icons/Group';
 import List from '@material-ui/core/List';
 import { ListItemLink } from '../../components/links';
+import TextFieldsIcon from '@material-ui/icons/TextFields';
 import clsx from 'clsx';
 import logo from '../../assets/logoWhite.png';
 import { useMainStyles } from '../../styles/layout/main';
-
 interface LeftDrawerProps {
     isOpen: boolean;
 }
@@ -35,6 +35,12 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
                     to="/admin/users"
                     primary="Brukere"
                     icon={<GroupIcon />}
+                    lightText
+                />
+                <ListItemLink
+                    to="/admin/settings/info-text"
+                    primary="Rapport informasjonstekst"
+                    icon={<TextFieldsIcon />}
                     lightText
                 />
             </List>

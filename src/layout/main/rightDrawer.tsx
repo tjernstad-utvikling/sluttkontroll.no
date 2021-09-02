@@ -69,7 +69,7 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                 />
                 <ListItemLink
                     to="/admin/settings"
-                    primary="Instillinger"
+                    primary="Innstillinger"
                     icon={<SettingsIcon />}
                 />
             </List>

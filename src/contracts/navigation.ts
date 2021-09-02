@@ -35,3 +35,6 @@ export interface KontrollReportViewParams {
 export interface InstrumentCalibrationViewParams {
     instrumentId: string;
 }
+export interface EditUserViewParams {
+    userId: string;
+}

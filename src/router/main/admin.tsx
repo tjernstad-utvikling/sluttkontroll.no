@@ -5,6 +5,7 @@ import { MainLayout } from '../../layout/main';
 
 const UsersView = lazy(() => import('../../views/admin-users'));
 const NewUserView = lazy(() => import('../../views/admin-newUser'));
+const EditUserView = lazy(() => import('../../views/admin-editUser'));
 
 export const Admin = () => {
     let { path } = useRouteMatch();
@@ -14,6 +15,9 @@ export const Admin = () => {
                 <Switch>
                     <Route path={`${path}/users/new`}>
                         <NewUserView />
+                    </Route>
+                    <Route path={`${path}/users/:userId`}>
+                        <EditUserView />
                     </Route>
                     <Route path={`${path}/users`}>
                         <UsersView />

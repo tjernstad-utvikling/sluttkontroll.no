@@ -1,7 +1,11 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { Roles, User } from '../../contracts/userApi';
-import { getUsers, newUser as newUserApi } from '../../api/userApi';
+import {
+    getUsers,
+    newUser as newUserApi,
+    updateByIdUser
+} from '../../api/userApi';
 import { initialState, userReducer } from './reducer';
 
 import { useSnackbar } from 'notistack';
@@ -67,6 +71,41 @@ export const UserContextProvider = ({
             return false;
         }
     };
+    const updateUser = async (user: User) => {
+        try {
+            const { status, message } = await updateByIdUser(user);
+
+            if (status === 200) {
+                if (user !== undefined) {
+                    updateUserInState(user);
+                    enqueueSnackbar('Bruker er lagret', {
+                        variant: 'success'
+                    });
+                    return true;
+                }
+            } else if (status === 400) {
+                if (message === 'user_exists') {
+                    enqueueSnackbar(
+                        'Epostadressen er allerede registrert på en annen bruker',
+                        {
+                            variant: 'warning'
+                        }
+                    );
+                } else if (message === 'user_data_missing') {
+                    enqueueSnackbar('Epost eller navn mangler', {
+                        variant: 'warning'
+                    });
+                }
+            }
+            return false;
+        } catch (error) {
+            enqueueSnackbar('Ukjent feil ved lagring av profil', {
+                variant: 'error'
+            });
+            console.error(error);
+            return false;
+        }
+    };
 
     const loadUsers = async (): Promise<void> => {
         if (!hasLoadedUsers) {
@@ -100,7 +139,8 @@ export const UserContextProvider = ({
 
                 loadUsers,
                 updateUserInState,
-                newUser
+                newUser,
+                updateUser
             }}>
             {children}
         </UserContext.Provider>

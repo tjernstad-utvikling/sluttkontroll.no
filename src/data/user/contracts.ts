@@ -25,6 +25,7 @@ export interface ContextInterface {
     state: UserState;
     loadUsers: () => Promise<void>;
     updateUserInState: (user: User) => void;
+    updateUser: (user: User) => Promise<boolean>;
     newUser: (
         name: string,
         email: string,

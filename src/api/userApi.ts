@@ -45,6 +45,7 @@ export const updateUser = async (
         throw new Error(error);
     }
 };
+
 export const newUser = async (
     name: string,
     email: string,
@@ -64,6 +65,28 @@ export const newUser = async (
         });
         if (status === 200) {
             return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        console.log(error);
+        throw new Error(error);
+    }
+};
+export const updateByIdUser = async (
+    user: User
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(`/v3/user/${user.id}`, {
+            ...user
+        });
+        if (status === 204) {
+            return { status };
         }
         throw new Error('not 200');
     } catch (error) {

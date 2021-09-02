@@ -28,17 +28,16 @@ const UsersView = () => {
                     <Grid item xs={12}>
                         <Card
                             title="Brukere"
-                            // menu={
-                            //     <CardMenu
-                            //         items={[
-                            //             {
-                            //                 label: 'Nytt instrument',
-                            //                 action: () => setIsModalOpen(true)
-                            //             }
-                            //         ]}
-                            //     />
-                            // }
-                        >
+                            menu={
+                                <CardMenu
+                                    items={[
+                                        {
+                                            label: 'Ny  bruker',
+                                            to: '/admin/users/new'
+                                        }
+                                    ]}
+                                />
+                            }>
                             {users !== undefined ? (
                                 <TableContainer
                                     columns={columns()}

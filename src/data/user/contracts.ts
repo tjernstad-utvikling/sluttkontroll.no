@@ -1,16 +1,16 @@
-import { User } from '../../contracts/userApi';
+import { Roles, User } from '../../contracts/userApi';
 
 export interface UserState {
     users: Array<User> | undefined;
 }
 
 export enum ActionType {
-    setUsers,
-    UpdateUser
+    UpdateUser,
+    addUsers
 }
 
-export interface setUsers {
-    type: ActionType.setUsers;
+export interface addUsers {
+    type: ActionType.addUsers;
     payload: Array<User>;
 }
 
@@ -19,10 +19,16 @@ export interface UpdateUser {
     payload: User;
 }
 
-export type UserActions = setUsers | UpdateUser;
+export type UserActions = addUsers | UpdateUser;
 
 export interface ContextInterface {
     state: UserState;
     loadUsers: () => Promise<void>;
     updateUserInState: (user: User) => void;
+    newUser: (
+        name: string,
+        email: string,
+        phone: string,
+        roles: Roles[] | undefined
+    ) => Promise<boolean>;
 }

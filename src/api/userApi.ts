@@ -45,6 +45,35 @@ export const updateUser = async (
         throw new Error(error);
     }
 };
+export const newUser = async (
+    name: string,
+    email: string,
+    phone: string,
+    roles: Roles[]
+): Promise<{
+    status: number;
+    user?: User;
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post('/v3/user/', {
+            name,
+            email,
+            phone,
+            roles
+        });
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        console.log(error);
+        throw new Error(error);
+    }
+};
 
 export const updatePassword = async (
     password: string

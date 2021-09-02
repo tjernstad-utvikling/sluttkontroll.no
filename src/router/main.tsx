@@ -1,3 +1,4 @@
+import { Admin } from './main/admin';
 import { ClientContextProvider } from '../data/klient';
 import { Instrument } from './main/instrument';
 import { Kontroll } from './main/kontroll';
@@ -15,6 +16,9 @@ export const Main = () => {
     return (
         <ClientContextProvider>
             <Switch>
+                <PrivateRoute path="/admin">
+                    <Admin />
+                </PrivateRoute>
                 <PrivateRoute path="/instrument">
                     <Instrument />
                 </PrivateRoute>

@@ -1,13 +1,10 @@
 import { GridColDef, GridRowData, GridRowId } from '@material-ui/data-grid';
-import { useEffect, useMemo } from 'react';
 
 import { BaseTable } from './baseTable';
-import { Checklist } from '../contracts/kontrollApi';
-import { Checkpoint } from '../contracts/checkpointApi';
 import { User } from '../contracts/userApi';
 import { useTable } from './tableContainer';
 
-export const columns = (url: string) => {
+export const columns = () => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -43,9 +40,8 @@ export const defaultColumns: Array<string> = ['name', 'email'];
 
 interface UserTableProps {
     users: User[];
-    onSelected: (users: User[]) => void;
 }
-export const UserTable = ({ users, onSelected }: UserTableProps) => {
+export const UserTable = ({ users }: UserTableProps) => {
     const { apiRef } = useTable();
 
     function CustomSort<T extends keyof User>(data: User[], field: T): User[] {
@@ -54,31 +50,26 @@ export const UserTable = ({ users, onSelected }: UserTableProps) => {
                 return data;
         }
     }
-    const onSelect = () => {
-        const rows: Map<GridRowId, GridRowData> =
-            apiRef.current.getSelectedRows();
+    // const onSelect = () => {
+    //     const rows: Map<GridRowId, GridRowData> =
+    //         apiRef.current.getSelectedRows();
 
-        const cpRows: User[] = [];
+    //     const cpRows: User[] = [];
 
-        rows.forEach((r) =>
-            cpRows.push({
-                name: r.name,
-                id: r.id,
-                email: r.email,
-                roles: r.roles,
-                phone: r.phone,
-                sertifikater: r.sertifikater
-            })
-        );
-        onSelected(cpRows);
-    };
+    //     rows.forEach((r) =>
+    //         cpRows.push({
+    //             name: r.name,
+    //             id: r.id,
+    //             email: r.email,
+    //             roles: r.roles,
+    //             phone: r.phone,
+    //             sertifikater: r.sertifikater
+    //         })
+    //     );
+    //     onSelected(cpRows);
+    // };
 
     return (
-        <BaseTable
-            onSelected={onSelect}
-            data={users}
-            customSort={CustomSort}
-            customSortFields={[]}
-        />
+        <BaseTable data={users} customSort={CustomSort} customSortFields={[]} />
     );
 };

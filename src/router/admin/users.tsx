@@ -1,29 +1,29 @@
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
-import { MainLayout } from '../../layout/main';
+import { AdminLayout } from '../../layout/admin';
 
 const UsersView = lazy(() => import('../../views/admin-users'));
 const NewUserView = lazy(() => import('../../views/admin-newUser'));
 const EditUserView = lazy(() => import('../../views/admin-editUser'));
 
-export const Admin = () => {
+export const Users = () => {
     let { path } = useRouteMatch();
     return (
-        <MainLayout module="instrument">
+        <AdminLayout module="users">
             <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
-                    <Route path={`${path}/users/new`}>
+                    <Route path={`${path}/new`}>
                         <NewUserView />
                     </Route>
-                    <Route path={`${path}/users/:userId`}>
+                    <Route path={`${path}/:userId`}>
                         <EditUserView />
                     </Route>
-                    <Route path={`${path}/users`}>
+                    <Route path={`${path}`}>
                         <UsersView />
                     </Route>
                 </Switch>
             </Suspense>
-        </MainLayout>
+        </AdminLayout>
     );
 };

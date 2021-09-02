@@ -7,9 +7,11 @@ import List from '@material-ui/core/List';
 import { ListItemLink } from '../../components/links';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
 import PersonIcon from '@material-ui/icons/Person';
+import SettingsIcon from '@material-ui/icons/Settings';
 import SpeedIcon from '@material-ui/icons/Speed';
 import { useAuth } from '../../hooks/useAuth';
 import { useMainStyles } from '../../styles/layout/main';
+
 interface RightDrawerProps {
     isOpen: boolean;
     toggle: () => void;
@@ -64,6 +66,11 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                     to="/admin/users"
                     primary="Brukere"
                     icon={<GroupIcon />}
+                />
+                <ListItemLink
+                    to="/admin/settings"
+                    primary="Instillinger"
+                    icon={<SettingsIcon />}
                 />
             </List>
         </Drawer>

@@ -11,7 +11,7 @@ export const getCheckpoints = async (): Promise<{
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };

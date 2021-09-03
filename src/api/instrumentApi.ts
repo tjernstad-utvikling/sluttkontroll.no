@@ -12,7 +12,7 @@ export const getInstruments = async (): Promise<InstrumentResponse> => {
     try {
         const { status, data } = await sluttkontrollApi.get('/v3/instrument/');
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         throw new Error('Error Instrument API Get instruments');
     }
 };
@@ -30,7 +30,7 @@ export const newInstrument = async (instrument: {
             instrument
         );
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -47,7 +47,7 @@ export const editInstrument = async (
             instrument
         );
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -64,7 +64,7 @@ export const setDisponent = async (
             `/v3/instrument/disponent/${instrumentId}/${userId}`
         );
         return { status };
-    } catch (error) {
+    } catch (error: any) {
         throw new Error('Error Instrument API set Disponent');
     }
 };
@@ -77,7 +77,7 @@ export const removeDisponent = async (
             `/v3/instrument/remove-disponent/${instrumentId}`
         );
         return { status };
-    } catch (error) {
+    } catch (error: any) {
         throw new Error('Error Instrument API set Disponent');
     }
 };
@@ -102,7 +102,7 @@ export const addCalibrationFile = async (
         );
 
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -121,7 +121,7 @@ export const addCalibration = async (
             { kalibrertDate }
         );
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -141,7 +141,7 @@ export const getCalibrationsByInstrument = async (
             `/v3/instrument/kalibrering/${instrumentId}`
         );
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -164,7 +164,7 @@ export const getCalibrationCertificate = async (
             }
         );
         return { status, data };
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 404) {
             return { status: 404, message: error.response.data.message };
         }

@@ -47,7 +47,7 @@ export const AvvikContextProvider = ({
                     payload: avvik
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
         }
     };
@@ -79,7 +79,7 @@ export const AvvikContextProvider = ({
                 return false;
             }
             return true;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
                 variant: 'error'
@@ -112,7 +112,7 @@ export const AvvikContextProvider = ({
                 return avvik;
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med lagring av avvik', {
                 variant: 'error'
@@ -142,7 +142,7 @@ export const AvvikContextProvider = ({
                 });
             }
             return true;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
                 variant: 'error'
@@ -177,7 +177,7 @@ export const AvvikContextProvider = ({
                 });
             }
             return true;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
                 variant: 'error'
@@ -203,7 +203,7 @@ export const AvvikContextProvider = ({
                 });
             }
             return true;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
                 variant: 'error'
@@ -240,7 +240,7 @@ export const AvvikContextProvider = ({
                 return false;
             }
             return true;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med sletting av avvik', {
                 variant: 'error'
@@ -273,7 +273,7 @@ export const AvvikContextProvider = ({
             }
 
             return false;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med sletting av bilde', {
                 variant: 'error'
@@ -309,7 +309,7 @@ export const AvvikContextProvider = ({
                             variant: 'warning'
                         });
                     }
-                } catch (error) {
+                } catch (error: any) {
                     enqueueSnackbar('Problemer med opplastning av bilde', {
                         variant: 'error'
                     });

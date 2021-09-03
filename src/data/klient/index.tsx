@@ -37,7 +37,7 @@ export const ClientContextProvider = ({
                     payload: klienter
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
         }
     };
@@ -55,7 +55,7 @@ export const ClientContextProvider = ({
                 variant: 'success'
             });
             return { status: true, klient };
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av klient', {
                 variant: 'error'
             });
@@ -75,7 +75,7 @@ export const ClientContextProvider = ({
                 variant: 'success'
             });
             return true;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av klient', {
                 variant: 'error'
             });
@@ -96,7 +96,7 @@ export const ClientContextProvider = ({
                 variant: 'success'
             });
             return { status: true, location };
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av lokasjon', {
                 variant: 'error'
             });
@@ -120,7 +120,7 @@ export const ClientContextProvider = ({
                 variant: 'success'
             });
             return true;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av lokasjon', {
                 variant: 'error'
             });

@@ -21,7 +21,7 @@ export const getClients = async (): Promise<{
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -40,7 +40,7 @@ export const newClient = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -59,7 +59,7 @@ export const editClient = async (
             return { status };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -82,7 +82,7 @@ export const newLocation = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -100,7 +100,7 @@ export const editLocation = async (
             return { status };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -119,7 +119,7 @@ export const getKontroller = async (): Promise<{
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -139,7 +139,7 @@ export const getKontrollReportData = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -163,7 +163,7 @@ export const saveKontrollReportData = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, kontroll: undefined };
         }
@@ -181,7 +181,7 @@ export const toggleKontrollStatus = async (
             return status;
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -202,7 +202,7 @@ export const getKontrollerByKlient = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -223,7 +223,7 @@ export const getKontrollerByObjekt = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -242,7 +242,7 @@ export const updateKontroll = async (
             return { status };
         }
         throw new Error('not 204');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -265,7 +265,7 @@ export const newKontroll = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -288,7 +288,7 @@ export const newSkjema = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -308,7 +308,7 @@ export const editChecklist = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -327,7 +327,7 @@ export const toggleAktuellStatusChecklist = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -346,7 +346,7 @@ export const getChecklistsBySkjema = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -364,7 +364,7 @@ export const deleteSkjemaById = async (
             return { status, message: '' };
         }
         throw new Error('not 204');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -389,7 +389,7 @@ export const updateSkjemaApi = async (
             return { status, message: '' };
         }
         throw new Error('not 204');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }

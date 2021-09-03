@@ -20,7 +20,7 @@ export const Image = ({ src, file, alt, objectFit }: ImageProps) => {
                     if (response.status === 200) {
                         setObjectUrl(URL.createObjectURL(response.data));
                     }
-                } catch (error) {
+                } catch (error: any) {
                     console.log(error);
                 }
             } else if (file !== undefined) {
@@ -59,7 +59,7 @@ export const PdfImage = ({ src }: { src: string }) => {
                 if (response.status === 200) {
                     setObjectUrl(URL.createObjectURL(response.data));
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error);
             }
         };

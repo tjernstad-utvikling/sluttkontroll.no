@@ -67,7 +67,7 @@ const InstrumentsView = () => {
                     variant: 'warning'
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Ukjent problem med lasting av sertifikat', {
                 variant: 'error'
             });

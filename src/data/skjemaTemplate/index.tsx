@@ -33,7 +33,7 @@ export const TemplateContextProvider = ({
                         payload: templates
                     });
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error);
             }
             setHasLoadedTemplates(true);

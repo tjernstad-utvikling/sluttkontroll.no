@@ -57,7 +57,7 @@ export const MeasurementContextProvider = ({
                     });
                 }
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
         }
     };
@@ -81,7 +81,7 @@ export const MeasurementContextProvider = ({
                 variant: 'success'
             });
             return true;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av måling', {
                 variant: 'error'
             });
@@ -104,7 +104,7 @@ export const MeasurementContextProvider = ({
                 });
                 return true;
             }
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av måling', {
                 variant: 'error'
             });
@@ -128,7 +128,7 @@ export const MeasurementContextProvider = ({
                 });
                 return true;
             }
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med sletting av måling', {
                 variant: 'error'
             });

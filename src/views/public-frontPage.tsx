@@ -104,7 +104,7 @@ const FrontPage = () => {
                                         'Innlogging feilet, epost eller passord eksisterer ikke'
                                     );
                                 }
-                            } catch (error) {
+                            } catch (error: any) {
                                 setLoginError(
                                     'Innlogging feilet, en ukjent feil oppsto'
                                 );

@@ -12,7 +12,7 @@ export const getInfoText = async (): Promise<{
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         throw new Error('');
     }
@@ -32,7 +32,7 @@ export const setInfoText = async (
         );
 
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         throw new Error('');
     }

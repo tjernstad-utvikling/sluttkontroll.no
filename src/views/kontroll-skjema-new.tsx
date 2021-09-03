@@ -37,7 +37,7 @@ const SkjemaNewView = () => {
                     )
                 );
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
         }
     });

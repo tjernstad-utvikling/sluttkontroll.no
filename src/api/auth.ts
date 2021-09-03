@@ -23,7 +23,7 @@ export const getLogin = async (
         return {
             status
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             status: error.response.status
         };
@@ -51,7 +51,7 @@ export const getCurrentUser = async (): Promise<returnValue> => {
         return {
             status
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             status: error.response.status
         };

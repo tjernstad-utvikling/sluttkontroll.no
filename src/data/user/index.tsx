@@ -63,7 +63,7 @@ export const UserContextProvider = ({
                 }
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Ukjent feil ved lagring av profil', {
                 variant: 'error'
             });
@@ -96,7 +96,7 @@ export const UserContextProvider = ({
                 }
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Ukjent feil ved lagring av profil', {
                 variant: 'error'
             });
@@ -116,7 +116,7 @@ export const UserContextProvider = ({
                         payload: users
                     });
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error);
             }
             setHasLoadedUsers(true);

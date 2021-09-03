@@ -45,7 +45,7 @@ export const InstrumentContextProvider = ({
                         payload: instruments
                     });
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error);
             }
             setHasLoadedInstruments(true);
@@ -84,7 +84,7 @@ export const InstrumentContextProvider = ({
                 return true;
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med lagring av instrument', {
                 variant: 'error'
@@ -136,7 +136,7 @@ export const InstrumentContextProvider = ({
                 }
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med lagring av instrument', {
                 variant: 'error'
@@ -167,7 +167,7 @@ export const InstrumentContextProvider = ({
                 return true;
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med lagring av instrument', {
                 variant: 'error'
@@ -207,7 +207,7 @@ export const InstrumentContextProvider = ({
             }
 
             return false;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med lagring av instrument', {
                 variant: 'error'

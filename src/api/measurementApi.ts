@@ -20,7 +20,7 @@ export const getMeasurementByKontrollList = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -36,7 +36,7 @@ export const getMeasurementTypes = async (): Promise<{
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -56,7 +56,7 @@ export const newMeasurement = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -75,7 +75,7 @@ export const updateMeasurementApi = async (
             return { status, ...data };
         }
         throw new Error('not 204');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -93,7 +93,7 @@ export const deleteMeasurement = async (
             return { status, message: '' };
         }
         throw new Error('not 204');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };

@@ -53,7 +53,7 @@ instance.interceptors.response.use(
                                     reject(err);
                                 });
                         });
-                    } catch (Error) {
+                    } catch (error: any) {
                         Promise.reject(Error);
                     }
                 }
@@ -82,7 +82,7 @@ export const refreshLoginToken = async (): Promise<{
             };
         }
         throw new Error('');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error('');
     }
 };

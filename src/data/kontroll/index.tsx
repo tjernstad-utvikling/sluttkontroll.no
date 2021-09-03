@@ -68,7 +68,7 @@ export const KontrollContextProvider = ({
                     });
                     setHasLoadedMyKontroller(true);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error);
             }
         }
@@ -95,7 +95,7 @@ export const KontrollContextProvider = ({
                     payload: checklists
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
         }
     };
@@ -121,7 +121,7 @@ export const KontrollContextProvider = ({
                     payload: checklists
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
         }
     };
@@ -139,7 +139,7 @@ export const KontrollContextProvider = ({
                 variant: 'success'
             });
             return true;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med oppdatering av kontrollen', {
                 variant: 'error'
             });
@@ -165,7 +165,7 @@ export const KontrollContextProvider = ({
                 });
             }
             return true;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med oppdatering av kontrollen', {
                 variant: 'error'
             });
@@ -190,7 +190,7 @@ export const KontrollContextProvider = ({
                 variant: 'success'
             });
             return true;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av kontrollen', {
                 variant: 'error'
             });
@@ -228,7 +228,7 @@ export const KontrollContextProvider = ({
                 variant: 'success'
             });
             return true;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av skjema', {
                 variant: 'error'
             });
@@ -260,7 +260,7 @@ export const KontrollContextProvider = ({
                 );
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med oppdatering av skjema', {
                 variant: 'error'
             });
@@ -288,7 +288,7 @@ export const KontrollContextProvider = ({
             }
 
             return true;
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             enqueueSnackbar('Problemer med sletting av skjema', {
                 variant: 'error'
@@ -316,7 +316,7 @@ export const KontrollContextProvider = ({
                 variant: 'success'
             });
             return true;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av sjekkliste', {
                 variant: 'error'
             });
@@ -347,7 +347,7 @@ export const KontrollContextProvider = ({
                 });
                 return true;
             }
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av sjekkliste', {
                 variant: 'error'
             });

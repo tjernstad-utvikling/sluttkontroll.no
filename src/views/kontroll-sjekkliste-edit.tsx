@@ -69,7 +69,7 @@ const SjekklisteEditView = () => {
                     )
                 );
             }
-        } catch (error) {}
+        } catch (error: any) {}
     });
 
     return (

@@ -12,7 +12,7 @@ export const getUsers = async (): Promise<{
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -37,7 +37,7 @@ export const updateUser = async (
             return { status };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -67,7 +67,7 @@ export const newUser = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -89,7 +89,7 @@ export const updateByIdUser = async (
             return { status };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -112,7 +112,7 @@ export const updatePassword = async (
             return { status };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }

@@ -151,7 +151,7 @@ export const ReportPropertiesViewer = ({
                 }
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Problemer med lagring av kontrollegenskaper', {
                 variant: 'error'
             });

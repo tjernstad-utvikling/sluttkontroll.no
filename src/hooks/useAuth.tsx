@@ -99,7 +99,7 @@ export const AuthProvider = ({
                 });
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Ukjent feil ved lagring av profil', {
                 variant: 'error'
             });
@@ -119,7 +119,7 @@ export const AuthProvider = ({
                 return true;
             }
             return false;
-        } catch (error) {
+        } catch (error: any) {
             enqueueSnackbar('Ukjent feil ved lagring av passord', {
                 variant: 'error'
             });

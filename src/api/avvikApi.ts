@@ -18,7 +18,7 @@ export const getAvvikByKontrollList = async (
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -37,7 +37,7 @@ export const deleteAvvikById = async (
             return { status, message: '' };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -61,7 +61,7 @@ export const updateAvvikById = async (
             return { status, message: '' };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -88,7 +88,7 @@ export const addAvvikApi = async (newAvvik: {
             return { status, ...data };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 };
@@ -112,7 +112,7 @@ export const setUtbedrereApi = async (
             return { status, message: '' };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -134,7 +134,7 @@ export const openAvvikApi = async (
             return { status, message: '' };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -157,7 +157,7 @@ export const closeAvvikApi = async (
             return { status, message: '' };
         }
         throw new Error('not 200');
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
@@ -177,7 +177,7 @@ export const getImageFile = async (
         );
 
         return { status, data: data };
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
         throw new Error(error);
     }
@@ -192,7 +192,7 @@ export const deleteImage = async (
         );
 
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         console.log(error);
         throw new Error(error);
     }
@@ -217,7 +217,7 @@ export const addImage = async (
         );
 
         return { status, ...data };
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }

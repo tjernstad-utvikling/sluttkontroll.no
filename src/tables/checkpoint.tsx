@@ -1,10 +1,10 @@
 import { GridColDef, GridRowData, GridRowId } from '@material-ui/data-grid';
-import { useEffect, useMemo } from 'react';
 
 import { BaseTable } from './baseTable';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
 import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
+import { useMemo } from 'react';
 import { useTable } from './tableContainer';
 
 export const columns = (url: string) => {
@@ -35,13 +35,11 @@ interface CheckpointTableProps {
     checkpoints: Checkpoint[];
     checklists?: Checklist[];
     templateList?: SkjemaTemplateCheckpoint[];
-    skjemaId?: number;
     onSelected: (checkpoints: Checkpoint[]) => void;
 }
 export const CheckpointTable = ({
     checkpoints,
     checklists,
-    skjemaId,
     templateList,
     onSelected
 }: CheckpointTableProps) => {
@@ -51,30 +49,10 @@ export const CheckpointTable = ({
         if (checklists !== undefined) {
             return checklists.map((cl) => cl.checkpoint.id);
         }
-    }, [checklists]);
-
-    useEffect(() => {
-        if (
-            checklists !== undefined &&
-            skjemaId !== undefined &&
-            apiRef.current !== null &&
-            checkpoints.length > 0
-        ) {
-            const selectArray = checklists.map((cl) => cl.checkpoint.id);
-            apiRef.current.selectRows(selectArray);
+        if (templateList !== undefined) {
+            return templateList.map((tl) => tl.checkpoint.id);
         }
-    }, [apiRef, checklists, checkpoints.length, skjemaId]);
-
-    useEffect(() => {
-        if (
-            templateList !== undefined &&
-            apiRef.current !== null &&
-            checkpoints.length > 0
-        ) {
-            const selectArray = templateList.map((tl) => tl.checkpoint.id);
-            apiRef.current.selectRows(selectArray);
-        }
-    }, [apiRef, checkpoints.length, templateList]);
+    }, [checklists, templateList]);
 
     function CustomSort<T extends keyof Checkpoint>(
         data: Checkpoint[],
@@ -103,7 +81,7 @@ export const CheckpointTable = ({
         );
         onSelected(cpRows);
     };
-
+    console.log({ checkpoints });
     return (
         <BaseTable
             selectionModel={selectionModel}

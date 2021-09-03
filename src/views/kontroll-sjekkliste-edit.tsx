@@ -98,7 +98,6 @@ const SjekklisteEditView = () => {
                                         tableId="checkpoints">
                                         <CheckpointTable
                                             checklists={_checklists}
-                                            skjemaId={Number(skjemaId)}
                                             checkpoints={checkpoints}
                                             onSelected={(checkpoints) =>
                                                 setSelected(checkpoints)

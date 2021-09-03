@@ -13,6 +13,27 @@ export const getInfoText = async (): Promise<{
         }
         throw new Error('not 200');
     } catch (error) {
-        throw new Error(error);
+        console.error(error);
+        throw new Error('');
+    }
+};
+export const setInfoText = async (
+    infoText: string
+): Promise<{
+    status: number;
+    message: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.put(
+            '/v3/settings/set-info-text',
+            {
+                infoText
+            }
+        );
+
+        return { status, ...data };
+    } catch (error) {
+        console.error(error);
+        throw new Error('');
     }
 };

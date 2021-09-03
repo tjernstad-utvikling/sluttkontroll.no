@@ -24,7 +24,7 @@ const SkjemaTemplateNewView = () => {
 
     const {
         state: { templates },
-        newTemplate
+        updateTemplate
     } = useTemplate();
 
     useEffect(() => {
@@ -32,6 +32,9 @@ const SkjemaTemplateNewView = () => {
 
         if (_template !== undefined) {
             setTemplate(_template);
+            setSelected(
+                _template.skjemaTemplateCheckpoints.map((stc) => stc.checkpoint)
+            );
         }
     }, [templateId, templates]);
 
@@ -58,9 +61,11 @@ const SkjemaTemplateNewView = () => {
     });
 
     const onSaveTemplate = async (name: string): Promise<boolean> => {
-        if (await newTemplate(name, selected)) {
-            history.goBack();
-            return true;
+        if (template !== undefined) {
+            if (await updateTemplate({ ...template, name }, selected)) {
+                history.goBack();
+                return true;
+            }
         }
         return false;
     };

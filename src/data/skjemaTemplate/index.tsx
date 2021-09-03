@@ -1,9 +1,14 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer, useState } from 'react';
-import { addTemplate, getTemplates } from '../../api/skjemaTemplateApi';
+import {
+    addTemplate,
+    getTemplates,
+    updateTemplate as updateTemplateApi
+} from '../../api/skjemaTemplateApi';
 import { initialState, reducer } from './reducer';
 
 import { Checkpoint } from '../../contracts/checkpointApi';
+import { Template } from '../../contracts/skjemaTemplateApi';
 import { useSnackbar } from 'notistack';
 
 export const useTemplate = () => {
@@ -56,7 +61,48 @@ export const TemplateContextProvider = ({
                     payload: [template]
                 });
 
-                enqueueSnackbar('Skjema lagret', {
+                enqueueSnackbar('Sjekklistemal lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (status === 400 && message === 'name_missing') {
+                enqueueSnackbar('Navn mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av mal', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av mal', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
+    const updateTemplate = async (
+        _template: Template,
+        selectedCheckpoints: Checkpoint[]
+    ): Promise<boolean> => {
+        try {
+            const { status, skjemaTemplateCheckpoints, message } =
+                await updateTemplateApi(
+                    _template.id,
+                    _template.name,
+                    selectedCheckpoints.map((sc) => sc.id)
+                );
+            if (status === 200 && skjemaTemplateCheckpoints !== undefined) {
+                dispatch({
+                    type: ActionType.updateTemplate,
+                    payload: { ..._template, skjemaTemplateCheckpoints }
+                });
+
+                enqueueSnackbar('Sjekklistemal lagret', {
                     variant: 'success'
                 });
                 return true;
@@ -86,7 +132,8 @@ export const TemplateContextProvider = ({
                 state,
 
                 loadTemplates,
-                newTemplate
+                newTemplate,
+                updateTemplate
             }}>
             {children}
         </TemplateContext.Provider>

@@ -6,7 +6,8 @@ export interface TemplateState {
 }
 
 export enum ActionType {
-    addTemplates
+    addTemplates,
+    updateTemplate
 }
 
 export interface addTemplates {
@@ -14,10 +15,19 @@ export interface addTemplates {
     payload: Template[];
 }
 
-export type Actions = addTemplates;
+export interface updateTemplate {
+    type: ActionType.updateTemplate;
+    payload: Template;
+}
+
+export type Actions = addTemplates | updateTemplate;
 
 export interface ContextInterface {
     state: TemplateState;
     loadTemplates: () => Promise<void>;
     newTemplate: (name: string, checkpoints: Checkpoint[]) => Promise<boolean>;
+    updateTemplate: (
+        template: Template,
+        selectedCheckpoints: Checkpoint[]
+    ) => Promise<boolean>;
 }

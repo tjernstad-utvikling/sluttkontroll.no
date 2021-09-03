@@ -17,6 +17,17 @@ export const reducer = (
                 templates: _.unionBy(action.payload, state.templates, 'id')
             };
 
+        case ActionType.updateTemplate:
+            return {
+                ...state,
+                templates: state.templates?.map((t) => {
+                    if (t.id === action.payload.id) {
+                        return action.payload;
+                    } else {
+                        return t;
+                    }
+                })
+            };
         default:
             throw new Error('unknown action');
     }

@@ -7,6 +7,7 @@ import List from '@material-ui/core/List';
 import { ListItemLink } from '../../components/links';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
 import PersonIcon from '@material-ui/icons/Person';
+import { Roles } from '../../contracts/userApi';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SpeedIcon from '@material-ui/icons/Speed';
 import { useAuth } from '../../hooks/useAuth';
@@ -19,7 +20,7 @@ interface RightDrawerProps {
 
 export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
     const classes = useMainStyles();
-    const { user } = useAuth();
+    const { user, userHasRole } = useAuth();
 
     return (
         <Drawer
@@ -67,11 +68,13 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                     primary="Brukere"
                     icon={<GroupIcon />}
                 />
-                <ListItemLink
-                    to="/admin/settings"
-                    primary="Innstillinger"
-                    icon={<SettingsIcon />}
-                />
+                {userHasRole(Roles.ROLE_ADMIN) && (
+                    <ListItemLink
+                        to="/admin/settings"
+                        primary="Innstillinger"
+                        icon={<SettingsIcon />}
+                    />
+                )}
             </List>
         </Drawer>
     );

@@ -13,15 +13,16 @@ export const getTemplates = async (): Promise<{
         throw new Error('not 200');
     } catch (error: any) {
         console.error(error);
-        throw new Error('');
+        throw new Error(error);
     }
 };
-export const addTemplates = async (
+export const addTemplate = async (
     name: string,
     checkpointIds: number[]
 ): Promise<{
     status: number;
-    templates: Template;
+    template?: Template;
+    message?: string;
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post('/v3/template/', {
@@ -33,6 +34,9 @@ export const addTemplates = async (
         }
         throw new Error('not 200');
     } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
         console.error(error);
         throw new Error('');
     }

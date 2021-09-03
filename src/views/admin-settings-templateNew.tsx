@@ -11,11 +11,14 @@ import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
+import { useTemplate } from '../data/skjemaTemplate';
 
 const SkjemaTemplateNewView = () => {
     const classes = usePageStyles();
 
     const history = useHistory();
+
+    const { newTemplate } = useTemplate();
 
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [selected, setSelected] = useState<Checkpoint[]>([]);
@@ -39,11 +42,11 @@ const SkjemaTemplateNewView = () => {
         }
     });
 
-    const onSaveSkjema = async (name: string): Promise<boolean> => {
-        // if (await saveNewSkjema(area, omrade, selected, Number(kontrollId))) {
-        //     history.goBack();
-        //     return true;
-        // }
+    const onSaveTemplate = async (name: string): Promise<boolean> => {
+        if (await newTemplate(name, selected)) {
+            history.goBack();
+            return true;
+        }
         return false;
     };
 
@@ -55,7 +58,7 @@ const SkjemaTemplateNewView = () => {
                     <Grid item xs={12}>
                         <Card title="Ny sjekklistemal">
                             <SkjemaTemplateSchema
-                                onSubmit={onSaveSkjema}
+                                onSubmit={onSaveTemplate}
                                 checkpointCount={selected.length}
                             />
 

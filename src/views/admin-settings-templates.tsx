@@ -1,7 +1,13 @@
+import {
+    TemplateTable,
+    columns,
+    defaultColumns
+} from '../tables/skjemaTemplate';
+
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { getTemplates } from '../api/skjemaTemplateApi';
+import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useTemplate } from '../data/skjemaTemplate';
@@ -9,7 +15,10 @@ import { useTemplate } from '../data/skjemaTemplate';
 const SettingsView = () => {
     const classes = usePageStyles();
 
-    const { loadTemplates } = useTemplate();
+    const {
+        state: { templates },
+        loadTemplates
+    } = useTemplate();
     useEffectOnce(async () => {
         loadTemplates();
     });
@@ -20,7 +29,22 @@ const SettingsView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Sjekkliste maler">
-                            <div style={{ padding: 15 }}></div>
+                            <div style={{ padding: 15 }}>
+                                {templates !== undefined ? (
+                                    <TableContainer
+                                        columns={columns({
+                                            edit: () => console.log('kommer'),
+                                            deleteTemplate: () =>
+                                                console.log('kommer')
+                                        })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="skjemaTemplates">
+                                        <TemplateTable templates={templates} />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster maler</div>
+                                )}
+                            </div>
                         </Card>
                     </Grid>
                 </Grid>

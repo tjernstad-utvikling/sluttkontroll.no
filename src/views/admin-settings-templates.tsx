@@ -1,10 +1,10 @@
+import { Card, CardMenu } from '../components/card';
 import {
     TemplateTable,
     columns,
     defaultColumns
 } from '../tables/skjemaTemplate';
 
-import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { TableContainer } from '../tables/tableContainer';
@@ -28,7 +28,18 @@ const SettingsView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Sjekkliste maler">
+                        <Card
+                            title="Sjekkliste maler"
+                            menu={
+                                <CardMenu
+                                    items={[
+                                        {
+                                            label: 'Ny  mal',
+                                            to: '/admin/settings/template/new'
+                                        }
+                                    ]}
+                                />
+                            }>
                             <div style={{ padding: 15 }}>
                                 {templates !== undefined ? (
                                     <TableContainer

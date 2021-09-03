@@ -1,5 +1,6 @@
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 
+import NewTemplate from '../../../views/admin-settings-templateNew';
 import { TemplateContextProvider } from '../../../data/skjemaTemplate';
 import Templates from '../../../views/admin-settings-templates';
 
@@ -8,9 +9,9 @@ const Template = () => {
     return (
         <TemplateContextProvider>
             <Switch>
-                {/* <Route path={`${path}/info-text`}>
-                <InfoTextView />
-            </Route> */}
+                <Route path={`${path}/new`}>
+                    <NewTemplate />
+                </Route>
 
                 <Route path={`${path}`}>
                     <Templates />

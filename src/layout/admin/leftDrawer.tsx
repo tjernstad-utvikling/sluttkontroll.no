@@ -1,5 +1,6 @@
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
+import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import GroupIcon from '@material-ui/icons/Group';
 import List from '@material-ui/core/List';
 import { ListItemLink } from '../../components/links';
@@ -41,12 +42,20 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
                     lightText
                 />
                 {userHasRole(Roles.ROLE_ADMIN) && (
-                    <ListItemLink
-                        to="/admin/settings/info-text"
-                        primary="Rapport informasjonstekst"
-                        icon={<TextFieldsIcon />}
-                        lightText
-                    />
+                    <>
+                        <ListItemLink
+                            to="/admin/settings/info-text"
+                            primary="Rapport informasjonstekst"
+                            icon={<TextFieldsIcon />}
+                            lightText
+                        />
+                        <ListItemLink
+                            to="/admin/settings/template"
+                            primary="Sjekkliste maler"
+                            icon={<FormatListNumberedIcon />}
+                            lightText
+                        />
+                    </>
                 )}
             </List>
         </Drawer>

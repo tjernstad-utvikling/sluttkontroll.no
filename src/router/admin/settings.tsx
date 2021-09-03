@@ -5,6 +5,7 @@ import { AdminLayout } from '../../layout/admin';
 
 const SettingsView = lazy(() => import('../../views/admin-settings'));
 const InfoTextView = lazy(() => import('../../views/admin-settingsInfo'));
+const Template = lazy(() => import('./settings/template'));
 
 export const Settings = () => {
     let { path } = useRouteMatch();
@@ -15,7 +16,9 @@ export const Settings = () => {
                     <Route path={`${path}/info-text`}>
                         <InfoTextView />
                     </Route>
-
+                    <Route path={`${path}/template`}>
+                        <Template />
+                    </Route>
                     <Route path={`${path}`}>
                         <SettingsView />
                     </Route>

@@ -4,6 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { BaseTable } from './baseTable';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
+import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
 import { useTable } from './tableContainer';
 
 export const columns = (url: string) => {
@@ -31,15 +32,17 @@ export const columns = (url: string) => {
 export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 
 interface CheckpointTableProps {
-    checkpoints: Array<Checkpoint>;
-    checklists?: Array<Checklist>;
+    checkpoints: Checkpoint[];
+    checklists?: Checklist[];
+    templateList?: SkjemaTemplateCheckpoint[];
     skjemaId?: number;
-    onSelected: (checkpoints: Array<Checkpoint>) => void;
+    onSelected: (checkpoints: Checkpoint[]) => void;
 }
 export const CheckpointTable = ({
     checkpoints,
     checklists,
     skjemaId,
+    templateList,
     onSelected
 }: CheckpointTableProps) => {
     const { apiRef } = useTable();
@@ -61,6 +64,17 @@ export const CheckpointTable = ({
             apiRef.current.selectRows(selectArray);
         }
     }, [apiRef, checklists, checkpoints.length, skjemaId]);
+
+    useEffect(() => {
+        if (
+            templateList !== undefined &&
+            apiRef.current !== null &&
+            checkpoints.length > 0
+        ) {
+            const selectArray = templateList.map((tl) => tl.checkpoint.id);
+            apiRef.current.selectRows(selectArray);
+        }
+    }, [apiRef, checkpoints.length, templateList]);
 
     function CustomSort<T extends keyof Checkpoint>(
         data: Checkpoint[],

@@ -20,10 +20,10 @@ export const TemplateValueGetter = (data: Template | GridRowData) => {
 };
 
 interface ColumnsParams {
-    edit: (templateId: number) => void;
+    path: string;
     deleteTemplate: (templateId: number) => void;
 }
-export const columns = ({ edit, deleteTemplate }: ColumnsParams) => {
+export const columns = ({ path, deleteTemplate }: ColumnsParams) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -54,7 +54,7 @@ export const columns = ({ edit, deleteTemplate }: ColumnsParams) => {
                         actionItems={[
                             {
                                 name: 'Rediger',
-                                action: () => edit(params.row.id),
+                                to: `${path}/${params.row.id}`,
                                 icon: <EditIcon />
                             },
                             {

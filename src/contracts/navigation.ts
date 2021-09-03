@@ -38,3 +38,6 @@ export interface InstrumentCalibrationViewParams {
 export interface EditUserViewParams {
     userId: string;
 }
+export interface AdminTemplateEditViewParams {
+    templateId: string;
+}

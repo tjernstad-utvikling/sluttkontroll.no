@@ -10,10 +10,13 @@ import Grid from '@material-ui/core/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useRouteMatch } from 'react-router';
 import { useTemplate } from '../data/skjemaTemplate';
 
 const SettingsView = () => {
     const classes = usePageStyles();
+
+    const { path } = useRouteMatch();
 
     const {
         state: { templates },
@@ -44,7 +47,7 @@ const SettingsView = () => {
                                 {templates !== undefined ? (
                                     <TableContainer
                                         columns={columns({
-                                            edit: () => console.log('kommer'),
+                                            path,
                                             deleteTemplate: () =>
                                                 console.log('kommer')
                                         })}

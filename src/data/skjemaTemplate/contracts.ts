@@ -1,26 +1,21 @@
-import { Instrument } from '../../contracts/instrumentApi';
+import { Template } from '../../contracts/skjemaTemplateApi';
 
 export interface TemplateState {
-    instruments: Instrument[] | undefined;
+    templates: Template[] | undefined;
 }
 
 export enum ActionType {
-    addInstruments,
-    updateInstrument
+    addTemplates
 }
 
-export interface addInstruments {
-    type: ActionType.addInstruments;
-    payload: Instrument[];
-}
-export interface updateInstrument {
-    type: ActionType.updateInstrument;
-    payload: Instrument;
+export interface addTemplates {
+    type: ActionType.addTemplates;
+    payload: Template[];
 }
 
-export type Actions = addInstruments | updateInstrument;
+export type Actions = addTemplates;
 
 export interface ContextInterface {
     state: TemplateState;
-    loadInstruments: () => Promise<void>;
+    loadTemplates: () => Promise<void>;
 }

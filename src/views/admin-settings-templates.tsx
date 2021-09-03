@@ -4,12 +4,14 @@ import Grid from '@material-ui/core/Grid';
 import { getTemplates } from '../api/skjemaTemplateApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useTemplate } from '../data/skjemaTemplate';
 
 const SettingsView = () => {
     const classes = usePageStyles();
 
+    const { loadTemplates } = useTemplate();
     useEffectOnce(async () => {
-        console.log(await getTemplates());
+        loadTemplates();
     });
     return (
         <>

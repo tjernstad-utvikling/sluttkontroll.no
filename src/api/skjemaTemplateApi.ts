@@ -3,7 +3,7 @@ import sluttkontrollApi from './sluttkontroll';
 
 export const getTemplates = async (): Promise<{
     status: number;
-    templates: Template;
+    templates: Template[];
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get('/v3/template/');

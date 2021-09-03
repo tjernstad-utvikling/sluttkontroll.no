@@ -1,31 +1,20 @@
-import { ActionType, InstrumentState, UserActions } from './contracts';
+import { ActionType, Actions, TemplateState } from './contracts';
 
 import _ from 'lodash';
 
-export const initialState: InstrumentState = {
-    instruments: undefined
+export const initialState: TemplateState = {
+    templates: undefined
 };
 
-export const instrumentReducer = (
-    state: InstrumentState,
-    action: UserActions
-): InstrumentState => {
+export const reducer = (
+    state: TemplateState,
+    action: Actions
+): TemplateState => {
     switch (action.type) {
-        case ActionType.addInstruments:
+        case ActionType.addTemplates:
             return {
                 ...state,
-                instruments: _.unionBy(action.payload, state.instruments, 'id')
-            };
-        case ActionType.updateInstrument:
-            return {
-                ...state,
-                instruments: state.instruments?.map((i) => {
-                    if (i.id === action.payload.id) {
-                        return action.payload;
-                    } else {
-                        return i;
-                    }
-                })
+                templates: _.unionBy(action.payload, state.templates, 'id')
             };
 
         default:

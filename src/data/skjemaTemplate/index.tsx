@@ -2,6 +2,7 @@ import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import {
     addTemplate,
+    deleteTemplate,
     getTemplates,
     updateTemplate as updateTemplateApi
 } from '../../api/skjemaTemplateApi';
@@ -125,6 +126,32 @@ export const TemplateContextProvider = ({
         }
         return false;
     };
+    const removeTemplate = async (template: Template): Promise<boolean> => {
+        try {
+            const { status } = await deleteTemplate(template.id);
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.removeTemplate,
+                    payload: template
+                });
+
+                enqueueSnackbar('Sjekklistemal slettet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+
+            enqueueSnackbar('Ukjent feil ved sletting av mal', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med sletting av mal', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
 
     return (
         <TemplateContext.Provider
@@ -133,7 +160,8 @@ export const TemplateContextProvider = ({
 
                 loadTemplates,
                 newTemplate,
-                updateTemplate
+                updateTemplate,
+                removeTemplate
             }}>
             {children}
         </TemplateContext.Provider>

@@ -76,3 +76,21 @@ export const updateTemplate = async (
         throw new Error('');
     }
 };
+
+export const deleteTemplate = async (
+    templateId: number
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.delete(
+            `/v3/template/${templateId}`
+        );
+
+        return { status, ...data };
+    } catch (error: any) {
+        console.error(error);
+        throw new Error('');
+    }
+};

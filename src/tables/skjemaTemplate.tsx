@@ -72,25 +72,28 @@ export const columns = ({
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => {
-                return (
-                    <RowAction
-                        actionItems={[
-                            {
-                                name: 'Rediger',
-                                to: `${path}/${params.row.id}`,
-                                icon: <EditIcon />
-                            },
-                            {
-                                name: 'Slett (kommer)',
-                                action: () => {
-                                    if (deleteTemplate !== undefined)
-                                        deleteTemplate(params.row.id);
+                if (!selectTemplate) {
+                    return (
+                        <RowAction
+                            actionItems={[
+                                {
+                                    name: 'Rediger',
+                                    to: `${path}/${params.row.id}`,
+                                    icon: <EditIcon />
                                 },
-                                icon: <DeleteForeverIcon />
-                            }
-                        ]}
-                    />
-                );
+                                {
+                                    name: 'Slett',
+                                    action: () => {
+                                        if (deleteTemplate !== undefined)
+                                            deleteTemplate(params.row.id);
+                                    },
+                                    icon: <DeleteForeverIcon />
+                                }
+                            ]}
+                        />
+                    );
+                }
+                return <div />;
             }
         }
     ];

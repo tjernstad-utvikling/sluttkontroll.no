@@ -28,6 +28,13 @@ export const reducer = (
                     }
                 })
             };
+        case ActionType.removeTemplate:
+            return {
+                ...state,
+                templates: state.templates?.filter(
+                    (t) => t.id !== action.payload.id
+                )
+            };
         default:
             throw new Error('unknown action');
     }

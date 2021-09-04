@@ -8,6 +8,7 @@ import {
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { TableContainer } from '../tables/tableContainer';
+import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useRouteMatch } from 'react-router';
@@ -18,13 +19,29 @@ const SettingsView = () => {
 
     const { path } = useRouteMatch();
 
+    const { confirm } = useConfirm();
+
     const {
         state: { templates },
-        loadTemplates
+        loadTemplates,
+        removeTemplate
     } = useTemplate();
     useEffectOnce(async () => {
         loadTemplates();
     });
+
+    const askToDeleteTemplate = async (templateId: number) => {
+        const template = templates?.find((t) => t.id === templateId);
+        if (template !== undefined) {
+            const isConfirmed = await confirm(
+                `Slette sjekklistemal: ${template.id} - ${template.name}?`
+            );
+
+            if (isConfirmed) {
+                removeTemplate(template);
+            }
+        }
+    };
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -48,8 +65,7 @@ const SettingsView = () => {
                                     <TableContainer
                                         columns={columns({
                                             path,
-                                            deleteTemplate: () =>
-                                                console.log('kommer')
+                                            deleteTemplate: askToDeleteTemplate
                                         })}
                                         defaultColumns={defaultColumns}
                                         tableId="skjemaTemplates">

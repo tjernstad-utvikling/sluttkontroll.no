@@ -82,6 +82,7 @@ const SkjemaNewView = () => {
 
                             <SelectTemplate
                                 onSelect={(template) => {
+                                    setSelectFromTemplate(false);
                                     setTemplate(template);
                                     setSelected(
                                         template.skjemaTemplateCheckpoints.map(

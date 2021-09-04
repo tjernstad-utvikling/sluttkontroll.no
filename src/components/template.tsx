@@ -30,6 +30,13 @@ export const SelectTemplate = ({
     useEffectOnce(async () => {
         loadTemplates();
     });
+
+    const onSelectTemplate = (templateId: number) => {
+        const template = templates?.find((t) => t.id === templateId);
+        if (template !== undefined) {
+            onSelect(template);
+        }
+    };
     return (
         <div className={classes.wrapper}>
             <Button
@@ -40,22 +47,24 @@ export const SelectTemplate = ({
                 onClick={onOpen}>
                 Velg fra maler
             </Button>
-            {templates !== undefined && isOpen ? (
+            {templates !== undefined && isOpen && (
                 <>
-                    <Typography>Sjekkliste maler</Typography>
+                    <Typography component="h3" variant="h4">
+                        Sjekkliste maler
+                    </Typography>
+
                     <TableContainer
                         columns={columns({
-                            path: '',
-                            deleteTemplate: () => console.log('')
+                            selectTemplate: true,
+                            onSelectTemplate
                         })}
                         defaultColumns={defaultColumns}
                         tableId="skjemaTemplates">
                         <TemplateTable templates={templates} />
                     </TableContainer>
                 </>
-            ) : (
-                <div>Laster maler</div>
             )}
+            {templates === undefined && <div>Laster maler</div>}
         </div>
     );
 };

@@ -2,26 +2,20 @@ import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 
 import { Card } from '../components/card';
 import { Checkpoint } from '../contracts/checkpointApi';
+import { CheckpointModal } from '../modal/checkpoint';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
 import { TableContainer } from '../tables/tableContainer';
 import { getCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useHistory } from 'react-router-dom';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
-import { useTemplate } from '../data/skjemaTemplate';
 
-const SkjemaTemplateNewView = () => {
+const CheckpointView = () => {
     const classes = usePageStyles();
 
-    const history = useHistory();
-
-    const { newTemplate } = useTemplate();
-
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
-    const [selected, setSelected] = useState<Checkpoint[]>([]);
+    const [editId, setEditId] = useState<number | undefined>(undefined);
 
     useEffectOnce(async () => {
         try {
@@ -42,11 +36,12 @@ const SkjemaTemplateNewView = () => {
         }
     });
 
-    const onSaveTemplate = async (name: string): Promise<boolean> => {
-        if (await newTemplate(name, selected)) {
-            history.goBack();
-            return true;
-        }
+    const handleCheckpointSubmit = async (
+        prosedyre: string,
+        prosedyreNr: string,
+        tekst: string,
+        gruppe: string
+    ): Promise<boolean> => {
         return false;
     };
 
@@ -56,22 +51,18 @@ const SkjemaTemplateNewView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Ny sjekklistemal">
-                            <SkjemaTemplateSchema
-                                onSubmit={onSaveTemplate}
-                                checkpointCount={selected.length}
-                            />
-
+                        <Card title="Sjekkpunkter">
                             {checkpoints !== undefined ? (
                                 <TableContainer
-                                    columns={columns({})}
+                                    columns={columns({
+                                        onEditCheckpoint: (checkpointId) =>
+                                            setEditId(checkpointId),
+                                        editCheckpoint: true
+                                    })}
                                     defaultColumns={defaultColumns}
                                     tableId="checkpoints">
                                     <CheckpointTable
                                         checkpoints={checkpoints}
-                                        onSelected={(checkpoints) =>
-                                            setSelected(checkpoints)
-                                        }
                                     />
                                 </TableContainer>
                             ) : (
@@ -81,8 +72,14 @@ const SkjemaTemplateNewView = () => {
                     </Grid>
                 </Grid>
             </Container>
+            <CheckpointModal
+                onSubmit={handleCheckpointSubmit}
+                editId={editId}
+                close={() => setEditId(undefined)}
+                checkpoints={checkpoints}
+            />
         </>
     );
 };
 
-export default SkjemaTemplateNewView;
+export default CheckpointView;

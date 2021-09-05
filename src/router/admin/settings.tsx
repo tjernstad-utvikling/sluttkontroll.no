@@ -6,6 +6,9 @@ import { AdminLayout } from '../../layout/admin';
 const SettingsView = lazy(() => import('../../views/admin-settings'));
 const InfoTextView = lazy(() => import('../../views/admin-settingsInfo'));
 const Template = lazy(() => import('./settings/template'));
+const CheckpointsView = lazy(
+    () => import('../../views/admin-settings-checkpoints')
+);
 
 export const Settings = () => {
     let { path } = useRouteMatch();
@@ -18,6 +21,9 @@ export const Settings = () => {
                     </Route>
                     <Route path={`${path}/template`}>
                         <Template />
+                    </Route>
+                    <Route path={`${path}/checkpoint`}>
+                        <CheckpointsView />
                     </Route>
                     <Route path={`${path}`}>
                         <SettingsView />

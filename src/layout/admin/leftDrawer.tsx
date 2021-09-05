@@ -1,3 +1,4 @@
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
@@ -53,6 +54,12 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
                             to="/admin/settings/template"
                             primary="Sjekkliste maler"
                             icon={<FormatListNumberedIcon />}
+                            lightText
+                        />
+                        <ListItemLink
+                            to="/admin/settings/checkpoint"
+                            primary="Sjekkpunkter"
+                            icon={<CheckCircleIcon />}
                             lightText
                         />
                     </>

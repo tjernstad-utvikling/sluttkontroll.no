@@ -1,13 +1,27 @@
-import { GridColDef, GridRowData, GridRowId } from '@material-ui/data-grid';
+import {
+    GridCellParams,
+    GridColDef,
+    GridRowData,
+    GridRowId
+} from '@material-ui/data-grid';
 
 import { BaseTable } from './baseTable';
+import Button from '@material-ui/core/Button';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
+import EditIcon from '@material-ui/icons/Edit';
 import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
 import { useMemo } from 'react';
 import { useTable } from './tableContainer';
 
-export const columns = (url: string) => {
+interface ColumnsParams {
+    editCheckpoint?: boolean;
+    onEditCheckpoint?: (checkpointId: number) => void;
+}
+export const columns = ({
+    editCheckpoint,
+    onEditCheckpoint
+}: ColumnsParams) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -23,6 +37,26 @@ export const columns = (url: string) => {
             field: 'prosedyre',
             headerName: 'Prosedyre',
             flex: 1
+        },
+        {
+            field: 'action',
+            headerName: ' ',
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) => {
+                if (editCheckpoint && onEditCheckpoint !== undefined) {
+                    return (
+                        <Button
+                            onClick={() => onEditCheckpoint(params.row.id)}
+                            color="primary"
+                            startIcon={<EditIcon />}>
+                            {params.row.name}
+                        </Button>
+                    );
+                }
+                return <div />;
+            }
         }
     ];
 
@@ -35,7 +69,7 @@ interface CheckpointTableProps {
     checkpoints: Checkpoint[];
     checklists?: Checklist[];
     templateList?: SkjemaTemplateCheckpoint[];
-    onSelected: (checkpoints: Checkpoint[]) => void;
+    onSelected?: (checkpoints: Checkpoint[]) => void;
 }
 export const CheckpointTable = ({
     checkpoints,
@@ -79,7 +113,9 @@ export const CheckpointTable = ({
                 tiltak: r.tiltak
             })
         );
-        onSelected(cpRows);
+        if (onSelected !== undefined) {
+            onSelected(cpRows);
+        }
     };
     console.log({ checkpoints });
     return (

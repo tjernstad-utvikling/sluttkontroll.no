@@ -87,7 +87,7 @@ const SkjemaTemplateNewView = () => {
 
                                     {checkpoints !== undefined ? (
                                         <TableContainer
-                                            columns={columns('')}
+                                            columns={columns({})}
                                             defaultColumns={defaultColumns}
                                             tableId="checkpoints">
                                             <CheckpointTable

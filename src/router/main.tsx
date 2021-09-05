@@ -1,4 +1,5 @@
 import { ClientContextProvider } from '../data/klient';
+import { Forms } from './main/forms';
 import { Instrument } from './main/instrument';
 import { Kontroll } from './main/kontroll';
 import { PrivateRoute } from './privateRoute';
@@ -17,6 +18,9 @@ export const Main = () => {
             <Switch>
                 <PrivateRoute path="/instrument">
                     <Instrument />
+                </PrivateRoute>
+                <PrivateRoute path="/forms">
+                    <Forms />
                 </PrivateRoute>
                 <PrivateRoute path="/user">
                     <User />

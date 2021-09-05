@@ -7,8 +7,10 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { getCheckpoints } from '../api/checkpointApi';
+import { updateCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 const CheckpointView = () => {
@@ -16,6 +18,8 @@ const CheckpointView = () => {
 
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [editId, setEditId] = useState<number | undefined>(undefined);
+
+    const { enqueueSnackbar } = useSnackbar();
 
     useEffectOnce(async () => {
         try {
@@ -42,6 +46,62 @@ const CheckpointView = () => {
         tekst: string,
         gruppe: string
     ): Promise<boolean> => {
+        if (editId !== undefined) {
+            try {
+                const { status } = await updateCheckpoints(
+                    editId,
+                    prosedyre,
+                    prosedyreNr,
+                    tekst,
+                    gruppe
+                );
+
+                if (status === 200) {
+                    enqueueSnackbar('Sjekkpunkt lagret', {
+                        variant: 'success'
+                    });
+                    return true;
+                }
+                if (status === 204) {
+                    setCheckpoints((prev) =>
+                        prev.map((c) => {
+                            if (c.id === editId) {
+                                return {
+                                    ...c,
+                                    prosedyre,
+                                    prosedyreNr,
+                                    tekst,
+                                    gruppe
+                                };
+                            }
+                            return c;
+                        })
+                    );
+                    enqueueSnackbar('Sjekkpunkt lagret', {
+                        variant: 'success'
+                    });
+                    setEditId(undefined);
+                    return true;
+                }
+                if (status === 400) {
+                    enqueueSnackbar('Et eller flere felter mangler', {
+                        variant: 'warning'
+                    });
+                    return false;
+                }
+
+                enqueueSnackbar('Ukjent feil ved lagring av mal', {
+                    variant: 'warning'
+                });
+                return false;
+            } catch (error: any) {
+                console.log(error);
+                enqueueSnackbar('Problemer med lagring av mal', {
+                    variant: 'error'
+                });
+            }
+            return false;
+        }
         return false;
     };
 

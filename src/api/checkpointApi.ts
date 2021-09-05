@@ -15,3 +15,33 @@ export const getCheckpoints = async (): Promise<{
         throw new Error(error);
     }
 };
+
+export const updateCheckpoints = async (
+    checkpointId: number,
+    prosedyre: string,
+    prosedyreNr: string,
+    tekst: string,
+    gruppe: string
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.put(
+            `/v3/checkpoint/${checkpointId}`,
+            {
+                prosedyre,
+                prosedyreNr,
+                tekst,
+                gruppe
+            }
+        );
+        return { status, ...data };
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        console.log(error);
+        throw new Error(error);
+    }
+};

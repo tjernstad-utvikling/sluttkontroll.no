@@ -93,7 +93,6 @@ const CheckpointView = () => {
             }
             return false;
         }
-        return false;
     };
 
     const handleSaveResponse = (

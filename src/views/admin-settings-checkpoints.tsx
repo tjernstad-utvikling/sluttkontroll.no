@@ -1,6 +1,6 @@
+import { Card, CardMenu } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 
-import { Card } from '../components/card';
 import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointModal } from '../modal/checkpoint';
 import Container from '@material-ui/core/Container';
@@ -18,6 +18,7 @@ const CheckpointView = () => {
 
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [editId, setEditId] = useState<number | undefined>(undefined);
+    const [addNew, setAddNew] = useState<boolean>(false);
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -111,7 +112,18 @@ const CheckpointView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Sjekkpunkter">
+                        <Card
+                            title="Sjekkpunkter"
+                            menu={
+                                <CardMenu
+                                    items={[
+                                        {
+                                            label: 'Nytt sjekkpunkt',
+                                            action: () => setAddNew(!addNew)
+                                        }
+                                    ]}
+                                />
+                            }>
                             {checkpoints !== undefined ? (
                                 <TableContainer
                                     columns={columns({
@@ -135,6 +147,7 @@ const CheckpointView = () => {
             <CheckpointModal
                 onSubmit={handleCheckpointSubmit}
                 editId={editId}
+                isOpen={addNew}
                 close={() => setEditId(undefined)}
                 checkpoints={checkpoints}
             />

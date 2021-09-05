@@ -7,6 +7,7 @@ import { useModalStyles } from '../styles/modal';
 
 interface CheckpointModalProps {
     editId?: number;
+    isOpen: boolean;
     checkpoints?: Checkpoint[];
     close: () => void;
     onSubmit: (
@@ -19,6 +20,7 @@ interface CheckpointModalProps {
 
 export const CheckpointModal = ({
     editId,
+    isOpen,
     checkpoints,
     close,
     onSubmit
@@ -34,7 +36,7 @@ export const CheckpointModal = ({
 
     return (
         <Modal
-            open={Boolean(editId)}
+            open={Boolean(editId) || isOpen}
             onClose={close}
             aria-labelledby="modal-title">
             <div className={classes.root}>

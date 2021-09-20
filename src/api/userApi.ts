@@ -7,7 +7,7 @@ export const getUsers = async (): Promise<{
     users: Array<User>;
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.get('/v3/user/users');
+        const { status, data } = await sluttkontrollApi.get('/user/users');
         if (status === 200) {
             return { status, ...data };
         }
@@ -27,7 +27,7 @@ export const updateUser = async (
     message?: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.put('/v3/user/', {
+        const { status } = await sluttkontrollApi.put('/user/', {
             name,
             email,
             phone,
@@ -57,7 +57,7 @@ export const newUser = async (
     message?: string;
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.post('/v3/user/', {
+        const { status, data } = await sluttkontrollApi.post('/user/', {
             name,
             email,
             phone,
@@ -82,7 +82,7 @@ export const updateByIdUser = async (
     message?: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.put(`/v3/user/${user.id}`, {
+        const { status } = await sluttkontrollApi.put(`/user/${user.id}`, {
             ...user
         });
         if (status === 204) {
@@ -105,7 +105,7 @@ export const updatePassword = async (
     message?: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.post('/v3/user/password', {
+        const { status } = await sluttkontrollApi.post('/user/password', {
             password
         });
         if (status === 204) {

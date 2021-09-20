@@ -7,7 +7,7 @@ export const getLogin = async (
     password: string
 ): Promise<{ status: number; token?: string }> => {
     try {
-        const { status, data } = await sluttkontrollApi.post('/login_check', {
+        const { status, data } = await sluttkontrollApi.post('/auth/login', {
             username: email,
             password: password
         });

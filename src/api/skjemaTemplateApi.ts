@@ -10,7 +10,7 @@ export const getTemplates = async (): Promise<{
     templates: Template[];
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.get('/v3/template/');
+        const { status, data } = await sluttkontrollApi.get('/template/');
         if (status === 200) {
             return { status, ...data };
         }
@@ -30,7 +30,7 @@ export const addTemplate = async (
     message?: string;
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.post('/v3/template/', {
+        const { status, data } = await sluttkontrollApi.post('/template/', {
             name,
             checkpointIds
         });
@@ -58,7 +58,7 @@ export const updateTemplate = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.put(
-            `/v3/template/${templateId}`,
+            `/template/${templateId}`,
             {
                 name,
                 checkpointIds
@@ -85,7 +85,7 @@ export const deleteTemplate = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.delete(
-            `/v3/template/${templateId}`
+            `/template/${templateId}`
         );
 
         return { status, ...data };

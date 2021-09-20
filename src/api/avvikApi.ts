@@ -11,7 +11,7 @@ export const getAvvikByKontrollList = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/avvik/kontroll-list/${ids.join()}`
+            `/avvik/kontroll-list/${ids.join()}`
         );
 
         if (status === 200) {
@@ -30,9 +30,7 @@ export const deleteAvvikById = async (
     message: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.delete(
-            `/v3/avvik/${avvikId}`
-        );
+        const { status } = await sluttkontrollApi.delete(`/avvik/${avvikId}`);
         if (status === 204) {
             return { status, message: '' };
         }
@@ -52,7 +50,7 @@ export const updateAvvikById = async (
     message: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.put(`/v3/avvik/${avvik.id}`, {
+        const { status } = await sluttkontrollApi.put(`/avvik/${avvik.id}`, {
             beskrivelse: avvik.beskrivelse,
             kommentar: avvik.kommentar,
             utbedrer: avvik.utbedrer
@@ -79,7 +77,7 @@ export const addAvvikApi = async (newAvvik: {
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/avvik/${newAvvik.checklistId}`,
+            `/avvik/${newAvvik.checklistId}`,
             {
                 ...newAvvik
             }
@@ -101,13 +99,10 @@ export const setUtbedrereApi = async (
     message: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.post(
-            '/v3/avvik/set-utbedrere',
-            {
-                avvikList,
-                utbedrer
-            }
-        );
+        const { status } = await sluttkontrollApi.post('/avvik/set-utbedrere', {
+            avvikList,
+            utbedrer
+        });
         if (status === 204) {
             return { status, message: '' };
         }
@@ -127,9 +122,7 @@ export const openAvvikApi = async (
     message: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.put(
-            `/v3/avvik/open/${avvikId}`
-        );
+        const { status } = await sluttkontrollApi.put(`/avvik/open/${avvikId}`);
         if (status === 204) {
             return { status, message: '' };
         }
@@ -149,7 +142,7 @@ export const closeAvvikApi = async (
     message: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.post('/v3/avvik/close', {
+        const { status } = await sluttkontrollApi.post('/avvik/close', {
             avvikList,
             kommentar
         });
@@ -170,7 +163,7 @@ export const getImageFile = async (
 ): Promise<{ status: number; data: Blob }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/avvik/bilder/${nameOrId}`,
+            `/avvik/bilder/${nameOrId}`,
             {
                 responseType: 'blob'
             }
@@ -188,7 +181,7 @@ export const deleteImage = async (
 ): Promise<{ status: number; message: string }> => {
     try {
         const { status, data } = await sluttkontrollApi.delete(
-            `/v3/avvik/bilder/${imageId}`
+            `/avvik/bilder/${imageId}`
         );
 
         return { status, ...data };
@@ -207,7 +200,7 @@ export const addImage = async (
         formData.append('image', image);
 
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/avvik/bilder/add/${avvikId}`,
+            `/avvik/bilder/add/${avvikId}`,
             formData,
             {
                 headers: {

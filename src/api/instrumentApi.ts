@@ -10,7 +10,7 @@ interface InstrumentResponse {
 
 export const getInstruments = async (): Promise<InstrumentResponse> => {
     try {
-        const { status, data } = await sluttkontrollApi.get('/v3/instrument/');
+        const { status, data } = await sluttkontrollApi.get('/instrument/');
         return { status, ...data };
     } catch (error: any) {
         throw new Error('Error Instrument API Get instruments');
@@ -26,7 +26,7 @@ export const newInstrument = async (instrument: {
 }): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            '/v3/instrument/',
+            '/instrument/',
             instrument
         );
         return { status, ...data };
@@ -43,7 +43,7 @@ export const editInstrument = async (
 ): Promise<{ status: number; message: string }> => {
     try {
         const { status, data } = await sluttkontrollApi.put(
-            `/v3/instrument/${instrument.id}`,
+            `/instrument/${instrument.id}`,
             instrument
         );
         return { status, ...data };
@@ -61,7 +61,7 @@ export const setDisponent = async (
 ): Promise<{ status: number }> => {
     try {
         const { status } = await sluttkontrollApi.put(
-            `/v3/instrument/disponent/${instrumentId}/${userId}`
+            `/instrument/disponent/${instrumentId}/${userId}`
         );
         return { status };
     } catch (error: any) {
@@ -74,7 +74,7 @@ export const removeDisponent = async (
 ): Promise<{ status: number }> => {
     try {
         const { status } = await sluttkontrollApi.put(
-            `/v3/instrument/remove-disponent/${instrumentId}`
+            `/instrument/remove-disponent/${instrumentId}`
         );
         return { status };
     } catch (error: any) {
@@ -92,7 +92,7 @@ export const addCalibrationFile = async (
         formData.append('sertifikatFile', sertifikatFile);
 
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/instrument/kalibrering/upload-sertifikat/${kalibreringId}`,
+            `/instrument/kalibrering/upload-sertifikat/${kalibreringId}`,
             formData,
             {
                 headers: {
@@ -117,7 +117,7 @@ export const addCalibration = async (
 ): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/instrument/kalibrering/${instrumentId}`,
+            `/instrument/kalibrering/${instrumentId}`,
             { kalibrertDate }
         );
         return { status, ...data };
@@ -138,7 +138,7 @@ export const getCalibrationsByInstrument = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/instrument/kalibrering/${instrumentId}`
+            `/instrument/kalibrering/${instrumentId}`
         );
         return { status, ...data };
     } catch (error: any) {
@@ -158,7 +158,7 @@ export const getCalibrationCertificate = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/instrument/kalibrering-sertifikat/${calibrationId}`,
+            `/instrument/kalibrering-sertifikat/${calibrationId}`,
             {
                 responseType: 'blob'
             }

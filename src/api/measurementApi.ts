@@ -14,7 +14,7 @@ export const getMeasurementByKontrollList = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/measurement/kontroll-list/${ids.join()}`
+            `/measurement/kontroll-list/${ids.join()}`
         );
         if (status === 200) {
             return { status, ...data };
@@ -30,7 +30,7 @@ export const getMeasurementTypes = async (): Promise<{
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/measurement/types`
+            `/measurement/types`
         );
         if (status === 200) {
             return { status, ...data };
@@ -49,7 +49,7 @@ export const newMeasurement = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/measurement/${skjemaID}`,
+            `/measurement/${skjemaID}`,
             { measurement }
         );
         if (status === 200) {
@@ -67,10 +67,9 @@ export const updateMeasurementApi = async (
     message: string;
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.put(
-            `/v3/measurement/`,
-            { measurement }
-        );
+        const { status, data } = await sluttkontrollApi.put(`/measurement/`, {
+            measurement
+        });
         if (status === 204) {
             return { status, ...data };
         }
@@ -87,7 +86,7 @@ export const deleteMeasurement = async (
 }> => {
     try {
         const { status } = await sluttkontrollApi.delete(
-            `/v3/measurement/${measurementId}`
+            `/measurement/${measurementId}`
         );
         if (status === 204) {
             return { status, message: '' };

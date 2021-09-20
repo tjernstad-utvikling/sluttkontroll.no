@@ -6,7 +6,7 @@ export const getCheckpoints = async (): Promise<{
     checkpoints: Array<Checkpoint>;
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.get('/v3/checkpoint/');
+        const { status, data } = await sluttkontrollApi.get('/checkpoint/');
         if (status === 200) {
             return { status, ...data };
         }
@@ -28,7 +28,7 @@ export const updateCheckpoints = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.put(
-            `/v3/checkpoint/${checkpointId}`,
+            `/checkpoint/${checkpointId}`,
             {
                 prosedyre,
                 prosedyreNr,
@@ -56,15 +56,12 @@ export const newCheckpoints = async (
     message?: string;
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.post(
-            `/v3/checkpoint/`,
-            {
-                prosedyre,
-                prosedyreNr,
-                tekst,
-                gruppe
-            }
-        );
+        const { status, data } = await sluttkontrollApi.post(`/checkpoint/`, {
+            prosedyre,
+            prosedyreNr,
+            tekst,
+            gruppe
+        });
         return { status, ...data };
     } catch (error: any) {
         if (error.response.status === 400) {

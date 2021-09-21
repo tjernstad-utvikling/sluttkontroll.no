@@ -71,7 +71,7 @@ const KontrollKlientView = () => {
         if (kontroller !== undefined) {
             setKontroller(
                 kontroller.filter(
-                    (k) => k.Objekt.klient.id === Number(klientId)
+                    (k) => k.location.klient.id === Number(klientId)
                 )
             );
         }

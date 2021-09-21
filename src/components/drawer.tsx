@@ -89,12 +89,12 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
                     className={classes.collapseListLeftDrawer}
                     component="div"
                     disablePadding>
-                    {klient.objekts.map((objekt) => (
+                    {klient.locations.map((location) => (
                         <ObjektListItem
                             klientId={klient.id}
-                            id={objekt.id}
-                            name={objekt.name}
-                            key={objekt.id}
+                            id={location.id}
+                            name={location.name}
+                            key={location.id}
                         />
                     ))}
                 </List>

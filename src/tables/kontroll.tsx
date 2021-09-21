@@ -19,7 +19,9 @@ import { User } from '../contracts/userApi';
 export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
     const klient = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
-            const klient = klienter.find((k) => k.id === data.Objekt.klient.id);
+            const klient = klienter.find(
+                (k) => k.id === data.location.klient.id
+            );
 
             return klient?.name || '';
         }
@@ -27,10 +29,12 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
     };
     const objekt = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
-            const klient = klienter.find((k) => k.id === data.Objekt.klient.id);
+            const klient = klienter.find(
+                (k) => k.id === data.location.klient.id
+            );
             if (klient !== undefined) {
-                const location = klient.objekts.find(
-                    (o) => o.id === data.Objekt.id
+                const location = klient.locations.find(
+                    (o) => o.id === data.location.id
                 );
                 return location?.name || '';
             }

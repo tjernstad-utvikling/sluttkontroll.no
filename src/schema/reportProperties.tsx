@@ -108,9 +108,11 @@ export const ReportPropertiesSchema = ({
                 );
         }
 
-        const klient = klienter.find((k) => k.id === kontroll.Objekt.klient.id);
-        const location = klient?.objekts.find(
-            (o) => o.id === kontroll.Objekt.id
+        const klient = klienter.find(
+            (k) => k.id === kontroll.location.klient.id
+        );
+        const location = klient?.locations.find(
+            (o) => o.id === kontroll.location.id
         );
         if (kontroll.rapportEgenskaper !== null) {
             const user =

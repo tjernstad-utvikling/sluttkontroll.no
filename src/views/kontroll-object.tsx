@@ -68,7 +68,7 @@ const KontrollObjektView = () => {
     useEffect(() => {
         if (kontroller !== undefined) {
             setKontroller(
-                kontroller.filter((k) => k.Objekt.id === Number(objectId))
+                kontroller.filter((k) => k.location.id === Number(objectId))
             );
         }
     }, [kontroller, objectId]);
@@ -78,7 +78,7 @@ const KontrollObjektView = () => {
             const klient = klienter.find((k) => k.id === Number(klientId));
             if (klient !== undefined) {
                 setLocation(
-                    klient.objekts.find((o) => o.id === Number(objectId))
+                    klient.locations.find((o) => o.id === Number(objectId))
                 );
             }
         }

@@ -112,7 +112,7 @@ export const kontrollColumns = (
             flex: 1,
             renderCell: (params: GridCellParams) => (
                 <Link
-                    to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}`}>
+                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}`}>
                     {params.row.name}
                 </Link>
             )
@@ -123,7 +123,7 @@ export const kontrollColumns = (
             flex: 1,
             renderCell: (params: GridCellParams) => (
                 <Link
-                    to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/avvik`}>
+                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/avvik`}>
                     <span>
                         ({KontrollValueGetter(params.row).avvik(avvik).open} |{' '}
                         {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
@@ -137,7 +137,7 @@ export const kontrollColumns = (
             flex: 1,
             renderCell: (params: GridCellParams) => (
                 <Link
-                    to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/measurement`}>
+                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/measurement`}>
                     {KontrollValueGetter(params.row).measurement(measurements)}
                 </Link>
             )
@@ -176,7 +176,7 @@ export const kontrollColumns = (
                         },
                         {
                             name: 'Kontrollrapport',
-                            to: `/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/report`,
+                            to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
                             icon: <DescriptionIcon />
                         }
                     ]}

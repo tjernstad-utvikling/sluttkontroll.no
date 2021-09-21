@@ -75,7 +75,7 @@ export const Report = ({
                         frontPageData={frontPageData}
                         hasInlineMeasurements={hasInlineMeasurements}
                         measurements={measurements.filter(
-                            (m) => m.Skjema.id === s.id
+                            (m) => m.skjema.id === s.id
                         )}
                         measurementTypes={measurementTypes}
                     />
@@ -91,7 +91,7 @@ export const Report = ({
                         skjema={s}
                         index={i}
                         measurements={measurements.filter(
-                            (m) => m.Skjema.id === s.id
+                            (m) => m.skjema.id === s.id
                         )}
                         frontPageData={frontPageData}
                         measurementTypes={measurementTypes}

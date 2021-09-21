@@ -67,7 +67,7 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
     const measurement = (measurements: Measurement[]): number => {
         if (measurements !== undefined) {
             const filteredMeasurements = measurements.filter(
-                (m) => m.Skjema.kontroll.id === data.id
+                (m) => m.skjema.kontroll.id === data.id
             );
 
             return filteredMeasurements.length;

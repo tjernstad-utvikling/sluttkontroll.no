@@ -14,10 +14,10 @@ import { RowAction } from './tableUtils';
 
 export const MeasurementValueGetter = (data: Measurement | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
-        return kontroller.find((k) => k.id === data.Skjema.kontroll.id);
+        return kontroller.find((k) => k.id === data.skjema.kontroll.id);
     };
     const skjema = (skjemaer: Skjema[]): string => {
-        const skjema = skjemaer.find((s) => s.id === data.Skjema.id);
+        const skjema = skjemaer.find((s) => s.id === data.skjema.id);
         if (skjema !== undefined) {
             return `${skjema?.area} - ${skjema?.omrade}` || '';
         }

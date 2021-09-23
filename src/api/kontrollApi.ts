@@ -217,7 +217,7 @@ export const getKontrollerByObjekt = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/kontroll/object/${objektId}`
+            `/kontroll/location/${objektId}`
         );
         if (status === 200) {
             return { status, ...data };
@@ -236,7 +236,7 @@ export const updateKontroll = async (
     try {
         const { status } = await sluttkontrollApi.put(
             `/kontroll/${kontroll.id}`,
-            { kontroll }
+            { ...kontroll }
         );
         if (status === 204) {
             return { status };

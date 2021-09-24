@@ -68,7 +68,7 @@ export const updateMeasurementApi = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.put(`/measurement/`, {
-            measurement
+            ...measurement
         });
         if (status === 204) {
             return { status, ...data };

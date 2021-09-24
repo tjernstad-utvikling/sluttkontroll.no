@@ -73,7 +73,7 @@ export const newLocation = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/objekt/${klient.id}`,
+            `/location/${klient.id}`,
             {
                 name
             }
@@ -93,7 +93,7 @@ export const editLocation = async (
     status: number;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.put(`/objekt/${id}`, {
+        const { status } = await sluttkontrollApi.put(`/location/${id}`, {
             name
         });
         if (status === 204) {

@@ -50,7 +50,7 @@ export const newMeasurement = async (
     try {
         const { status, data } = await sluttkontrollApi.post(
             `/measurement/${skjemaID}`,
-            { measurement }
+            { ...measurement }
         );
         if (status === 200) {
             return { status, ...data };

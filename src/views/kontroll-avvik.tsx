@@ -19,6 +19,7 @@ import ReorderIcon from '@material-ui/icons/Reorder';
 import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/tableContainer';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import { getAvvikReport } from '../api/avvikApi';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -36,7 +37,6 @@ const AvvikView = () => {
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
     const [showTable, setShowTable] = useState<boolean>(false);
-    const [showPdf, setShowPdf] = useState<boolean>(true);
     const [showAll, setShowAll] = useState<boolean>(false); // Also show closed avvik
 
     enum Modals {
@@ -119,6 +119,24 @@ const AvvikView = () => {
         setShowAll(!showAll);
     };
 
+    const downloadAvvikList = async () => {
+        try {
+            const response = await getAvvikReport(
+                Number(kontrollId),
+                selected.map((sa) => sa.id)
+            );
+
+            const fileURL = window.URL.createObjectURL(
+                new Blob([response.data])
+            );
+            const fileLink = document.createElement('a');
+            fileLink.href = fileURL;
+            fileLink.setAttribute('download', 'Avviksliste.pdf');
+            document.body.appendChild(fileLink);
+            fileLink.click();
+        } catch (error) {}
+    };
+
     useEffectOnce(() => {
         const jsonShowTable = localStorage.getItem(StorageKeys.avvikViewMode);
         if (jsonShowTable !== null) {
@@ -181,7 +199,7 @@ const AvvikView = () => {
                                         {
                                             label: `Hent avviksliste (${selected.length})`,
                                             icon: <BuildIcon />,
-                                            action: () => setShowPdf(!showPdf)
+                                            action: downloadAvvikList
                                         }
                                     ]}
                                 />

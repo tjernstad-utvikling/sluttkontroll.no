@@ -159,11 +159,11 @@ export const closeAvvikApi = async (
 };
 
 export const getImageFile = async (
-    nameOrId: number | string
+    name: string
 ): Promise<{ status: number; data: Blob }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/avvik/bilder/${nameOrId}`,
+            `/avvik/bilder/${name}`,
             {
                 responseType: 'blob'
             }
@@ -214,6 +214,29 @@ export const addImage = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
+        console.log(error);
+        throw new Error(error);
+    }
+};
+
+export const getAvvikReport = async (
+    kontrollId: number,
+    avvikIds: number[]
+): Promise<{ status: number; data: Blob }> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            '/download/avvik-report',
+            {
+                kontrollId,
+                avvikIds
+            },
+            {
+                responseType: 'blob'
+            }
+        );
+
+        return { status, data: data };
+    } catch (error: any) {
         console.log(error);
         throw new Error(error);
     }

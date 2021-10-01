@@ -8,13 +8,11 @@ import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikGrid } from '../components/avvik';
-import { AvvikReportViewer } from '../components/report';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
 import BuildIcon from '@material-ui/icons/Build';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 import Container from '@material-ui/core/Container';
-import { DocumentContainer } from '../document/documentContainer';
 import Grid from '@material-ui/core/Grid';
 import PersonIcon from '@material-ui/icons/Person';
 import ReorderIcon from '@material-ui/icons/Reorder';
@@ -29,8 +27,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 
 const AvvikView = () => {
     const classes = usePageStyles();
-    const { kontrollId, skjemaId, checklistId, objectId } =
-        useParams<AvvikViewParams>();
+    const { kontrollId, skjemaId, checklistId } = useParams<AvvikViewParams>();
 
     const { url } = useRouteMatch();
 
@@ -138,17 +135,6 @@ const AvvikView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    {showPdf && (
-                        <Grid item xs={12}>
-                            <DocumentContainer
-                                reportTypeId="avvik"
-                                kontrollId={Number(kontrollId)}
-                                objectId={Number(objectId)}
-                                selectedAvvik={selected}>
-                                <AvvikReportViewer />
-                            </DocumentContainer>
-                        </Grid>
-                    )}
                     <Grid item xs={12}>
                         <Card
                             title="Avvik"

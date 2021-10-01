@@ -156,7 +156,11 @@ export const saveKontrollReportData = async (
             `/rapport/egenskaper/${kontrollId}`,
             {
                 ...reportProperties,
-                sertifikater: reportProperties.sertifikater.map((s) => s.id)
+                sertifikater: reportProperties.sertifikater.map((s) => {
+                    return {
+                        id: s.id
+                    };
+                })
             }
         );
         if (status === 200) {

@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/",
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,

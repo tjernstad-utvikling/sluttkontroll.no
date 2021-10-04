@@ -6,9 +6,11 @@ import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN
-});
+if (process.env.NODE_ENV === 'production') {
+    Sentry.init({
+        dsn: process.env.REACT_APP_SENTRY_DSN
+    });
+}
 
 ReactDOM.render(
     <React.StrictMode>

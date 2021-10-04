@@ -1,6 +1,6 @@
 export interface Measurement {
     id: number;
-    Skjema: {
+    skjema: {
         id: number;
         kontroll: {
             id: number;

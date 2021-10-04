@@ -3,7 +3,7 @@ import { Sertifikat } from './userApi';
 export interface Klient {
     id: number;
     name: string;
-    objekts: Array<Location>;
+    locations: Array<Location>;
 }
 
 export interface Location {
@@ -17,7 +17,7 @@ export interface Kontroll {
     kommentar: string;
     done: boolean;
     completedDate: string | null;
-    Objekt: {
+    location: {
         id: number;
         klient: {
             id: number;
@@ -34,7 +34,7 @@ export interface ReportKontroll {
     kommentar: string;
     done: boolean;
     completedDate: string | null;
-    Objekt: {
+    location: {
         id: number;
         klient: {
             id: number;

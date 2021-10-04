@@ -37,7 +37,7 @@ export const ClientReducer = (
                     if (k.id === action.payload.klient.id) {
                         return {
                             ...k,
-                            objekts: [...k.objekts, action.payload.location]
+                            objekts: [...k.locations, action.payload.location]
                         };
                     } else {
                         return k;
@@ -51,7 +51,7 @@ export const ClientReducer = (
                     if (k.id === action.payload.klientId) {
                         return {
                             ...k,
-                            objekts: k.objekts.map((o) => {
+                            objekts: k.locations.map((o) => {
                                 if (o.id === action.payload.location.id) {
                                     return action.payload.location;
                                 } else {

@@ -19,7 +19,9 @@ import { User } from '../contracts/userApi';
 export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
     const klient = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
-            const klient = klienter.find((k) => k.id === data.Objekt.klient.id);
+            const klient = klienter.find(
+                (k) => k.id === data.location.klient.id
+            );
 
             return klient?.name || '';
         }
@@ -27,10 +29,12 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
     };
     const objekt = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
-            const klient = klienter.find((k) => k.id === data.Objekt.klient.id);
+            const klient = klienter.find(
+                (k) => k.id === data.location.klient.id
+            );
             if (klient !== undefined) {
-                const location = klient.objekts.find(
-                    (o) => o.id === data.Objekt.id
+                const location = klient.locations.find(
+                    (o) => o.id === data.location.id
                 );
                 return location?.name || '';
             }
@@ -63,7 +67,7 @@ export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
     const measurement = (measurements: Measurement[]): number => {
         if (measurements !== undefined) {
             const filteredMeasurements = measurements.filter(
-                (m) => m.Skjema.kontroll.id === data.id
+                (m) => m.skjema.kontroll.id === data.id
             );
 
             return filteredMeasurements.length;
@@ -108,7 +112,7 @@ export const kontrollColumns = (
             flex: 1,
             renderCell: (params: GridCellParams) => (
                 <Link
-                    to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}`}>
+                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}`}>
                     {params.row.name}
                 </Link>
             )
@@ -119,7 +123,7 @@ export const kontrollColumns = (
             flex: 1,
             renderCell: (params: GridCellParams) => (
                 <Link
-                    to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/avvik`}>
+                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/avvik`}>
                     <span>
                         ({KontrollValueGetter(params.row).avvik(avvik).open} |{' '}
                         {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
@@ -133,7 +137,7 @@ export const kontrollColumns = (
             flex: 1,
             renderCell: (params: GridCellParams) => (
                 <Link
-                    to={`/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/measurement`}>
+                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/measurement`}>
                     {KontrollValueGetter(params.row).measurement(measurements)}
                 </Link>
             )
@@ -172,7 +176,7 @@ export const kontrollColumns = (
                         },
                         {
                             name: 'Kontrollrapport',
-                            to: `/kontroll/kl/${params.row.Objekt.klient.id}/obj/${params.row.Objekt.id}/${params.row.id}/report`,
+                            to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
                             icon: <DescriptionIcon />
                         }
                     ]}

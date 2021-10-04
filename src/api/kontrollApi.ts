@@ -16,7 +16,7 @@ export const getClients = async (): Promise<{
     klienter: Array<Klient>;
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.get('/v3/klient');
+        const { status, data } = await sluttkontrollApi.get('/klient');
         if (status === 200) {
             return { status, ...data };
         }
@@ -33,7 +33,7 @@ export const newClient = async (
     klient: Klient;
 }> => {
     try {
-        const { status, data } = await sluttkontrollApi.post('/v3/klient/', {
+        const { status, data } = await sluttkontrollApi.post('/klient/', {
             name
         });
         if (status === 200) {
@@ -52,7 +52,7 @@ export const editClient = async (
     status: number;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.put(`/v3/klient/${id}`, {
+        const { status } = await sluttkontrollApi.put(`/klient/${id}`, {
             name
         });
         if (status === 204) {
@@ -73,7 +73,7 @@ export const newLocation = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/objekt/${klient.id}`,
+            `/location/${klient.id}`,
             {
                 name
             }
@@ -93,7 +93,7 @@ export const editLocation = async (
     status: number;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.put(`/v3/objekt/${id}`, {
+        const { status } = await sluttkontrollApi.put(`/location/${id}`, {
             name
         });
         if (status === 204) {
@@ -113,7 +113,7 @@ export const getKontroller = async (): Promise<{
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            '/v3/kontroll/current-user'
+            '/kontroll/current-user'
         );
         if (status === 200) {
             return { status, ...data };
@@ -132,7 +132,7 @@ export const getKontrollReportData = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/kontroll/${kontrollId}/report-data`
+            `/kontroll/${kontrollId}/report-data`
         );
         console.log({ ...data });
         if (status === 200) {
@@ -153,10 +153,14 @@ export const saveKontrollReportData = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/rapport/egenskaper/${kontrollId}`,
+            `/rapport/egenskaper/${kontrollId}`,
             {
                 ...reportProperties,
-                sertifikater: reportProperties.sertifikater.map((s) => s.id)
+                sertifikater: reportProperties.sertifikater.map((s) => {
+                    return {
+                        id: s.id
+                    };
+                })
             }
         );
         if (status === 200) {
@@ -175,7 +179,7 @@ export const toggleKontrollStatus = async (
 ): Promise<number> => {
     try {
         const { status } = await sluttkontrollApi.put(
-            `/v3/kontroll/status/${kontrollId}`
+            `/kontroll/status/${kontrollId}`
         );
         if (status === 204) {
             return status;
@@ -196,7 +200,7 @@ export const getKontrollerByKlient = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/kontroll/klient/${klientId}`
+            `/kontroll/klient/${klientId}`
         );
         if (status === 200) {
             return { status, ...data };
@@ -217,7 +221,7 @@ export const getKontrollerByObjekt = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/v3/kontroll/object/${objektId}`
+            `/kontroll/location/${objektId}`
         );
         if (status === 200) {
             return { status, ...data };
@@ -235,8 +239,8 @@ export const updateKontroll = async (
 }> => {
     try {
         const { status } = await sluttkontrollApi.put(
-            `/v3/kontroll/${kontroll.id}`,
-            { kontroll }
+            `/kontroll/${kontroll.id}`,
+            { ...kontroll }
         );
         if (status === 204) {
             return { status };
@@ -258,7 +262,7 @@ export const newKontroll = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/kontroll/${location.id}/${user.id}`,
+            `/kontroll/${location.id}/${user.id}`,
             { name, avvikUtbedrere }
         );
         if (status === 200) {
@@ -281,7 +285,7 @@ export const newSkjema = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/v3/skjema/${kontrollId}`,
+            `/skjema/${kontrollId}`,
             { area, omrade, checkpoints: checkpointIds }
         );
         if (status === 200) {
@@ -301,7 +305,7 @@ export const editChecklist = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.put(
-            `/v3/checklist/${skjemaId}`,
+            `/checklist/${skjemaId}`,
             { checkpointIds }
         );
         if (status === 200) {
@@ -321,7 +325,7 @@ export const toggleAktuellStatusChecklist = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.put(
-            `/v3/checklist/aktuell/${checklistId}/${aktuell ? 1 : 0}`
+            `/checklist/aktuell/${checklistId}/${aktuell ? 1 : 0}`
         );
         if (status === 204) {
             return { status, ...data };

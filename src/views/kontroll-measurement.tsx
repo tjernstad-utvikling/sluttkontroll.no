@@ -48,12 +48,12 @@ const MeasurementsView = () => {
         if (measurements !== undefined) {
             if (skjemaId !== undefined) {
                 setMeasurements(
-                    measurements.filter((m) => m.Skjema.id === Number(skjemaId))
+                    measurements.filter((m) => m.skjema.id === Number(skjemaId))
                 );
             } else {
                 setMeasurements(
                     measurements.filter(
-                        (m) => m.Skjema.kontroll.id === Number(kontrollId)
+                        (m) => m.skjema.kontroll.id === Number(kontrollId)
                     )
                 );
             }

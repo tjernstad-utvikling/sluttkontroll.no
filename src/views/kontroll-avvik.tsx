@@ -8,19 +8,18 @@ import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikGrid } from '../components/avvik';
-import { AvvikReportViewer } from '../components/report';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
 import BuildIcon from '@material-ui/icons/Build';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 import Container from '@material-ui/core/Container';
-import { DocumentContainer } from '../document/documentContainer';
 import Grid from '@material-ui/core/Grid';
 import PersonIcon from '@material-ui/icons/Person';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/tableContainer';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import { getAvvikReport } from '../api/avvikApi';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -29,8 +28,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 
 const AvvikView = () => {
     const classes = usePageStyles();
-    const { kontrollId, skjemaId, checklistId, objectId } =
-        useParams<AvvikViewParams>();
+    const { kontrollId, skjemaId, checklistId } = useParams<AvvikViewParams>();
 
     const { url } = useRouteMatch();
 
@@ -39,7 +37,6 @@ const AvvikView = () => {
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
     const [showTable, setShowTable] = useState<boolean>(false);
-    const [showPdf, setShowPdf] = useState<boolean>(true);
     const [showAll, setShowAll] = useState<boolean>(false); // Also show closed avvik
 
     enum Modals {
@@ -122,6 +119,24 @@ const AvvikView = () => {
         setShowAll(!showAll);
     };
 
+    const downloadAvvikList = async () => {
+        try {
+            const response = await getAvvikReport(
+                Number(kontrollId),
+                selected.map((sa) => sa.id)
+            );
+
+            const fileURL = window.URL.createObjectURL(
+                new Blob([response.data])
+            );
+            const fileLink = document.createElement('a');
+            fileLink.href = fileURL;
+            fileLink.setAttribute('download', 'Avviksliste.pdf');
+            document.body.appendChild(fileLink);
+            fileLink.click();
+        } catch (error) {}
+    };
+
     useEffectOnce(() => {
         const jsonShowTable = localStorage.getItem(StorageKeys.avvikViewMode);
         if (jsonShowTable !== null) {
@@ -138,17 +153,6 @@ const AvvikView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    {showPdf && (
-                        <Grid item xs={12}>
-                            <DocumentContainer
-                                reportTypeId="avvik"
-                                kontrollId={Number(kontrollId)}
-                                objectId={Number(objectId)}
-                                selectedAvvik={selected}>
-                                <AvvikReportViewer />
-                            </DocumentContainer>
-                        </Grid>
-                    )}
                     <Grid item xs={12}>
                         <Card
                             title="Avvik"
@@ -195,7 +199,7 @@ const AvvikView = () => {
                                         {
                                             label: `Hent avviksliste (${selected.length})`,
                                             icon: <BuildIcon />,
-                                            action: () => setShowPdf(!showPdf)
+                                            action: downloadAvvikList
                                         }
                                     ]}
                                 />

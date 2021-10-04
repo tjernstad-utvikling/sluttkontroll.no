@@ -7,17 +7,17 @@ export const getLogin = async (
     password: string
 ): Promise<{ status: number; token?: string }> => {
     try {
-        const { status, data } = await sluttkontrollApi.post('/login_check', {
-            username: email,
+        const { status, data } = await sluttkontrollApi.post('/auth/login', {
+            email: email,
             password: password
         });
         if (status === 200) {
-            localStorage.setItem(StorageKeys.token, data.token);
-            localStorage.setItem(StorageKeys.refreshToken, data.refresh_token);
+            localStorage.setItem(StorageKeys.token, data.accessToken.token);
+            localStorage.setItem(StorageKeys.refreshToken, data.refreshToken);
 
             return {
                 status,
-                token: data.token
+                token: data.accessToken.token
             };
         }
         return {
@@ -35,7 +35,7 @@ interface returnValue {
 }
 export const getCurrentUser = async (): Promise<returnValue> => {
     try {
-        const { status, data } = await sluttkontrollApi.get('/v3/user/me');
+        const { status, data } = await sluttkontrollApi.get('/user/me');
         console.log({ data });
         if (status === 200) {
             localStorage.setItem(

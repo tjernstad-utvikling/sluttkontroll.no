@@ -6,7 +6,7 @@ export const getInfoText = async (): Promise<{
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            '/v3/settings/get-info-text'
+            '/settings/get-info-text'
         );
         if (status === 200) {
             return { status, ...data };
@@ -25,7 +25,7 @@ export const setInfoText = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.put(
-            '/v3/settings/set-info-text',
+            '/settings/set-info-text',
             {
                 infoText
             }

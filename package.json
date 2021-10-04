@@ -10,10 +10,7 @@
     "@material-ui/pickers": "^3.3.10",
     "@react-pdf-viewer/core": "2.7.2",
     "@react-pdf-viewer/get-file": "^2.7.2",
-    "@react-pdf/renderer": "^2.0.16",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@react-pdf/renderer": "^2.0.20",
     "@uiw/react-md-editor": "^3.6.0",
     "axios": "^0.21.1",
     "date-fns": "^2.23.0",
@@ -27,7 +24,6 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-select": "^4.3.1",
-    "typescript": "^4.1.2",
     "web-vitals": "^1.0.1",
     "yup": "^0.32.9"
   },
@@ -55,6 +51,10 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.7",
-    "@types/react-select": "^4.0.17"
+    "@types/react-select": "^4.0.17",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "typescript": "^4.1.2"
   }
 }

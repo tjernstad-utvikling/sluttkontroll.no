@@ -99,7 +99,7 @@ const KontrollNewView = () => {
                     <LocationSchema
                         locations={
                             selectedKlient !== undefined
-                                ? selectedKlient.objekts
+                                ? selectedKlient.locations
                                 : []
                         }
                         onCreateNew={createNewLocation}

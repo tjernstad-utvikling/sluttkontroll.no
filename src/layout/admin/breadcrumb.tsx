@@ -92,7 +92,7 @@ const Location = () => {
         const klient = klienter?.find(
             (k) => k.id === Number(match?.params.klientId)
         );
-        return klient?.objekts.find(
+        return klient?.locations.find(
             (l) => l.id === Number(match?.params.objectId)
         );
     }, [klienter, match?.params.klientId, match?.params.objectId]);

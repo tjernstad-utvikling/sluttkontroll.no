@@ -12,7 +12,10 @@ const SettingsView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <button onClick={methodDoesNotExist}>
+                        <button
+                            onClick={(e) => {
+                                throw new Error(JSON.stringify(e));
+                            }}>
                             Test error reporting
                         </button>
                         <Card title="Innstillinger">

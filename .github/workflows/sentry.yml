@@ -47,5 +47,6 @@ jobs:
 
           # When the flag is set and the previous release commit was not found in the repository, will create a release with the default commits count instead of failing the command.
           ignore_missing: true
+          sourcemaps: ./build
 
 

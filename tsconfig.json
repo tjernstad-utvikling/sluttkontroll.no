@@ -6,8 +6,6 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-
-      "no-console": true,
     "target": "es5",
     "lib": [
       "es6",

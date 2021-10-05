@@ -117,7 +117,6 @@ export const CheckpointTable = ({
             onSelected(cpRows);
         }
     };
-    console.log({ checkpoints });
     return (
         <BaseTable
             selectionModel={selectionModel}

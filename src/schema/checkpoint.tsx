@@ -54,7 +54,6 @@ export const CheckpointSchema = ({
                 }
             }}>
             {({ isSubmitting, setFieldValue, values, errors, touched }) => {
-                console.log(errors);
                 return (
                     <Form>
                         <Grid container spacing={3}>

@@ -263,7 +263,6 @@ export const AvvikTable = ({
     useEffect(() => {
         function checkSelected() {
             if (apiRef.current !== null && selectedFromGrid) {
-                console.log('set selected in table');
                 const selectArray = selected.map((a) => a.id);
                 apiRef.current.selectRows(selectArray);
             }

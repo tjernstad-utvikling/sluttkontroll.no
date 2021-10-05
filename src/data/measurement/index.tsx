@@ -14,6 +14,7 @@ import {
 import { initialState, userReducer } from './reducer';
 
 import { Kontroll } from '../../contracts/kontrollApi';
+import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
 export const useMeasurement = () => {
@@ -58,7 +59,7 @@ export const MeasurementContextProvider = ({
                 }
             }
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
         }
     };
 

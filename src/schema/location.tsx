@@ -51,7 +51,6 @@ export const LocationSchema = ({
                 }}
                 validationSchema={Yup.object({})}
                 onSubmit={(values, { setSubmitting }) => {
-                    console.log('submit', values);
                     if (values.name !== null && values.name !== undefined) {
                         onSubmit(values.name.value);
                     }

@@ -13,6 +13,7 @@ import { initialState, instrumentReducer } from './reducer';
 
 import { Instrument } from '../../contracts/instrumentApi';
 import { User } from '../../contracts/userApi';
+import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
 export const useInstrument = () => {
@@ -46,7 +47,7 @@ export const InstrumentContextProvider = ({
                     });
                 }
             } catch (error: any) {
-                console.log(error);
+                errorHandler(error);
             }
             setHasLoadedInstruments(true);
         }
@@ -85,7 +86,7 @@ export const InstrumentContextProvider = ({
             }
             return false;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med lagring av instrument', {
                 variant: 'error'
             });
@@ -137,7 +138,7 @@ export const InstrumentContextProvider = ({
             }
             return false;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med lagring av instrument', {
                 variant: 'error'
             });
@@ -168,7 +169,7 @@ export const InstrumentContextProvider = ({
             }
             return false;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med lagring av instrument', {
                 variant: 'error'
             });
@@ -208,7 +209,7 @@ export const InstrumentContextProvider = ({
 
             return false;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med lagring av instrument', {
                 variant: 'error'
             });

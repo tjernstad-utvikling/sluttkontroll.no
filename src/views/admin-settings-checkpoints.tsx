@@ -7,6 +7,7 @@ import { CheckpointModal } from '../modal/checkpoint';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { TableContainer } from '../tables/tableContainer';
+import { errorHandler } from '../tools/errorHandler';
 import { updateCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -67,7 +68,7 @@ const CheckpointView = () => {
                     });
                 }
             } catch (error: any) {
-                console.log(error);
+                errorHandler(error);
                 enqueueSnackbar('Problemer med lagring av mal', {
                     variant: 'error'
                 });
@@ -86,7 +87,7 @@ const CheckpointView = () => {
                     handleSaveResponse(status, checkpoint);
                 }
             } catch (error: any) {
-                console.log(error);
+                errorHandler(error);
                 enqueueSnackbar('Problemer med lagring av mal', {
                     variant: 'error'
                 });

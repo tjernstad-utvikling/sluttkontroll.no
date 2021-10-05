@@ -1,6 +1,7 @@
 import { Avvik, AvvikBilde } from '../contracts/avvikApi';
 
 import { User } from '../contracts/userApi';
+import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getAvvikByKontrollList = async (
@@ -171,7 +172,7 @@ export const getImageFile = async (
 
         return { status, data: data };
     } catch (error: any) {
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };
@@ -186,7 +187,7 @@ export const deleteImage = async (
 
         return { status, ...data };
     } catch (error: any) {
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };
@@ -214,7 +215,7 @@ export const addImage = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };
@@ -237,7 +238,7 @@ export const getAvvikReport = async (
 
         return { status, data: data };
     } catch (error: any) {
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };

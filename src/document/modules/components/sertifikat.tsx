@@ -8,7 +8,6 @@ interface SertifikatBlockProps {
     sertifikater: Sertifikat[];
 }
 export const SertifikatBlock = ({ sertifikater }: SertifikatBlockProps) => {
-    console.log(sertifikater);
     return (
         <>
             <TableHeader title="Sertifikater" />

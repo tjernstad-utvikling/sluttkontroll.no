@@ -20,6 +20,7 @@ import { InstrumentCalibrationViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { Viewer } from '@react-pdf-viewer/core';
 import { Worker } from '@react-pdf-viewer/core';
+import { errorHandler } from '../tools/errorHandler';
 import { getFilePlugin } from '@react-pdf-viewer/get-file';
 import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -71,7 +72,7 @@ const InstrumentsView = () => {
             enqueueSnackbar('Ukjent problem med lasting av sertifikat', {
                 variant: 'error'
             });
-            console.log(error);
+            errorHandler(error);
         }
     };
 

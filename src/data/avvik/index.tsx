@@ -16,6 +16,7 @@ import { initialState, userReducer } from './reducer';
 
 import { Kontroll } from '../../contracts/kontrollApi';
 import { User } from '../../contracts/userApi';
+import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
 export const useAvvik = () => {
@@ -48,7 +49,7 @@ export const AvvikContextProvider = ({
                 });
             }
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
         }
     };
 
@@ -80,7 +81,7 @@ export const AvvikContextProvider = ({
             }
             return true;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
                 variant: 'error'
             });
@@ -113,7 +114,7 @@ export const AvvikContextProvider = ({
             }
             return false;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med lagring av avvik', {
                 variant: 'error'
             });
@@ -143,7 +144,7 @@ export const AvvikContextProvider = ({
             }
             return true;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
                 variant: 'error'
             });
@@ -178,7 +179,7 @@ export const AvvikContextProvider = ({
             }
             return true;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
                 variant: 'error'
             });
@@ -204,7 +205,7 @@ export const AvvikContextProvider = ({
             }
             return true;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med oppdatering av avvik', {
                 variant: 'error'
             });
@@ -241,7 +242,7 @@ export const AvvikContextProvider = ({
             }
             return true;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med sletting av avvik', {
                 variant: 'error'
             });
@@ -274,7 +275,7 @@ export const AvvikContextProvider = ({
 
             return false;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med sletting av bilde', {
                 variant: 'error'
             });

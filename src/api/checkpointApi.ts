@@ -1,4 +1,5 @@
 import { Checkpoint } from '../contracts/checkpointApi';
+import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getCheckpoints = async (): Promise<{
@@ -41,7 +42,7 @@ export const updateCheckpoints = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };
@@ -67,7 +68,7 @@ export const newCheckpoints = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };

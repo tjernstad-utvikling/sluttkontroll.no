@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Image as RPRImage } from '@react-pdf/renderer';
+import { errorHandler } from '../tools/errorHandler';
 import { getImageFile } from '../api/avvikApi';
 
 interface ImageProps {
@@ -21,7 +22,7 @@ export const Image = ({ src, file, alt, objectFit }: ImageProps) => {
                         setObjectUrl(URL.createObjectURL(response.data));
                     }
                 } catch (error: any) {
-                    console.log(error);
+                    errorHandler(error);
                 }
             } else if (file !== undefined) {
                 setObjectUrl(URL.createObjectURL(file));
@@ -60,7 +61,7 @@ export const PdfImage = ({ src }: { src: string }) => {
                     setObjectUrl(URL.createObjectURL(response.data));
                 }
             } catch (error: any) {
-                console.log(error);
+                errorHandler(error);
             }
         };
 

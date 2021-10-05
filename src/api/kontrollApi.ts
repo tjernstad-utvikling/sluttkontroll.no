@@ -9,6 +9,7 @@ import {
 } from '../contracts/kontrollApi';
 
 import { User } from '../contracts/userApi';
+import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getClients = async (): Promise<{
@@ -134,12 +135,13 @@ export const getKontrollReportData = async (
         const { status, data } = await sluttkontrollApi.get(
             `/kontroll/${kontrollId}/report-data`
         );
-        console.log({ ...data });
+
         if (status === 200) {
             return { status, ...data };
         }
         throw new Error('not 200');
     } catch (error: any) {
+        errorHandler(error);
         throw new Error(error);
     }
 };

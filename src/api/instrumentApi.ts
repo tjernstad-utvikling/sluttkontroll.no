@@ -1,6 +1,7 @@
 import { Instrument, Kalibrering } from '../contracts/instrumentApi';
 
 import { User } from '../contracts/userApi';
+import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 interface InstrumentResponse {
@@ -106,7 +107,7 @@ export const addCalibrationFile = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };

@@ -10,6 +10,7 @@ import {
     newLocation
 } from '../../api/kontrollApi';
 
+import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
 export const useClient = () => {
@@ -38,7 +39,7 @@ export const ClientContextProvider = ({
                 });
             }
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
         }
     };
 

@@ -74,7 +74,6 @@ export const InstrumentSchema = ({
                     serienr: Yup.string().required('Serienummer er påkrevd')
                 })}
                 onSubmit={async (values, { setSubmitting }) => {
-                    console.log({ values });
                     await onSubmit(
                         values.name,
                         values.serienr,

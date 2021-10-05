@@ -10,6 +10,7 @@ import { initialState, reducer } from './reducer';
 
 import { Checkpoint } from '../../contracts/checkpointApi';
 import { Template } from '../../contracts/skjemaTemplateApi';
+import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
 export const useTemplate = () => {
@@ -41,7 +42,7 @@ export const TemplateContextProvider = ({
                     });
                 }
             } catch (error: any) {
-                console.log(error);
+                errorHandler(error);
             }
             setHasLoadedTemplates(true);
         }

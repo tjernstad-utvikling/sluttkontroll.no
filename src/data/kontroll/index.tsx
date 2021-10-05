@@ -19,6 +19,7 @@ import { initialState, kontrollReducer } from './reducer';
 
 import { Checkpoint } from '../../contracts/checkpointApi';
 import { User } from '../../contracts/userApi';
+import { errorHandler } from '../../tools/errorHandler';
 import { useAvvik } from '../avvik';
 import { useMeasurement } from '../measurement';
 import { useSnackbar } from 'notistack';
@@ -69,7 +70,7 @@ export const KontrollContextProvider = ({
                     setHasLoadedMyKontroller(true);
                 }
             } catch (error: any) {
-                console.log(error);
+                errorHandler(error);
             }
         }
     };
@@ -96,7 +97,7 @@ export const KontrollContextProvider = ({
                 });
             }
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
         }
     };
     const loadKontrollerByObjekt = async (objektId: number): Promise<void> => {
@@ -122,7 +123,7 @@ export const KontrollContextProvider = ({
                 });
             }
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
         }
     };
 
@@ -271,7 +272,6 @@ export const KontrollContextProvider = ({
     const removeSkjema = async (skjemaId: number): Promise<boolean> => {
         try {
             const res = await deleteSkjemaById(skjemaId);
-            console.log(res);
             if (res.status === 204) {
                 dispatch({
                     type: ActionType.removeSkjema,
@@ -289,7 +289,7 @@ export const KontrollContextProvider = ({
 
             return true;
         } catch (error: any) {
-            console.log(error);
+            errorHandler(error);
             enqueueSnackbar('Problemer med sletting av skjema', {
                 variant: 'error'
             });

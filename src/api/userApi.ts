@@ -1,5 +1,6 @@
 import { Roles, User } from '../contracts/userApi';
 
+import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getUsers = async (): Promise<{
@@ -41,7 +42,7 @@ export const updateUser = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };
@@ -71,7 +72,7 @@ export const newUser = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };
@@ -93,7 +94,7 @@ export const updateByIdUser = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };
@@ -116,7 +117,7 @@ export const updatePassword = async (
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
         }
-        console.log(error);
+        errorHandler(error);
         throw new Error(error);
     }
 };

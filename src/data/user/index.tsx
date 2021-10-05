@@ -8,6 +8,7 @@ import {
 } from '../../api/userApi';
 import { initialState, userReducer } from './reducer';
 
+import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
 export const useUser = () => {
@@ -117,7 +118,7 @@ export const UserContextProvider = ({
                     });
                 }
             } catch (error: any) {
-                console.log(error);
+                errorHandler(error);
             }
             setHasLoadedUsers(true);
         }

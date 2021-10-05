@@ -44,6 +44,7 @@ jobs:
         with:
           # Set the environment for this release. E.g. "production" or "staging". Omit to skip adding deploy to release.
           environment: production
+          log_level: debug
 
 
           # When the flag is set and the previous release commit was not found in the repository, will create a release with the default commits count instead of failing the command.

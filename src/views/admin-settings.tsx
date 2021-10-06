@@ -14,7 +14,7 @@ const SettingsView = () => {
                     <Grid item xs={12}>
                         <button
                             onClick={(e) => {
-                                throw new Error(JSON.stringify(e));
+                                throw new Error();
                             }}>
                             Test error reporting
                         </button>

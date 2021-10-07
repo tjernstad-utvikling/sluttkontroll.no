@@ -1,3 +1,4 @@
+import BallotIcon from '@material-ui/icons/Ballot';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -60,6 +61,12 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
                             to="/admin/settings/checkpoint"
                             primary="Sjekkpunkter"
                             icon={<CheckCircleIcon />}
+                            lightText
+                        />
+                        <ListItemLink
+                            to="/admin/settings/forms"
+                            primary="Risikovurderingsmaler"
+                            icon={<BallotIcon />}
                             lightText
                         />
                     </>

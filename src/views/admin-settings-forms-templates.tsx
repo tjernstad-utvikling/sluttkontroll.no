@@ -20,7 +20,7 @@ const FormsTemplatesView = () => {
                                     items={[
                                         {
                                             label: 'Ny  mal',
-                                            to: '/admin/settings/forms'
+                                            to: '/admin/settings/forms/new'
                                         }
                                     ]}
                                 />

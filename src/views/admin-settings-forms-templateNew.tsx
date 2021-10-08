@@ -1,5 +1,6 @@
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
+import { FormsTemplateGroupSchema } from '../schema/formsTemplateGroup';
 import { FormsTemplateSchema } from '../schema/formsTemplate';
 import Grid from '@material-ui/core/Grid';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -12,6 +13,9 @@ const FormsTemplateNewView = () => {
         subTitle: string,
         description: string
     ) => {
+        return false;
+    };
+    const onSaveGroup = async (title: string, description: string) => {
         return false;
     };
     return (
@@ -28,7 +32,7 @@ const FormsTemplateNewView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Grupper">
-                            <FormsTemplateSchema onSubmit={onSave} />
+                            <FormsTemplateGroupSchema onSubmit={onSaveGroup} />
                         </Card>
                     </Grid>
                 </Grid>

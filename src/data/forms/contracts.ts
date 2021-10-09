@@ -35,4 +35,9 @@ export interface ContextInterface {
         subTitle: string,
         description: string
     ) => Promise<FormsTemplate | false>;
+    newTemplateGroup: (
+        title: string,
+        description: string,
+        templateId: number
+    ) => Promise<boolean>;
 }

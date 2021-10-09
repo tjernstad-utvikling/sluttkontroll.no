@@ -1,9 +1,9 @@
 import { ActionType, ContextInterface } from './contracts';
-import React, { createContext, useContext, useReducer, useState } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
+import { addTemplate, addTemplateGroup } from '../../api/formsTemplateApi';
 import { initialState, reducer } from './reducer';
 
 import { FormsTemplate } from '../../contracts/sjaApi';
-import { addTemplate } from '../../api/formsTemplateApi';
 import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
@@ -28,7 +28,7 @@ export const FormsContextProvider = ({
         description: string
     ): Promise<FormsTemplate | false> => {
         try {
-            const { status, template, message } = await addTemplate(
+            const { status, template } = await addTemplate(
                 title,
                 subTitle,
                 description
@@ -63,13 +63,55 @@ export const FormsContextProvider = ({
         }
         return false;
     };
+    const newTemplateGroup = async (
+        title: string,
+        description: string,
+        templateId: number
+    ): Promise<boolean> => {
+        try {
+            const { status, template } = await addTemplateGroup(
+                title,
+                description,
+                templateId
+            );
+            if (status === 200 && template !== undefined) {
+                // dispatch({
+                //     type: ActionType.addTemplates,
+                //     payload: [template]
+                // });
+
+                enqueueSnackbar('Gruppe lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (status === 400) {
+                enqueueSnackbar('Tittel eller under tittel mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av mal', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av mal', {
+                variant: 'error'
+            });
+            errorHandler(error);
+        }
+        return false;
+    };
 
     return (
         <Context.Provider
             value={{
                 state,
 
-                newTemplate
+                newTemplate,
+                newTemplateGroup
             }}>
             {children}
         </Context.Provider>

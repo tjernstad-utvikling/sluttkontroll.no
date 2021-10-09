@@ -30,5 +30,9 @@ export type Actions = addTemplates | updateTemplate | removeTemplate;
 
 export interface ContextInterface {
     state: State;
-    loadTemplates: () => Promise<void>;
+    newTemplate: (
+        title: string,
+        subTitle: string,
+        description: string
+    ) => Promise<FormsTemplate | false>;
 }

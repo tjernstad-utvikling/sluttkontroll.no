@@ -18,14 +18,12 @@ import {
 import { FormsGroup, FormsTemplate } from '../contracts/sjaApi';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
-import AddLocationIcon from '@material-ui/icons/AddLocation';
 import BrandingWatermarkIcon from '@material-ui/icons/BrandingWatermark';
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
 import { FormsTemplateGroupSchema } from '../schema/formsTemplateGroup';
 import { FormsTemplateSchema } from '../schema/formsTemplate';
 import Grid from '@material-ui/core/Grid';
-import LocationCityIcon from '@material-ui/icons/LocationCity';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import React from 'react';
 import Step from '@material-ui/core/Step';
@@ -48,14 +46,21 @@ const FormsTemplateNewView = () => {
     const [activeStep, setActiveStep] = useState(0);
 
     const {
-        state: { groups }
+        state: { groups },
+        newTemplate
     } = useForms();
 
-    const onSave = async (
+    const onSaveTemplate = async (
         title: string,
         subTitle: string,
         description: string
     ) => {
+        const template = await newTemplate(title, subTitle, description);
+
+        if (template) {
+            setTemplate(template);
+            setActiveStep(1);
+        }
         return false;
     };
     const onSaveGroup = async (title: string, description: string) => {
@@ -65,7 +70,7 @@ const FormsTemplateNewView = () => {
     const formSwitch = () => {
         switch (activeStep) {
             case 0:
-                return <FormsTemplateSchema onSubmit={onSave} />;
+                return <FormsTemplateSchema onSubmit={onSaveTemplate} />;
             case 1:
                 return (
                     <>
@@ -97,6 +102,8 @@ const FormsTemplateNewView = () => {
                                     <StepLabel
                                         StepIconComponent={ColorlibStepIcon}>
                                         Mal
+                                        <br />
+                                        {template?.title}
                                     </StepLabel>
                                 </Step>
                                 <Step>

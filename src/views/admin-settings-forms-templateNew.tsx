@@ -15,18 +15,26 @@ import {
     Droppable,
     ResponderProvided
 } from 'react-beautiful-dnd';
+import { FormsGroup, FormsTemplate } from '../contracts/sjaApi';
+import React, { useState } from 'react';
 
 import { Card } from '../components/card';
 import Container from '@material-ui/core/Container';
-import { FormsGroup } from '../contracts/sjaApi';
 import { FormsTemplateGroupSchema } from '../schema/formsTemplateGroup';
 import { FormsTemplateSchema } from '../schema/formsTemplate';
 import Grid from '@material-ui/core/Grid';
-import React from 'react';
+import { useForms } from '../data/forms';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const FormsTemplateNewView = () => {
     const classes = usePageStyles();
+
+    const [template, setTemplate] = useState<FormsTemplate>();
+    const [group, setGroup] = useState<FormsGroup>();
+
+    const {
+        state: { groups }
+    } = useForms();
 
     const onSave = async (
         title: string,
@@ -53,28 +61,11 @@ const FormsTemplateNewView = () => {
                     <Grid item xs={12}>
                         <Card title="Grupper">
                             <FormsTemplateGroupSchema onSubmit={onSaveGroup} />
-                            <GroupTable
-                                groups={[
-                                    {
-                                        id: 1,
-                                        title: 'test1',
-                                        description: 'blaabla',
-                                        fields: []
-                                    },
-                                    {
-                                        id: 2,
-                                        title: 'test1',
-                                        description: 'blaabla',
-                                        fields: []
-                                    },
-                                    {
-                                        id: 3,
-                                        title: 'test1',
-                                        description: 'blaabla',
-                                        fields: []
-                                    }
-                                ]}
-                            />
+                            {groups !== undefined ? (
+                                <GroupTable groups={groups} />
+                            ) : (
+                                <p>Ingen grupper registrert</p>
+                            )}
                         </Card>
                     </Grid>
                 </Grid>

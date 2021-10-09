@@ -3,14 +3,13 @@ export interface FormsTemplate {
     title: string;
     subTitle: string;
     description: string;
-    groups: Array<FormsGroup>;
 }
 
 export interface FormsGroup {
     id: number;
     title?: string;
     description?: string;
-    fields: Array<FieldType>;
+    template: FormsTemplate;
 }
 
 export interface FieldType {

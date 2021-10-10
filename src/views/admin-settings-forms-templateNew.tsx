@@ -47,7 +47,8 @@ const FormsTemplateNewView = () => {
 
     const {
         state: { groups },
-        newTemplate
+        newTemplate,
+        newTemplateGroup
     } = useForms();
 
     const onSaveTemplate = async (
@@ -63,7 +64,12 @@ const FormsTemplateNewView = () => {
         }
         return false;
     };
+
     const onSaveGroup = async (title: string, description: string) => {
+        if (template !== undefined) {
+            if (await newTemplateGroup(title, description, template.id))
+                return true;
+        }
         return false;
     };
 
@@ -76,7 +82,12 @@ const FormsTemplateNewView = () => {
                     <>
                         <FormsTemplateGroupSchema onSubmit={onSaveGroup} />
                         {groups !== undefined ? (
-                            <GroupTable groups={groups} />
+                            <GroupTable
+                                groups={groups.filter(
+                                    (group) =>
+                                        group?.template.id === template?.id
+                                )}
+                            />
                         ) : (
                             <p>Ingen grupper registrert</p>
                         )}

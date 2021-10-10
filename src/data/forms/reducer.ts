@@ -14,25 +14,12 @@ export const reducer = (state: State, action: Actions): State => {
                 ...state,
                 templates: _.unionBy(action.payload, state.templates, 'id')
             };
+        case ActionType.addGroups:
+            return {
+                ...state,
+                groups: _.unionBy(action.payload, state.groups, 'id')
+            };
 
-        case ActionType.updateTemplate:
-            return {
-                ...state,
-                templates: state.templates?.map((t) => {
-                    if (t.id === action.payload.id) {
-                        return action.payload;
-                    } else {
-                        return t;
-                    }
-                })
-            };
-        case ActionType.removeTemplate:
-            return {
-                ...state,
-                templates: state.templates?.filter(
-                    (t) => t.id !== action.payload.id
-                )
-            };
         default:
             throw new Error('unknown action');
     }

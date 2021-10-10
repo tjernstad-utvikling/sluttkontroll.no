@@ -7,26 +7,19 @@ export interface State {
 
 export enum ActionType {
     addTemplates,
-    updateTemplate,
-    removeTemplate
+    addGroups
 }
 
 export interface addTemplates {
     type: ActionType.addTemplates;
     payload: FormsTemplate[];
 }
-
-export interface updateTemplate {
-    type: ActionType.updateTemplate;
-    payload: FormsTemplate;
+export interface addGroups {
+    type: ActionType.addGroups;
+    payload: FormsGroup[];
 }
 
-export interface removeTemplate {
-    type: ActionType.removeTemplate;
-    payload: FormsTemplate;
-}
-
-export type Actions = addTemplates | updateTemplate | removeTemplate;
+export type Actions = addTemplates | addGroups;
 
 export interface ContextInterface {
     state: State;
@@ -39,5 +32,10 @@ export interface ContextInterface {
         title: string,
         description: string,
         templateId: number
+    ) => Promise<boolean>;
+    sortGroup: (
+        groups: FormsGroup[],
+        startIndex: number,
+        endIndex: number
     ) => Promise<boolean>;
 }

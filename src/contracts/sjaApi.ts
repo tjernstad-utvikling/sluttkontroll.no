@@ -9,6 +9,7 @@ export interface FormsGroup {
     id: number;
     title?: string;
     description?: string;
+    sortingIndex: number;
     template: FormsTemplate;
 }
 

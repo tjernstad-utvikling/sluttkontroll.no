@@ -1,9 +1,13 @@
 import { ActionType, ContextInterface } from './contracts';
+import { FormsGroup, FormsTemplate } from '../../contracts/sjaApi';
 import React, { createContext, useContext, useReducer } from 'react';
-import { addTemplate, addTemplateGroup } from '../../api/formsTemplateApi';
+import {
+    addTemplate,
+    addTemplateGroup,
+    sortTemplateGroup
+} from '../../api/formsTemplateApi';
 import { initialState, reducer } from './reducer';
 
-import { FormsTemplate } from '../../contracts/sjaApi';
 import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
@@ -69,16 +73,57 @@ export const FormsContextProvider = ({
         templateId: number
     ): Promise<boolean> => {
         try {
-            const { status, template } = await addTemplateGroup(
+            const { status, group } = await addTemplateGroup(
                 title,
                 description,
                 templateId
             );
-            if (status === 200 && template !== undefined) {
-                // dispatch({
-                //     type: ActionType.addTemplates,
-                //     payload: [template]
-                // });
+            if (status === 200 && group !== undefined) {
+                dispatch({
+                    type: ActionType.addGroups,
+                    payload: [group]
+                });
+
+                enqueueSnackbar('Gruppe lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (status === 400) {
+                enqueueSnackbar('Tittel eller under tittel mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av mal', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av mal', {
+                variant: 'error'
+            });
+            errorHandler(error);
+        }
+        return false;
+    };
+    const sortGroup = async (
+        groups: FormsGroup[],
+        startIndex: number,
+        endIndex: number
+    ): Promise<boolean> => {
+        try {
+            const { status, group } = await sortTemplateGroup(
+                title,
+                description,
+                templateId
+            );
+            if (status === 200 && group !== undefined) {
+                dispatch({
+                    type: ActionType.addGroups,
+                    payload: [group]
+                });
 
                 enqueueSnackbar('Gruppe lagret', {
                     variant: 'success'
@@ -111,7 +156,8 @@ export const FormsContextProvider = ({
                 state,
 
                 newTemplate,
-                newTemplateGroup
+                newTemplateGroup,
+                sortGroup
             }}>
             {children}
         </Context.Provider>

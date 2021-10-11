@@ -1,13 +1,10 @@
-import { Theme } from '@mui/material/styles';
-
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import { PropTypes } from '@mui/material';
 import React from 'react';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
 import { green } from '@mui/material/colors';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,7 +25,15 @@ const useStyles = makeStyles((theme: Theme) =>
 interface LoadingButtonProps {
     isLoading: boolean;
     variant?: 'text' | 'outlined' | 'contained';
-    color?: PropTypes.Color;
+    color?:
+        | 'error'
+        | 'success'
+        | 'warning'
+        | 'info'
+        | 'inherit'
+        | 'primary'
+        | 'secondary'
+        | undefined;
     className?: string;
     onClick?: () => void;
     children: React.ReactNode;

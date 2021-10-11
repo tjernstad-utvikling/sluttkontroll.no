@@ -108,41 +108,48 @@ export const FormsContextProvider = ({
         }
         return false;
     };
+
     const sortGroup = async (
-        groups: FormsGroup[],
+        _groups: FormsGroup[],
         startIndex: number,
         endIndex: number
     ): Promise<boolean> => {
         try {
-            const { status, group } = await sortTemplateGroup(
-                title,
-                description,
-                templateId
-            );
-            if (status === 200 && group !== undefined) {
-                dispatch({
-                    type: ActionType.addGroups,
-                    payload: [group]
-                });
+            const [removed] = _groups.splice(startIndex, 1);
+            _groups.splice(endIndex, 0, removed);
 
-                enqueueSnackbar('Gruppe lagret', {
-                    variant: 'success'
-                });
+            const sortedGroupsList = _groups.map((group, i) => {
+                return { id: group.id, index: i };
+            });
+
+            const sortedGroups = _groups.map((g, i) => {
+                return { ...g, sortingIndex: i };
+            });
+
+            dispatch({
+                type: ActionType.addGroups,
+                payload: sortedGroups
+            });
+
+            const { status, groups } = await sortTemplateGroup(
+                sortedGroupsList
+            );
+            if (status === 200 && groups !== undefined) {
                 return true;
             }
             if (status === 400) {
-                enqueueSnackbar('Tittel eller under tittel mangler', {
+                enqueueSnackbar('Sorterte grupper mangler', {
                     variant: 'warning'
                 });
                 return false;
             }
 
-            enqueueSnackbar('Ukjent feil ved lagring av mal', {
+            enqueueSnackbar('Ukjent feil ved lagring av sortering', {
                 variant: 'warning'
             });
             return false;
         } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av mal', {
+            enqueueSnackbar('Problemer med lagring av sortering', {
                 variant: 'error'
             });
             errorHandler(error);

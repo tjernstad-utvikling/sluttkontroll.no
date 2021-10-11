@@ -81,16 +81,8 @@ const FormsTemplateNewView = () => {
                 return (
                     <>
                         <FormsTemplateGroupSchema onSubmit={onSaveGroup} />
-                        {groups !== undefined ? (
-                            <GroupTable
-                                groups={groups.filter(
-                                    (group) =>
-                                        group?.template.id === template?.id
-                                )}
-                            />
-                        ) : (
-                            <p>Ingen grupper registrert</p>
-                        )}
+
+                        <GroupTable template={template} />
                     </>
                 );
             case 2:
@@ -142,14 +134,29 @@ const FormsTemplateNewView = () => {
 export default FormsTemplateNewView;
 
 interface GroupTableProps {
-    groups: FormsGroup[];
+    template: FormsTemplate | undefined;
 }
 
-const GroupTable = ({ groups }: GroupTableProps) => {
+const GroupTable = ({ template }: GroupTableProps) => {
+    const {
+        state: { groups },
+        sortGroup
+    } = useForms();
+
     function onDragEnd(result: DropResult) {
         // dropped outside the list
         if (!result.destination) {
             return;
+        }
+        const selectedGroups = groups?.filter(
+            (g) => g.template.id === template?.id
+        );
+        if (selectedGroups) {
+            sortGroup(
+                selectedGroups,
+                result.source.index,
+                result.destination.index
+            );
         }
 
         console.log(
@@ -168,17 +175,20 @@ const GroupTable = ({ groups }: GroupTableProps) => {
                     </TableRow>
                 </TableHead>
                 <TableBody component={DroppableComponent(onDragEnd)}>
-                    {groups.map((group, index) => (
-                        <TableRow
-                            component={DraggableComponent(group.id, index)}
-                            key={group.id}>
-                            <TableCell scope="row">{group.id}</TableCell>
-                            <TableCell>{group.title}</TableCell>
-                            <TableCell align="right">
-                                <Button />
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                    {groups
+                        ?.filter((g) => g.template.id === template?.id)
+                        .sort((a, b) => a.sortingIndex - b.sortingIndex)
+                        .map((group, index) => (
+                            <TableRow
+                                component={DraggableComponent(group.id, index)}
+                                key={group.id}>
+                                <TableCell scope="row">{group.id}</TableCell>
+                                <TableCell>{group.title}</TableCell>
+                                <TableCell align="right">
+                                    <Button />
+                                </TableCell>
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
         </TableContainer>

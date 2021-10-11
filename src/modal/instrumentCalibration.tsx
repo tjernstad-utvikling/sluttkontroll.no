@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import DatePicker from '@mui/lab/DatePicker';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { DropZone } from '../components/uploader';
 import { Instrument } from '../contracts/instrumentApi';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import TextField from '@mui/material/TextField';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 import nbLocale from 'date-fns/locale/nb';
 import { useInstrument } from '../data/instrument';

@@ -1,6 +1,6 @@
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikUtbedrereSchema } from '../schema/avvikUtbedrere';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import { User } from '../contracts/userApi';
 import { useAvvik } from '../data/avvik';
 import { useModalStyles } from '../styles/modal';

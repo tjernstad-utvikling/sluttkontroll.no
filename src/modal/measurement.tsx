@@ -2,7 +2,7 @@ import { Measurement, NewFormMeasurement } from '../contracts/measurementApi';
 import { useEffect, useState } from 'react';
 
 import { MeasurementSchema } from '../schema/measurement';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import { useMeasurement } from '../data/measurement';
 import { useModalStyles } from '../styles/modal';
 

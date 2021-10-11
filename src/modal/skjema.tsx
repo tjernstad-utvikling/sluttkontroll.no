@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaSchema } from '../schema/skjema';
 import { useKontroll } from '../data/kontroll';

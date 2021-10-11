@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointSchema } from '../schema/checkpoint';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import { useModalStyles } from '../styles/modal';
 
 interface CheckpointModalProps {

@@ -5,8 +5,8 @@ import {
     defaultColumns
 } from '../tables/skjemaTemplate';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';

@@ -1,6 +1,6 @@
 import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const FormsView = () => {

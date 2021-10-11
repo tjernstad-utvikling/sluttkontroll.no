@@ -4,8 +4,8 @@ import { getCheckpoints, newCheckpoints } from '../api/checkpointApi';
 
 import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointModal } from '../modal/checkpoint';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
 import { updateCheckpoints } from '../api/checkpointApi';

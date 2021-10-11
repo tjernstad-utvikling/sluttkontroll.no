@@ -4,8 +4,8 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import { Card } from '../components/card';
 import { Checkpoint } from '../contracts/checkpointApi';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { SelectTemplate } from '../components/template';
 import { SkjemaSchema } from '../schema/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';

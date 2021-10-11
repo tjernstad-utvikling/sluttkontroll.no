@@ -1,18 +1,21 @@
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
 
-import Button from '@material-ui/core/Button';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormLabel from '@material-ui/core/FormLabel';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+
+import Button from '@mui/material/Button';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import FormLabel from '@mui/material/FormLabel';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 import { useTable } from './tableContainer';
 
 export const ColumnSelect = (): JSX.Element => {
@@ -104,7 +107,8 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
                 aria-label="open menu"
                 aria-controls="simple-menu"
                 aria-haspopup="true"
-                onClick={handleClick}>
+                onClick={handleClick}
+                size="large">
                 <MoreVertIcon />
             </IconButton>
             <Menu

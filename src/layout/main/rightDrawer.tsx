@@ -1,16 +1,16 @@
-import CloseIcon from '@material-ui/icons/Close';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
-import GroupIcon from '@material-ui/icons/Group';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
+import CloseIcon from '@mui/icons-material/Close';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
+import GroupIcon from '@mui/icons-material/Group';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
 import { ListItemLink } from '../../components/links';
-import LocationCityIcon from '@material-ui/icons/LocationCity';
-import PersonIcon from '@material-ui/icons/Person';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
+import PersonIcon from '@mui/icons-material/Person';
 import { Roles } from '../../contracts/userApi';
-import SettingsIcon from '@material-ui/icons/Settings';
-import SpeedIcon from '@material-ui/icons/Speed';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SpeedIcon from '@mui/icons-material/Speed';
 import { useAuth } from '../../hooks/useAuth';
 import { useMainStyles } from '../../styles/layout/main';
 interface RightDrawerProps {
@@ -36,7 +36,8 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                     color="inherit"
                     aria-label="close drawer"
                     onClick={toggle}
-                    className={classes.menuButton}>
+                    className={classes.menuButton}
+                    size="large">
                     <CloseIcon />
                 </IconButton>
             </div>

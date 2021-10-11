@@ -6,16 +6,16 @@ import {
     GridValueGetterParams
 } from '@material-ui/data-grid';
 
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';
 import { Checklist } from '../contracts/kontrollApi';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import { RowAction } from './tableUtils';
-import Typography from '@material-ui/core/Typography';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import Typography from '@mui/material/Typography';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 export const SjekklisteValueGetter = (data: Checklist | GridRowData) => {
     const prosedyre = (): string => {
@@ -86,7 +86,8 @@ export const columns = (
                     <IconButton
                         to={`${url}/checklist/${params.row.id}/avvik/new`}
                         component={RouterLink}
-                        aria-label="nytt avvik">
+                        aria-label="nytt avvik"
+                        size="large">
                         <AddIcon />
                     </IconButton>
                 </>

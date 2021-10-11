@@ -4,13 +4,13 @@ import { Form, Formik, useFormikContext } from 'formik';
 import { Roles, RolesDesc, RolesOptions, User } from '../contracts/userApi';
 import { useEffect, useMemo } from 'react';
 
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Grid from '@material-ui/core/Grid';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import Select from 'react-select';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 import { TextField } from '../components/input';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import { useAuth } from '../hooks/useAuth';
 import { useState } from 'react';
 

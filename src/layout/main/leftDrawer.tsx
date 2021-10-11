@@ -1,5 +1,5 @@
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
 import { KlientMenu } from '../../components/drawer';
 import clsx from 'clsx';
 import logo from '../../assets/logoWhite.png';

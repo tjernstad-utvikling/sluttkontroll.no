@@ -8,15 +8,15 @@ import {
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
-import EditIcon from '@material-ui/icons/Edit';
-import Grid from '@material-ui/core/Grid';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
 import { LocationEditSchema } from '../schema/location';
 import { TableContainer } from '../tables/tableContainer';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';
 import { useKontroll } from '../data/kontroll';

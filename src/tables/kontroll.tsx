@@ -8,9 +8,9 @@ import { Klient, Kontroll } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
-import DescriptionIcon from '@material-ui/icons/Description';
-import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
-import EditIcon from '@material-ui/icons/Edit';
+import DescriptionIcon from '@mui/icons-material/Description';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from '../tables/tableUtils';

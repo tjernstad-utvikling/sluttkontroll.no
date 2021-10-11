@@ -2,8 +2,8 @@ import MDEditor, { commands } from '@uiw/react-md-editor';
 import { getInfoText, setInfoText as setInfoTextApi } from '../api/settingsApi';
 
 import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';

@@ -1,6 +1,6 @@
 import { ActionType, InstrumentState, UserActions } from './contracts';
 
-import _ from 'lodash';
+import unionBy from 'lodash.unionby';
 
 export const initialState: InstrumentState = {
     instruments: undefined
@@ -14,7 +14,7 @@ export const instrumentReducer = (
         case ActionType.addInstruments:
             return {
                 ...state,
-                instruments: _.unionBy(action.payload, state.instruments, 'id')
+                instruments: unionBy(action.payload, state.instruments, 'id')
             };
         case ActionType.updateInstrument:
             return {

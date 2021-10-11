@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
+import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import { UserSchema } from '../schema/user';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';

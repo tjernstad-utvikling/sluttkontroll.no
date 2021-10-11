@@ -5,12 +5,12 @@ import {
     GridValueGetterParams
 } from '@material-ui/data-grid';
 
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@mui/material/Avatar';
 import { BaseTable } from './baseTable';
-import Button from '@material-ui/core/Button';
-import Chip from '@material-ui/core/Chip';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import { Kalibrering } from '../contracts/instrumentApi';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { format } from 'date-fns';
 
 export const CalibrationValueGetter = (data: Kalibrering | GridRowData) => {

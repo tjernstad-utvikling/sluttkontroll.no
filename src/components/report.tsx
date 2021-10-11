@@ -1,11 +1,11 @@
 import { ReportModules, useReport } from '../document/documentContainer';
 
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { PDFViewer } from '@react-pdf/renderer';
 import { RapportEgenskaper } from '../contracts/kontrollApi';
 import { Report } from '../document/report';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
-import Switch from '@material-ui/core/Switch';
+import Switch from '@mui/material/Switch';
 import { saveKontrollReportData } from '../api/kontrollApi';
 import { useClient } from '../data/klient';
 import { useEffect } from 'react';

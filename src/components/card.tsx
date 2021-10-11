@@ -1,21 +1,58 @@
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Paper from '@material-ui/core/Paper';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Paper from '@mui/material/Paper';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+const PREFIX = 'Card';
+
+const classes = {
+    cardHeader: `${PREFIX}-cardHeader`,
+    cardTitle: `${PREFIX}-cardTitle`,
+    paper: `${PREFIX}-paper`,
+    content: `${PREFIX}-content`
+};
+
+const Root = styled('div')((
+    {
+        theme
+    }
+) => ({
+    [`& .${classes.cardHeader}`]: {
+        background: theme.palette.primary.main
+    },
+
+    [`& .${classes.cardTitle}`]: {
+        fontSize: '1.55rem!important',
+        fontWeight: 500,
+        color: '#ffffff'
+    },
+
+    [`& .${classes.paper}`]: {
+        display: 'flex',
+        overflow: 'auto',
+        flexDirection: 'column'
+    },
+
+    [`& .${classes.content}`]: {
+        paddingRight: theme.spacing(2),
+        paddingLeft: theme.spacing(2)
+    }
+}));
+
 interface CardProps {
     children: React.ReactNode;
     title: string;
     menu?: React.ReactNode;
 }
 export const Card = ({ children, title, menu }: CardProps) => {
-    const classes = useStyles();
+
 
     return (
         <Paper className={classes.paper}>
@@ -23,7 +60,7 @@ export const Card = ({ children, title, menu }: CardProps) => {
                 <Typography className={classes.cardTitle} variant="h2">
                     {title}
                 </Typography>
-                <div style={{ flexGrow: 1 }} />
+                <Root style={{ flexGrow: 1 }} />
                 {menu !== undefined ? menu : <div />}
             </Toolbar>
             {children}
@@ -43,7 +80,7 @@ interface CardMenuProps {
     count?: number;
 }
 export const CardMenu = ({ items, count }: CardMenuProps) => {
-    const classes = useStyles();
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -62,7 +99,8 @@ export const CardMenu = ({ items, count }: CardMenuProps) => {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
                 onMouseOver={handleClick}
-                onClick={handleClick}>
+                onClick={handleClick}
+                size="large">
                 <MoreVertIcon /> {count !== undefined && `(${count})`}
             </IconButton>
             <Menu
@@ -109,25 +147,6 @@ export const CardMenu = ({ items, count }: CardMenuProps) => {
 };
 
 export const CardContent = ({ children }: { children: React.ReactNode }) => {
-    const classes = useStyles();
+
     return <div className={classes.content}>{children}</div>;
 };
-const useStyles = makeStyles((theme) => ({
-    cardHeader: {
-        background: theme.palette.primary.main
-    },
-    cardTitle: {
-        fontSize: '1.55rem!important',
-        fontWeight: 500,
-        color: '#ffffff'
-    },
-    paper: {
-        display: 'flex',
-        overflow: 'auto',
-        flexDirection: 'column'
-    },
-    content: {
-        paddingRight: theme.spacing(2),
-        paddingLeft: theme.spacing(2)
-    }
-}));

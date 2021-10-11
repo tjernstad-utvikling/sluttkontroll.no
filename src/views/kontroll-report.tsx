@@ -16,8 +16,8 @@ import {
 } from '../document/customizeData/kontrollReportData';
 
 import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';

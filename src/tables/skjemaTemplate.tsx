@@ -5,14 +5,14 @@ import {
     GridValueGetterParams
 } from '@material-ui/data-grid';
 
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { BaseTable } from './baseTable';
-import Button from '@material-ui/core/Button';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import Button from '@mui/material/Button';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 import { RowAction } from './tableUtils';
 import { Template } from '../contracts/skjemaTemplateApi';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 export const TemplateValueGetter = (data: Template | GridRowData) => {
     const count = (): string => {

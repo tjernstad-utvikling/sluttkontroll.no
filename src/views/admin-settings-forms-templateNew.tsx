@@ -7,7 +7,7 @@ import {
     TableContainer,
     TableHead,
     TableRow
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     DragDropContext,
     Draggable,
@@ -16,22 +16,23 @@ import {
     ResponderProvided
 } from 'react-beautiful-dnd';
 import { FormsGroup, FormsTemplate } from '../contracts/sjaApi';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
 
-import BrandingWatermarkIcon from '@material-ui/icons/BrandingWatermark';
+import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
 import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
+import Container from '@mui/material/Container';
 import { FormsTemplateGroupSchema } from '../schema/formsTemplateGroup';
 import { FormsTemplateSchema } from '../schema/formsTemplate';
-import Grid from '@material-ui/core/Grid';
-import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
+import Grid from '@mui/material/Grid';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import React from 'react';
-import Step from '@material-ui/core/Step';
-import StepConnector from '@material-ui/core/StepConnector';
-import { StepIconProps } from '@material-ui/core/StepIcon';
-import StepLabel from '@material-ui/core/StepLabel';
-import Stepper from '@material-ui/core/Stepper';
-import TitleIcon from '@material-ui/icons/Title';
+import Step from '@mui/material/Step';
+import StepConnector from '@mui/material/StepConnector';
+import { StepIconProps } from '@mui/material/StepIcon';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
+import TitleIcon from '@mui/icons-material/Title';
 import clsx from 'clsx';
 import { useForms } from '../data/forms';
 import { usePageStyles } from '../styles/kontroll/page';

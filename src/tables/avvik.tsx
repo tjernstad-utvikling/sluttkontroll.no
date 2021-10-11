@@ -9,11 +9,11 @@ import {
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import BuildIcon from '@material-ui/icons/Build';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import BuildIcon from '@mui/icons-material/Build';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
 import { useEffect } from 'react';

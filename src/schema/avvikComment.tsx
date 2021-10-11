@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik';
 
 import { LoadingButton } from '../components/button';
 import { TextField } from '../components/input';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 
 interface AvvikCommentSchemaProps {
     onSubmit: (kommentar: string) => Promise<boolean>;

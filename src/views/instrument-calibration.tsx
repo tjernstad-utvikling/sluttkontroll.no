@@ -14,8 +14,8 @@ import {
 import { useEffect, useState } from 'react';
 
 import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { Viewer } from '@react-pdf-viewer/core';

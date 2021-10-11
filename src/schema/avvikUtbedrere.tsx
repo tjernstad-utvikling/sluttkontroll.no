@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import { Avvik } from '../contracts/avvikApi';
 import { LoadingButton } from '../components/button';
 import Select from 'react-select';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';

@@ -2,17 +2,17 @@ import * as Yup from 'yup';
 
 import { Form, Formik } from 'formik';
 
-import Avatar from '@material-ui/core/Avatar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
+import Avatar from '@mui/material/Avatar';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import { LoadingButton } from '../components/button';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Paper from '@mui/material/Paper';
 import React from 'react';
 import { TextField } from '../components/input';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
 import { useAuth } from '../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundImage: 'url(https://source.unsplash.com/random)',
         backgroundRepeat: 'no-repeat',
         backgroundColor:
-            theme.palette.type === 'light'
+            theme.palette.mode === 'light'
                 ? theme.palette.grey[50]
                 : theme.palette.grey[900],
         backgroundSize: 'cover',

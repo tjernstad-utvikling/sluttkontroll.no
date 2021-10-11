@@ -4,13 +4,27 @@ import {
     useRouteMatch
 } from 'react-router-dom';
 
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { Omit } from '@material-ui/types';
+import { styled } from '@mui/material/styles';
+
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import { DistributiveOmit } from '@mui/types';
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
+
+const PREFIX = 'ListItemLink';
+
+const classes = {
+    icon: `${PREFIX}-icon`
+};
+
+const Root = styled('li')({
+    [`& .${classes.icon}`]: {
+        color: '#fff'
+    }
+});
 
 interface ListItemLinkProps {
     icon?: React.ReactElement;
@@ -23,11 +37,11 @@ export const ListItemLink = (props: ListItemLinkProps) => {
     const { icon, primary, to } = props;
     const match = useRouteMatch(to);
 
-    const classes = useStyles();
+
 
     const renderLink = React.useMemo(
         () =>
-            React.forwardRef<any, Omit<RouterLinkProps, 'to'>>(
+            React.forwardRef<any, DistributiveOmit<RouterLinkProps, 'to'>>(
                 (itemProps, ref) => (
                     <RouterLink to={to} ref={ref} {...itemProps} />
                 )
@@ -36,7 +50,7 @@ export const ListItemLink = (props: ListItemLinkProps) => {
     );
 
     return (
-        <li>
+        <Root>
             <ListItem selected={match !== null} button component={renderLink}>
                 {icon ? (
                     <ListItemIcon
@@ -53,12 +67,6 @@ export const ListItemLink = (props: ListItemLinkProps) => {
                     primary={primary}
                 />
             </ListItem>
-        </li>
+        </Root>
     );
 };
-
-const useStyles = makeStyles({
-    icon: {
-        color: '#fff'
-    }
-});

@@ -1,6 +1,6 @@
 import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { Roles } from '../contracts/userApi';
 import { UserSchema } from '../schema/user';
 import { useHistory } from 'react-router-dom';

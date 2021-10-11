@@ -3,12 +3,15 @@ import {
     columns,
     defaultColumns
 } from '../tables/skjemaTemplate';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
 
-import Button from '@material-ui/core/Button';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+
+import Button from '@mui/material/Button';
 import { TableContainer } from '../tables/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useTemplate } from '../data/skjemaTemplate';
 

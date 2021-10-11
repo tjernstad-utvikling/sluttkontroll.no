@@ -7,8 +7,8 @@ import {
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { BaseTable } from './baseTable';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from './tableUtils';
 

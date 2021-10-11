@@ -6,16 +6,16 @@ import {
 } from '@material-ui/data-grid';
 
 import { BaseTable } from './baseTable';
-import Button from '@material-ui/core/Button';
-import Chip from '@material-ui/core/Chip';
-import CompassCalibrationIcon from '@material-ui/icons/CompassCalibration';
-import EditIcon from '@material-ui/icons/Edit';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import CompassCalibrationIcon from '@mui/icons-material/CompassCalibration';
+import EditIcon from '@mui/icons-material/Edit';
 import { Instrument } from '../contracts/instrumentApi';
 import { Link } from 'react-router-dom';
-import NotInterestedIcon from '@material-ui/icons/NotInterested';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import { RowAction } from '../tables/tableUtils';
-import TodayIcon from '@material-ui/icons/Today';
-import { Typography } from '@material-ui/core';
+import TodayIcon from '@mui/icons-material/Today';
+import { Typography } from '@mui/material';
 import { User } from '../contracts/userApi';
 import { format } from 'date-fns';
 

@@ -1,19 +1,18 @@
-import {
-    KeyboardDatePicker,
-    MuiPickersUtilsProvider
-} from '@material-ui/pickers';
 import { useEffect, useState } from 'react';
 
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Button from '@material-ui/core/Button';
-import DateFnsUtils from '@date-io/date-fns'; // choose your lib
+import DatePicker from '@mui/lab/DatePicker';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { DropZone } from '../components/uploader';
 import { Instrument } from '../contracts/instrumentApi';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import TextField from '@mui/material/TextField';
 import Typography from '@material-ui/core/Typography';
 import { format } from 'date-fns';
 import nbLocale from 'date-fns/locale/nb';
@@ -80,17 +79,17 @@ export function InstrumentCalibrationModal({
                 Registrer kalibrering for {instrument?.name}
             </DialogTitle>
             <DialogContent>
-                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={nbLocale}>
-                    <KeyboardDatePicker
+                <LocalizationProvider
+                    dateAdapter={AdapterDateFns}
+                    locale={nbLocale}>
+                    <DatePicker
                         clearable
-                        fullWidth
                         label="Kalibreringsdato"
-                        inputVariant="outlined"
                         value={newCalibrationDate}
                         onChange={(date) => setNewCalibrationDate(date)}
-                        format="dd.MM.yyyy"
+                        renderInput={(params) => <TextField {...params} />}
                     />
-                </MuiPickersUtilsProvider>
+                </LocalizationProvider>
                 <div style={{ padding: 10 }} />
                 <Typography>Kalibreringsbevis</Typography>
                 <DropZone

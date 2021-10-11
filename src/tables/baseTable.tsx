@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 
 import { ColumnSelect } from './tableUtils';
 import { DataGrid } from '@material-ui/data-grid';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useTable } from './tableContainer';
 
 interface Data {

@@ -3,18 +3,21 @@ import {
     NavLink as RouterLink,
     NavLinkProps as RouterLinkProps
 } from 'react-router-dom';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
 
-import Button from '@material-ui/core/Button';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import IconButton from '@material-ui/core/IconButton';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+
+import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import IconButton from '@mui/material/IconButton';
 import { Klient } from '../contracts/kontrollApi';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import { Omit } from '@material-ui/types';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import { DistributiveOmit } from '@mui/types';
 import { useClient } from '../data/klient';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useMainStyles } from '../styles/layout/main';
@@ -72,14 +75,16 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
                     <IconButton
                         color="inherit"
                         aria-label={`åpne lokasjoner for klient ${klient.name}`}
-                        onClick={handleClick}>
+                        onClick={handleClick}
+                        size="large">
                         <ExpandLess color="secondary" />
                     </IconButton>
                 ) : (
                     <IconButton
                         color="inherit"
                         aria-label={`åpne lokasjoner for klient ${klient.name}`}
-                        onClick={handleClick}>
+                        onClick={handleClick}
+                        size="large">
                         <ExpandMore color="secondary" />
                     </IconButton>
                 )}
@@ -136,7 +141,7 @@ export const ItemLink = ({ to, children }: ListItemLinkProps) => {
     const classes = useMainStyles();
     const renderLink = React.useMemo(
         () =>
-            React.forwardRef<any, Omit<RouterLinkProps, 'to'>>(
+            React.forwardRef<any, DistributiveOmit<RouterLinkProps, 'to'>>(
                 (itemProps, ref) => (
                     <RouterLink to={to} ref={ref} {...itemProps} />
                 )

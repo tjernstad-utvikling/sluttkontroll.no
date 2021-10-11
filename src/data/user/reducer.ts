@@ -1,6 +1,6 @@
 import { ActionType, UserActions, UserState } from './contracts';
 
-import _ from 'lodash';
+import unionBy from 'lodash.unionby';
 
 export const initialState: UserState = {
     users: undefined
@@ -14,7 +14,7 @@ export const userReducer = (
         case ActionType.addUsers:
             return {
                 ...state,
-                users: _.unionBy(action.payload, state.users, 'id')
+                users: unionBy(action.payload, state.users, 'id')
             };
 
         case ActionType.UpdateUser:

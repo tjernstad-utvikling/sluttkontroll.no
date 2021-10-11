@@ -2,8 +2,8 @@ import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 
 import { Card } from '../components/card';
 import { Checkpoint } from '../contracts/checkpointApi';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
 import { TableContainer } from '../tables/tableContainer';
 import { getCheckpoints } from '../api/checkpointApi';

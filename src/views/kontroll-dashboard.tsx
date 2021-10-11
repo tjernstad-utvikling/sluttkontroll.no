@@ -6,8 +6,8 @@ import {
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';

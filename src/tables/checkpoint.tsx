@@ -6,10 +6,10 @@ import {
 } from '@material-ui/data-grid';
 
 import { BaseTable } from './baseTable';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
 import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
 import { useMemo } from 'react';
 import { useTable } from './tableContainer';

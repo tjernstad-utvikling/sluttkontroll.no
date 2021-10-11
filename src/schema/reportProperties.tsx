@@ -9,12 +9,12 @@ import {
 import { Sertifikat, User } from '../contracts/userApi';
 import { useEffect, useMemo } from 'react';
 
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import { TextField } from '../components/input';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@mui/material/Typography';
+import makeStyles from '@mui/styles/makeStyles';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
 import { useUser } from '../data/user';

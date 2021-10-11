@@ -1,6 +1,6 @@
 import { ActionType, Actions, TemplateState } from './contracts';
 
-import _ from 'lodash';
+import unionBy from 'lodash.unionby';
 
 export const initialState: TemplateState = {
     templates: undefined
@@ -14,7 +14,7 @@ export const reducer = (
         case ActionType.addTemplates:
             return {
                 ...state,
-                templates: _.unionBy(action.payload, state.templates, 'id')
+                templates: unionBy(action.payload, state.templates, 'id')
             };
 
         case ActionType.updateTemplate:

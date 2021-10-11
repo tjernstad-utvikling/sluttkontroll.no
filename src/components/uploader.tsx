@@ -1,8 +1,45 @@
-import BackupIcon from '@material-ui/icons/Backup';
-import Button from '@material-ui/core/Button';
+import BackupIcon from '@mui/icons-material/Backup';
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 import { useDropzone } from 'react-dropzone';
+
+const PREFIX = 'uploader';
+
+const classes = {
+    base: `${PREFIX}-base`,
+    activeStyle: `${PREFIX}-activeStyle`,
+    acceptStyle: `${PREFIX}-acceptStyle`,
+    rejectStyle: `${PREFIX}-rejectStyle`
+};
+
+const Root = styled('section')({
+    [`& .${classes.base}`]: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '20px',
+        borderWidth: 2,
+        borderRadius: 2,
+        borderColor: '#eeeeee',
+        borderStyle: 'dashed',
+        backgroundColor: '#fafafa',
+        color: '#bdbdbd',
+        outline: 'none',
+        transition: 'border .24s ease-in-out'
+    },
+    [`& .${classes.activeStyle}`]: {
+        borderColor: '#2196f3'
+    },
+    [`& .${classes.acceptStyle}`]: {
+        borderColor: '#00e676'
+    },
+    [`& .${classes.rejectStyle}`]: {
+        borderColor: '#ff1744'
+    }
+});
 
 interface DropZoneProps {
     accept: 'image/png, image/jpeg' | 'image/*' | 'application/pdf';
@@ -18,7 +55,7 @@ export function DropZone({
     files,
     multiple = false
 }: DropZoneProps) {
-    const classes = useStyles();
+
 
     function duplicateFileValidator(file: File) {
         const simFile = files.filter((f) => f.name === file.name);
@@ -63,7 +100,7 @@ export function DropZone({
     ));
 
     return (
-        <section className="container">
+        <Root className="container">
             <div
                 {...getRootProps({
                     className: clsx(classes.base, {
@@ -86,33 +123,6 @@ export function DropZone({
                 )}
                 {children}
             </aside>
-        </section>
+        </Root>
     );
 }
-
-const useStyles = makeStyles({
-    base: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '20px',
-        borderWidth: 2,
-        borderRadius: 2,
-        borderColor: '#eeeeee',
-        borderStyle: 'dashed',
-        backgroundColor: '#fafafa',
-        color: '#bdbdbd',
-        outline: 'none',
-        transition: 'border .24s ease-in-out'
-    },
-    activeStyle: {
-        borderColor: '#2196f3'
-    },
-    acceptStyle: {
-        borderColor: '#00e676'
-    },
-    rejectStyle: {
-        borderColor: '#ff1744'
-    }
-});

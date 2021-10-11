@@ -18,7 +18,6 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from '../tables/tableUtils';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
-import makeStyles from '@mui/styles/makeStyles';
 import { useAvvik } from '../data/avvik';
 
 const PREFIX = 'AvvikImageCard';

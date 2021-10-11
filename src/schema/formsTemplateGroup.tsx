@@ -7,19 +7,20 @@ import { LoadingButton } from '../components/button';
 import { TextField } from '../components/input';
 
 interface FormsTemplateGroupSchemaProps {
-    template?: FormsGroup;
+    group?: FormsGroup;
     onSubmit: (title: string, description: string) => Promise<boolean>;
 }
 export const FormsTemplateGroupSchema = ({
-    template,
+    group,
     onSubmit
 }: FormsTemplateGroupSchemaProps): JSX.Element => {
     return (
         <Formik
             initialValues={{
-                title: template?.title || '',
-                description: template?.description || ''
+                title: group?.title || '',
+                description: group?.description || ''
             }}
+            enableReinitialize
             validationSchema={Yup.object({
                 title: Yup.string().required('Tittel er påkrevd')
             })}

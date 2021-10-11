@@ -45,11 +45,7 @@ const FormsTemplateNewView = () => {
 
     const [activeStep, setActiveStep] = useState(0);
 
-    const {
-        state: { groups },
-        newTemplate,
-        newTemplateGroup
-    } = useForms();
+    const { newTemplate, newTemplateGroup } = useForms();
 
     const onSaveTemplate = async (
         title: string,
@@ -80,9 +76,12 @@ const FormsTemplateNewView = () => {
             case 1:
                 return (
                     <>
-                        <FormsTemplateGroupSchema onSubmit={onSaveGroup} />
+                        <FormsTemplateGroupSchema
+                            group={group}
+                            onSubmit={onSaveGroup}
+                        />
 
-                        <GroupTable template={template} />
+                        <GroupTable setGroup={setGroup} template={template} />
                     </>
                 );
             case 2:
@@ -113,6 +112,8 @@ const FormsTemplateNewView = () => {
                                     <StepLabel
                                         StepIconComponent={ColorlibStepIcon}>
                                         Grupper
+                                        <br />
+                                        {group?.title}
                                     </StepLabel>
                                 </Step>
                                 <Step>
@@ -135,9 +136,10 @@ export default FormsTemplateNewView;
 
 interface GroupTableProps {
     template: FormsTemplate | undefined;
+    setGroup: React.Dispatch<React.SetStateAction<FormsGroup | undefined>>;
 }
 
-const GroupTable = ({ template }: GroupTableProps) => {
+const GroupTable = ({ template, setGroup }: GroupTableProps) => {
     const {
         state: { groups },
         sortGroup
@@ -185,7 +187,12 @@ const GroupTable = ({ template }: GroupTableProps) => {
                                 <TableCell scope="row">{group.id}</TableCell>
                                 <TableCell>{group.title}</TableCell>
                                 <TableCell align="right">
-                                    <Button />
+                                    <Button
+                                        onClick={() => setGroup(group)}
+                                        variant="contained"
+                                        color="primary">
+                                        Velg / Rediger
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

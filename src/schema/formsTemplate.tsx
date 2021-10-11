@@ -27,8 +27,7 @@ export const FormsTemplateSchema = ({
             }}
             validationSchema={Yup.object({
                 title: Yup.string().required('Tittel er påkrevd'),
-                subTitle: Yup.string().required('Under tittel er påkrevd'),
-                description: Yup.string().required('Beskrivelse er påkrevd')
+                subTitle: Yup.string().required('Under tittel er påkrevd')
             })}
             onSubmit={async (values, { setSubmitting }) => {
                 await onSubmit(

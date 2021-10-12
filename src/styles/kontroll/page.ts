@@ -1,12 +1,14 @@
 import makeStyles from '@mui/styles/makeStyles';
 
 export const usePageStyles = makeStyles((theme) => ({
-    appBarSpacer: theme.mixins.toolbar,
+    appBarSpacer: {
+        padding: '1px'
+    },
     container: {
-        paddingBottom: theme.spacing(4)
+        paddingBottom: '10px'
     },
     paper: {
-        padding: theme.spacing(1),
+        padding: '5px',
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column'

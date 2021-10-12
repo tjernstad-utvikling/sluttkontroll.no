@@ -1,9 +1,9 @@
 import {
-    DataGrid,
+    DataGridPro,
     GridColumns,
     GridRowData,
     GridSortDirection
-} from '@mui/x-data-grid';
+} from '@mui/x-data-grid-pro';
 import { useEffect, useState } from 'react';
 
 import { ColumnSelect } from './tableUtils';
@@ -135,7 +135,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
         <div className={classes.root}>
             <ColumnSelect />
             {sortedData && (
-                <DataGrid
+                <DataGridPro
                     rows={sortedData}
                     columns={columns}
                     selectionModel={selectionModel}

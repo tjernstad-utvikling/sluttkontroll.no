@@ -372,7 +372,7 @@ export const ReportPropertiesSchema = ({
 export const useStyles = makeStyles((theme) => ({
     formGroup: {
         borderStyle: 'solid',
-        borderColor: theme.palette.primary.main,
+        borderColor: 'red',
         borderWidth: '1px',
         borderRadius: 3,
         marginBottom: 18,

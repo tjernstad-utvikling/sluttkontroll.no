@@ -4,7 +4,7 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@mui/x-data-grid';
+} from '@mui/x-data-grid-pro';
 
 import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';

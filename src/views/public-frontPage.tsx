@@ -9,7 +9,6 @@ import Link from '@mui/material/Link';
 import { LoadingButton } from '../components/button';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Paper from '@mui/material/Paper';
-import React from 'react';
 import { TextField } from '../components/input';
 import Typography from '@mui/material/Typography';
 import makeStyles from '@mui/styles/makeStyles';
@@ -24,32 +23,28 @@ const useStyles = makeStyles((theme) => ({
     image: {
         backgroundImage: 'url(https://source.unsplash.com/random)',
         backgroundRepeat: 'no-repeat',
-        backgroundColor:
-            theme.palette.mode === 'light'
-                ? theme.palette.grey[50]
-                : theme.palette.grey[900],
+        backgroundColor: 'grey',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
     },
     paper: {
-        margin: theme.spacing(8, 4),
+        margin: '5px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
     },
     avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main
+        margin: '5px',
+        backgroundColor: 'red'
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1)
+        marginTop: '5px'
     },
     submit: {
-        margin: theme.spacing(3, 0, 2)
+        margin: '5px'
     },
     errorText: {
-        color: theme.palette.error.main
+        color: 'red'
     }
 }));
 

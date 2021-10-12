@@ -3,7 +3,7 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@mui/x-data-grid';
+} from '@mui/x-data-grid-pro';
 
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { BaseTable } from './baseTable';

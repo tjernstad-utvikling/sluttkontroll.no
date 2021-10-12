@@ -3,7 +3,7 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@mui/x-data-grid';
+} from '@mui/x-data-grid-pro';
 import { Klient, Kontroll } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';

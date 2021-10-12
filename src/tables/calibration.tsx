@@ -3,7 +3,7 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid';
 
 import Avatar from '@mui/material/Avatar';
 import { BaseTable } from './baseTable';

@@ -3,7 +3,7 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid';
 
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { BaseTable } from './baseTable';

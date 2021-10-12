@@ -3,7 +3,7 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { BaseTable } from './baseTable';

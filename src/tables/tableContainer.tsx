@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import { useEffect, useRef } from 'react';
 
-import { GridColDef } from '@material-ui/data-grid';
+import { GridColDef } from '@mui/x-data-grid';
 import { StorageKeys } from '../contracts/keys';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);

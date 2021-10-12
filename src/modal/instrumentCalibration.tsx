@@ -10,7 +10,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { DropZone } from '../components/uploader';
 import { Instrument } from '../contracts/instrumentApi';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -33,8 +32,9 @@ export function InstrumentCalibrationModal({
     } = useInstrument();
 
     const [instrument, setInstrument] = useState<Instrument>();
-    const [newCalibrationDate, setNewCalibrationDate] =
-        useState<MaterialUiPickersDate>(null);
+    const [newCalibrationDate, setNewCalibrationDate] = useState<Date | null>(
+        null
+    );
     const [files, setFiles] = useState<File[]>([]);
 
     const { enqueueSnackbar } = useSnackbar();

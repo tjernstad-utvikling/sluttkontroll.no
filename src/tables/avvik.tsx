@@ -5,7 +5,7 @@ import {
     GridRowData,
     GridRowId,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';

@@ -1,4 +1,4 @@
-import { GridCellParams, GridColDef } from '@material-ui/data-grid';
+import { GridCellParams, GridColDef } from '@mui/x-data-grid';
 import { Roles, RolesDesc, Sertifikat, User } from '../contracts/userApi';
 
 import { BaseTable } from './baseTable';

@@ -1,14 +1,12 @@
 import {
+    DataGrid,
     GridColumns,
     GridRowData,
-    GridRowSelectedParams,
-    GridSortDirection,
-    GridSortModelParams
-} from '@material-ui/data-grid';
+    GridSortDirection
+} from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 
 import { ColumnSelect } from './tableUtils';
-import { DataGrid } from '@material-ui/data-grid';
 import makeStyles from '@mui/styles/makeStyles';
 import { useTable } from './tableContainer';
 
@@ -67,7 +65,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
         return sortedRows;
     }
 
-    const handleSortMode = (sortMode: GridSortModelParams) => {
+    const handleSortMode = (sortMode: any) => {
         if (sortMode.sortModel.length === 0) {
             setSortedData(data);
             return;
@@ -105,7 +103,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
         setSortedData(data);
     }, [data]);
 
-    const handleSelect = (row: GridRowSelectedParams) => {
+    const handleSelect = (row: any) => {
         if (sortedData !== undefined) {
             const index = sortedData.findIndex((k) => k.id === row.data.id);
 
@@ -148,7 +146,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
                     autoHeight
                     sortingMode="server"
                     onSortModelChange={handleSortMode}
-                    onRowSelected={handleSelect}
+                    onSelectionModelChange={handleSelect}
                     getRowClassName={(params) => {
                         if (getRowStyling !== undefined) {
                             const className = getRowStyling(params.row);

@@ -33,7 +33,7 @@ const AvvikView = () => {
     const { url } = useRouteMatch();
 
     const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
-    const [selected, setSelected] = useState<Avvik[]>([]);
+    const [selected, setSelected] = useState<number[]>([]);
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
     const [showTable, setShowTable] = useState<boolean>(false);
@@ -99,7 +99,7 @@ const AvvikView = () => {
     const close = async (avvikId: number) => {
         const avvikToClose = avvik?.find((a) => a.id === avvikId);
         if (avvikToClose !== undefined) {
-            setSelected([avvikToClose]);
+            setSelected([avvikToClose.id]);
             setModalOpen(Modals.comment);
         }
     };
@@ -121,10 +121,7 @@ const AvvikView = () => {
 
     const downloadAvvikList = async () => {
         try {
-            const response = await getAvvikReport(
-                Number(kontrollId),
-                selected.map((sa) => sa.id)
-            );
+            const response = await getAvvikReport(Number(kontrollId), selected);
 
             const fileURL = window.URL.createObjectURL(
                 new Blob([response.data])
@@ -227,7 +224,6 @@ const AvvikView = () => {
                                                 setSelected(avvik);
                                                 setSelectedFromGrid(false);
                                             }}
-                                            selectedFromGrid={selectedFromGrid}
                                         />
                                     ) : (
                                         <AvvikGrid

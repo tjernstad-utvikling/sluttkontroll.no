@@ -1,17 +1,17 @@
 import { Form, Formik } from 'formik';
 
-import { Avvik } from '../contracts/avvikApi';
 import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
+import { useAvvik } from '../data/avvik';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
 import { useUser } from '../data/user';
 
 interface AvvikUtbedrereSchemaProps {
-    selectedAvvik: Avvik[];
+    selectedAvvik: number[];
     onSubmit: (utbedrer: Array<User> | null) => Promise<boolean>;
 }
 export const AvvikUtbedrereSchema = ({
@@ -22,6 +22,10 @@ export const AvvikUtbedrereSchema = ({
         state: { users },
         loadUsers
     } = useUser();
+
+    const {
+        state: { avvik }
+    } = useAvvik();
 
     interface Option {
         value: User;
@@ -45,14 +49,18 @@ export const AvvikUtbedrereSchema = ({
                 initialValues={{
                     utbedrer:
                         selectedAvvik[0] !== undefined
-                            ? selectedAvvik[0].utbedrer.map((a) => {
-                                  let user = userOptions.find(
-                                      (u) => u.value.id === a.id
-                                  );
-                                  return user !== undefined
-                                      ? user
-                                      : ({} as Option);
-                              })
+                            ? avvik
+                                  ?.find(
+                                      (avvik) => selectedAvvik[0] === avvik.id
+                                  )
+                                  ?.utbedrer.map((a) => {
+                                      let user = userOptions.find(
+                                          (u) => u.value.id === a.id
+                                      );
+                                      return user !== undefined
+                                          ? user
+                                          : ({} as Option);
+                                  }) || null
                             : null
                 }}
                 onSubmit={async (values, { setSubmitting }) => {

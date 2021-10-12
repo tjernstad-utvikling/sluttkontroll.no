@@ -2,7 +2,8 @@ import {
     DataGridPro,
     GridColumns,
     GridRowData,
-    GridSortDirection
+    GridSortDirection,
+    useGridApiRef
 } from '@mui/x-data-grid-pro';
 import { useEffect, useState } from 'react';
 
@@ -23,9 +24,8 @@ interface BaseTableProps<T, K extends keyof T> {
     customSort: (data: T[], field: K) => T[];
     customSortFields: any[];
     selectionModel?: number[] | undefined;
-    onSelected?: () => void;
+    onSelected?: (ids: number[]) => void;
     getRowStyling?: (row: GridRowData) => RowStylingEnum | undefined;
-    skipShift?: boolean;
 }
 export const BaseTable = <T extends Data, K extends keyof T>({
     data,
@@ -33,12 +33,11 @@ export const BaseTable = <T extends Data, K extends keyof T>({
     customSortFields,
     selectionModel,
     onSelected,
-    getRowStyling,
-    skipShift
+    getRowStyling
 }: BaseTableProps<T, K>) => {
-    const { columns, apiRef } = useTable();
-    const [isShift, setIsShift] = useState<boolean>(false);
-    const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
+    const apiRef = useGridApiRef();
+    const { columns } = useTable();
+
     const [sortedData, setSortedData] = useState<Array<T>>();
 
     function sort(
@@ -84,50 +83,23 @@ export const BaseTable = <T extends Data, K extends keyof T>({
     };
 
     useEffect(() => {
-        const handleKey = (event: KeyboardEvent, down: boolean) => {
-            if (event.key === 'Shift' && !skipShift) {
-                setIsShift(down);
-            }
-        };
-        window.addEventListener('keydown', (e) => handleKey(e, true));
-        window.addEventListener('keyup', (e) => handleKey(e, false));
-
-        // cleanup this component
-        return () => {
-            window.removeEventListener('keydown', (e) => handleKey(e, true));
-            window.removeEventListener('keyup', (e) => handleKey(e, false));
-        };
-    }, [skipShift]);
-
-    useEffect(() => {
         setSortedData(data);
     }, [data]);
 
-    const handleSelect = (row: any) => {
-        if (sortedData !== undefined) {
-            const index = sortedData.findIndex((k) => k.id === row.data.id);
+    // useEffect(() => {
+    //     return apiRef.current.subscribeEvent(
+    //         'columnResize',
+    //         (params: GridColumnResizeParams) => {
+    //             setMessage(
+    //                 `Column ${params.colDef.headerName} resized to ${params.width}px.`
+    //             );
+    //         }
+    //     );
+    // }, [apiRef]);
 
-            if (isShift) {
-                if (lastSelectedIndex === undefined) {
-                    return;
-                }
-
-                if (index === lastSelectedIndex) {
-                    return;
-                }
-                const subsetArray = sortedData.slice(
-                    Math.min(index, lastSelectedIndex),
-                    Math.max(index, lastSelectedIndex) + 1
-                );
-
-                const selectArray = subsetArray.map((k) => k.id);
-                apiRef.current.selectRows(selectArray, row.isSelected);
-            }
-            if (onSelected !== undefined) {
-                onSelected();
-            }
-
-            setLastSelectedIndex(index);
+    const handleSelect = (ids: any) => {
+        if (onSelected !== undefined) {
+            onSelected(ids);
         }
     };
     const classes = useTableStyles();
@@ -136,10 +108,12 @@ export const BaseTable = <T extends Data, K extends keyof T>({
             <ColumnSelect />
             {sortedData && (
                 <DataGridPro
+                    apiRef={apiRef}
                     rows={sortedData}
                     columns={columns}
                     selectionModel={selectionModel}
                     pageSize={15}
+                    pagination
                     checkboxSelection
                     disableSelectionOnClick
                     disableColumnSelector

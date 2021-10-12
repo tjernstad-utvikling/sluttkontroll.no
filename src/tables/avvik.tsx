@@ -3,7 +3,6 @@ import {
     GridCellParams,
     GridColDef,
     GridRowData,
-    GridRowId,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
@@ -16,8 +15,6 @@ import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
-import { useTable } from './tableContainer';
 
 export const AvvikValueGetter = (data: Avvik | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): string => {
@@ -177,20 +174,16 @@ interface AvvikTableProps {
     avvik: Avvik[];
     kontroller: Kontroll[];
     skjemaer: Skjema[];
-    onSelected: (checkpoints: Array<Avvik>) => void;
-    selected: Avvik[];
-    selectedFromGrid: boolean;
+    onSelected: (ids: number[]) => void;
+    selected: number[];
 }
 export const AvvikTable = ({
     kontroller,
     avvik,
     skjemaer,
     onSelected,
-    selected,
-    selectedFromGrid
+    selected
 }: AvvikTableProps) => {
-    const { apiRef } = useTable();
-
     function CustomSort<T extends keyof Avvik>(
         data: Avvik[],
         field: T
@@ -239,41 +232,6 @@ export const AvvikTable = ({
         }
     }
 
-    const onSelect = () => {
-        const rows: Map<GridRowId, GridRowData> =
-            apiRef.current.getSelectedRows();
-
-        const cpRows: Avvik[] = [];
-
-        rows.forEach((r) =>
-            cpRows.push({
-                id: r.id,
-                beskrivelse: r.beskrivelse,
-                avvikBilder: r.avvikBilder,
-                checklist: r.checklist,
-                kommentar: r.kommentar,
-                registrertDato: r.registrertDato,
-                status: r.status,
-                oppdagetAv: r.oppdagetAv,
-                utbedrer: r.utbedrer
-            })
-        );
-        onSelected(cpRows);
-    };
-    useEffect(() => {
-        function checkSelected() {
-            if (apiRef.current !== null && selectedFromGrid) {
-                const selectArray = selected.map((a) => a.id);
-                apiRef.current.selectRows(selectArray);
-            }
-        }
-        if (apiRef.current === null && selectedFromGrid) {
-            setTimeout(checkSelected, 1000);
-        } else if (apiRef.current !== null && selectedFromGrid) {
-            checkSelected();
-        }
-    }, [selected, apiRef, selectedFromGrid]);
-
     const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
         if (row.status === 'lukket') {
             return RowStylingEnum.completed;
@@ -283,11 +241,11 @@ export const AvvikTable = ({
     return (
         <BaseTable
             data={avvik}
-            onSelected={onSelect}
+            onSelected={onSelected}
             customSort={CustomSort}
             customSortFields={['kontroll', 'area', 'omrade']}
             getRowStyling={getRowStyling}
-            skipShift={selectedFromGrid}
+            selectionModel={selected}
         />
     );
 };

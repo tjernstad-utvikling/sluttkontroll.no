@@ -122,21 +122,21 @@ export const AvvikContextProvider = ({
         }
     };
     const setUtbedrere = async (
-        avvik: Avvik[],
+        avvikIds: number[],
         utbedrere: User[]
     ): Promise<boolean> => {
         try {
-            const { status } = await setUtbedrereApi(
-                avvik.map((a) => a.id),
-                utbedrere
-            );
+            const { status } = await setUtbedrereApi(avvikIds, utbedrere);
 
             if (status === 204) {
-                avvik.forEach((a) => {
-                    dispatch({
-                        type: ActionType.updateAvvik,
-                        payload: { ...a, utbedrer: utbedrere }
-                    });
+                avvikIds.forEach((id) => {
+                    const avvik = state?.avvik?.find((a) => a.id === id);
+                    if (avvik !== undefined) {
+                        dispatch({
+                            type: ActionType.updateAvvik,
+                            payload: { ...avvik, utbedrer: utbedrere }
+                        });
+                    }
                 });
                 enqueueSnackbar('Utbedrere er satt', {
                     variant: 'success'
@@ -153,25 +153,25 @@ export const AvvikContextProvider = ({
     };
 
     const closeAvvik = async (
-        avvik: Avvik[],
+        avvikIds: number[],
         kommentar: string
     ): Promise<boolean> => {
         try {
-            const { status } = await closeAvvikApi(
-                avvik.map((a) => a.id),
-                kommentar
-            );
+            const { status } = await closeAvvikApi(avvikIds, kommentar);
 
             if (status === 204) {
-                avvik.forEach((a) => {
-                    dispatch({
-                        type: ActionType.updateAvvik,
-                        payload: {
-                            ...a,
-                            status: 'lukket',
-                            kommentar: `${a.kommentar} ${kommentar}`
-                        }
-                    });
+                avvikIds.forEach((id) => {
+                    const avvik = state?.avvik?.find((a) => a.id === id);
+                    if (avvik !== undefined) {
+                        dispatch({
+                            type: ActionType.updateAvvik,
+                            payload: {
+                                ...avvik,
+                                status: 'lukket',
+                                kommentar: `${avvik.kommentar} ${kommentar}`
+                            }
+                        });
+                    }
                 });
                 enqueueSnackbar('Avvik er lukket', {
                     variant: 'success'

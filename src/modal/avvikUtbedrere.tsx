@@ -1,4 +1,3 @@
-import { Avvik } from '../contracts/avvikApi';
 import { AvvikUtbedrereSchema } from '../schema/avvikUtbedrere';
 import Modal from '@mui/material/Modal';
 import { User } from '../contracts/userApi';
@@ -6,7 +5,7 @@ import { useAvvik } from '../data/avvik';
 import { useModalStyles } from '../styles/modal';
 
 interface AvvikUtbedrereModalProps {
-    selectedAvvik: Avvik[];
+    selectedAvvik: number[];
     close: () => void;
     open: boolean;
 }

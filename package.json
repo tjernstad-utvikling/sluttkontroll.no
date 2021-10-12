@@ -9,7 +9,7 @@
     "@mui/lab": "^5.0.0-alpha.50",
     "@mui/material": "^5.0.3",
     "@mui/styles": "^5.0.1",
-    "@mui/x-data-grid": "5.0.0-beta.3",
+    "@mui/x-data-grid-pro": "^5.0.0-beta.3",
     "@react-pdf-viewer/core": "2.7.2",
     "@react-pdf-viewer/get-file": "^2.7.2",
     "@react-pdf/renderer": "^2.0.20",
@@ -29,7 +29,6 @@
     "react-scripts": "4.0.3",
     "react-select": "^4.3.1",
     "tss-react": "^1.0.0",
-    "web-vitals": "^1.0.1",
     "yup": "^0.32.9"
   },
   "scripts": {

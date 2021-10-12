@@ -1,5 +1,4 @@
 import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,7 +8,8 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
+
 const PREFIX = 'Card';
 
 const classes = {
@@ -19,11 +19,7 @@ const classes = {
     content: `${PREFIX}-content`
 };
 
-const Root = styled('div')((
-    {
-        theme
-    }
-) => ({
+const Root = styled('div')(({ theme }) => ({
     [`& .${classes.cardHeader}`]: {
         background: theme.palette.primary.main
     },
@@ -52,8 +48,6 @@ interface CardProps {
     menu?: React.ReactNode;
 }
 export const Card = ({ children, title, menu }: CardProps) => {
-
-
     return (
         <Paper className={classes.paper}>
             <Toolbar className={classes.cardHeader}>
@@ -80,7 +74,6 @@ interface CardMenuProps {
     count?: number;
 }
 export const CardMenu = ({ items, count }: CardMenuProps) => {
-
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -147,6 +140,5 @@ export const CardMenu = ({ items, count }: CardMenuProps) => {
 };
 
 export const CardContent = ({ children }: { children: React.ReactNode }) => {
-
     return <div className={classes.content}>{children}</div>;
 };

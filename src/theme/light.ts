@@ -1,26 +1,28 @@
-import { Palette, PaletteOptions } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
-import { unstable_createMuiStrictModeTheme as createMuiTheme, adaptV4Theme } from '@mui/material';
-
-export const theme = createMuiTheme(adaptV4Theme({
+export const theme = createTheme({
     palette: {
         primary: {
             main: '#1A4D27',
-            dark: '#0D2613 '
+            dark: '#0d2613'
         },
         secondary: {
-            main: '#F5F5F5'
+            main: '#f50057'
+        },
+        error: {
+            main: '#ca3c25'
+        },
+        success: {
+            main: '#8fc93a'
+        },
+        info: {
+            main: '#235789'
+        },
+        background: {
+            default: '#F5F5F5'
+        },
+        warning: {
+            main: '#F3A712'
         }
     }
-}));
-
-declare module '@mui/material/styles/createMuiTheme' {
-    interface Theme {
-        palette: Palette;
-    }
-
-    // allow configuration using `createMuiTheme`
-    interface DeprecatedThemeOptions {
-        palette?: PaletteOptions;
-    }
-}
+});

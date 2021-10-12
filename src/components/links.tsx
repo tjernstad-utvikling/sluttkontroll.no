@@ -4,15 +4,13 @@ import {
     useRouteMatch
 } from 'react-router-dom';
 
-import { styled } from '@mui/material/styles';
-
+import { DistributiveOmit } from '@mui/types';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { DistributiveOmit } from '@mui/types';
 import React from 'react';
 import clsx from 'clsx';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
 
 const PREFIX = 'ListItemLink';
 
@@ -36,8 +34,6 @@ interface ListItemLinkProps {
 export const ListItemLink = (props: ListItemLinkProps) => {
     const { icon, primary, to } = props;
     const match = useRouteMatch(to);
-
-
 
     const renderLink = React.useMemo(
         () =>

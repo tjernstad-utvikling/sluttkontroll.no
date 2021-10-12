@@ -1,8 +1,7 @@
 import BackupIcon from '@mui/icons-material/Backup';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import clsx from 'clsx';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
 import { useDropzone } from 'react-dropzone';
 
 const PREFIX = 'uploader';
@@ -55,8 +54,6 @@ export function DropZone({
     files,
     multiple = false
 }: DropZoneProps) {
-
-
     function duplicateFileValidator(file: File) {
         const simFile = files.filter((f) => f.name === file.name);
         if (simFile.length > 0) {

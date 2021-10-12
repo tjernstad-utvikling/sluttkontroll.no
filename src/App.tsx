@@ -1,21 +1,21 @@
 import { AppRouter } from './router';
 import { AuthProvider } from './hooks/useAuth';
+import { CacheProvider } from '@emotion/react';
 import { ConfirmationDialogProvider } from './hooks/useConfirm';
 import { SnackbarProvider } from 'notistack';
-import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { UserContextProvider } from './data/user';
+import createCache from '@emotion/cache';
 import { theme } from './theme/light';
 
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
+export const muiCache = createCache({
+    key: 'mui',
+    prepend: true
+});
 
 function App() {
     return (
-        <StyledEngineProvider injectFirst>
+        <CacheProvider value={muiCache}>
             <ThemeProvider theme={theme}>
                 <ConfirmationDialogProvider>
                     <SnackbarProvider
@@ -32,7 +32,7 @@ function App() {
                     </SnackbarProvider>
                 </ConfirmationDialogProvider>
             </ThemeProvider>
-        </StyledEngineProvider>
+        </CacheProvider>
     );
 }
 

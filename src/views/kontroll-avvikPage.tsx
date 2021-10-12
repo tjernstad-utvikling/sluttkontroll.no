@@ -1,7 +1,4 @@
 import { Card, CardMenu } from '../components/card';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -21,9 +18,12 @@ import Grid from '@mui/material/Grid';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { NewImageModal } from '../modal/newImage';
 import PersonIcon from '@mui/icons-material/Person';
+import { Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
+import createStyles from '@mui/styles/createStyles';
 import { format } from 'date-fns';
+import makeStyles from '@mui/styles/makeStyles';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -219,12 +219,12 @@ const AvvikView = () => {
                     <AvvikUtbedrereModal
                         open={modalOpen === Modals.utbedrer}
                         close={() => setModalOpen(undefined)}
-                        selectedAvvik={[_avvik]}
+                        selectedAvvik={[_avvik.id]}
                     />
                     <AvvikCommentModal
                         open={modalOpen === Modals.comment}
                         close={() => setModalOpen(undefined)}
-                        selectedAvvik={[_avvik]}
+                        selectedAvvik={[_avvik.id]}
                     />
                 </>
             )}

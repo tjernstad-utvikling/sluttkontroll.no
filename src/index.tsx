@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 
-import App from './app';
+import App from './App';
 import { LicenseInfo } from '@mui/x-data-grid-pro';
 import React from 'react';
 import ReactDOM from 'react-dom';

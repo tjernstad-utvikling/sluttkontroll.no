@@ -1,14 +1,21 @@
-import makeStyles from '@mui/styles/makeStyles';
+import { Theme } from '@mui/material';
+import { makeStyles } from '../../theme/makeStyles';
 
-export const usePageStyles = makeStyles((theme) => ({
+export const usePageStyles = makeStyles()((theme: Theme) => ({
     appBarSpacer: {
-        padding: '1px'
+        minHeight: 56,
+        [`${theme.breakpoints.up('xs')} and (orientation: landscape)`]: {
+            minHeight: 48
+        },
+        [theme.breakpoints.up('sm')]: {
+            minHeight: 64
+        }
     },
     container: {
-        paddingBottom: '10px'
+        paddingBottom: theme.spacing(4)
     },
     paper: {
-        padding: '5px',
+        padding: theme.spacing(1),
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column'

@@ -1,6 +1,7 @@
-import makeStyles from '@mui/styles/makeStyles';
+import { Theme } from '@mui/material';
+import { makeStyles } from '../theme/makeStyles';
 
-export const useModalStyles = makeStyles((theme) => ({
+export const useModalStyles = makeStyles()((theme: Theme) => ({
     root: {
         backgroundColor: '#fff',
         margin: 15,

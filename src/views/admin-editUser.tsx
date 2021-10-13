@@ -11,7 +11,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const NewUserView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { userId } = useParams<EditUserViewParams>();
     const history = useHistory();
     const [user, setUser] = useState<User>();

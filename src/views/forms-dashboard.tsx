@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const FormsView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     return (
         <>

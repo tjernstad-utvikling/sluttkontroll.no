@@ -8,7 +8,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const NewUserView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const history = useHistory();
     const { newUser } = useUser();

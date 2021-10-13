@@ -19,7 +19,7 @@ export const MeasurementModal = ({
     skjemaId,
     editId
 }: MeasurementModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
 
     const [measurement, setMeasurement] = useState<Measurement>();
 

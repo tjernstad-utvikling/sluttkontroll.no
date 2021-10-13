@@ -22,7 +22,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const KontrollerView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const history = useHistory();
     const { user } = useAuth();

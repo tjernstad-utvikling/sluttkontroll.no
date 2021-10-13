@@ -10,13 +10,14 @@ import { LoadingButton } from '../components/button';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Paper from '@mui/material/Paper';
 import { TextField } from '../components/input';
+import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '../theme/makeStyles';
 import { useAuth } from '../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
     root: {
         height: '100vh'
     },
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FrontPage = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { signIn } = useAuth();
 
     const history = useHistory();

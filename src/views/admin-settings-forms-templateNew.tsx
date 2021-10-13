@@ -16,8 +16,6 @@ import {
     ResponderProvided
 } from 'react-beautiful-dnd';
 import { FormsGroup, FormsTemplate } from '../contracts/sjaApi';
-import makeStyles from '@mui/styles/makeStyles';
-import withStyles from '@mui/styles/withStyles';
 
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
 import { Card } from '../components/card';
@@ -34,12 +32,14 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TitleIcon from '@mui/icons-material/Title';
 import clsx from 'clsx';
+import makeStyles from '@mui/styles/makeStyles';
 import { useForms } from '../data/forms';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
+import withStyles from '@mui/styles/withStyles';
 
 const FormsTemplateNewView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const [template, setTemplate] = useState<FormsTemplate>();
     const [group, setGroup] = useState<FormsGroup>();

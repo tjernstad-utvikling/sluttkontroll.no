@@ -12,11 +12,12 @@ import clsx from 'clsx';
 import logo from '../../assets/logoWhite.png';
 import { useAuth } from '../../hooks/useAuth';
 import { useMainStyles } from '../../styles/layout/main';
+
 interface LeftDrawerProps {
     isOpen: boolean;
 }
 export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
-    const classes = useMainStyles();
+    const { classes } = useMainStyles();
     const { userHasRole } = useAuth();
     return (
         <Drawer

@@ -17,7 +17,7 @@ import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SkjemaerView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { kontrollId } = useParams<SkjemaerViewParams>();
     const { url } = useRouteMatch();
 

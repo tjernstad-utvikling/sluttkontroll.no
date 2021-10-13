@@ -9,7 +9,7 @@ interface LeftDrawerProps {
     isOpen: boolean;
 }
 export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
-    const classes = useMainStyles();
+    const { classes } = useMainStyles();
     return (
         <Drawer
             className={classes.drawer}

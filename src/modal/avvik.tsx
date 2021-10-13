@@ -16,7 +16,7 @@ export const AvvikEditModal = ({
     editId,
     close
 }: AvvikEditModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
     const [editAvvik, setEditAvvik] = useState<Avvik>();
 
     const {

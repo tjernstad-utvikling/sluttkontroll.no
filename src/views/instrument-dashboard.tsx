@@ -17,7 +17,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
 
 const InstrumentsView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [calibrationModalId, setCalibrationModalId] = useState<number>();
     const [editId, setEditId] = useState<number>();

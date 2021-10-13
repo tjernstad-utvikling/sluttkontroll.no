@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const ProfileView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const { user, updateUser, updatePassword } = useAuth();
 

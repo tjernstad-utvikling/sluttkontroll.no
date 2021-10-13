@@ -15,7 +15,7 @@ export const AvvikUtbedrereModal = ({
     close,
     open
 }: AvvikUtbedrereModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
 
     const { setUtbedrere } = useAvvik();
 

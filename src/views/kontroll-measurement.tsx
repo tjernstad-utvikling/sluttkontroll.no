@@ -20,7 +20,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 
 const MeasurementsView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { kontrollId, skjemaId } = useParams<MeasurementsViewParams>();
 
     const [_measurements, setMeasurements] = useState<Array<Measurement>>([]);

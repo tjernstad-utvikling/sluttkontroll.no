@@ -16,7 +16,7 @@ import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SjekklisteEditView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const { skjemaId } = useParams<SjekklisterViewParams>();
     const history = useHistory();

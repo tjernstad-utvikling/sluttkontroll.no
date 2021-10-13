@@ -15,7 +15,7 @@ import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 const CheckpointView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [editId, setEditId] = useState<number | undefined>(undefined);

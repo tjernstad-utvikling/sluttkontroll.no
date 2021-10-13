@@ -18,12 +18,11 @@ import Grid from '@mui/material/Grid';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { NewImageModal } from '../modal/newImage';
 import PersonIcon from '@mui/icons-material/Person';
-import { Theme } from '@mui/material/styles';
+import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
-import createStyles from '@mui/styles/createStyles';
 import { format } from 'date-fns';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '../theme/makeStyles';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -31,8 +30,8 @@ import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const AvvikView = () => {
-    const classes = usePageStyles();
-    const classes2 = useStyles();
+    const { classes } = usePageStyles();
+    const { classes: classes2 } = useStyles();
     const { avvikId } = useParams<AvvikPageViewParams>();
 
     const history = useHistory();
@@ -234,34 +233,32 @@ const AvvikView = () => {
 
 export default AvvikView;
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            width: '100%',
-            maxWidth: 360,
-            backgroundColor: theme.palette.background.paper
-        },
-        list: {
-            padding: 10,
-            marginBottom: 10,
-            '& dt': {
-                fontWeight: 'bold'
-            }
-        },
-        imageContainer: {
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            alignItems: 'flex-start'
-        },
-        topDecoration: {
-            height: 15,
-            background:
-                'linear-gradient(0deg, rgba(255,255,255,1) 0%, #F3A712 100%)'
-        },
-        topDecorationClosed: {
-            background:
-                'linear-gradient(0deg, rgba(255,255,255,1) 0%, #8FC93A 100%)'
+const useStyles = makeStyles()((theme: Theme) => ({
+    root: {
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper
+    },
+    list: {
+        padding: 10,
+        marginBottom: 10,
+        '& dt': {
+            fontWeight: 'bold'
         }
-    })
-);
+    },
+    imageContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start'
+    },
+    topDecoration: {
+        height: 15,
+        background:
+            'linear-gradient(0deg, rgba(255,255,255,1) 0%, #F3A712 100%)'
+    },
+    topDecorationClosed: {
+        background:
+            'linear-gradient(0deg, rgba(255,255,255,1) 0%, #8FC93A 100%)'
+    }
+}));

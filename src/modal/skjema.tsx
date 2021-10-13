@@ -15,7 +15,7 @@ export const SkjemaEditModal = ({
     editId,
     close
 }: SkjemaEditModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
     const [skjema, setSkjema] = useState<Skjema>();
 
     const {

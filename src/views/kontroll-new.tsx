@@ -1,6 +1,4 @@
 import { Klient, Location } from '../contracts/kontrollApi';
-import makeStyles from '@mui/styles/makeStyles';
-import withStyles from '@mui/styles/withStyles';
 
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import { Card } from '../components/card';
@@ -19,14 +17,16 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { User } from '../contracts/userApi';
 import clsx from 'clsx';
+import makeStyles from '@mui/styles/makeStyles';
 import { useClient } from '../data/klient';
 import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
+import withStyles from '@mui/styles/withStyles';
 
 const KontrollNewView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const history = useHistory();
 

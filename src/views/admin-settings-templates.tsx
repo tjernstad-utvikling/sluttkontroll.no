@@ -15,7 +15,7 @@ import { useRouteMatch } from 'react-router';
 import { useTemplate } from '../data/skjemaTemplate';
 
 const SettingsView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const { path } = useRouteMatch();
 

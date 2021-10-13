@@ -17,7 +17,7 @@ import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SkjemaNewView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { saveNewSkjema } = useKontroll();
     const { kontrollId } = useParams<SkjemaerViewParams>();
     const history = useHistory();

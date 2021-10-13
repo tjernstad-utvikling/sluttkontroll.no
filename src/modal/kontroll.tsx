@@ -16,7 +16,7 @@ export const KontrollEditModal = ({
     editId,
     close
 }: KontrollEditModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
     const [kontroll, setKontroll] = useState<Kontroll>();
 
     const {

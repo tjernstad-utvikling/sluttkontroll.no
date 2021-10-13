@@ -27,7 +27,7 @@ import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const AvvikView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { kontrollId, skjemaId, checklistId } = useParams<AvvikViewParams>();
 
     const { url } = useRouteMatch();

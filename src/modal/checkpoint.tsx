@@ -25,7 +25,7 @@ export const CheckpointModal = ({
     close,
     onSubmit
 }: CheckpointModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
     const [checkpoint, setCheckpoint] = useState<Checkpoint>();
 
     useEffect(() => {

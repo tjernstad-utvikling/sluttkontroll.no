@@ -13,13 +13,14 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SpeedIcon from '@mui/icons-material/Speed';
 import { useAuth } from '../../hooks/useAuth';
 import { useMainStyles } from '../../styles/layout/main';
+
 interface RightDrawerProps {
     isOpen: boolean;
     toggle: () => void;
 }
 
 export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
-    const classes = useMainStyles();
+    const { classes } = useMainStyles();
     const { user, userHasRole } = useAuth();
 
     return (

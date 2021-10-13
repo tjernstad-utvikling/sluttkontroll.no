@@ -25,7 +25,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const KontrollObjektView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { objectId, klientId } = useParams<KontrollObjectViewParams>();
     const history = useHistory();
 

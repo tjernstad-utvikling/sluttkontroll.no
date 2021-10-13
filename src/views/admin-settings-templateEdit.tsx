@@ -16,7 +16,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useTemplate } from '../data/skjemaTemplate';
 
 const SkjemaTemplateNewView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const { templateId } = useParams<AdminTemplateEditViewParams>();
     const history = useHistory();

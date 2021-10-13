@@ -26,7 +26,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const KontrollKlientView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const { klientId } = useParams<KontrollKlientViewParams>();
     const history = useHistory();

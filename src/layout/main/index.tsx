@@ -15,7 +15,7 @@ export const MainLayout = ({
     children,
     module
 }: MainLayoutProps): JSX.Element => {
-    const classes = useMainStyles();
+    const { classes } = useMainStyles();
     const [open, setOpen] = useState<boolean>(true);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 

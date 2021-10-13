@@ -10,7 +10,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const UsersView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const {
         state: { users },

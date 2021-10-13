@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useTemplate } from '../data/skjemaTemplate';
 
 const SkjemaTemplateNewView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const history = useHistory();
 

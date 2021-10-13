@@ -18,7 +18,7 @@ export const TopBar = ({
     toggleRightDrawer,
     module
 }: TopBarProps) => {
-    const classes = useMainStyles();
+    const { classes } = useMainStyles();
     return (
         <AppBar
             position="fixed"

@@ -17,7 +17,7 @@ import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const AvvikNewView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { checklistId } = useParams<AvvikNewViewParams>();
 
     const [checklist, setChecklist] = useState<Checklist>();

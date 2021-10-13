@@ -23,7 +23,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 
 const KontrollReportView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { kontrollId, objectId } = useParams<KontrollReportViewParams>();
 
     return (

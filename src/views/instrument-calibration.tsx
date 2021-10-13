@@ -1,4 +1,5 @@
 // Import the styles
+
 import '@react-pdf-viewer/core/lib/styles/index.css';
 
 import {
@@ -28,7 +29,7 @@ import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 const InstrumentsView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { instrumentId } = useParams<InstrumentCalibrationViewParams>();
 
     const [_calibrations, setCalibrations] = useState<Kalibrering[]>();

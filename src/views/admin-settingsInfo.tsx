@@ -11,7 +11,7 @@ import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 const InfoTextView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const [_infoText, setInfoText] = useState<string>();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 

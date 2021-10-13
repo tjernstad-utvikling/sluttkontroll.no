@@ -14,7 +14,7 @@ export const AvvikCommentModal = ({
     open,
     close
 }: AvvikCommentModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
 
     const { closeAvvik } = useAvvik();
 

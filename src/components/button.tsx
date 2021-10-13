@@ -1,27 +1,25 @@
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import React from 'react';
-import { Theme } from '@mui/material/styles';
-import createStyles from '@mui/styles/createStyles';
+import { Theme } from '@mui/material';
 import { green } from '@mui/material/colors';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '../theme/makeStyles';
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        wrapper: {
-            margin: theme.spacing(1),
-            position: 'relative'
-        },
-        buttonProgress: {
-            color: green[500],
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            marginTop: -12,
-            marginLeft: -12
-        }
-    })
-);
+const useStyles = makeStyles()((theme: Theme) => ({
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative'
+    },
+    buttonProgress: {
+        color: green[500],
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12
+    }
+}));
+
 interface LoadingButtonProps {
     isLoading: boolean;
     variant?: 'text' | 'outlined' | 'contained';
@@ -50,7 +48,7 @@ export const LoadingButton = ({
     type,
     fullWidth
 }: LoadingButtonProps) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     return (
         <div className={classes.wrapper}>

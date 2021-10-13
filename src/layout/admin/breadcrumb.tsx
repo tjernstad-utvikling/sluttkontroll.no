@@ -6,10 +6,6 @@ import {
 } from '../../contracts/navigation';
 import React, { useMemo } from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
-import { Theme } from '@mui/material/styles';
-
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import HomeIcon from '@mui/icons-material/Home';
@@ -18,7 +14,9 @@ import ListIcon from '@mui/icons-material/List';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import { Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import { makeStyles } from '../../theme/makeStyles';
 import { useClient } from '../../data/klient';
 import { useKontroll } from '../../data/kontroll';
 
@@ -46,7 +44,7 @@ export function KontrollBreadcrumbs() {
 }
 
 const YourControl = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     const match = useRouteMatch('/kontroll');
     if (match !== null && match.isExact) {
@@ -61,7 +59,7 @@ const YourControl = () => {
 };
 
 const Client = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const {
         state: { klienter }
     } = useClient();
@@ -84,7 +82,7 @@ const Client = () => {
     return undefined;
 };
 const Location = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const {
         state: { klienter }
     } = useClient();
@@ -112,7 +110,7 @@ const Location = () => {
 };
 
 const Control = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const {
         state: { kontroller }
     } = useKontroll();
@@ -138,7 +136,7 @@ const Control = () => {
 };
 
 const Skjema = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const {
         state: { skjemaer }
     } = useKontroll();
@@ -171,7 +169,7 @@ const Breadcrumb = ({
     children,
     to
 }: BreadcrumbProps): JSX.Element => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     if (isExact) {
         return (
             <Typography color="textPrimary" className={classes.link}>
@@ -190,15 +188,13 @@ const Breadcrumb = ({
     );
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        link: {
-            display: 'flex'
-        },
-        icon: {
-            marginRight: theme.spacing(0.5),
-            width: 20,
-            height: 20
-        }
-    })
-);
+const useStyles = makeStyles()((theme: Theme) => ({
+    link: {
+        display: 'flex'
+    },
+    icon: {
+        marginRight: theme.spacing(0.5),
+        width: 20,
+        height: 20
+    }
+}));

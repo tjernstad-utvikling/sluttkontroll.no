@@ -15,44 +15,11 @@ import { Image } from './image';
 import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from '../tables/tableUtils';
+import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
-import { styled } from '@mui/material/styles';
+import { makeStyles } from '../theme/makeStyles';
 import { useAvvik } from '../data/avvik';
-
-const PREFIX = 'AvvikImageCard';
-
-const classes = {
-    cardRoot: `${PREFIX}-cardRoot`,
-    container: `${PREFIX}-container`,
-    media: `${PREFIX}-media`,
-    cardActions: `${PREFIX}-cardActions`,
-    cardActionClosed: `${PREFIX}-cardActionClosed`
-};
-
-const StyledCard = styled(Card)({
-    [`&.${classes.cardRoot}`]: {
-        maxWidth: 250,
-        margin: 5
-    },
-    [`& .${classes.container}`]: {
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'flex-start'
-    },
-    [`& .${classes.media}`]: {
-        height: 140
-    },
-    [`& .${classes.cardActions}`]: {
-        background:
-            'linear-gradient(180deg, rgba(255,255,255,1) 75%, #F3A712 100%)'
-    },
-    [`& .${classes.cardActionClosed}`]: {
-        background:
-            'linear-gradient(180deg, rgba(255,255,255,1) 75%, #8FC93A 100%)'
-    }
-});
 
 interface AvvikCardProps {
     avvik: Avvik;
@@ -77,6 +44,8 @@ export function AvvikCard({
     checked,
     url
 }: AvvikCardProps) {
+    const { classes } = useStyles();
+
     const textLength = 60;
     const trimmedBeskrivelse = useMemo(
         () =>
@@ -87,7 +56,7 @@ export function AvvikCard({
     );
 
     return (
-        <StyledCard className={classes.cardRoot}>
+        <Card className={classes.cardRoot}>
             <CardActionArea component={Link} to={`${url}/${avvik.id}`}>
                 <CardMedia
                     component="article"
@@ -162,7 +131,7 @@ export function AvvikCard({
                     />
                 </div>
             </CardActions>
-        </StyledCard>
+        </Card>
     );
 }
 
@@ -178,6 +147,7 @@ interface AvvikGridProps {
     url: string;
 }
 export function AvvikGrid(props: AvvikGridProps) {
+    const { classes } = useStyles();
     const [isShift, setIsShift] = useState<boolean>(false);
     const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
 
@@ -258,6 +228,7 @@ interface AvvikImageCardProps {
     avvik: Avvik;
 }
 export const AvvikImageCard = ({ avvikBilde, avvik }: AvvikImageCardProps) => {
+    const { classes } = useStyles();
     const { deleteAvvikImage } = useAvvik();
     return (
         <Card className={classes.cardRoot}>
@@ -294,6 +265,7 @@ interface NewImageCardProps {
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 export const NewImageCard = ({ file, setFiles }: NewImageCardProps) => {
+    const { classes } = useStyles();
     const deleteFile = () => {
         setFiles((images) => images.filter((img) => img.name !== file.name));
     };
@@ -319,3 +291,25 @@ export const NewImageCard = ({ file, setFiles }: NewImageCardProps) => {
         </Card>
     );
 };
+
+const useStyles = makeStyles()((theme: Theme) => ({
+    cardRoot: {
+        maxWidth: 250,
+        margin: 5
+    },
+    container: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start'
+    },
+    media: {
+        height: 140
+    },
+    cardActions: {
+        background: `linear-gradient(180deg, rgba(255,255,255,1) 75%, ${theme.palette.warning.main} 100%)`
+    },
+    cardActionClosed: {
+        background: `linear-gradient(180deg, rgba(255,255,255,1) 75%, ${theme.palette.success.main} 100%)`
+    }
+}));

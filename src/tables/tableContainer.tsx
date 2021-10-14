@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useEffect, useRef } from 'react';
 
 import { GridColDef } from '@mui/x-data-grid-pro';
@@ -24,20 +24,6 @@ export const TableContainer = ({
     const [visibleColumns, setVisibleColumns] = useState<Array<string>>([]);
     const returnColumns = useRef<GridColDef[]>();
 
-    const apiRef = useRef<any>(null);
-    const _columns = useMemo(
-        () =>
-            columns.concat({
-                field: '__HIDDEN__',
-                width: 0,
-                renderCell: (params) => {
-                    apiRef.current = params.api;
-                    return null;
-                }
-            }),
-        [columns]
-    );
-
     if (visibleColumns.length === 0) {
         const savedColumnsJson = localStorage.getItem(
             `${StorageKeys.tableColumns}${tableId}`
@@ -49,21 +35,21 @@ export const TableContainer = ({
         }
     }
 
-    returnColumns.current = _columns.map((c) => {
-        if (c.field === '__HIDDEN__' || c.field === 'action') {
+    returnColumns.current = columns.map((c) => {
+        if (c.field === 'action') {
             return c;
         }
         return { ...c, hide: !visibleColumns.includes(c.field) };
     });
 
     useEffect(() => {
-        returnColumns.current = _columns.map((c) => {
-            if (c.field === '__HIDDEN__' || c.field === 'action') {
+        returnColumns.current = columns.map((c) => {
+            if (c.field === 'action') {
                 return c;
             }
             return { ...c, hide: !visibleColumns.includes(c.field) };
         });
-    }, [_columns, visibleColumns]);
+    }, [columns, visibleColumns]);
 
     const toggleColumn = (columnId: string) => {
         if (visibleColumns.includes(columnId)) {
@@ -90,8 +76,7 @@ export const TableContainer = ({
         <Context.Provider
             value={{
                 columns: returnColumns.current,
-                toggleColumn,
-                apiRef
+                toggleColumn
             }}>
             {children}
         </Context.Provider>
@@ -101,5 +86,4 @@ export const TableContainer = ({
 interface ContextInterface {
     columns: GridColDef[];
     toggleColumn: (columnId: string) => void;
-    apiRef: React.MutableRefObject<any>;
 }

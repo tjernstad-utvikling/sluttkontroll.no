@@ -1,9 +1,4 @@
-import {
-    GridCellParams,
-    GridColDef,
-    GridRowData,
-    GridRowId
-} from '@mui/x-data-grid-pro';
+import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
 
 import { BaseTable } from './baseTable';
 import Button from '@mui/material/Button';
@@ -12,7 +7,6 @@ import { Checkpoint } from '../contracts/checkpointApi';
 import EditIcon from '@mui/icons-material/Edit';
 import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
 import { useMemo } from 'react';
-import { useTable } from './tableContainer';
 
 interface ColumnsParams {
     editCheckpoint?: boolean;
@@ -69,7 +63,7 @@ interface CheckpointTableProps {
     checkpoints: Checkpoint[];
     checklists?: Checklist[];
     templateList?: SkjemaTemplateCheckpoint[];
-    onSelected?: (checkpoints: Checkpoint[]) => void;
+    onSelected?: (checkpoints: number[]) => void;
 }
 export const CheckpointTable = ({
     checkpoints,
@@ -77,8 +71,6 @@ export const CheckpointTable = ({
     templateList,
     onSelected
 }: CheckpointTableProps) => {
-    const { apiRef } = useTable();
-
     const selectionModel = useMemo(() => {
         if (checklists !== undefined) {
             return checklists.map((cl) => cl.checkpoint.id);
@@ -97,30 +89,10 @@ export const CheckpointTable = ({
                 return data;
         }
     }
-    const onSelect = () => {
-        const rows: Map<GridRowId, GridRowData> =
-            apiRef.current.getSelectedRows();
-
-        const cpRows: Checkpoint[] = [];
-
-        rows.forEach((r) =>
-            cpRows.push({
-                gruppe: r.gruppe,
-                id: r.id,
-                prosedyre: r.prosedyre,
-                prosedyreNr: r.prosedyreNr,
-                tekst: r.tekst,
-                tiltak: r.tiltak
-            })
-        );
-        if (onSelected !== undefined) {
-            onSelected(cpRows);
-        }
-    };
     return (
         <BaseTable
             selectionModel={selectionModel}
-            onSelected={onSelect}
+            onSelected={onSelected}
             data={checkpoints}
             customSort={CustomSort}
             customSortFields={[]}

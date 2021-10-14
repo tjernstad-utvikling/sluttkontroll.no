@@ -100,8 +100,15 @@ const SjekklisteEditView = () => {
                                             <CheckpointTable
                                                 checklists={_checklists}
                                                 checkpoints={checkpoints}
-                                                onSelected={(checkpoints) =>
-                                                    setSelected(checkpoints)
+                                                onSelected={(ids) =>
+                                                    setSelected(
+                                                        checkpoints?.filter(
+                                                            (c) =>
+                                                                ids.indexOf(
+                                                                    c.id
+                                                                ) !== -1
+                                                        )
+                                                    )
                                                 }
                                             />
                                         </TableContainer>

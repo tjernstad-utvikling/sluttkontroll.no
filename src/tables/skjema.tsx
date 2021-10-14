@@ -2,7 +2,6 @@ import {
     GridCellParams,
     GridColDef,
     GridRowData,
-    GridRowId,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
@@ -14,7 +13,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from './tableUtils';
-import { useTable } from './tableContainer';
 
 export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
@@ -168,11 +166,11 @@ export const columns = (
 export const defaultColumns: Array<string> = ['area', 'omrade', 'kontroll'];
 
 interface SkjemaTableProps {
-    skjemaer: Array<Skjema>;
-    kontroller: Array<Kontroll>;
+    skjemaer: Skjema[];
+    kontroller: Kontroll[];
     avvik: Avvik[];
     measurements: Measurement[];
-    onSelected: (checkpoints: Array<Skjema>) => void;
+    onSelected: (ids: number[]) => void;
 }
 export const SkjemaTable = ({
     skjemaer,
@@ -181,8 +179,6 @@ export const SkjemaTable = ({
     measurements,
     onSelected
 }: SkjemaTableProps) => {
-    const { apiRef } = useTable();
-
     function CustomSort<T extends keyof Skjema>(
         data: Skjema[],
         field: T
@@ -221,27 +217,9 @@ export const SkjemaTable = ({
         }
     }
 
-    const onSelect = () => {
-        const rows: Map<GridRowId, GridRowData> =
-            apiRef.current.getSelectedRows();
-
-        const sRows: Skjema[] = [];
-
-        rows.forEach((r) =>
-            sRows.push({
-                id: r.id,
-                area: r.area,
-                omrade: r.omrade,
-                kommentar: r.kommentar,
-                kontroll: { id: r.kontroll.id }
-            })
-        );
-        onSelected(sRows);
-    };
-
     return (
         <BaseTable
-            onSelected={onSelect}
+            onSelected={onSelected}
             data={skjemaer}
             customSort={CustomSort}
             customSortFields={['kontroll', 'avvik', 'measurement']}

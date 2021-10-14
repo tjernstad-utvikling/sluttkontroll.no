@@ -137,9 +137,13 @@ export const KontrollDocAdjusting = ({
                                 kontroller={state.kontroller ?? []}
                                 avvik={avvik ?? []}
                                 measurements={measurements ?? []}
-                                onSelected={(skjemaer) =>
-                                    setFilteredSkjemaer(skjemaer)
-                                }
+                                onSelected={(ids) => {
+                                    setFilteredSkjemaer(
+                                        state?.skjemaer?.filter(
+                                            (s) => ids.indexOf(s.id) !== -1
+                                        )
+                                    );
+                                }}
                             />
                         </TableContainer>
                     ) : (

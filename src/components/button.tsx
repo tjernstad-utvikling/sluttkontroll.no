@@ -1,17 +1,15 @@
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 import React from 'react';
 import { Theme } from '@mui/material';
-import { green } from '@mui/material/colors';
 import { makeStyles } from '../theme/makeStyles';
 
 const useStyles = makeStyles()((theme: Theme) => ({
     wrapper: {
-        margin: theme.spacing(1),
         position: 'relative'
     },
     buttonProgress: {
-        color: green[500],
         position: 'absolute',
         top: '50%',
         left: '50%',
@@ -48,26 +46,39 @@ export const LoadingButton = ({
     type,
     fullWidth
 }: LoadingButtonProps) => {
-    const { classes } = useStyles();
+    const { classes, cx, css, theme } = useStyles();
 
     return (
-        <div className={classes.wrapper}>
-            <Button
-                type={type}
-                fullWidth={fullWidth}
-                variant={variant}
-                color={color}
-                className={className}
-                disabled={isLoading}
-                onClick={onClick}>
-                {children}
-            </Button>
+        <div>
             {isLoading && (
-                <CircularProgress
-                    size={24}
-                    className={classes.buttonProgress}
+                <LinearProgress
+                    className={cx(
+                        css({
+                            marginBottom: theme.spacing(1)
+                        })
+                    )}
+                    color="success"
                 />
             )}
+            <div className={classes.wrapper}>
+                <Button
+                    type={type}
+                    fullWidth={fullWidth}
+                    variant={variant}
+                    color={color}
+                    className={className}
+                    disabled={isLoading}
+                    onClick={onClick}>
+                    {children}
+                </Button>
+                {isLoading && (
+                    <CircularProgress
+                        size={24}
+                        color="success"
+                        className={classes.buttonProgress}
+                    />
+                )}
+            </div>
         </div>
     );
 };

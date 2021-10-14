@@ -49,18 +49,23 @@ export const columns = ({ currentUser }: columnsOptions) => {
             field: 'sertifikater',
             headerName: 'Sertifikater',
             flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <>
-                    {params.row.sertifikater.map((sertifikat: Sertifikat) => (
-                        <Chip
-                            key={sertifikat.id}
-                            variant="outlined"
-                            size="small"
-                            label={`${sertifikat.type.name} - ${sertifikat.number}`}
-                        />
-                    ))}
-                </>
-            )
+            renderCell: (params: GridCellParams) => {
+                console.log(params.row);
+                return (
+                    <>
+                        {params.row.sertifikater?.map(
+                            (sertifikat: Sertifikat) => (
+                                <Chip
+                                    key={sertifikat.id}
+                                    variant="outlined"
+                                    size="small"
+                                    label={`${sertifikat.type.name} - ${sertifikat.number}`}
+                                />
+                            )
+                        )}
+                    </>
+                );
+            }
         },
         {
             field: 'action',

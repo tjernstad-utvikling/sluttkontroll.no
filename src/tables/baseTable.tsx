@@ -203,6 +203,23 @@ export const BaseTable = <T extends Data, K extends keyof T>({
                         // Actions cell more text
                         actionsCellMore: 'mer'
                     }}
+                    componentsProps={{
+                        pagination: {
+                            labelRowsPerPage: 'Rader per side',
+                            labelDisplayedRows: ({
+                                from,
+                                to,
+                                count
+                            }: {
+                                from: number;
+                                to: number;
+                                count: number;
+                            }) =>
+                                `${from}-${to} av ${
+                                    count !== -1 ? count : `mer enn ${to}`
+                                }`
+                        }
+                    }}
                     rows={sortedData}
                     columns={columns}
                     selectionModel={selectionModel}

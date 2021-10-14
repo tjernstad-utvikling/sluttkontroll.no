@@ -36,7 +36,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     },
     avatar: {
         margin: '5px',
-        backgroundColor: 'red'
+        backgroundColor: theme.palette.primary.main
     },
     form: {
         marginTop: '5px'
@@ -45,7 +45,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
         margin: '5px'
     },
     errorText: {
-        color: 'red'
+        color: theme.palette.error.main
     }
 }));
 
@@ -128,13 +128,13 @@ const FrontPage = () => {
                                     id="password"
                                     autoComplete="current-password"
                                 />
-                                {loginError !== undefined ? (
+                                {loginError !== undefined && (
                                     <Typography
                                         className={classes.errorText}
-                                        component="span">
+                                        component="div">
                                         {loginError}
                                     </Typography>
-                                ) : undefined}
+                                )}
                                 <LoadingButton
                                     isLoading={isSubmitting}
                                     type="submit"

@@ -1,44 +1,9 @@
 import BackupIcon from '@mui/icons-material/Backup';
 import Button from '@mui/material/Button';
+import { Theme } from '@mui/material';
 import clsx from 'clsx';
-import { styled } from '@mui/material/styles';
+import { makeStyles } from '../theme/makeStyles';
 import { useDropzone } from 'react-dropzone';
-
-const PREFIX = 'uploader';
-
-const classes = {
-    base: `${PREFIX}-base`,
-    activeStyle: `${PREFIX}-activeStyle`,
-    acceptStyle: `${PREFIX}-acceptStyle`,
-    rejectStyle: `${PREFIX}-rejectStyle`
-};
-
-const Root = styled('section')({
-    [`& .${classes.base}`]: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '20px',
-        borderWidth: 2,
-        borderRadius: 2,
-        borderColor: '#eeeeee',
-        borderStyle: 'dashed',
-        backgroundColor: '#fafafa',
-        color: '#bdbdbd',
-        outline: 'none',
-        transition: 'border .24s ease-in-out'
-    },
-    [`& .${classes.activeStyle}`]: {
-        borderColor: '#2196f3'
-    },
-    [`& .${classes.acceptStyle}`]: {
-        borderColor: '#00e676'
-    },
-    [`& .${classes.rejectStyle}`]: {
-        borderColor: '#ff1744'
-    }
-});
 
 interface DropZoneProps {
     accept: 'image/png, image/jpeg' | 'image/*' | 'application/pdf';
@@ -54,6 +19,8 @@ export function DropZone({
     files,
     multiple = false
 }: DropZoneProps) {
+    const { classes } = useStyles();
+
     function duplicateFileValidator(file: File) {
         const simFile = files.filter((f) => f.name === file.name);
         if (simFile.length > 0) {
@@ -97,7 +64,7 @@ export function DropZone({
     ));
 
     return (
-        <Root className="container">
+        <section className="container">
             <div
                 {...getRootProps({
                     className: clsx(classes.base, {
@@ -120,6 +87,33 @@ export function DropZone({
                 )}
                 {children}
             </aside>
-        </Root>
+        </section>
     );
 }
+
+const useStyles = makeStyles()((theme: Theme) => ({
+    base: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '20px',
+        borderWidth: 2,
+        borderRadius: 2,
+        borderColor: '#eeeeee',
+        borderStyle: 'dashed',
+        backgroundColor: '#fafafa',
+        color: '#bdbdbd',
+        outline: 'none',
+        transition: 'border .24s ease-in-out'
+    },
+    activeStyle: {
+        borderColor: theme.palette.info.main
+    },
+    acceptStyle: {
+        borderColor: theme.palette.success.main
+    },
+    rejectStyle: {
+        borderColor: theme.palette.error.main
+    }
+}));

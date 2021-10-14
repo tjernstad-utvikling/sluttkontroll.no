@@ -22,7 +22,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
         height: '100vh'
     },
     image: {
-        backgroundImage: 'url(https://source.unsplash.com/random)',
+        backgroundImage: 'url(/images/front.jpg)',
         backgroundRepeat: 'no-repeat',
         backgroundColor: 'grey',
         backgroundSize: 'cover',
@@ -50,7 +50,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
 }));
 
 const FrontPage = () => {
-    const { classes } = useStyles();
+    const { classes, cx, css, theme } = useStyles();
     const { signIn } = useAuth();
 
     const history = useHistory();
@@ -154,6 +154,43 @@ const FrontPage = () => {
                             </Form>
                         )}
                     </Formik>
+
+                    <div
+                        className={cx(
+                            css({
+                                position: 'fixed',
+                                bottom: 0
+                            })
+                        )}>
+                        <Typography
+                            className={cx(
+                                css({
+                                    color: theme.palette.text.disabled,
+                                    fontSize: '0.756rem'
+                                })
+                            )}>
+                            Photo by{' '}
+                            <a
+                                className={cx(
+                                    css({
+                                        color: theme.palette.text.disabled
+                                    })
+                                )}
+                                href="https://unsplash.com/@esptroy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                                Troy Bridges
+                            </a>{' '}
+                            on{' '}
+                            <a
+                                className={cx(
+                                    css({
+                                        color: theme.palette.text.disabled
+                                    })
+                                )}
+                                href="https://unsplash.com/s/photos/electrical?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                                Unsplash
+                            </a>
+                        </Typography>
+                    </div>
                 </div>
             </Grid>
         </Grid>

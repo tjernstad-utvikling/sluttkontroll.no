@@ -23,6 +23,9 @@ export const theme = createTheme({
         },
         warning: {
             main: '#F3A712'
+        },
+        text: {
+            disabled: '#737373'
         }
     }
 });

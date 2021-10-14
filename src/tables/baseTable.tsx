@@ -112,7 +112,7 @@ export const BaseTable = <T extends Data, K extends keyof T>({
                     rows={sortedData}
                     columns={columns}
                     selectionModel={selectionModel}
-                    pageSize={15}
+                    pageSize={25}
                     pagination
                     checkboxSelection
                     disableSelectionOnClick

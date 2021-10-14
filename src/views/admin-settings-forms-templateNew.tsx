@@ -197,7 +197,13 @@ const GroupTable = ({ template, setGroup }: GroupTableProps) => {
                                         onClick={() => setGroup(group)}
                                         variant="contained"
                                         color="primary">
-                                        Velg / Rediger
+                                        Rediger
+                                    </Button>
+                                    <Button
+                                        onClick={() => setGroup(group)}
+                                        variant="contained"
+                                        color="primary">
+                                        Velg
                                     </Button>
                                 </TableCell>
                             </TableRow>

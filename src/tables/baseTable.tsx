@@ -2,8 +2,7 @@ import {
     DataGridPro,
     GridColumns,
     GridRowData,
-    GridSortDirection,
-    useGridApiRef
+    GridSortDirection
 } from '@mui/x-data-grid-pro';
 import { useEffect, useState } from 'react';
 
@@ -35,7 +34,6 @@ export const BaseTable = <T extends Data, K extends keyof T>({
     onSelected,
     getRowStyling
 }: BaseTableProps<T, K>) => {
-    const apiRef = useGridApiRef();
     const { columns } = useTable();
 
     const [sortedData, setSortedData] = useState<Array<T>>();
@@ -86,17 +84,6 @@ export const BaseTable = <T extends Data, K extends keyof T>({
         setSortedData(data);
     }, [data]);
 
-    // useEffect(() => {
-    //     return apiRef.current.subscribeEvent(
-    //         'columnResize',
-    //         (params: GridColumnResizeParams) => {
-    //             setMessage(
-    //                 `Column ${params.colDef.headerName} resized to ${params.width}px.`
-    //             );
-    //         }
-    //     );
-    // }, [apiRef]);
-
     const handleSelect = (ids: any) => {
         if (onSelected !== undefined) {
             onSelected(ids);
@@ -108,7 +95,114 @@ export const BaseTable = <T extends Data, K extends keyof T>({
             <ColumnSelect />
             {sortedData && (
                 <DataGridPro
-                    apiRef={apiRef}
+                    localeText={{
+                        // Root
+                        noRowsLabel: 'Ingen rader',
+                        noResultsOverlayLabel: 'Ikke noe resultat funnet.',
+                        errorOverlayDefaultLabel: 'En feil har oppstått.',
+
+                        // Density selector toolbar button text
+                        toolbarDensity: 'Tetthet',
+                        toolbarDensityLabel: 'Tetthet',
+                        toolbarDensityCompact: 'Kompakt',
+                        toolbarDensityStandard: 'Standard',
+                        toolbarDensityComfortable: 'Komfortabelt',
+
+                        // Columns selector toolbar button text
+                        toolbarColumns: 'Kolonner',
+                        toolbarColumnsLabel: 'Velg kolonner',
+
+                        // Filters toolbar button text
+                        toolbarFilters: 'Filtere',
+                        toolbarFiltersLabel: 'Vis filtere',
+                        toolbarFiltersTooltipHide: 'Gjem filtere',
+                        toolbarFiltersTooltipShow: 'Vis filtere',
+                        toolbarFiltersTooltipActive: (count) =>
+                            count !== 1
+                                ? `${count} aktive filtere`
+                                : `${count} aktive filtere`,
+
+                        // Export selector toolbar button text
+                        toolbarExport: 'Eksporter',
+                        toolbarExportLabel: 'Eksporter',
+                        toolbarExportCSV: 'Last ned som CSV',
+
+                        // Columns panel text
+                        columnsPanelTextFieldLabel: 'Finn kolonne',
+                        columnsPanelTextFieldPlaceholder: 'Kolonne tittel',
+                        columnsPanelDragIconLabel: 'Omorganiser kolonner',
+                        columnsPanelShowAllButton: 'Vis alle',
+                        columnsPanelHideAllButton: 'Gjem alle',
+
+                        // Filter panel text
+                        filterPanelAddFilter: 'Legg til filter',
+                        filterPanelDeleteIconLabel: 'Slett',
+                        filterPanelOperators: 'Operatorer',
+                        filterPanelOperatorAnd: 'Og',
+                        filterPanelOperatorOr: 'Eller',
+                        filterPanelColumns: 'Kolonner',
+                        filterPanelInputLabel: 'Verdi',
+                        filterPanelInputPlaceholder: 'Filter verdi',
+
+                        // Filter operators text
+                        filterOperatorContains: 'inneholder',
+                        filterOperatorEquals: 'er lik',
+                        filterOperatorStartsWith: 'starter med',
+                        filterOperatorEndsWith: 'ender med',
+                        filterOperatorIs: 'er',
+                        filterOperatorNot: 'er ikke',
+                        filterOperatorAfter: 'er etter',
+                        filterOperatorOnOrAfter: 'er på eller etter',
+                        filterOperatorBefore: 'er før',
+                        filterOperatorOnOrBefore: 'er på eller før',
+                        filterOperatorIsEmpty: 'er tom',
+                        filterOperatorIsNotEmpty: 'er ikke tom',
+
+                        // Filter values text
+                        filterValueAny: 'noen',
+                        filterValueTrue: 'sant',
+                        filterValueFalse: 'usant',
+
+                        // Column menu text
+                        columnMenuLabel: 'Meny',
+                        columnMenuShowColumns: 'Vis kolonner',
+                        columnMenuFilter: 'Filter',
+                        columnMenuHideColumn: 'Gjem',
+                        columnMenuUnsort: 'Usortert',
+                        columnMenuSortAsc: 'Sorter stigende',
+                        columnMenuSortDesc: 'Sorter synkende',
+
+                        // Column header text
+                        columnHeaderFiltersTooltipActive: (count) =>
+                            count !== 1
+                                ? `${count} aktive filtere`
+                                : `${count} aktive filter`,
+                        columnHeaderFiltersLabel: 'Vis filter',
+                        columnHeaderSortIconLabel: 'Sorter',
+
+                        // Rows selected footer text
+                        footerRowSelected: (count) =>
+                            count !== 1
+                                ? `${count.toLocaleString()} rader valgt`
+                                : `${count.toLocaleString()} rad valgt`,
+
+                        // Total rows footer text
+                        footerTotalRows: 'Rader totalt:',
+
+                        // Total visible rows footer text
+                        footerTotalVisibleRows: (visibleCount, totalCount) =>
+                            `${visibleCount.toLocaleString()} av ${totalCount.toLocaleString()}`,
+
+                        // Checkbox selection text
+                        checkboxSelectionHeaderName: 'Avmerkingsboks',
+
+                        // Boolean cell text
+                        booleanCellTrueLabel: 'sant',
+                        booleanCellFalseLabel: 'usant',
+
+                        // Actions cell more text
+                        actionsCellMore: 'mer'
+                    }}
                     rows={sortedData}
                     columns={columns}
                     selectionModel={selectionModel}

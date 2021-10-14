@@ -1,4 +1,5 @@
-import { Card } from '../components/card';
+import { Card, CardContent } from '../components/card';
+
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { Roles } from '../contracts/userApi';
@@ -31,9 +32,9 @@ const NewUserView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Ny bruker">
-                            <div style={{ padding: 15 }}>
+                            <CardContent>
                                 <UserSchema onSubmit={handleNewUser} />
-                            </div>
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     TemplateTable,
     columns,
@@ -60,7 +60,7 @@ const SettingsView = () => {
                                     ]}
                                 />
                             }>
-                            <div style={{ padding: 15 }}>
+                            <CardContent>
                                 {templates !== undefined ? (
                                     <TableContainer
                                         columns={columns({
@@ -74,7 +74,7 @@ const SettingsView = () => {
                                 ) : (
                                     <div>Laster maler</div>
                                 )}
-                            </div>
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

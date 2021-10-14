@@ -7,6 +7,7 @@ import {
     calibrationColumns,
     defaultColumns
 } from '../tables/calibration';
+import { Card, CardContent } from '../components/card';
 import { Instrument, Kalibrering } from '../contracts/instrumentApi';
 import {
     getCalibrationCertificate,
@@ -14,7 +15,6 @@ import {
 } from '../api/instrumentApi';
 import { useEffect, useState } from 'react';
 
-import { Card } from '../components/card';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationViewParams } from '../contracts/navigation';
@@ -110,24 +110,26 @@ const InstrumentsView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Kalibreringer">
-                            {_calibrations !== undefined &&
-                            instrument !== undefined ? (
-                                <TableContainer
-                                    columns={calibrationColumns({
-                                        openCertificate,
-                                        openCertificateId,
-                                        instrumentLastCalibration:
-                                            instrument?.sisteKalibrert
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="calibrations">
-                                    <CalibrationTable
-                                        calibrations={_calibrations ?? []}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster kalibreringer</div>
-                            )}
+                            <CardContent>
+                                {_calibrations !== undefined &&
+                                instrument !== undefined ? (
+                                    <TableContainer
+                                        columns={calibrationColumns({
+                                            openCertificate,
+                                            openCertificateId,
+                                            instrumentLastCalibration:
+                                                instrument?.sisteKalibrert
+                                        })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="calibrations">
+                                        <CalibrationTable
+                                            calibrations={_calibrations ?? []}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster kalibreringer</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
 

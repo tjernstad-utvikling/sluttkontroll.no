@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import { getCheckpoints, newCheckpoints } from '../api/checkpointApi';
 
@@ -154,22 +154,24 @@ const CheckpointView = () => {
                                     ]}
                                 />
                             }>
-                            {checkpoints !== undefined ? (
-                                <TableContainer
-                                    columns={columns({
-                                        onEditCheckpoint: (checkpointId) =>
-                                            setEditId(checkpointId),
-                                        editCheckpoint: true
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="checkpoints">
-                                    <CheckpointTable
-                                        checkpoints={checkpoints}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster sjekkpunkter</div>
-                            )}
+                            <CardContent>
+                                {checkpoints !== undefined ? (
+                                    <TableContainer
+                                        columns={columns({
+                                            onEditCheckpoint: (checkpointId) =>
+                                                setEditId(checkpointId),
+                                            editCheckpoint: true
+                                        })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="checkpoints">
+                                        <CheckpointTable
+                                            checkpoints={checkpoints}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster sjekkpunkter</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

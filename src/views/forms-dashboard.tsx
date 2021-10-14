@@ -1,4 +1,5 @@
-import { Card } from '../components/card';
+import { Card, CardContent } from '../components/card';
+
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -13,7 +14,9 @@ const FormsView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Utfylte skjemaer">
-                            <div />
+                            <CardContent>
+                                <div />
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

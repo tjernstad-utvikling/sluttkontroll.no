@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     MeasurementTable,
     columns,
@@ -108,28 +108,30 @@ const MeasurementsView = () => {
                                     />
                                 )
                             }>
-                            {skjemaer !== undefined ? (
-                                <TableContainer
-                                    columns={columns(
-                                        kontroller ?? [],
-                                        skjemaer ?? [],
-                                        deleteMeasurement,
-                                        (id) => {
-                                            setEditId(id);
-                                            setMeasurementModalOpen(true);
-                                        }
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="measurements">
-                                    <MeasurementTable
-                                        skjemaer={skjemaer}
-                                        kontroller={kontroller ?? []}
-                                        measurements={_measurements ?? []}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster målinger</div>
-                            )}
+                            <CardContent>
+                                {skjemaer !== undefined ? (
+                                    <TableContainer
+                                        columns={columns(
+                                            kontroller ?? [],
+                                            skjemaer ?? [],
+                                            deleteMeasurement,
+                                            (id) => {
+                                                setEditId(id);
+                                                setMeasurementModalOpen(true);
+                                            }
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="measurements">
+                                        <MeasurementTable
+                                            skjemaer={skjemaer}
+                                            kontroller={kontroller ?? []}
+                                            measurements={_measurements ?? []}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster målinger</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

@@ -1,4 +1,5 @@
-import { Card } from '../components/card';
+import { Card, CardContent } from '../components/card';
+
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { Roles } from '../contracts/userApi';
@@ -35,14 +36,16 @@ const ProfileView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Profil">
-                            {user !== undefined && (
-                                <div style={{ padding: 15 }}>
-                                    <UserProfileSchema
-                                        onSubmit={handleUpdateUser}
-                                        user={user}
-                                    />
-                                </div>
-                            )}
+                            <CardContent>
+                                {user !== undefined && (
+                                    <div style={{ padding: 15 }}>
+                                        <UserProfileSchema
+                                            onSubmit={handleUpdateUser}
+                                            user={user}
+                                        />
+                                    </div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

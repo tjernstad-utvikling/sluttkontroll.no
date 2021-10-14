@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     KontrollTable,
     defaultColumns,
@@ -89,29 +89,31 @@ const KontrollerView = () => {
                                     ]}
                                 />
                             }>
-                            {kontroller !== undefined ? (
-                                <TableContainer
-                                    columns={kontrollColumns(
-                                        users ?? [],
-                                        klienter ?? [],
-                                        avvik ?? [],
-                                        measurements ?? [],
-                                        editKontroll,
-                                        toggleStatusKontroll
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        klienter={klienter ?? []}
-                                        avvik={avvik ?? []}
-                                        users={users ?? []}
-                                        measurements={measurements ?? []}
-                                        kontroller={_kontroller}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster kontroller</div>
-                            )}
+                            <CardContent>
+                                {kontroller !== undefined ? (
+                                    <TableContainer
+                                        columns={kontrollColumns(
+                                            users ?? [],
+                                            klienter ?? [],
+                                            avvik ?? [],
+                                            measurements ?? [],
+                                            editKontroll,
+                                            toggleStatusKontroll
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="kontroller">
+                                        <KontrollTable
+                                            klienter={klienter ?? []}
+                                            avvik={avvik ?? []}
+                                            users={users ?? []}
+                                            measurements={measurements ?? []}
+                                            kontroller={_kontroller}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster kontroller</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

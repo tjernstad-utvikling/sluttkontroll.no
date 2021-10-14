@@ -1,7 +1,11 @@
+import { Card, CardContent } from '../components/card';
 import { Klient, Location } from '../contracts/kontrollApi';
+import React, { useState } from 'react';
+import StepConnector, {
+    stepConnectorClasses
+} from '@mui/material/StepConnector';
 
 import AddLocationIcon from '@mui/icons-material/AddLocation';
-import { Card } from '../components/card';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { KlientSchema } from '../schema/klient';
@@ -9,21 +13,16 @@ import { KontrollSchema } from '../schema/kontroll';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import { LocationSchema } from '../schema/location';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
-import React from 'react';
 import Step from '@mui/material/Step';
-import StepConnector from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { User } from '../contracts/userApi';
-import clsx from 'clsx';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
 import { useClient } from '../data/klient';
 import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useState } from 'react';
-import withStyles from '@mui/styles/withStyles';
 
 const KontrollNewView = () => {
     const { classes } = usePageStyles();
@@ -119,32 +118,40 @@ const KontrollNewView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Ny kontroll">
-                            <Stepper
-                                alternativeLabel
-                                activeStep={activeStep}
-                                connector={<ColorlibConnector />}>
-                                <Step>
-                                    <StepLabel
-                                        StepIconComponent={ColorlibStepIcon}>
-                                        Klient
-                                        <br /> {selectedKlient?.name}
-                                    </StepLabel>
-                                </Step>
-                                <Step>
-                                    <StepLabel
-                                        StepIconComponent={ColorlibStepIcon}>
-                                        Lokasjon
-                                        <br /> {selectedLocation?.name}
-                                    </StepLabel>
-                                </Step>
-                                <Step>
-                                    <StepLabel
-                                        StepIconComponent={ColorlibStepIcon}>
-                                        Kontroll
-                                    </StepLabel>
-                                </Step>
-                            </Stepper>
-                            {formSwitch()}
+                            <CardContent>
+                                <Stepper
+                                    alternativeLabel
+                                    activeStep={activeStep}
+                                    connector={<ColorlibConnector />}>
+                                    <Step>
+                                        <StepLabel
+                                            StepIconComponent={
+                                                ColorlibStepIcon
+                                            }>
+                                            Klient
+                                            <br /> {selectedKlient?.name}
+                                        </StepLabel>
+                                    </Step>
+                                    <Step>
+                                        <StepLabel
+                                            StepIconComponent={
+                                                ColorlibStepIcon
+                                            }>
+                                            Lokasjon
+                                            <br /> {selectedLocation?.name}
+                                        </StepLabel>
+                                    </Step>
+                                    <Step>
+                                        <StepLabel
+                                            StepIconComponent={
+                                                ColorlibStepIcon
+                                            }>
+                                            Kontroll
+                                        </StepLabel>
+                                    </Step>
+                                </Stepper>
+                                {formSwitch()}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>
@@ -155,56 +162,57 @@ const KontrollNewView = () => {
 
 export default KontrollNewView;
 
-const ColorlibConnector = withStyles({
-    alternativeLabel: {
+const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
+    [`&.${stepConnectorClasses.alternativeLabel}`]: {
         top: 22
     },
-    active: {
-        '& $line': {
+    [`&.${stepConnectorClasses.active}`]: {
+        [`& .${stepConnectorClasses.line}`]: {
             backgroundImage:
                 'linear-gradient(97deg, rgba(26,77,39,1) 39%, rgba(51,153,77,1) 100%);'
         }
     },
-    completed: {
-        '& $line': {
+    [`&.${stepConnectorClasses.completed}`]: {
+        [`& .${stepConnectorClasses.line}`]: {
             backgroundImage:
-                'linear-gradient(97deg, rgba(26,77,39,1) 39%, rgba(51,153,77,1) 100%)'
+                'linear-gradient(97deg, rgba(26,77,39,1) 39%, rgba(51,153,77,1) 100%);'
         }
     },
-    line: {
+    [`& .${stepConnectorClasses.line}`]: {
         height: 3,
         border: 0,
-        backgroundColor: '#eaeaf0',
+        backgroundColor:
+            theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
         borderRadius: 1
     }
-})(StepConnector);
+}));
 
-const useColorlibStepIconStyles = makeStyles({
-    root: {
-        backgroundColor: '#ccc',
-        zIndex: 1,
-        color: '#fff',
-        width: 50,
-        height: 50,
-        display: 'flex',
-        borderRadius: '50%',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    active: {
+const ColorlibStepIconRoot = styled('div')<{
+    ownerState: { completed?: boolean; active?: boolean };
+}>(({ theme, ownerState }) => ({
+    backgroundColor:
+        theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ccc',
+    zIndex: 1,
+    color: '#fff',
+    width: 50,
+    height: 50,
+    display: 'flex',
+    borderRadius: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...(ownerState.active && {
         backgroundImage:
             'linear-gradient(97deg, rgba(26,77,39,1) 39%, rgba(51,153,77,1) 100%);',
         boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)'
-    },
-    completed: {
+    }),
+    ...(ownerState.completed && {
         backgroundImage:
             'linear-gradient(97deg, rgba(26,77,39,1) 39%, rgba(51,153,77,1) 100%);'
-    }
-});
+    })
+}));
 
 function ColorlibStepIcon(props: StepIconProps) {
-    const classes = useColorlibStepIconStyles();
-    const { active, completed } = props;
+    const { active, completed, className } = props;
 
     const icons: { [index: string]: React.ReactElement } = {
         1: <LocationCityIcon />,
@@ -213,12 +221,10 @@ function ColorlibStepIcon(props: StepIconProps) {
     };
 
     return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: active,
-                [classes.completed]: completed
-            })}>
+        <ColorlibStepIconRoot
+            ownerState={{ completed, active }}
+            className={className}>
             {icons[String(props.icon)]}
-        </div>
+        </ColorlibStepIconRoot>
     );
 }

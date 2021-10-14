@@ -1,8 +1,8 @@
+import { Card, CardContent } from '../components/card';
 import { Roles, User } from '../contracts/userApi';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Card } from '../components/card';
 import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
@@ -50,14 +50,14 @@ const NewUserView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Rediger bruker">
-                            <div style={{ padding: 15 }}>
+                            <CardContent>
                                 {user !== undefined && (
                                     <UserSchema
                                         onSubmit={handleEditUser}
                                         user={user}
                                     />
                                 )}
-                            </div>
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

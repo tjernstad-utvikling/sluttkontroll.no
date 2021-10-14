@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -25,7 +25,9 @@ const FormsTemplatesView = () => {
                                     ]}
                                 />
                             }>
-                            <div style={{ padding: 15 }}></div>
+                            <CardContent>
+                                <div />
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

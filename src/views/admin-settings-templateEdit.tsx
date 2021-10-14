@@ -1,9 +1,9 @@
+import { Card, CardContent } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { AdminTemplateEditViewParams } from '../contracts/navigation';
-import { Card } from '../components/card';
 import { Checkpoint } from '../contracts/checkpointApi';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -77,34 +77,36 @@ const SkjemaTemplateNewView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Rediger sjekklistemal">
-                            {template !== undefined && (
-                                <>
-                                    <SkjemaTemplateSchema
-                                        onSubmit={onSaveTemplate}
-                                        checkpointCount={selected.length}
-                                        template={template}
-                                    />
+                            <CardContent>
+                                {template !== undefined && (
+                                    <>
+                                        <SkjemaTemplateSchema
+                                            onSubmit={onSaveTemplate}
+                                            checkpointCount={selected.length}
+                                            template={template}
+                                        />
 
-                                    {checkpoints !== undefined ? (
-                                        <TableContainer
-                                            columns={columns({})}
-                                            defaultColumns={defaultColumns}
-                                            tableId="checkpoints">
-                                            <CheckpointTable
-                                                templateList={
-                                                    template.skjemaTemplateCheckpoints
-                                                }
-                                                checkpoints={checkpoints}
-                                                onSelected={(checkpoints) =>
-                                                    setSelected(checkpoints)
-                                                }
-                                            />
-                                        </TableContainer>
-                                    ) : (
-                                        <div>Laster sjekkpunkter</div>
-                                    )}
-                                </>
-                            )}
+                                        {checkpoints !== undefined ? (
+                                            <TableContainer
+                                                columns={columns({})}
+                                                defaultColumns={defaultColumns}
+                                                tableId="checkpoints">
+                                                <CheckpointTable
+                                                    templateList={
+                                                        template.skjemaTemplateCheckpoints
+                                                    }
+                                                    checkpoints={checkpoints}
+                                                    onSelected={(checkpoints) =>
+                                                        setSelected(checkpoints)
+                                                    }
+                                                />
+                                            </TableContainer>
+                                        ) : (
+                                            <div>Laster sjekkpunkter</div>
+                                        )}
+                                    </>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

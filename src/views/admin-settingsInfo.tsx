@@ -1,7 +1,7 @@
+import { Card, CardContent } from '../components/card';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import { getInfoText, setInfoText as setInfoTextApi } from '../api/settingsApi';
 
-import { Card } from '../components/card';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
@@ -52,7 +52,7 @@ const InfoTextView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Sluttkontrollrapport informasjonstekst">
-                            <div style={{ padding: 15 }}>
+                            <CardContent>
                                 <MDEditor
                                     value={_infoText}
                                     onChange={setInfoText}
@@ -80,7 +80,7 @@ const InfoTextView = () => {
                                     color="primary">
                                     Lagre
                                 </LoadingButton>
-                            </div>
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

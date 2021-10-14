@@ -8,6 +8,7 @@ import {
     TableHead,
     TableRow
 } from '@mui/material';
+import { Card, CardContent } from '../components/card';
 import {
     DragDropContext,
     Draggable,
@@ -21,7 +22,6 @@ import StepConnector, {
 } from '@mui/material/StepConnector';
 
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
-import { Card } from '../components/card';
 import Container from '@mui/material/Container';
 import { FormsTemplateGroupSchema } from '../schema/formsTemplateGroup';
 import { FormsTemplateSchema } from '../schema/formsTemplate';
@@ -97,34 +97,42 @@ const FormsTemplateNewView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Ny mal">
-                            <Stepper
-                                alternativeLabel
-                                activeStep={activeStep}
-                                connector={<ColorlibConnector />}>
-                                <Step>
-                                    <StepLabel
-                                        StepIconComponent={ColorlibStepIcon}>
-                                        Mal
-                                        <br />
-                                        {template?.title}
-                                    </StepLabel>
-                                </Step>
-                                <Step>
-                                    <StepLabel
-                                        StepIconComponent={ColorlibStepIcon}>
-                                        Grupper
-                                        <br />
-                                        {group?.title}
-                                    </StepLabel>
-                                </Step>
-                                <Step>
-                                    <StepLabel
-                                        StepIconComponent={ColorlibStepIcon}>
-                                        Felter
-                                    </StepLabel>
-                                </Step>
-                            </Stepper>
-                            {formSwitch()}
+                            <CardContent>
+                                <Stepper
+                                    alternativeLabel
+                                    activeStep={activeStep}
+                                    connector={<ColorlibConnector />}>
+                                    <Step>
+                                        <StepLabel
+                                            StepIconComponent={
+                                                ColorlibStepIcon
+                                            }>
+                                            Mal
+                                            <br />
+                                            {template?.title}
+                                        </StepLabel>
+                                    </Step>
+                                    <Step>
+                                        <StepLabel
+                                            StepIconComponent={
+                                                ColorlibStepIcon
+                                            }>
+                                            Grupper
+                                            <br />
+                                            {group?.title}
+                                        </StepLabel>
+                                    </Step>
+                                    <Step>
+                                        <StepLabel
+                                            StepIconComponent={
+                                                ColorlibStepIcon
+                                            }>
+                                            Felter
+                                        </StepLabel>
+                                    </Step>
+                                </Stepper>
+                                {formSwitch()}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

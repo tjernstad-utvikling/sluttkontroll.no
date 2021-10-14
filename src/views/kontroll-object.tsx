@@ -152,29 +152,31 @@ const KontrollObjektView = () => {
                                     ]}
                                 />
                             }>
-                            {kontroller !== undefined ? (
-                                <TableContainer
-                                    columns={kontrollColumns(
-                                        users ?? [],
-                                        klienter ?? [],
-                                        avvik ?? [],
-                                        measurements ?? [],
-                                        editKontroll,
-                                        toggleStatusKontroll
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        users={users ?? []}
-                                        avvik={avvik ?? []}
-                                        measurements={measurements ?? []}
-                                        klienter={klienter ?? []}
-                                        kontroller={_kontroller}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster kontroller</div>
-                            )}
+                            <CardContent>
+                                {kontroller !== undefined ? (
+                                    <TableContainer
+                                        columns={kontrollColumns(
+                                            users ?? [],
+                                            klienter ?? [],
+                                            avvik ?? [],
+                                            measurements ?? [],
+                                            editKontroll,
+                                            toggleStatusKontroll
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="kontroller">
+                                        <KontrollTable
+                                            users={users ?? []}
+                                            avvik={avvik ?? []}
+                                            measurements={measurements ?? []}
+                                            klienter={klienter ?? []}
+                                            kontroller={_kontroller}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster kontroller</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

@@ -1,8 +1,8 @@
+import { Card, CardContent } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Card } from '../components/card';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
 import Container from '@mui/material/Container';
@@ -79,35 +79,37 @@ const SjekklisteEditView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Endre sjekkpunkter">
-                            <form onSubmit={onSubmitChecklist}>
-                                <LoadingButton
-                                    isLoading={isSubmitting}
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary">
-                                    Lagre{' '}
-                                    {selected !== undefined
-                                        ? `(Sjekkpunkter: ${selected.length} ) `
-                                        : ''}
-                                </LoadingButton>
-                                {checkpoints !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({})}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checkpoints">
-                                        <CheckpointTable
-                                            checklists={_checklists}
-                                            checkpoints={checkpoints}
-                                            onSelected={(checkpoints) =>
-                                                setSelected(checkpoints)
-                                            }
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster sjekkpunkter</div>
-                                )}
-                            </form>
+                            <CardContent>
+                                <form onSubmit={onSubmitChecklist}>
+                                    <LoadingButton
+                                        isLoading={isSubmitting}
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary">
+                                        Lagre{' '}
+                                        {selected !== undefined
+                                            ? `(Sjekkpunkter: ${selected.length} ) `
+                                            : ''}
+                                    </LoadingButton>
+                                    {checkpoints !== undefined ? (
+                                        <TableContainer
+                                            columns={columns({})}
+                                            defaultColumns={defaultColumns}
+                                            tableId="checkpoints">
+                                            <CheckpointTable
+                                                checklists={_checklists}
+                                                checkpoints={checkpoints}
+                                                onSelected={(checkpoints) =>
+                                                    setSelected(checkpoints)
+                                                }
+                                            />
+                                        </TableContainer>
+                                    ) : (
+                                        <div>Laster sjekkpunkter</div>
+                                    )}
+                                </form>
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

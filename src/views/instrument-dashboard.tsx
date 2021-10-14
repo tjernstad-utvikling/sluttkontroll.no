@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     InstrumentTable,
     defaultColumns,
@@ -58,28 +58,31 @@ const InstrumentsView = () => {
                                     ]}
                                 />
                             }>
-                            {instruments !== undefined ? (
-                                <TableContainer
-                                    columns={instrumentColumns({
-                                        edit: (id: number) => {
-                                            setEditId(id);
-                                            setIsModalOpen(true);
-                                        },
-                                        regCalibration: (id: number) => {
-                                            setCalibrationModalId(id);
-                                        },
-                                        currentUser: user,
-                                        changeDisponent: handleInstrumentBooking
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="instruments">
-                                    <InstrumentTable
-                                        instruments={instruments ?? []}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster instrumenter</div>
-                            )}
+                            <CardContent>
+                                {instruments !== undefined ? (
+                                    <TableContainer
+                                        columns={instrumentColumns({
+                                            edit: (id: number) => {
+                                                setEditId(id);
+                                                setIsModalOpen(true);
+                                            },
+                                            regCalibration: (id: number) => {
+                                                setCalibrationModalId(id);
+                                            },
+                                            currentUser: user,
+                                            changeDisponent:
+                                                handleInstrumentBooking
+                                        })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="instruments">
+                                        <InstrumentTable
+                                            instruments={instruments ?? []}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster instrumenter</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

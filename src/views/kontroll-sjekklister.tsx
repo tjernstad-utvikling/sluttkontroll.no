@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     SjekklisteTable,
     SjekklisteValueGetter,
@@ -79,23 +79,25 @@ const SjekklisterView = () => {
                                     ]}
                                 />
                             }>
-                            {checklists !== undefined ? (
-                                <TableContainer
-                                    columns={columns(
-                                        avvik ?? [],
-                                        url,
-                                        toggleAktuellChecklist
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="checklists">
-                                    <SjekklisteTable
-                                        avvik={avvik ?? []}
-                                        checklists={_checklists}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster skjemaer</div>
-                            )}
+                            <CardContent>
+                                {checklists !== undefined ? (
+                                    <TableContainer
+                                        columns={columns(
+                                            avvik ?? [],
+                                            url,
+                                            toggleAktuellChecklist
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="checklists">
+                                        <SjekklisteTable
+                                            avvik={avvik ?? []}
+                                            checklists={_checklists}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster skjemaer</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

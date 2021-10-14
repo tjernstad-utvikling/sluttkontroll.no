@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -129,75 +129,83 @@ const AvvikView = () => {
                                     ]}
                                 />
                             }>
-                            {_avvik !== undefined &&
-                            kontroller !== undefined &&
-                            skjemaer !== undefined ? (
-                                <Grid container>
-                                    <Grid
-                                        item
-                                        className={clsx(
-                                            classes2.topDecoration,
-                                            {
-                                                [classes2.topDecorationClosed]:
-                                                    _avvik.status === 'lukket'
-                                            }
-                                        )}
-                                        xs={12}></Grid>
-                                    <Grid item xs={12} sm={5}>
-                                        <dl className={classes2.list}>
-                                            <dt>Oppdaget</dt>
-                                            <dd>
-                                                {format(
-                                                    new Date(
-                                                        _avvik.registrertDato
-                                                    ),
-                                                    'dd.MM.yyyy'
+                            <CardContent>
+                                {_avvik !== undefined &&
+                                kontroller !== undefined &&
+                                skjemaer !== undefined ? (
+                                    <Grid container>
+                                        <Grid
+                                            item
+                                            className={clsx(
+                                                classes2.topDecoration,
+                                                {
+                                                    [classes2.topDecorationClosed]:
+                                                        _avvik.status ===
+                                                        'lukket'
+                                                }
+                                            )}
+                                            xs={12}></Grid>
+                                        <Grid item xs={12} sm={5}>
+                                            <dl className={classes2.list}>
+                                                <dt>Oppdaget</dt>
+                                                <dd>
+                                                    {format(
+                                                        new Date(
+                                                            _avvik.registrertDato
+                                                        ),
+                                                        'dd.MM.yyyy'
+                                                    )}
+                                                </dd>
+
+                                                <dt>Kontroll</dt>
+                                                <dd>
+                                                    {AvvikValueGetter(
+                                                        _avvik
+                                                    ).kontroll(kontroller)}
+                                                </dd>
+
+                                                <dt>Areal</dt>
+                                                <dd>
+                                                    {AvvikValueGetter(
+                                                        _avvik
+                                                    ).area(skjemaer)}
+                                                </dd>
+
+                                                <dt>Området</dt>
+                                                <dd>
+                                                    {AvvikValueGetter(
+                                                        _avvik
+                                                    ).omrade(skjemaer)}
+                                                </dd>
+                                                <Divider />
+                                                <Typography
+                                                    style={{ padding: 5 }}>
+                                                    {_avvik.beskrivelse}
+                                                </Typography>
+                                                <Divider />
+                                            </dl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={7}>
+                                            <div
+                                                className={
+                                                    classes2.imageContainer
+                                                }>
+                                                {_avvik.avvikBilder.map(
+                                                    (ab) => (
+                                                        <AvvikImageCard
+                                                            key={ab.id}
+                                                            avvikBilde={ab}
+                                                            avvik={_avvik}
+                                                        />
+                                                    )
                                                 )}
-                                            </dd>
-
-                                            <dt>Kontroll</dt>
-                                            <dd>
-                                                {AvvikValueGetter(
-                                                    _avvik
-                                                ).kontroll(kontroller)}
-                                            </dd>
-
-                                            <dt>Areal</dt>
-                                            <dd>
-                                                {AvvikValueGetter(_avvik).area(
-                                                    skjemaer
-                                                )}
-                                            </dd>
-
-                                            <dt>Området</dt>
-                                            <dd>
-                                                {AvvikValueGetter(
-                                                    _avvik
-                                                ).omrade(skjemaer)}
-                                            </dd>
-                                            <Divider />
-                                            <Typography style={{ padding: 5 }}>
-                                                {_avvik.beskrivelse}
-                                            </Typography>
-                                            <Divider />
-                                        </dl>
+                                            </div>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={12} sm={7}>
-                                        <div
-                                            className={classes2.imageContainer}>
-                                            {_avvik.avvikBilder.map((ab) => (
-                                                <AvvikImageCard
-                                                    key={ab.id}
-                                                    avvikBilde={ab}
-                                                    avvik={_avvik}
-                                                />
-                                            ))}
-                                        </div>
-                                    </Grid>
-                                </Grid>
-                            ) : (
-                                <div>Laster avvik</div>
-                            )}
+                                ) : (
+                                    <div>Laster avvik</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

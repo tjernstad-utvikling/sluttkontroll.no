@@ -1,8 +1,8 @@
+import { Card, CardContent } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Card } from '../components/card';
 import { Checkpoint } from '../contracts/checkpointApi';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -75,50 +75,54 @@ const SkjemaNewView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Nytt skjema">
-                            <SkjemaSchema
-                                onSubmit={onSaveSkjema}
-                                checkpointCount={selected.length}
-                            />
+                            <CardContent>
+                                <SkjemaSchema
+                                    onSubmit={onSaveSkjema}
+                                    checkpointCount={selected.length}
+                                />
 
-                            <SelectTemplate
-                                onSelect={(template) => {
-                                    setSelectFromTemplate(false);
-                                    setTemplate(template);
-                                    setSelected(
-                                        template.skjemaTemplateCheckpoints.map(
-                                            (stc) => stc.checkpoint
-                                        )
-                                    );
-                                }}
-                                onOpen={() => {
-                                    setSelectFromTemplate(!selectFromTemplate);
-                                }}
-                                isOpen={selectFromTemplate}
-                            />
+                                <SelectTemplate
+                                    onSelect={(template) => {
+                                        setSelectFromTemplate(false);
+                                        setTemplate(template);
+                                        setSelected(
+                                            template.skjemaTemplateCheckpoints.map(
+                                                (stc) => stc.checkpoint
+                                            )
+                                        );
+                                    }}
+                                    onOpen={() => {
+                                        setSelectFromTemplate(
+                                            !selectFromTemplate
+                                        );
+                                    }}
+                                    isOpen={selectFromTemplate}
+                                />
 
-                            {!selectFromTemplate ? (
-                                checkpoints !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({})}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checkpoints">
-                                        <CheckpointTable
-                                            templateList={
-                                                template?.skjemaTemplateCheckpoints ||
-                                                []
-                                            }
-                                            checkpoints={checkpoints}
-                                            onSelected={(checkpoints) =>
-                                                setSelected(checkpoints)
-                                            }
-                                        />
-                                    </TableContainer>
+                                {!selectFromTemplate ? (
+                                    checkpoints !== undefined ? (
+                                        <TableContainer
+                                            columns={columns({})}
+                                            defaultColumns={defaultColumns}
+                                            tableId="checkpoints">
+                                            <CheckpointTable
+                                                templateList={
+                                                    template?.skjemaTemplateCheckpoints ||
+                                                    []
+                                                }
+                                                checkpoints={checkpoints}
+                                                onSelected={(checkpoints) =>
+                                                    setSelected(checkpoints)
+                                                }
+                                            />
+                                        </TableContainer>
+                                    ) : (
+                                        <div>Laster sjekkpunkter</div>
+                                    )
                                 ) : (
-                                    <div>Laster sjekkpunkter</div>
-                                )
-                            ) : (
-                                <div />
-                            )}
+                                    <div />
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

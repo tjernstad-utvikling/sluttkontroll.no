@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import { UserTable, columns, defaultColumns } from '../tables/user';
 
 import Container from '@mui/material/Container';
@@ -41,16 +41,18 @@ const UsersView = () => {
                                     ]}
                                 />
                             }>
-                            {users !== undefined && user !== undefined ? (
-                                <TableContainer
-                                    columns={columns({ currentUser: user })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="users">
-                                    <UserTable users={users ?? []} />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster brukere</div>
-                            )}
+                            <CardContent>
+                                {users !== undefined && user !== undefined ? (
+                                    <TableContainer
+                                        columns={columns({ currentUser: user })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="users">
+                                        <UserTable users={users ?? []} />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster brukere</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

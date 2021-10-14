@@ -4,6 +4,7 @@ import {
     ReportSwitch,
     ReportViewer
 } from '../components/report';
+import { Card, CardContent } from '../components/card';
 import {
     DocumentContainer,
     ReportModules
@@ -15,7 +16,6 @@ import {
     ReportProperties
 } from '../document/customizeData/kontrollReportData';
 
-import { Card } from '../components/card';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
@@ -38,79 +38,81 @@ const KontrollReportView = () => {
                         <Grid container spacing={0}>
                             <Grid item xs={12} sm={8}>
                                 <Card title="Kontroll rapport">
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between'
-                                        }}>
-                                        <ReportSwitch
-                                            id={ReportModules.frontPage}
-                                            label="Forside"
-                                        />
+                                    <CardContent>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}>
+                                            <ReportSwitch
+                                                id={ReportModules.frontPage}
+                                                label="Forside"
+                                            />
 
-                                        <FrontPageAdjusting />
-                                    </div>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between'
-                                        }}>
-                                        <ReportSwitch
-                                            id={ReportModules.infoPage}
-                                            label="Infoside"
-                                        />
-                                        <ReportProperties />
-                                    </div>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between'
-                                        }}>
-                                        <ReportSwitch
-                                            id={ReportModules.controlModule}
-                                            label="Kontrolldokumentasjon"
-                                        />
-
-                                        <KontrollDocAdjusting
-                                            kontrollId={Number(kontrollId)}
-                                        />
-                                    </div>
-                                    <Block
-                                        dependency={
-                                            ReportModules.controlModule
-                                        }>
-                                        <div style={{ paddingLeft: 30 }}>
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    justifyContent:
-                                                        'space-between'
-                                                }}>
-                                                <ReportSwitch
-                                                    id={
-                                                        ReportModules.skjemaPage
-                                                    }
-                                                    label="KontrollSkjema"
-                                                />
-                                                {/*
-                                    <FrontPageAdjusting /> */}
-                                            </div>
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    justifyContent:
-                                                        'space-between'
-                                                }}>
-                                                <ReportSwitch
-                                                    id={
-                                                        ReportModules.measurementPage
-                                                    }
-                                                    label="Måleprotokoll"
-                                                />
-                                                <MeasurementAdjusting />
-                                            </div>
+                                            <FrontPageAdjusting />
                                         </div>
-                                    </Block>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}>
+                                            <ReportSwitch
+                                                id={ReportModules.infoPage}
+                                                label="Infoside"
+                                            />
+                                            <ReportProperties />
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}>
+                                            <ReportSwitch
+                                                id={ReportModules.controlModule}
+                                                label="Kontrolldokumentasjon"
+                                            />
+
+                                            <KontrollDocAdjusting
+                                                kontrollId={Number(kontrollId)}
+                                            />
+                                        </div>
+                                        <Block
+                                            dependency={
+                                                ReportModules.controlModule
+                                            }>
+                                            <div style={{ paddingLeft: 30 }}>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent:
+                                                            'space-between'
+                                                    }}>
+                                                    <ReportSwitch
+                                                        id={
+                                                            ReportModules.skjemaPage
+                                                        }
+                                                        label="KontrollSkjema"
+                                                    />
+                                                    {/*
+                                    <FrontPageAdjusting /> */}
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent:
+                                                            'space-between'
+                                                    }}>
+                                                    <ReportSwitch
+                                                        id={
+                                                            ReportModules.measurementPage
+                                                        }
+                                                        label="Måleprotokoll"
+                                                    />
+                                                    <MeasurementAdjusting />
+                                                </div>
+                                            </div>
+                                        </Block>
+                                    </CardContent>
                                 </Card>
                             </Grid>
                             <Grid item xs={12} sm={4}>

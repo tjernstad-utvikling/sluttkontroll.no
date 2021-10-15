@@ -1,6 +1,6 @@
 import { createMakeAndWithStyles } from 'tss-react';
 import { useTheme } from '@mui/material/styles';
 
-export const { makeStyles, withStyles } = createMakeAndWithStyles({
+export const { makeStyles, useStyles } = createMakeAndWithStyles({
     useTheme
 });

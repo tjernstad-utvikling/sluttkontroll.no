@@ -11,16 +11,14 @@ import {
 import { Card, CardContent } from '../components/card';
 import { ColorlibConnector, ColorlibStepIconRoot } from '../components/stepper';
 import {
-    DragDropContext,
-    Draggable,
-    DropResult,
-    Droppable,
-    ResponderProvided
-} from 'react-beautiful-dnd';
-import { FormsGroup, FormsTemplate } from '../contracts/sjaApi';
+    DraggableComponent,
+    DroppableComponent
+} from '../components/droppable';
 
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import Container from '@mui/material/Container';
+import { DropResult } from 'react-beautiful-dnd';
 import { FormsTemplateGroupSchema } from '../schema/formsTemplateGroup';
 import { FormsTemplateSchema } from '../schema/formsTemplate';
 import Grid from '@mui/material/Grid';
@@ -31,17 +29,20 @@ import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import TitleIcon from '@mui/icons-material/Title';
+import { useCreateForm } from '../components/forms';
 import { useForms } from '../data/forms';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useState } from 'react';
 
 const FormsTemplateNewView = () => {
     const { classes } = usePageStyles();
 
-    const [template, setTemplate] = useState<FormsTemplate>();
-    const [group, setGroup] = useState<FormsGroup>();
-
-    const [activeStep, setActiveStep] = useState(0);
+    const {
+        activeStep,
+        setActiveStep,
+        setCreatedTemplate,
+        createdTemplate,
+        selectedGroup
+    } = useCreateForm();
 
     const { newTemplate, newTemplateGroup } = useForms();
 
@@ -53,15 +54,15 @@ const FormsTemplateNewView = () => {
         const template = await newTemplate(title, subTitle, description);
 
         if (template) {
-            setTemplate(template);
+            setCreatedTemplate(template);
             setActiveStep(1);
         }
         return false;
     };
 
     const onSaveGroup = async (title: string, description: string) => {
-        if (template !== undefined) {
-            if (await newTemplateGroup(title, description, template.id))
+        if (createdTemplate !== undefined) {
+            if (await newTemplateGroup(title, description, createdTemplate.id))
                 return true;
         }
         return false;
@@ -75,11 +76,11 @@ const FormsTemplateNewView = () => {
                 return (
                     <>
                         <FormsTemplateGroupSchema
-                            group={group}
+                            group={selectedGroup}
                             onSubmit={onSaveGroup}
                         />
 
-                        <GroupTable setGroup={setGroup} template={template} />
+                        <GroupTable />
                     </>
                 );
             case 2:
@@ -106,7 +107,7 @@ const FormsTemplateNewView = () => {
                                             }>
                                             Mal
                                             <br />
-                                            {template?.title}
+                                            {createdTemplate?.title}
                                         </StepLabel>
                                     </Step>
                                     <Step>
@@ -116,7 +117,7 @@ const FormsTemplateNewView = () => {
                                             }>
                                             Grupper
                                             <br />
-                                            {group?.title}
+                                            {selectedGroup?.title}
                                         </StepLabel>
                                     </Step>
                                     <Step>
@@ -140,16 +141,13 @@ const FormsTemplateNewView = () => {
 
 export default FormsTemplateNewView;
 
-interface GroupTableProps {
-    template: FormsTemplate | undefined;
-    setGroup: React.Dispatch<React.SetStateAction<FormsGroup | undefined>>;
-}
-
-const GroupTable = ({ template, setGroup }: GroupTableProps) => {
+const GroupTable = () => {
     const {
         state: { groups },
         sortGroup
     } = useForms();
+
+    const { createdTemplate, setSelectedGroup } = useCreateForm();
 
     function onDragEnd(result: DropResult) {
         // dropped outside the list
@@ -157,7 +155,7 @@ const GroupTable = ({ template, setGroup }: GroupTableProps) => {
             return;
         }
         const selectedGroups = groups?.filter(
-            (g) => g.template.id === template?.id
+            (g) => g.template.id === createdTemplate?.id
         );
         if (selectedGroups) {
             sortGroup(
@@ -184,7 +182,7 @@ const GroupTable = ({ template, setGroup }: GroupTableProps) => {
                 </TableHead>
                 <TableBody component={DroppableComponent(onDragEnd)}>
                     {groups
-                        ?.filter((g) => g.template.id === template?.id)
+                        ?.filter((g) => g.template.id === createdTemplate?.id)
                         .sort((a, b) => a.sortingIndex - b.sortingIndex)
                         .map((group, index) => (
                             <TableRow
@@ -193,18 +191,24 @@ const GroupTable = ({ template, setGroup }: GroupTableProps) => {
                                 <TableCell scope="row">{group.id}</TableCell>
                                 <TableCell>{group.title}</TableCell>
                                 <TableCell align="right">
-                                    <Button
-                                        onClick={() => setGroup(group)}
-                                        variant="contained"
-                                        color="primary">
-                                        Rediger
-                                    </Button>
-                                    <Button
-                                        onClick={() => setGroup(group)}
-                                        variant="contained"
-                                        color="primary">
-                                        Velg
-                                    </Button>
+                                    <ButtonGroup>
+                                        <Button
+                                            onClick={() =>
+                                                setSelectedGroup(group)
+                                            }
+                                            variant="contained"
+                                            color="primary">
+                                            Rediger
+                                        </Button>
+                                        <Button
+                                            onClick={() =>
+                                                setSelectedGroup(group)
+                                            }
+                                            variant="contained"
+                                            color="primary">
+                                            Velg
+                                        </Button>
+                                    </ButtonGroup>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -213,44 +217,6 @@ const GroupTable = ({ template, setGroup }: GroupTableProps) => {
         </TableContainer>
     );
 };
-
-const DraggableComponent =
-    (id: number, index: number) => (props: { children: React.ReactNode }) => {
-        return (
-            <Draggable draggableId={String(id)} index={index}>
-                {(provided, snapshot) => (
-                    <TableRow
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        {...props}>
-                        {props.children}
-                    </TableRow>
-                )}
-            </Draggable>
-        );
-    };
-const DroppableComponent =
-    (onDragEnd: (result: DropResult, provided: ResponderProvided) => void) =>
-    (props: { children: React.ReactNode }) => {
-        return (
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId={'1'} direction="vertical">
-                    {(provided) => {
-                        return (
-                            <TableBody
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                {...props}>
-                                {props.children}
-                                {provided.placeholder}
-                            </TableBody>
-                        );
-                    }}
-                </Droppable>
-            </DragDropContext>
-        );
-    };
 
 function ColorlibStepIcon(props: StepIconProps) {
     const { active, completed, className } = props;

@@ -4,7 +4,8 @@ import unionBy from 'lodash.unionby';
 
 export const initialState: State = {
     templates: undefined,
-    groups: undefined
+    groups: undefined,
+    fields: undefined
 };
 
 export const reducer = (state: State, action: Actions): State => {

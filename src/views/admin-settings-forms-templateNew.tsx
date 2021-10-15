@@ -19,6 +19,7 @@ import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Container from '@mui/material/Container';
 import { DropResult } from 'react-beautiful-dnd';
+import { FormsTemplateFieldSchema } from '../schema/formsTemplateField';
 import { FormsTemplateGroupSchema } from '../schema/formsTemplateGroup';
 import { FormsTemplateSchema } from '../schema/formsTemplate';
 import Grid from '@mui/material/Grid';
@@ -89,7 +90,16 @@ const FormsTemplateNewView = () => {
                     </>
                 );
             case 2:
-                return <div />;
+                return (
+                    <>
+                        <FormsTemplateFieldSchema
+                            onSubmit={onSaveGroup}
+                            goBack={handleBack}
+                        />
+
+                        <FieldTable />
+                    </>
+                );
         }
     };
 
@@ -205,13 +215,74 @@ const GroupTable = () => {
                                         <Button
                                             onClick={() => {
                                                 setSelectedGroup(group);
-                                                setActiveStep(3);
+                                                setActiveStep(2);
                                             }}
                                             variant="contained"
                                             color="primary">
                                             Velg
                                         </Button>
                                     </ButtonGroup>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+};
+const FieldTable = () => {
+    const {
+        state: { fields }
+    } = useForms();
+
+    const { selectedGroup, setSelectedField } = useCreateForm();
+
+    function onDragEnd(result: DropResult) {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+        const selectedGroups = fields?.filter(
+            (f) => f.sjaGroup.id === selectedGroup?.id
+        );
+        if (selectedGroups) {
+            // sortGroup(
+            //     selectedGroups,
+            //     result.source.index,
+            //     result.destination.index
+            // );
+        }
+    }
+
+    return (
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>#</TableCell>
+                        <TableCell>Tittel</TableCell>
+                        <TableCell>Felt type</TableCell>
+                        <TableCell align="right"></TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody component={DroppableComponent(onDragEnd)}>
+                    {fields
+                        ?.filter((f) => f.sjaGroup.id === selectedGroup?.id)
+                        .sort((a, b) => a.sortingIndex - b.sortingIndex)
+                        .map((field, index) => (
+                            <TableRow
+                                component={DraggableComponent(field.id, index)}
+                                key={field.id}>
+                                <TableCell scope="row">{field.id}</TableCell>
+                                <TableCell>{field.title}</TableCell>
+                                <TableCell>{field.type}</TableCell>
+                                <TableCell align="right">
+                                    <Button
+                                        onClick={() => setSelectedField(field)}
+                                        variant="contained"
+                                        color="primary">
+                                        Rediger
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

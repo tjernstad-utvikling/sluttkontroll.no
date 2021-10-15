@@ -1,4 +1,4 @@
-import { FormsGroup, FormsTemplate } from '../contracts/sjaApi';
+import { FormsField, FormsGroup, FormsTemplate } from '../contracts/sjaApi';
 import { createContext, useContext, useState } from 'react';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
@@ -14,6 +14,7 @@ export const CreateFormsContainer = ({
 }): JSX.Element => {
     const [createdTemplate, setCreatedTemplate] = useState<FormsTemplate>();
     const [selectedGroup, setSelectedGroup] = useState<FormsGroup>();
+    const [selectedField, setSelectedField] = useState<FormsField>();
 
     const [activeStep, setActiveStep] = useState<number>(0);
     return (
@@ -21,6 +22,9 @@ export const CreateFormsContainer = ({
             value={{
                 activeStep,
                 setActiveStep,
+
+                selectedField,
+                setSelectedField,
 
                 selectedGroup,
                 setSelectedGroup,
@@ -36,6 +40,9 @@ export const CreateFormsContainer = ({
 interface ContextInterface {
     activeStep: number;
     setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+
+    selectedField: FormsField | undefined;
+    setSelectedField: (field: FormsField | undefined) => void;
 
     selectedGroup: FormsGroup | undefined;
     setSelectedGroup: (group: FormsGroup | undefined) => void;

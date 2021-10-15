@@ -1,8 +1,9 @@
-import { FormsGroup, FormsTemplate } from '../../contracts/sjaApi';
+import { FormsField, FormsGroup, FormsTemplate } from '../../contracts/sjaApi';
 
 export interface State {
     templates: FormsTemplate[] | undefined;
     groups: FormsGroup[] | undefined;
+    fields: FormsField[] | undefined;
 }
 
 export enum ActionType {

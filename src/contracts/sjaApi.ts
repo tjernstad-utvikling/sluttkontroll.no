@@ -13,22 +13,52 @@ export interface FormsGroup {
     template: FormsTemplate;
 }
 
-export interface FieldType {
+export interface FormsField {
     id: number;
     title: string;
-    type: FieldTypeEnum;
-    textChoices?: Array<string>;
-    objectChoices?: Array<ObjectChoiceType>;
+    type: FormsFieldTypeEnum;
+    textChoices?: string[];
+    objectChoices?: ObjectChoiceType[];
     objectTitle?: string;
+    sortingIndex: number;
+    sjaGroup: FormsGroup;
 }
 
-export enum FieldTypeEnum {
+export enum FormsFieldTypeEnum {
     info = 'info',
     preDef = 'preDef',
     preDefObj = 'preDefObj',
     check = 'check',
     signature = 'signature'
 }
+
+export interface Option {
+    value: FormsFieldTypeEnum;
+    label: string;
+}
+
+export const formsFieldTypeOption: Option[] = [
+    {
+        value: FormsFieldTypeEnum.info,
+        label: 'Info felt'
+    },
+    {
+        value: FormsFieldTypeEnum.check,
+        label: 'Ja/Nei med kommentar'
+    },
+    {
+        value: FormsFieldTypeEnum.preDef,
+        label: 'Predefinerte tekster'
+    },
+    {
+        value: FormsFieldTypeEnum.preDefObj,
+        label: 'Predefinerte valg med tilhørende tekst'
+    },
+    {
+        value: FormsFieldTypeEnum.signature,
+        label: 'Signatur'
+    }
+];
 
 export interface ObjectChoiceType {
     title: string;

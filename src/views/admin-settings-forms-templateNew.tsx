@@ -46,6 +46,10 @@ const FormsTemplateNewView = () => {
 
     const { newTemplate, newTemplateGroup } = useForms();
 
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
     const onSaveTemplate = async (
         title: string,
         subTitle: string,
@@ -78,6 +82,7 @@ const FormsTemplateNewView = () => {
                         <FormsTemplateGroupSchema
                             group={selectedGroup}
                             onSubmit={onSaveGroup}
+                            goBack={handleBack}
                         />
 
                         <GroupTable />
@@ -147,7 +152,8 @@ const GroupTable = () => {
         sortGroup
     } = useForms();
 
-    const { createdTemplate, setSelectedGroup } = useCreateForm();
+    const { createdTemplate, setSelectedGroup, setActiveStep } =
+        useCreateForm();
 
     function onDragEnd(result: DropResult) {
         // dropped outside the list
@@ -164,10 +170,6 @@ const GroupTable = () => {
                 result.destination.index
             );
         }
-
-        console.log(
-            `dragEnd ${result.source.index} to  ${result.destination.index}`
-        );
     }
 
     return (
@@ -201,9 +203,10 @@ const GroupTable = () => {
                                             Rediger
                                         </Button>
                                         <Button
-                                            onClick={() =>
-                                                setSelectedGroup(group)
-                                            }
+                                            onClick={() => {
+                                                setSelectedGroup(group);
+                                                setActiveStep(3);
+                                            }}
                                             variant="contained"
                                             color="primary">
                                             Velg

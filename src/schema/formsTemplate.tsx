@@ -3,7 +3,8 @@ import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 
 import { FormsTemplate } from '../contracts/sjaApi';
-import { LoadingButton } from '../components/button';
+import MuiLoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
 import { TextField } from '../components/input';
 
 interface FormsTemplateSchemaProps {
@@ -63,14 +64,15 @@ export const FormsTemplateSchema = ({
                             multiline
                         />
 
-                        <LoadingButton
-                            isLoading={isSubmitting}
+                        <MuiLoadingButton
+                            loading={isSubmitting}
                             type="submit"
                             fullWidth
-                            variant="contained"
-                            color="primary">
+                            loadingPosition="start"
+                            startIcon={<SaveIcon />}
+                            variant="contained">
                             Lagre
-                        </LoadingButton>
+                        </MuiLoadingButton>
                     </Form>
                 );
             }}

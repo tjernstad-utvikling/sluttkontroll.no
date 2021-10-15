@@ -35,10 +35,10 @@ export const CreateFormsContainer = ({
 
 interface ContextInterface {
     activeStep: number;
-    setActiveStep: (step: number) => void;
+    setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 
     selectedGroup: FormsGroup | undefined;
-    setSelectedGroup: (group: FormsGroup) => void;
+    setSelectedGroup: (group: FormsGroup | undefined) => void;
 
     createdTemplate: FormsTemplate | undefined;
     setCreatedTemplate: (template: FormsTemplate) => void;

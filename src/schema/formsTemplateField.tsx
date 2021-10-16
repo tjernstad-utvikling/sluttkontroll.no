@@ -217,6 +217,14 @@ const TextChoicesField = () => {
             setFieldValue('textChoices', [{ id: 0, text: '' }]);
         }
     };
+    const handleDeleteTextRow = (tcId: number) => {
+        if (textChoices !== undefined) {
+            setFieldValue(
+                'textChoices',
+                textChoices.filter((tc) => tc.id !== tcId)
+            );
+        }
+    };
 
     if (type?.value === FormsFieldTypeEnum.preDef) {
         return (
@@ -256,7 +264,10 @@ const TextChoicesField = () => {
                                     <IconButton
                                         color="error"
                                         aria-label="Slett"
-                                        size="large">
+                                        size="large"
+                                        onClick={() =>
+                                            handleDeleteTextRow(tc.id)
+                                        }>
                                         <DeleteIcon />
                                     </IconButton>
                                 </ButtonGroup>

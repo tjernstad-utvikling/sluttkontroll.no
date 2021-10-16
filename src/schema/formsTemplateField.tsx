@@ -1,20 +1,22 @@
 import * as Yup from 'yup';
 
-import { Form, Formik } from 'formik';
-import {
-    FormsField,
-    FormsFieldTypeEnum,
-    formsFieldTypeOption
-} from '../contracts/sjaApi';
+import { Form, Formik, useFormikContext } from 'formik';
+import { FormsField, FormsFieldTypeEnum } from '../contracts/sjaApi';
 
+import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import MuiLoadingButton from '@mui/lab/LoadingButton';
+import MuiTextField from '@mui/material/TextField';
 import SaveIcon from '@mui/icons-material/Save';
 import Select from 'react-select';
 import { TextField } from '../components/input';
 import { useCreateForm } from '../components/forms';
 import { useMemo } from 'react';
+import { useStyles } from '../theme/makeStyles';
 
 // id: number;
 // title: string;
@@ -22,6 +24,44 @@ import { useMemo } from 'react';
 // textChoices?: Array<string>;
 // objectChoices?: Array<ObjectChoiceType>;
 // objectTitle?: string;
+
+interface PreDefRow {
+    id: number;
+    text: string;
+}
+interface Option {
+    value: FormsFieldTypeEnum;
+    label: string;
+}
+
+const formsFieldTypeOption: Option[] = [
+    {
+        value: FormsFieldTypeEnum.info,
+        label: 'Info felt'
+    },
+    {
+        value: FormsFieldTypeEnum.check,
+        label: 'Ja/Nei med kommentar'
+    },
+    {
+        value: FormsFieldTypeEnum.preDef,
+        label: 'Predefinerte tekster'
+    },
+    {
+        value: FormsFieldTypeEnum.preDefObj,
+        label: 'Predefinerte valg med tilhørende tekst'
+    },
+    {
+        value: FormsFieldTypeEnum.signature,
+        label: 'Signatur'
+    }
+];
+
+interface FormValues {
+    title: string;
+    type: Option | null;
+    textChoices: PreDefRow[] | undefined;
+}
 
 interface FormsTemplateFieldSchemaProps {
     field?: FormsField;
@@ -49,11 +89,28 @@ export const FormsTemplateFieldSchema = ({
         return null;
     }, [field]);
 
+    const setTextChoices = useMemo(() => {
+        if (field?.textChoices !== undefined) {
+            return field.textChoices.map((t, i) => ({
+                id: i,
+                text: t
+            }));
+        } else {
+            return [
+                {
+                    id: 0,
+                    text: ''
+                }
+            ];
+        }
+    }, [field]);
+
     return (
         <Formik
             initialValues={{
                 title: field?.title || '',
-                type: selectedType
+                type: selectedType,
+                textChoices: setTextChoices
             }}
             enableReinitialize
             validationSchema={Yup.object({
@@ -100,6 +157,8 @@ export const FormsTemplateFieldSchema = ({
                             }}
                             menuPortalTarget={document.body}
                         />
+
+                        <TextChoicesField />
                         <ButtonGroup fullWidth>
                             <Button onClick={goBack}>Tilbake</Button>
                             {field && (
@@ -127,4 +186,86 @@ export const FormsTemplateFieldSchema = ({
             }}
         </Formik>
     );
+};
+
+const TextChoicesField = () => {
+    const { css, cx } = useStyles();
+    const {
+        values: { type, textChoices },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    const handleTextChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+        tcId: number
+    ) => {
+        setFieldValue(
+            'textChoices',
+            textChoices?.map((tc) =>
+                tc.id === tcId ? { ...tc, text: e.target.value } : tc
+            )
+        );
+    };
+
+    const handleAddNewTextRow = () => {
+        if (textChoices !== undefined) {
+            setFieldValue('textChoices', [
+                ...textChoices,
+                { id: textChoices.length + 1, text: '' }
+            ]);
+        } else {
+            setFieldValue('textChoices', [{ id: 0, text: '' }]);
+        }
+    };
+
+    if (type?.value === FormsFieldTypeEnum.preDef) {
+        return (
+            <Grid container>
+                {textChoices?.map((tc) => {
+                    return (
+                        <>
+                            <Grid item xs={10}>
+                                <MuiTextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id={`textChoices-${tc.id}`}
+                                    label="Tekst valg"
+                                    name="textChoice"
+                                    onChange={(e) => handleTextChange(e, tc.id)}
+                                    value={tc.text}
+                                />
+                            </Grid>
+                            <Grid
+                                item
+                                xs="auto"
+                                className={cx(
+                                    css({
+                                        margin: 'auto'
+                                    })
+                                )}>
+                                <ButtonGroup>
+                                    <IconButton
+                                        color="info"
+                                        aria-label="Legg til"
+                                        size="large"
+                                        onClick={handleAddNewTextRow}>
+                                        <AddIcon />
+                                    </IconButton>
+
+                                    <IconButton
+                                        color="error"
+                                        aria-label="Slett"
+                                        size="large">
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ButtonGroup>
+                            </Grid>
+                        </>
+                    );
+                })}
+            </Grid>
+        );
+    }
+    return <div />;
 };

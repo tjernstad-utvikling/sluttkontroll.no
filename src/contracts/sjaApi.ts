@@ -32,34 +32,6 @@ export enum FormsFieldTypeEnum {
     signature = 'signature'
 }
 
-export interface Option {
-    value: FormsFieldTypeEnum;
-    label: string;
-}
-
-export const formsFieldTypeOption: Option[] = [
-    {
-        value: FormsFieldTypeEnum.info,
-        label: 'Info felt'
-    },
-    {
-        value: FormsFieldTypeEnum.check,
-        label: 'Ja/Nei med kommentar'
-    },
-    {
-        value: FormsFieldTypeEnum.preDef,
-        label: 'Predefinerte tekster'
-    },
-    {
-        value: FormsFieldTypeEnum.preDefObj,
-        label: 'Predefinerte valg med tilhørende tekst'
-    },
-    {
-        value: FormsFieldTypeEnum.signature,
-        label: 'Signatur'
-    }
-];
-
 export interface ObjectChoiceType {
     title: string;
     text: string;

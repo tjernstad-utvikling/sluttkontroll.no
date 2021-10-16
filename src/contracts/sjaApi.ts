@@ -18,7 +18,7 @@ export interface FormsField {
     title: string;
     type: FormsFieldTypeEnum;
     textChoices?: string[];
-    objectChoices?: ObjectChoiceType[];
+    objectChoices?: FormsObjectChoice[];
     objectTitle?: string;
     sortingIndex: number;
     sjaGroup: FormsGroup;
@@ -32,7 +32,8 @@ export enum FormsFieldTypeEnum {
     signature = 'signature'
 }
 
-export interface ObjectChoiceType {
+export interface FormsObjectChoice {
+    id: number;
     title: string;
     text: string;
 }

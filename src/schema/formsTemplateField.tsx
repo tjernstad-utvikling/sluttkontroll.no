@@ -6,11 +6,14 @@ import { FormsField, FormsFieldTypeEnum } from '../contracts/sjaApi';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import Chip from '@mui/material/Chip';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import MuiLoadingButton from '@mui/lab/LoadingButton';
 import MuiTextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
 import SaveIcon from '@mui/icons-material/Save';
 import Select from 'react-select';
 import { TextField } from '../components/input';
@@ -19,16 +22,14 @@ import { useMemo } from 'react';
 import { useStyles } from '../theme/makeStyles';
 import { v4 as uuidv4 } from 'uuid';
 
-// id: number;
-// title: string;
-// type: FieldTypeEnum;
-// textChoices?: Array<string>;
-// objectChoices?: Array<ObjectChoiceType>;
-// objectTitle?: string;
-
 interface PreDefRow {
     id: string;
     text: string;
+}
+interface preDefObjRow {
+    id: string | number;
+    text: string;
+    title: string;
 }
 interface Option {
     value: FormsFieldTypeEnum;
@@ -62,6 +63,8 @@ interface FormValues {
     title: string;
     type: Option | null;
     textChoices: PreDefRow[] | undefined;
+    objectChoices: preDefObjRow[] | undefined;
+    objectTitle: string;
 }
 
 interface FormsTemplateFieldSchemaProps {
@@ -107,12 +110,32 @@ export const FormsTemplateFieldSchema = ({
         }
     }, [field]);
 
+    const setObjectChoices = useMemo(() => {
+        if (field?.objectChoices !== undefined) {
+            return field.objectChoices.map((objC) => ({
+                id: objC.id || uuidv4(),
+                title: objC.title,
+                text: objC.text
+            }));
+        } else {
+            return [
+                {
+                    id: uuidv4(),
+                    text: '',
+                    title: ''
+                }
+            ];
+        }
+    }, [field]);
+
     return (
         <Formik
             initialValues={{
                 title: field?.title || '',
                 type: selectedType,
-                textChoices: setTextChoices
+                textChoices: setTextChoices,
+                objectChoices: setObjectChoices,
+                objectTitle: field?.objectTitle || ''
             }}
             enableReinitialize
             validationSchema={Yup.object({
@@ -168,6 +191,7 @@ export const FormsTemplateFieldSchema = ({
                         </div>
 
                         <TextChoicesField />
+                        <ObjectChoicesField />
                         <ButtonGroup fullWidth>
                             <Button onClick={goBack}>Tilbake</Button>
                             {field && (
@@ -280,6 +304,141 @@ const TextChoicesField = () => {
                                         <DeleteIcon />
                                     </IconButton>
                                 </ButtonGroup>
+                            </Grid>
+                        </>
+                    );
+                })}
+            </Grid>
+        );
+    }
+    return <div />;
+};
+const ObjectChoicesField = () => {
+    const { css, cx } = useStyles();
+    const {
+        values: { type, objectChoices },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+        tcId: string | number,
+        name: 'text' | 'title'
+    ) => {
+        setFieldValue(
+            'objectChoices',
+            objectChoices?.map((tc) =>
+                tc.id === tcId ? { ...tc, [name]: e.target.value } : tc
+            )
+        );
+    };
+
+    const handleAddNewTextRow = () => {
+        if (objectChoices !== undefined) {
+            setFieldValue('objectChoices', [
+                ...objectChoices,
+                {
+                    id: uuidv4(),
+                    text: '',
+                    title: ''
+                }
+            ]);
+        } else {
+            setFieldValue('objectChoices', [
+                {
+                    id: uuidv4(),
+                    text: '',
+                    title: ''
+                }
+            ]);
+        }
+    };
+    const handleDeleteTextRow = (tcId: string | number) => {
+        if (objectChoices !== undefined) {
+            setFieldValue(
+                'objectChoices',
+                objectChoices.filter((tc) => tc.id !== tcId)
+            );
+        }
+    };
+
+    if (type?.value === FormsFieldTypeEnum.preDefObj) {
+        return (
+            <Grid container>
+                <Grid item xs={12}>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        id="objectTitle"
+                        label="Objekt tittel"
+                        name="objectTitle"
+                        autoFocus
+                    />
+                </Grid>
+                {objectChoices?.map((tc) => {
+                    return (
+                        <>
+                            <Grid item xs={12}>
+                                <Divider>
+                                    <Chip label={`Alternativ ID: ${tc.id}`} />
+                                </Divider>
+                            </Grid>
+                            <Grid item xs={10}>
+                                <MuiTextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    id={`objectChoice-${tc.id}`}
+                                    label="Alternativ tittel"
+                                    name={`objectChoice-${tc.id}`}
+                                    onChange={(e) =>
+                                        handleChange(e, tc.id, 'title')
+                                    }
+                                    value={tc.title}
+                                />
+                            </Grid>
+                            <Grid
+                                item
+                                xs={2}
+                                className={cx(
+                                    css({
+                                        margin: 'auto'
+                                    })
+                                )}>
+                                <ButtonGroup>
+                                    <IconButton
+                                        color="info"
+                                        aria-label="Legg til"
+                                        size="large"
+                                        onClick={handleAddNewTextRow}>
+                                        <AddIcon />
+                                    </IconButton>
+
+                                    <IconButton
+                                        color="error"
+                                        aria-label="Slett"
+                                        size="large"
+                                        onClick={() =>
+                                            handleDeleteTextRow(tc.id)
+                                        }>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ButtonGroup>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <MuiTextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    multiline
+                                    id={`objectChoice-${tc.id}`}
+                                    label="Alternativ tekst"
+                                    name={`objectChoice-${tc.id}`}
+                                    onChange={(e) =>
+                                        handleChange(e, tc.id, 'text')
+                                    }
+                                    value={tc.text}
+                                />
                             </Grid>
                         </>
                     );

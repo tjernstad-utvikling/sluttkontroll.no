@@ -14,6 +14,7 @@ import {
     DraggableComponent,
     DroppableComponent
 } from '../components/droppable';
+import { FormsFieldTypeEnum, FormsObjectChoice } from '../contracts/sjaApi';
 
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -73,6 +74,20 @@ const FormsTemplateNewView = () => {
         return false;
     };
 
+    const onSaveField = async (
+        title: string,
+        type: FormsFieldTypeEnum,
+        textChoices: string[] | undefined,
+        objectChoices: FormsObjectChoice[] | undefined,
+        objectTitle: string | undefined
+    ) => {
+        // if (createdTemplate !== undefined) {
+        //     if (await newTemplateGroup(title, description, createdTemplate.id))
+        //         return true;
+        // }
+        return false;
+    };
+
     const formSwitch = () => {
         switch (activeStep) {
             case 0:
@@ -93,7 +108,7 @@ const FormsTemplateNewView = () => {
                 return (
                     <>
                         <FormsTemplateFieldSchema
-                            onSubmit={onSaveGroup}
+                            onSubmit={onSaveField}
                             goBack={handleBack}
                         />
 

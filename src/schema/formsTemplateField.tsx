@@ -1,7 +1,11 @@
 import * as Yup from 'yup';
 
 import { Form, Formik, useFormikContext } from 'formik';
-import { FormsField, FormsFieldTypeEnum } from '../contracts/sjaApi';
+import {
+    FormsField,
+    FormsFieldTypeEnum,
+    FormsObjectChoice
+} from '../contracts/sjaApi';
 
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
@@ -13,7 +17,6 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import MuiLoadingButton from '@mui/lab/LoadingButton';
 import MuiTextField from '@mui/material/TextField';
-import Paper from '@mui/material/Paper';
 import SaveIcon from '@mui/icons-material/Save';
 import Select from 'react-select';
 import { TextField } from '../components/input';
@@ -69,7 +72,13 @@ interface FormValues {
 
 interface FormsTemplateFieldSchemaProps {
     field?: FormsField;
-    onSubmit: (title: string, type: FormsFieldTypeEnum) => Promise<boolean>;
+    onSubmit: (
+        title: string,
+        type: FormsFieldTypeEnum,
+        textChoices: string[] | undefined,
+        objectChoices: FormsObjectChoice[] | undefined,
+        objectTitle: string | undefined
+    ) => Promise<boolean>;
     goBack: () => void;
 }
 export const FormsTemplateFieldSchema = ({
@@ -144,7 +153,22 @@ export const FormsTemplateFieldSchema = ({
             })}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
                 if (values.type?.value !== undefined) {
-                    if (await onSubmit(values.title, values.type?.value)) {
+                    const objectChoices = values.objectChoices.map((oc) => {
+                        if (/^\d+$/.test(String(oc.id))) {
+                            return { ...oc, id: Number(oc.id) };
+                        } else {
+                            return { ...oc, id: 0 };
+                        }
+                    });
+                    if (
+                        await onSubmit(
+                            values.title,
+                            values.type?.value,
+                            values.textChoices?.map((tc) => tc.text),
+                            objectChoices,
+                            values.objectTitle
+                        )
+                    ) {
                         resetForm();
                     }
                 }

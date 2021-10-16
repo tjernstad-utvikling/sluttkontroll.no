@@ -1,4 +1,10 @@
-import { FormsField, FormsGroup, FormsTemplate } from '../../contracts/sjaApi';
+import {
+    FormsField,
+    FormsFieldTypeEnum,
+    FormsGroup,
+    FormsObjectChoice,
+    FormsTemplate
+} from '../../contracts/sjaApi';
 
 export interface State {
     templates: FormsTemplate[] | undefined;
@@ -8,19 +14,26 @@ export interface State {
 
 export enum ActionType {
     addTemplates,
-    addGroups
+    addGroups,
+    addFields
 }
 
 export interface addTemplates {
     type: ActionType.addTemplates;
     payload: FormsTemplate[];
 }
+
 export interface addGroups {
     type: ActionType.addGroups;
     payload: FormsGroup[];
 }
 
-export type Actions = addTemplates | addGroups;
+export interface addFields {
+    type: ActionType.addFields;
+    payload: FormsField[];
+}
+
+export type Actions = addTemplates | addGroups | addFields;
 
 export interface ContextInterface {
     state: State;
@@ -38,5 +51,14 @@ export interface ContextInterface {
         groups: FormsGroup[],
         startIndex: number,
         endIndex: number
+    ) => Promise<boolean>;
+    newTemplateField: (
+        title: string,
+        type: FormsFieldTypeEnum,
+        textChoices: string[] | undefined,
+        objectChoices: FormsObjectChoice[] | undefined,
+        objectTitle: string | undefined,
+        sortingIndex: number,
+        groupId: number
     ) => Promise<boolean>;
 }

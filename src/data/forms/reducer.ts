@@ -20,6 +20,11 @@ export const reducer = (state: State, action: Actions): State => {
                 ...state,
                 groups: unionBy(action.payload, state.groups, 'id')
             };
+        case ActionType.addFields:
+            return {
+                ...state,
+                fields: unionBy(action.payload, state.fields, 'id')
+            };
 
         default:
             throw new Error('unknown action');

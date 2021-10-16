@@ -1,8 +1,14 @@
 import { ActionType, ContextInterface } from './contracts';
-import { FormsGroup, FormsTemplate } from '../../contracts/sjaApi';
+import {
+    FormsFieldTypeEnum,
+    FormsGroup,
+    FormsObjectChoice,
+    FormsTemplate
+} from '../../contracts/sjaApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     addTemplate,
+    addTemplateField,
     addTemplateGroup,
     sortTemplateGroup
 } from '../../api/formsTemplateApi';
@@ -67,6 +73,7 @@ export const FormsContextProvider = ({
         }
         return false;
     };
+
     const newTemplateGroup = async (
         title: string,
         description: string,
@@ -157,6 +164,56 @@ export const FormsContextProvider = ({
         return false;
     };
 
+    const newTemplateField = async (
+        title: string,
+        type: FormsFieldTypeEnum,
+        textChoices: string[] | undefined,
+        objectChoices: FormsObjectChoice[] | undefined,
+        objectTitle: string | undefined,
+        sortingIndex: number,
+        groupId: number
+    ): Promise<boolean> => {
+        try {
+            const { status, field } = await addTemplateField(
+                title,
+                type,
+                textChoices,
+                objectChoices,
+                objectTitle,
+                sortingIndex,
+                groupId
+            );
+            if (status === 200 && field !== undefined) {
+                dispatch({
+                    type: ActionType.addFields,
+                    payload: [field]
+                });
+
+                enqueueSnackbar('Felt lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (status === 400) {
+                enqueueSnackbar('Tittel eller type mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av felt', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av felt', {
+                variant: 'error'
+            });
+            errorHandler(error);
+        }
+        return false;
+    };
+
     return (
         <Context.Provider
             value={{
@@ -164,7 +221,8 @@ export const FormsContextProvider = ({
 
                 newTemplate,
                 newTemplateGroup,
-                sortGroup
+                sortGroup,
+                newTemplateField
             }}>
             {children}
         </Context.Provider>

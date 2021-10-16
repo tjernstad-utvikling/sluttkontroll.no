@@ -17,6 +17,7 @@ import { TextField } from '../components/input';
 import { useCreateForm } from '../components/forms';
 import { useMemo } from 'react';
 import { useStyles } from '../theme/makeStyles';
+import { v4 as uuidv4 } from 'uuid';
 
 // id: number;
 // title: string;
@@ -26,7 +27,7 @@ import { useStyles } from '../theme/makeStyles';
 // objectTitle?: string;
 
 interface PreDefRow {
-    id: number;
+    id: string;
     text: string;
 }
 interface Option {
@@ -92,14 +93,14 @@ export const FormsTemplateFieldSchema = ({
 
     const setTextChoices = useMemo(() => {
         if (field?.textChoices !== undefined) {
-            return field.textChoices.map((t, i) => ({
-                id: i,
+            return field.textChoices.map((t) => ({
+                id: uuidv4(),
                 text: t
             }));
         } else {
             return [
                 {
-                    id: 0,
+                    id: uuidv4(),
                     text: ''
                 }
             ];
@@ -205,7 +206,7 @@ const TextChoicesField = () => {
 
     const handleTextChange = (
         e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-        tcId: number
+        tcId: string
     ) => {
         setFieldValue(
             'textChoices',
@@ -219,13 +220,13 @@ const TextChoicesField = () => {
         if (textChoices !== undefined) {
             setFieldValue('textChoices', [
                 ...textChoices,
-                { id: textChoices.length + 1, text: '' }
+                { id: uuidv4(), text: '' }
             ]);
         } else {
             setFieldValue('textChoices', [{ id: 0, text: '' }]);
         }
     };
-    const handleDeleteTextRow = (tcId: number) => {
+    const handleDeleteTextRow = (tcId: string) => {
         if (textChoices !== undefined) {
             setFieldValue(
                 'textChoices',

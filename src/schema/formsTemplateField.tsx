@@ -74,6 +74,7 @@ export const FormsTemplateFieldSchema = ({
     goBack
 }: FormsTemplateFieldSchemaProps): JSX.Element => {
     const { setSelectedGroup } = useCreateForm();
+    const { cx, css, theme } = useStyles();
 
     const selectedType = useMemo(() => {
         let preSelectedType = FormsFieldTypeEnum.info;
@@ -135,28 +136,35 @@ export const FormsTemplateFieldSchema = ({
                             name="title"
                             autoFocus
                         />
-                        <label htmlFor="type-select">Type</label>
-                        <Select
-                            inputId="type-select"
-                            className="basic-single"
-                            classNamePrefix="select"
-                            isSearchable
-                            onChange={(selected) => {
-                                if (selected !== null) {
-                                    setFieldValue('type', selected);
-                                }
-                            }}
-                            value={values.type}
-                            name="user"
-                            options={formsFieldTypeOption}
-                            styles={{
-                                menuPortal: (base) => ({
-                                    ...base,
-                                    zIndex: 9999
+                        <div
+                            className={cx(
+                                css({
+                                    paddingBottom: theme.spacing(2)
                                 })
-                            }}
-                            menuPortalTarget={document.body}
-                        />
+                            )}>
+                            <label htmlFor="type-select">Type</label>
+                            <Select
+                                inputId="type-select"
+                                className="basic-single"
+                                classNamePrefix="select"
+                                isSearchable
+                                onChange={(selected) => {
+                                    if (selected !== null) {
+                                        setFieldValue('type', selected);
+                                    }
+                                }}
+                                value={values.type}
+                                name="user"
+                                options={formsFieldTypeOption}
+                                styles={{
+                                    menuPortal: (base) => ({
+                                        ...base,
+                                        zIndex: 9999
+                                    })
+                                }}
+                                menuPortalTarget={document.body}
+                            />
+                        </div>
 
                         <TextChoicesField />
                         <ButtonGroup fullWidth>

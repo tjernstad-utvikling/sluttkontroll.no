@@ -43,7 +43,8 @@ const FormsTemplateNewView = () => {
         setActiveStep,
         setCreatedTemplate,
         createdTemplate,
-        selectedGroup
+        selectedGroup,
+        selectedField
     } = useCreateForm();
 
     const { newTemplate, newTemplateGroup, newTemplateField } = useForms();
@@ -118,6 +119,7 @@ const FormsTemplateNewView = () => {
                 return (
                     <>
                         <FormsTemplateFieldSchema
+                            field={selectedField}
                             onSubmit={onSaveField}
                             goBack={handleBack}
                         />

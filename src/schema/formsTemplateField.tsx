@@ -85,7 +85,7 @@ export const FormsTemplateFieldSchema = ({
     onSubmit,
     goBack
 }: FormsTemplateFieldSchemaProps): JSX.Element => {
-    const { setSelectedGroup } = useCreateForm();
+    const { setSelectedField } = useCreateForm();
     const { cx, css, theme } = useStyles();
 
     const selectedType = useMemo(() => {
@@ -224,7 +224,7 @@ export const FormsTemplateFieldSchema = ({
                                     variant="contained"
                                     onClick={() => {
                                         resetForm();
-                                        setSelectedGroup(undefined);
+                                        setSelectedField(undefined);
                                     }}>
                                     Legg til ny
                                 </Button>

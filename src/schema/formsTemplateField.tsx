@@ -14,7 +14,6 @@ import Chip from '@mui/material/Chip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
 import MuiLoadingButton from '@mui/lab/LoadingButton';
 import MuiTextField from '@mui/material/TextField';
 import SaveIcon from '@mui/icons-material/Save';
@@ -148,10 +147,10 @@ export const FormsTemplateFieldSchema = ({
             }}
             enableReinitialize
             validationSchema={Yup.object({
-                title: Yup.string().required('Tittel er påkrevd'),
-                type: Yup.string().required('Felt type er påkrevd')
+                title: Yup.string().required('Tittel er påkrevd')
             })}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
+                console.log({ values });
                 if (values.type?.value !== undefined) {
                     const objectChoices = values.objectChoices.map((oc) => {
                         if (/^\d+$/.test(String(oc.id))) {
@@ -160,6 +159,7 @@ export const FormsTemplateFieldSchema = ({
                             return { ...oc, id: 0 };
                         }
                     });
+                    console.log('ready to submit', { values });
                     if (
                         await onSubmit(
                             values.title,
@@ -246,7 +246,7 @@ export const FormsTemplateFieldSchema = ({
 };
 
 const TextChoicesField = () => {
-    const { css, cx } = useStyles();
+    const { css, cx, theme } = useStyles();
     const {
         values: { type, textChoices },
         setFieldValue
@@ -285,11 +285,11 @@ const TextChoicesField = () => {
 
     if (type?.value === FormsFieldTypeEnum.preDef) {
         return (
-            <Grid container>
+            <div>
                 {textChoices?.map((tc) => {
                     return (
-                        <>
-                            <Grid item xs={10}>
+                        <Grid key={tc.id} container>
+                            <Grid key={tc.id} item xs={9}>
                                 <MuiTextField
                                     variant="outlined"
                                     margin="normal"
@@ -302,23 +302,25 @@ const TextChoicesField = () => {
                                 />
                             </Grid>
                             <Grid
+                                key={`{${tc.id}SecondGrid`}
                                 item
                                 xs="auto"
                                 className={cx(
                                     css({
-                                        margin: 'auto'
+                                        margin: 'auto',
+                                        marginLeft: theme.spacing(1)
                                     })
                                 )}>
                                 <ButtonGroup>
-                                    <IconButton
+                                    <Button
                                         color="info"
                                         aria-label="Legg til"
                                         size="large"
                                         onClick={handleAddNewTextRow}>
                                         <AddIcon />
-                                    </IconButton>
+                                    </Button>
 
-                                    <IconButton
+                                    <Button
                                         color="error"
                                         aria-label="Slett"
                                         size="large"
@@ -326,19 +328,19 @@ const TextChoicesField = () => {
                                             handleDeleteTextRow(tc.id)
                                         }>
                                         <DeleteIcon />
-                                    </IconButton>
+                                    </Button>
                                 </ButtonGroup>
                             </Grid>
-                        </>
+                        </Grid>
                     );
                 })}
-            </Grid>
+            </div>
         );
     }
     return <div />;
 };
 const ObjectChoicesField = () => {
-    const { css, cx } = useStyles();
+    const { css, cx, theme } = useStyles();
     const {
         values: { type, objectChoices },
         setFieldValue
@@ -388,86 +390,93 @@ const ObjectChoicesField = () => {
 
     if (type?.value === FormsFieldTypeEnum.preDefObj) {
         return (
-            <Grid container>
-                <Grid item xs={12}>
-                    <TextField
-                        variant="outlined"
-                        fullWidth
-                        id="objectTitle"
-                        label="Objekt tittel"
-                        name="objectTitle"
-                        autoFocus
-                    />
+            <>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <TextField
+                            variant="outlined"
+                            fullWidth
+                            id="objectTitle"
+                            label="Objekt tittel"
+                            name="objectTitle"
+                            autoFocus
+                        />
+                    </Grid>
                 </Grid>
-                {objectChoices?.map((tc) => {
-                    return (
-                        <>
-                            <Grid item xs={12}>
-                                <Divider>
-                                    <Chip label={`Alternativ ID: ${tc.id}`} />
-                                </Divider>
-                            </Grid>
-                            <Grid item xs={10}>
-                                <MuiTextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    fullWidth
-                                    id={`objectChoice-${tc.id}`}
-                                    label="Alternativ tittel"
-                                    name={`objectChoice-${tc.id}`}
-                                    onChange={(e) =>
-                                        handleChange(e, tc.id, 'title')
-                                    }
-                                    value={tc.title}
-                                />
-                            </Grid>
-                            <Grid
-                                item
-                                xs={2}
-                                className={cx(
-                                    css({
-                                        margin: 'auto'
-                                    })
-                                )}>
-                                <ButtonGroup>
-                                    <IconButton
-                                        color="info"
-                                        aria-label="Legg til"
-                                        size="large"
-                                        onClick={handleAddNewTextRow}>
-                                        <AddIcon />
-                                    </IconButton>
+                <div>
+                    {objectChoices?.map((tc) => {
+                        return (
+                            <Grid key={tc.id} container>
+                                <Grid item xs={12}>
+                                    <Divider>
+                                        <Chip
+                                            label={`Alternativ ID: ${tc.id}`}
+                                        />
+                                    </Divider>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    <MuiTextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        fullWidth
+                                        id={`objectChoice-${tc.id}`}
+                                        label="Alternativ tittel"
+                                        name={`objectChoice-${tc.id}`}
+                                        onChange={(e) =>
+                                            handleChange(e, tc.id, 'title')
+                                        }
+                                        value={tc.title}
+                                    />
+                                </Grid>
+                                <Grid
+                                    item
+                                    xs="auto"
+                                    className={cx(
+                                        css({
+                                            margin: 'auto',
+                                            marginLeft: theme.spacing(1)
+                                        })
+                                    )}>
+                                    <ButtonGroup>
+                                        <Button
+                                            color="info"
+                                            aria-label="Legg til"
+                                            size="large"
+                                            onClick={handleAddNewTextRow}>
+                                            <AddIcon />
+                                        </Button>
 
-                                    <IconButton
-                                        color="error"
-                                        aria-label="Slett"
-                                        size="large"
-                                        onClick={() =>
-                                            handleDeleteTextRow(tc.id)
-                                        }>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </ButtonGroup>
+                                        <Button
+                                            color="error"
+                                            aria-label="Slett"
+                                            size="large"
+                                            onClick={() =>
+                                                handleDeleteTextRow(tc.id)
+                                            }>
+                                            <DeleteIcon />
+                                        </Button>
+                                    </ButtonGroup>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <MuiTextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        fullWidth
+                                        multiline
+                                        id={`objectChoice-${tc.id}`}
+                                        label="Alternativ tekst"
+                                        name={`objectChoice-${tc.id}`}
+                                        onChange={(e) =>
+                                            handleChange(e, tc.id, 'text')
+                                        }
+                                        value={tc.text}
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12}>
-                                <MuiTextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    fullWidth
-                                    multiline
-                                    id={`objectChoice-${tc.id}`}
-                                    label="Alternativ tekst"
-                                    name={`objectChoice-${tc.id}`}
-                                    onChange={(e) =>
-                                        handleChange(e, tc.id, 'text')
-                                    }
-                                    value={tc.text}
-                                />
-                            </Grid>
-                        </>
-                    );
-                })}
-            </Grid>
+                        );
+                    })}
+                </div>
+            </>
         );
     }
     return <div />;

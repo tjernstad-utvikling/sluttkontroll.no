@@ -46,7 +46,7 @@ const FormsTemplateNewView = () => {
         selectedGroup
     } = useCreateForm();
 
-    const { newTemplate, newTemplateGroup } = useForms();
+    const { newTemplate, newTemplateGroup, newTemplateField } = useForms();
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -81,10 +81,20 @@ const FormsTemplateNewView = () => {
         objectChoices: FormsObjectChoice[] | undefined,
         objectTitle: string | undefined
     ) => {
-        // if (createdTemplate !== undefined) {
-        //     if (await newTemplateGroup(title, description, createdTemplate.id))
-        //         return true;
-        // }
+        if (selectedGroup !== undefined) {
+            if (
+                await newTemplateField(
+                    title,
+                    type,
+                    textChoices,
+                    objectChoices,
+                    objectTitle,
+                    0,
+                    selectedGroup.id
+                )
+            )
+                return true;
+        }
         return false;
     };
 

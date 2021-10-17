@@ -11,7 +11,8 @@ import {
     addTemplateField,
     addTemplateGroup,
     sortTemplateGroup,
-    updateTemplate
+    updateTemplate,
+    updateTemplateGroup
 } from '../../api/formsTemplateApi';
 import { initialState, reducer } from './reducer';
 
@@ -154,6 +155,40 @@ export const FormsContextProvider = ({
         return false;
     };
 
+    const editTemplateGroup = async (group: FormsGroup): Promise<boolean> => {
+        try {
+            const { status } = await updateTemplateGroup(group);
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.addGroups,
+                    payload: [group]
+                });
+
+                enqueueSnackbar('Gruppe lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (status === 400) {
+                enqueueSnackbar('Tittel eller under tittel mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av mal', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av mal', {
+                variant: 'error'
+            });
+            errorHandler(error);
+        }
+        return false;
+    };
+
     const sortGroup = async (
         _groups: FormsGroup[],
         startIndex: number,
@@ -260,6 +295,7 @@ export const FormsContextProvider = ({
                 newTemplate,
                 editTemplate,
                 newTemplateGroup,
+                editTemplateGroup,
                 sortGroup,
                 newTemplateField
             }}>

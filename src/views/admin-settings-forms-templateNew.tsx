@@ -45,11 +45,17 @@ const FormsTemplateNewView = () => {
         setCreatedTemplate,
         createdTemplate,
         selectedGroup,
+        setSelectedGroup,
         selectedField
     } = useCreateForm();
 
-    const { newTemplate, editTemplate, newTemplateGroup, newTemplateField } =
-        useForms();
+    const {
+        newTemplate,
+        editTemplate,
+        newTemplateGroup,
+        editTemplateGroup,
+        newTemplateField
+    } = useForms();
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -89,9 +95,28 @@ const FormsTemplateNewView = () => {
     };
 
     const onSaveGroup = async (title: string, description: string) => {
-        if (createdTemplate !== undefined) {
-            if (await newTemplateGroup(title, description, createdTemplate.id))
+        if (selectedGroup) {
+            if (
+                await editTemplateGroup({
+                    ...selectedGroup,
+                    title,
+                    description
+                })
+            ) {
+                setSelectedGroup(undefined);
                 return true;
+            }
+        } else {
+            if (createdTemplate !== undefined) {
+                if (
+                    await newTemplateGroup(
+                        title,
+                        description,
+                        createdTemplate.id
+                    )
+                )
+                    return true;
+            }
         }
         return false;
     };

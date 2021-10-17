@@ -62,4 +62,5 @@ export interface ContextInterface {
         sortingIndex: number,
         groupId: number
     ) => Promise<boolean>;
+    editTemplateGroup: (group: FormsGroup) => Promise<boolean>;
 }

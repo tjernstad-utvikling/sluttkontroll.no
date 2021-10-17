@@ -11,6 +11,7 @@ import {
     addTemplate,
     addTemplateField,
     addTemplateGroup,
+    sortTemplateField,
     sortTemplateGroup,
     updateTemplate,
     updateTemplateField,
@@ -327,6 +328,54 @@ export const FormsContextProvider = ({
         return false;
     };
 
+    const sortFields = async (
+        _fields: FormsField[],
+        startIndex: number,
+        endIndex: number
+    ): Promise<boolean> => {
+        try {
+            const [removed] = _fields.splice(startIndex, 1);
+            _fields.splice(endIndex, 0, removed);
+
+            const sortedFieldsList = _fields.map((group, i) => {
+                return { id: group.id, index: i };
+            });
+
+            const sortedFields = _fields.map((g, i) => {
+                return { ...g, sortingIndex: i };
+            });
+
+            dispatch({
+                type: ActionType.addFields,
+                payload: sortedFields
+            });
+
+            const { status, fields } = await sortTemplateField(
+                sortedFieldsList
+            );
+            if (status === 200 && fields !== undefined) {
+                return true;
+            }
+            if (status === 400) {
+                enqueueSnackbar('Sorterte felter mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av sortering', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av sortering', {
+                variant: 'error'
+            });
+            errorHandler(error);
+        }
+        return false;
+    };
+
     return (
         <Context.Provider
             value={{
@@ -338,7 +387,8 @@ export const FormsContextProvider = ({
                 editTemplateGroup,
                 sortGroup,
                 newTemplateField,
-                editTemplateField
+                editTemplateField,
+                sortFields
             }}>
             {children}
         </Context.Provider>

@@ -64,4 +64,9 @@ export interface ContextInterface {
         groupId: number
     ) => Promise<boolean>;
     editTemplateField: (field: FormsField) => Promise<boolean>;
+    sortFields: (
+        _fields: FormsField[],
+        startIndex: number,
+        endIndex: number
+    ) => Promise<boolean>;
 }

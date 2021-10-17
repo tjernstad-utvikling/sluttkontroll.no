@@ -343,7 +343,8 @@ const GroupTable = () => {
 };
 const FieldTable = () => {
     const {
-        state: { fields }
+        state: { fields },
+        sortFields
     } = useForms();
 
     const { selectedGroup, setSelectedField } = useCreateForm();
@@ -353,15 +354,15 @@ const FieldTable = () => {
         if (!result.destination) {
             return;
         }
-        const selectedGroups = fields?.filter(
+        const selectedFields = fields?.filter(
             (f) => f.sjaGroup.id === selectedGroup?.id
         );
-        if (selectedGroups) {
-            // sortGroup(
-            //     selectedGroups,
-            //     result.source.index,
-            //     result.destination.index
-            // );
+        if (selectedFields) {
+            sortFields(
+                selectedFields,
+                result.source.index,
+                result.destination.index
+            );
         }
     }
 

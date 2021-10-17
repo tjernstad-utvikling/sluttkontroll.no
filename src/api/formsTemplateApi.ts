@@ -214,3 +214,30 @@ export const updateTemplateField = async (
         throw error;
     }
 };
+
+export const sortTemplateField = async (
+    sortedFields: { id: number; index: number }[]
+): Promise<{
+    status: number;
+    fields?: FormsField[];
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.put(
+            `/forms/template/field/sort`,
+            {
+                sortedFields
+            }
+        );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        errorHandler(error);
+        throw error;
+    }
+};

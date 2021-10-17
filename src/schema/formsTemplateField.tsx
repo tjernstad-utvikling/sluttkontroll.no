@@ -150,7 +150,6 @@ export const FormsTemplateFieldSchema = ({
                 title: Yup.string().required('Tittel er påkrevd')
             })}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
-                console.log({ values });
                 if (values.type?.value !== undefined) {
                     const objectChoices = values.objectChoices.map((oc) => {
                         if (/^\d+$/.test(String(oc.id))) {
@@ -159,7 +158,7 @@ export const FormsTemplateFieldSchema = ({
                             return { ...oc, id: 0 };
                         }
                     });
-                    console.log('ready to submit', { values });
+
                     if (
                         await onSubmit(
                             values.title,

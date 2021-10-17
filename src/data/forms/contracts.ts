@@ -42,6 +42,7 @@ export interface ContextInterface {
         subTitle: string,
         description: string
     ) => Promise<FormsTemplate | false>;
+    editTemplate: (template: FormsTemplate) => Promise<FormsTemplate | false>;
     newTemplateGroup: (
         title: string,
         description: string,

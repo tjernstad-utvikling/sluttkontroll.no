@@ -10,7 +10,8 @@ import {
     addTemplate,
     addTemplateField,
     addTemplateGroup,
-    sortTemplateGroup
+    sortTemplateGroup,
+    updateTemplate
 } from '../../api/formsTemplateApi';
 import { initialState, reducer } from './reducer';
 
@@ -44,6 +45,43 @@ export const FormsContextProvider = ({
                 description
             );
             if (status === 200 && template !== undefined) {
+                dispatch({
+                    type: ActionType.addTemplates,
+                    payload: [template]
+                });
+
+                enqueueSnackbar('Mal lagret', {
+                    variant: 'success'
+                });
+                return template;
+            }
+            if (status === 400) {
+                enqueueSnackbar('Tittel eller under tittel mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av mal', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av mal', {
+                variant: 'error'
+            });
+            errorHandler(error);
+        }
+        return false;
+    };
+    const editTemplate = async (
+        template: FormsTemplate
+    ): Promise<FormsTemplate | false> => {
+        try {
+            console.log('before updateTemplate', { template });
+            const { status } = await updateTemplate(template);
+            console.log('after updateTemplate', { status });
+            if (status === 204) {
                 dispatch({
                     type: ActionType.addTemplates,
                     payload: [template]
@@ -220,6 +258,7 @@ export const FormsContextProvider = ({
                 state,
 
                 newTemplate,
+                editTemplate,
                 newTemplateGroup,
                 sortGroup,
                 newTemplateField

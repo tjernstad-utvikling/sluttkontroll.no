@@ -2,6 +2,8 @@ import * as Yup from 'yup';
 
 import { Form, Formik } from 'formik';
 
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import { FormsTemplate } from '../contracts/sjaApi';
 import MuiLoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
@@ -14,10 +16,12 @@ interface FormsTemplateSchemaProps {
         subTitle: string,
         description: string
     ) => Promise<boolean>;
+    goForward: () => void;
 }
 export const FormsTemplateSchema = ({
     template,
-    onSubmit
+    onSubmit,
+    goForward
 }: FormsTemplateSchemaProps): JSX.Element => {
     return (
         <Formik
@@ -37,7 +41,7 @@ export const FormsTemplateSchema = ({
                     values.description
                 );
             }}>
-            {({ isSubmitting, setFieldValue, values }) => {
+            {({ isSubmitting, setFieldValue, values, dirty }) => {
                 return (
                     <Form>
                         <TextField
@@ -64,15 +68,19 @@ export const FormsTemplateSchema = ({
                             multiline
                         />
 
-                        <MuiLoadingButton
-                            loading={isSubmitting}
-                            type="submit"
-                            fullWidth
-                            loadingPosition="start"
-                            startIcon={<SaveIcon />}
-                            variant="contained">
-                            Lagre
-                        </MuiLoadingButton>
+                        <ButtonGroup fullWidth>
+                            <MuiLoadingButton
+                                loading={isSubmitting}
+                                type="submit"
+                                loadingPosition="start"
+                                startIcon={<SaveIcon />}
+                                variant="contained">
+                                Lagre
+                            </MuiLoadingButton>
+                            {!dirty && template && (
+                                <Button onClick={goForward}>Til grupper</Button>
+                            )}
+                        </ButtonGroup>
                     </Form>
                 );
             }}

@@ -18,6 +18,7 @@ import { FormsFieldTypeEnum, FormsObjectChoice } from '../contracts/sjaApi';
 
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import { DropResult } from 'react-beautiful-dnd';
 import { FormsTemplateFieldSchema } from '../schema/formsTemplateField';
@@ -47,10 +48,15 @@ const FormsTemplateNewView = () => {
         selectedField
     } = useCreateForm();
 
-    const { newTemplate, newTemplateGroup, newTemplateField } = useForms();
+    const { newTemplate, editTemplate, newTemplateGroup, newTemplateField } =
+        useForms();
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    const handleForward = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
     const onSaveTemplate = async (
@@ -58,11 +64,26 @@ const FormsTemplateNewView = () => {
         subTitle: string,
         description: string
     ) => {
-        const template = await newTemplate(title, subTitle, description);
+        if (createdTemplate) {
+            const template = await editTemplate({
+                ...createdTemplate,
+                title,
+                subTitle,
+                description
+            });
+            if (template) {
+                setCreatedTemplate(template);
+                setActiveStep(1);
+                return true;
+            }
+        } else {
+            const template = await newTemplate(title, subTitle, description);
 
-        if (template) {
-            setCreatedTemplate(template);
-            setActiveStep(1);
+            if (template) {
+                setCreatedTemplate(template);
+                setActiveStep(1);
+                return true;
+            }
         }
         return false;
     };
@@ -102,7 +123,13 @@ const FormsTemplateNewView = () => {
     const formSwitch = () => {
         switch (activeStep) {
             case 0:
-                return <FormsTemplateSchema onSubmit={onSaveTemplate} />;
+                return (
+                    <FormsTemplateSchema
+                        template={createdTemplate}
+                        onSubmit={onSaveTemplate}
+                        goForward={handleForward}
+                    />
+                );
             case 1:
                 return (
                     <>
@@ -149,7 +176,11 @@ const FormsTemplateNewView = () => {
                                             }>
                                             Mal
                                             <br />
-                                            {createdTemplate?.title}
+                                            <Chip
+                                                label={`Mal: ${
+                                                    createdTemplate?.title || ''
+                                                }`}
+                                            />
                                         </StepLabel>
                                     </Step>
                                     <Step>
@@ -159,7 +190,11 @@ const FormsTemplateNewView = () => {
                                             }>
                                             Grupper
                                             <br />
-                                            {selectedGroup?.title}
+                                            <Chip
+                                                label={`Gruppe: ${
+                                                    selectedGroup?.title || ''
+                                                }`}
+                                            />
                                         </StepLabel>
                                     </Step>
                                     <Step>
@@ -168,6 +203,12 @@ const FormsTemplateNewView = () => {
                                                 ColorlibStepIcon
                                             }>
                                             Felter
+                                            <br />
+                                            <Chip
+                                                label={`Felt: ${
+                                                    selectedField?.title || ''
+                                                }`}
+                                            />
                                         </StepLabel>
                                     </Step>
                                 </Stepper>

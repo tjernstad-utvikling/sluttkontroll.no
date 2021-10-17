@@ -289,11 +289,13 @@ export const FormsContextProvider = ({
         }
         return false;
     };
+
     const editTemplateField = async (
         updateField: FormsField
     ): Promise<boolean> => {
         try {
             const { status, field } = await updateTemplateField(updateField);
+            console.log('editTemplateField', { field });
             if (status === 200 && field !== undefined) {
                 dispatch({
                     type: ActionType.addFields,

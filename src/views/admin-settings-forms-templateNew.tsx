@@ -131,7 +131,16 @@ const FormsTemplateNewView = () => {
         objectTitle: string | undefined
     ) => {
         if (selectedField) {
-            if (await editTemplateField(selectedField)) {
+            if (
+                await editTemplateField({
+                    ...selectedField,
+                    title,
+                    type,
+                    textChoices,
+                    objectChoices,
+                    objectTitle
+                })
+            ) {
                 setSelectedField(undefined);
                 return true;
             }

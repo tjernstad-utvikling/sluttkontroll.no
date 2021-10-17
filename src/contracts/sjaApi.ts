@@ -3,6 +3,7 @@ export interface FormsTemplate {
     title: string;
     subTitle: string;
     description: string;
+    listIdentificationField: { id: number };
 }
 
 export interface FormsGroup {

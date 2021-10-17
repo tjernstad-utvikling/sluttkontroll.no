@@ -21,6 +21,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import { DropResult } from 'react-beautiful-dnd';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { FormsTemplateFieldSchema } from '../schema/formsTemplateField';
 import { FormsTemplateGroupSchema } from '../schema/formsTemplateGroup';
 import { FormsTemplateSchema } from '../schema/formsTemplate';
@@ -31,6 +32,7 @@ import Step from '@mui/material/Step';
 import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
+import Switch from '@mui/material/Switch';
 import TitleIcon from '@mui/icons-material/Title';
 import { useCreateForm } from '../components/forms';
 import { useForms } from '../data/forms';
@@ -344,10 +346,23 @@ const GroupTable = () => {
 const FieldTable = () => {
     const {
         state: { fields },
-        sortFields
+        sortFields,
+        setIdentification
     } = useForms();
 
-    const { selectedGroup, setSelectedField } = useCreateForm();
+    const {
+        selectedGroup,
+        setSelectedField,
+        createdTemplate,
+        setCreatedTemplate
+    } = useCreateForm();
+
+    const handleSetListIdentificationField = async (fieldId: number) => {
+        if (createdTemplate !== undefined) {
+            const template = await setIdentification(createdTemplate, fieldId);
+            if (template) setCreatedTemplate(template);
+        }
+    };
 
     function onDragEnd(result: DropResult) {
         // dropped outside the list
@@ -365,6 +380,7 @@ const FieldTable = () => {
             );
         }
     }
+    console.log(createdTemplate);
 
     return (
         <TableContainer component={Paper}>
@@ -374,6 +390,7 @@ const FieldTable = () => {
                         <TableCell>#</TableCell>
                         <TableCell>Tittel</TableCell>
                         <TableCell>Felt type</TableCell>
+                        <TableCell></TableCell>
                         <TableCell align="right"></TableCell>
                     </TableRow>
                 </TableHead>
@@ -388,6 +405,27 @@ const FieldTable = () => {
                                 <TableCell scope="row">{field.id}</TableCell>
                                 <TableCell>{field.title}</TableCell>
                                 <TableCell>{field.type}</TableCell>
+                                <TableCell>
+                                    {field.type === FormsFieldTypeEnum.info && (
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={
+                                                        createdTemplate
+                                                            ?.listIdentificationField
+                                                            ?.id === field.id
+                                                    }
+                                                    onChange={() =>
+                                                        handleSetListIdentificationField(
+                                                            field.id
+                                                        )
+                                                    }
+                                                />
+                                            }
+                                            label="Felt for identifisering av utfylt skjema"
+                                        />
+                                    )}
+                                </TableCell>
                                 <TableCell align="right">
                                     <Button
                                         onClick={() => setSelectedField(field)}

@@ -11,6 +11,7 @@ import {
     addTemplate,
     addTemplateField,
     addTemplateGroup,
+    setListIdentification,
     sortTemplateField,
     sortTemplateGroup,
     updateTemplate,
@@ -78,6 +79,7 @@ export const FormsContextProvider = ({
         }
         return false;
     };
+
     const editTemplate = async (
         template: FormsTemplate
     ): Promise<FormsTemplate | false> => {
@@ -95,6 +97,59 @@ export const FormsContextProvider = ({
                     variant: 'success'
                 });
                 return template;
+            }
+            if (status === 400) {
+                enqueueSnackbar('Tittel eller under tittel mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av mal', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av mal', {
+                variant: 'error'
+            });
+            errorHandler(error);
+        }
+        return false;
+    };
+
+    const setIdentification = async (
+        template: FormsTemplate,
+        fieldId: number
+    ): Promise<FormsTemplate | false> => {
+        try {
+            const { status } = await setListIdentification(
+                template.id,
+                fieldId
+            );
+
+            if (status === 204) {
+                console.log('updateTemplate', {
+                    ...template,
+                    listIdentificationField: { id: fieldId }
+                });
+                dispatch({
+                    type: ActionType.addTemplates,
+                    payload: [
+                        {
+                            ...template,
+                            listIdentificationField: { id: fieldId }
+                        }
+                    ]
+                });
+
+                enqueueSnackbar('Mal lagret', {
+                    variant: 'success'
+                });
+                return {
+                    ...template,
+                    listIdentificationField: { id: fieldId }
+                };
             }
             if (status === 400) {
                 enqueueSnackbar('Tittel eller under tittel mangler', {
@@ -383,6 +438,7 @@ export const FormsContextProvider = ({
 
                 newTemplate,
                 editTemplate,
+                setIdentification,
                 newTemplateGroup,
                 editTemplateGroup,
                 sortGroup,

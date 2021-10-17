@@ -43,6 +43,10 @@ export interface ContextInterface {
         description: string
     ) => Promise<FormsTemplate | false>;
     editTemplate: (template: FormsTemplate) => Promise<FormsTemplate | false>;
+    setIdentification: (
+        template: FormsTemplate,
+        fieldId: number
+    ) => Promise<FormsTemplate | false>;
     newTemplateGroup: (
         title: string,
         description: string,

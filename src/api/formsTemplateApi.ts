@@ -39,6 +39,7 @@ export const addTemplate = async (
         throw error;
     }
 };
+
 export const updateTemplate = async (
     template: FormsTemplate
 ): Promise<{
@@ -52,6 +53,32 @@ export const updateTemplate = async (
             {
                 ...template
             }
+        );
+        console.log({ status });
+        if (status === 204) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        errorHandler(error);
+        throw error;
+    }
+};
+
+export const setListIdentification = async (
+    templateId: number,
+    fieldId: number
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.put(
+            `/forms/template/set-list-identification/${templateId}/${fieldId}`,
+            {}
         );
         console.log({ status });
         if (status === 204) {

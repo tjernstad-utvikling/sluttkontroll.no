@@ -46,7 +46,8 @@ const FormsTemplateNewView = () => {
         createdTemplate,
         selectedGroup,
         setSelectedGroup,
-        selectedField
+        selectedField,
+        setSelectedField
     } = useCreateForm();
 
     const {
@@ -54,7 +55,8 @@ const FormsTemplateNewView = () => {
         editTemplate,
         newTemplateGroup,
         editTemplateGroup,
-        newTemplateField
+        newTemplateField,
+        editTemplateField
     } = useForms();
 
     const handleBack = () => {
@@ -128,19 +130,26 @@ const FormsTemplateNewView = () => {
         objectChoices: FormsObjectChoice[] | undefined,
         objectTitle: string | undefined
     ) => {
-        if (selectedGroup !== undefined) {
-            if (
-                await newTemplateField(
-                    title,
-                    type,
-                    textChoices,
-                    objectChoices,
-                    objectTitle,
-                    0,
-                    selectedGroup.id
-                )
-            )
+        if (selectedField) {
+            if (await editTemplateField(selectedField)) {
+                setSelectedField(undefined);
                 return true;
+            }
+        } else {
+            if (selectedGroup !== undefined) {
+                if (
+                    await newTemplateField(
+                        title,
+                        type,
+                        textChoices,
+                        objectChoices,
+                        objectTitle,
+                        0,
+                        selectedGroup.id
+                    )
+                )
+                    return true;
+            }
         }
         return false;
     };

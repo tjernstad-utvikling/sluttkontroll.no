@@ -187,3 +187,30 @@ export const addTemplateField = async (
         throw error;
     }
 };
+
+export const updateTemplateField = async (
+    field: FormsField
+): Promise<{
+    status: number;
+    field?: FormsField;
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.put(
+            `/forms/template/field/${field.id}`,
+            {
+                ...field
+            }
+        );
+        if (status === 200) {
+            return { status, ...data };
+        }
+        throw new Error('not 200');
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        errorHandler(error);
+        throw error;
+    }
+};

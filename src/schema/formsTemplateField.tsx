@@ -121,7 +121,7 @@ export const FormsTemplateFieldSchema = ({
     const setObjectChoices = useMemo(() => {
         if (field?.objectChoices !== undefined) {
             return field.objectChoices.map((objC) => ({
-                id: objC.id || uuidv4(),
+                id: objC.id,
                 title: objC.title,
                 text: objC.text
             }));
@@ -153,7 +153,10 @@ export const FormsTemplateFieldSchema = ({
                 if (values.type?.value !== undefined) {
                     const objectChoices = values.objectChoices.map((oc) => {
                         if (/^\d+$/.test(String(oc.id))) {
-                            return { ...oc, id: Number(oc.id) };
+                            console.log({ oc });
+                            const t = { ...oc, id: Number(oc.id) };
+                            console.log({ t });
+                            return t;
                         } else {
                             return { ...oc, id: 0 };
                         }

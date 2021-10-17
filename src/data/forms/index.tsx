@@ -1,5 +1,6 @@
 import { ActionType, ContextInterface } from './contracts';
 import {
+    FormsField,
     FormsFieldTypeEnum,
     FormsGroup,
     FormsObjectChoice,
@@ -12,6 +13,7 @@ import {
     addTemplateGroup,
     sortTemplateGroup,
     updateTemplate,
+    updateTemplateField,
     updateTemplateGroup
 } from '../../api/formsTemplateApi';
 import { initialState, reducer } from './reducer';
@@ -256,6 +258,42 @@ export const FormsContextProvider = ({
                 sortingIndex,
                 groupId
             );
+            console.log({ ...field });
+            if (status === 200 && field !== undefined) {
+                dispatch({
+                    type: ActionType.addFields,
+                    payload: [field]
+                });
+
+                enqueueSnackbar('Felt lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (status === 400) {
+                enqueueSnackbar('Tittel eller type mangler', {
+                    variant: 'warning'
+                });
+                return false;
+            }
+
+            enqueueSnackbar('Ukjent feil ved lagring av felt', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av felt', {
+                variant: 'error'
+            });
+            errorHandler(error);
+        }
+        return false;
+    };
+    const editTemplateField = async (
+        updateField: FormsField
+    ): Promise<boolean> => {
+        try {
+            const { status, field } = await updateTemplateField(updateField);
             if (status === 200 && field !== undefined) {
                 dispatch({
                     type: ActionType.addFields,
@@ -297,7 +335,8 @@ export const FormsContextProvider = ({
                 newTemplateGroup,
                 editTemplateGroup,
                 sortGroup,
-                newTemplateField
+                newTemplateField,
+                editTemplateField
             }}>
             {children}
         </Context.Provider>

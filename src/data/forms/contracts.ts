@@ -48,6 +48,7 @@ export interface ContextInterface {
         description: string,
         templateId: number
     ) => Promise<boolean>;
+    editTemplateGroup: (group: FormsGroup) => Promise<boolean>;
     sortGroup: (
         groups: FormsGroup[],
         startIndex: number,
@@ -62,5 +63,5 @@ export interface ContextInterface {
         sortingIndex: number,
         groupId: number
     ) => Promise<boolean>;
-    editTemplateGroup: (group: FormsGroup) => Promise<boolean>;
+    editTemplateField: (field: FormsField) => Promise<boolean>;
 }

@@ -118,6 +118,7 @@ export const setListIdentification = async (
 export const addTemplateGroup = async (
     title: string,
     description: string,
+    showGroupTitle: boolean,
     templateId: number
 ): Promise<{
     status: number;
@@ -129,7 +130,8 @@ export const addTemplateGroup = async (
             `/forms/template/group/${templateId}`,
             {
                 title,
-                description
+                description,
+                showGroupTitle
             }
         );
         if (status === 200) {

@@ -207,12 +207,14 @@ export const FormsContextProvider = ({
     const newTemplateGroup = async (
         title: string,
         description: string,
+        showGroupTitle: boolean,
         templateId: number
     ): Promise<boolean> => {
         try {
             const { status, group } = await addTemplateGroup(
                 title,
                 description,
+                showGroupTitle,
                 templateId
             );
             if (status === 200 && group !== undefined) {

@@ -11,6 +11,7 @@ export interface FormsGroup {
     title?: string;
     description?: string;
     sortingIndex: number;
+    showGroupTitle: boolean;
     template: FormsTemplate;
 }
 

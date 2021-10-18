@@ -51,6 +51,7 @@ export interface ContextInterface {
     newTemplateGroup: (
         title: string,
         description: string,
+        showGroupTitle: boolean,
         templateId: number
     ) => Promise<boolean>;
     editTemplateGroup: (group: FormsGroup) => Promise<boolean>;

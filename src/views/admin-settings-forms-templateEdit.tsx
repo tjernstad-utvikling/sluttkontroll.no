@@ -101,13 +101,18 @@ const FormsTemplateNewView = () => {
         return false;
     };
 
-    const onSaveGroup = async (title: string, description: string) => {
+    const onSaveGroup = async (
+        title: string,
+        description: string,
+        showGroupTitle: boolean
+    ) => {
         if (selectedGroup) {
             if (
                 await editTemplateGroup({
                     ...selectedGroup,
                     title,
-                    description
+                    description,
+                    showGroupTitle
                 })
             ) {
                 setSelectedGroup(undefined);
@@ -119,6 +124,7 @@ const FormsTemplateNewView = () => {
                     await newTemplateGroup(
                         title,
                         description,
+                        showGroupTitle,
                         createdTemplate.id
                     )
                 )

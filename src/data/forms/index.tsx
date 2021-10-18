@@ -5,7 +5,7 @@ import {
     FormsGroup,
     FormsObjectChoice,
     FormsTemplate
-} from '../../contracts/sjaApi';
+} from '../../contracts/formsApi';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import {
     addTemplate,

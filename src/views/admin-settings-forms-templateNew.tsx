@@ -14,7 +14,7 @@ import {
     DraggableComponent,
     DroppableComponent
 } from '../components/droppable';
-import { FormsFieldTypeEnum, FormsObjectChoice } from '../contracts/sjaApi';
+import { FormsFieldTypeEnum, FormsObjectChoice } from '../contracts/formsApi';
 
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
 import ButtonGroup from '@mui/material/ButtonGroup';

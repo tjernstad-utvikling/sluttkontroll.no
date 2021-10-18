@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik';
 
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { FormsTemplate } from '../contracts/sjaApi';
+import { FormsTemplate } from '../contracts/formsApi';
 import MuiLoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
 import { TextField } from '../components/input';

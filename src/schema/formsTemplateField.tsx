@@ -5,7 +5,7 @@ import {
     FormsField,
     FormsFieldTypeEnum,
     FormsObjectChoice
-} from '../contracts/sjaApi';
+} from '../contracts/formsApi';
 
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';

@@ -5,7 +5,7 @@ import { Form, Formik } from 'formik';
 
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { FormsGroup } from '../contracts/sjaApi';
+import { FormsGroup } from '../contracts/formsApi';
 import Grid from '@mui/material/Grid';
 import MuiLoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';

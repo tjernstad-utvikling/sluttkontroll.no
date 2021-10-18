@@ -2,7 +2,7 @@ import { GridCellParams, GridColDef, GridRowData } from '@mui/x-data-grid-pro';
 
 import { BaseTable } from './baseTable';
 import EditIcon from '@mui/icons-material/Edit';
-import { FormsTemplate } from '../contracts/sjaApi';
+import { FormsTemplate } from '../contracts/formsApi';
 import { RowAction } from './tableUtils';
 import { Template } from '../contracts/skjemaTemplateApi';
 

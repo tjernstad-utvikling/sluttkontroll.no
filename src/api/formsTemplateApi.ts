@@ -4,7 +4,7 @@ import {
     FormsGroup,
     FormsObjectChoice,
     FormsTemplate
-} from '../contracts/sjaApi';
+} from '../contracts/formsApi';
 
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';

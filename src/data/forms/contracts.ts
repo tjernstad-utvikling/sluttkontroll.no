@@ -4,7 +4,7 @@ import {
     FormsGroup,
     FormsObjectChoice,
     FormsTemplate
-} from '../../contracts/sjaApi';
+} from '../../contracts/formsApi';
 
 export interface State {
     templates: FormsTemplate[] | undefined;

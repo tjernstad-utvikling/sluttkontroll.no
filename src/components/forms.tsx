@@ -1,4 +1,4 @@
-import { FormsField, FormsGroup, FormsTemplate } from '../contracts/sjaApi';
+import { FormsField, FormsGroup, FormsTemplate } from '../contracts/formsApi';
 import { createContext, useContext, useState } from 'react';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);

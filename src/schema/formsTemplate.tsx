@@ -34,6 +34,7 @@ export const FormsTemplateSchema = ({
                 title: Yup.string().required('Tittel er påkrevd'),
                 subTitle: Yup.string().required('Under tittel er påkrevd')
             })}
+            enableReinitialize
             onSubmit={async (values, { setSubmitting }) => {
                 await onSubmit(
                     values.title,

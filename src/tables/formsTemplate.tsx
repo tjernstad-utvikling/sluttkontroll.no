@@ -1,7 +1,6 @@
 import { GridCellParams, GridColDef, GridRowData } from '@mui/x-data-grid-pro';
 
 import { BaseTable } from './baseTable';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { FormsTemplate } from '../contracts/sjaApi';
 import { RowAction } from './tableUtils';
@@ -15,13 +14,10 @@ export const TemplateValueGetter = (data: Template | GridRowData) => {
     return { count };
 };
 
-// interface ColumnsParams {
-//     path?: string;
-//     deleteTemplate?: (templateId: number) => void;
-//     onSelectTemplate?: (templateId: number) => void;
-//     selectTemplate?: boolean;
-// }
-export const columns = () => {
+interface ColumnsParams {
+    path: string;
+}
+export const columns = ({ path }: ColumnsParams) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -47,24 +43,13 @@ export const columns = () => {
             renderCell: (params: GridCellParams) => {
                 return (
                     <RowAction
-                        actionItems={
-                            []
-                            //     [
-                            //     {
-                            //         name: 'Rediger',
-                            //         to: `${path}/${params.row.id}`,
-                            //         icon: <EditIcon />
-                            //     },
-                            //     {
-                            //         name: 'Slett',
-                            //         action: () => {
-                            //             if (deleteTemplate !== undefined)
-                            //                 deleteTemplate(params.row.id);
-                            //         },
-                            //         icon: <DeleteForeverIcon />
-                            //     }
-                            // ]
-                        }
+                        actionItems={[
+                            {
+                                name: 'Rediger',
+                                to: `${path}/${params.row.id}`,
+                                icon: <EditIcon />
+                            }
+                        ]}
                     />
                 );
             }

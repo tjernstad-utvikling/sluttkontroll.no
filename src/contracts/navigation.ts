@@ -41,3 +41,6 @@ export interface EditUserViewParams {
 export interface AdminTemplateEditViewParams {
     templateId: string;
 }
+export interface AdminFormsTemplateEditViewParams {
+    templateId: string;
+}

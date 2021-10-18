@@ -11,9 +11,12 @@ import { TableContainer } from '../tables/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useForms } from '../data/forms';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useRouteMatch } from 'react-router';
 
 const FormsTemplatesView = () => {
     const { classes } = usePageStyles();
+
+    const { path } = useRouteMatch();
 
     const {
         state: { templates },
@@ -45,7 +48,7 @@ const FormsTemplatesView = () => {
                             <CardContent>
                                 {templates !== undefined ? (
                                     <TableContainer
-                                        columns={columns()}
+                                        columns={columns({ path })}
                                         defaultColumns={defaultColumns}
                                         tableId="formsTemplates">
                                         <FormsTemplateTable

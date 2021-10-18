@@ -6,11 +6,12 @@ import {
     FormsObjectChoice,
     FormsTemplate
 } from '../../contracts/sjaApi';
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer, useState } from 'react';
 import {
     addTemplate,
     addTemplateField,
     addTemplateGroup,
+    getAllTemplates,
     setListIdentification,
     sortTemplateField,
     sortTemplateGroup,
@@ -35,8 +36,40 @@ export const FormsContextProvider = ({
     children: React.ReactNode;
 }): JSX.Element => {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [hasLoadedTemplates, setHasLoadedTemplates] =
+        useState<boolean>(false);
 
     const { enqueueSnackbar } = useSnackbar();
+
+    const loadTemplates = async (): Promise<void> => {
+        if (!hasLoadedTemplates) {
+            try {
+                const { status, templates, groups, fields } =
+                    await getAllTemplates();
+
+                if (status === 200) {
+                    if (templates !== undefined)
+                        dispatch({
+                            type: ActionType.addTemplates,
+                            payload: templates
+                        });
+                    if (groups !== undefined)
+                        dispatch({
+                            type: ActionType.addGroups,
+                            payload: groups
+                        });
+                    if (fields !== undefined)
+                        dispatch({
+                            type: ActionType.addFields,
+                            payload: fields
+                        });
+                }
+            } catch (error: any) {
+                errorHandler(error);
+            }
+            setHasLoadedTemplates(true);
+        }
+    };
 
     const newTemplate = async (
         title: string,
@@ -435,6 +468,8 @@ export const FormsContextProvider = ({
         <Context.Provider
             value={{
                 state,
+
+                loadTemplates,
 
                 newTemplate,
                 editTemplate,

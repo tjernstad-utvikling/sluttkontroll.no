@@ -37,6 +37,7 @@ export type Actions = addTemplates | addGroups | addFields;
 
 export interface ContextInterface {
     state: State;
+    loadTemplates: () => void;
     newTemplate: (
         title: string,
         subTitle: string,

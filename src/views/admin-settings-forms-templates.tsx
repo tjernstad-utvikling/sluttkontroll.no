@@ -1,11 +1,28 @@
 import { Card, CardContent, CardMenu } from '../components/card';
+import {
+    FormsTemplateTable,
+    columns,
+    defaultColumns
+} from '../tables/formsTemplate';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { TableContainer } from '../tables/tableContainer';
+import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useForms } from '../data/forms';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const FormsTemplatesView = () => {
     const { classes } = usePageStyles();
+
+    const {
+        state: { templates },
+        loadTemplates
+    } = useForms();
+
+    useEffectOnce(() => {
+        loadTemplates();
+    });
 
     return (
         <>
@@ -26,7 +43,18 @@ const FormsTemplatesView = () => {
                                 />
                             }>
                             <CardContent>
-                                <div />
+                                {templates !== undefined ? (
+                                    <TableContainer
+                                        columns={columns()}
+                                        defaultColumns={defaultColumns}
+                                        tableId="formsTemplates">
+                                        <FormsTemplateTable
+                                            templates={templates}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster maler</div>
+                                )}
                             </CardContent>
                         </Card>
                     </Grid>

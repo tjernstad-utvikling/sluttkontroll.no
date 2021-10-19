@@ -21,3 +21,22 @@ export const getFormsByCurrentUser = async (): Promise<{
         throw error;
     }
 };
+
+export const getFormsDocument = async (): Promise<{
+    status: number;
+    data: Blob;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `/download/forms-document/${4}`,
+            {
+                responseType: 'blob'
+            }
+        );
+
+        return { status, data: data };
+    } catch (error: any) {
+        errorHandler(error);
+        throw new Error(error);
+    }
+};

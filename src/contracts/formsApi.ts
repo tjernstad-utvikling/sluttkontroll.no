@@ -1,3 +1,15 @@
+export interface Forms {
+    id: number;
+    sjaFormFields: FormsField[];
+    template: FormsTemplate;
+    user: { id: string; name: string };
+}
+
+export interface FormsField {
+    date: Date;
+    id: number;
+    text: string;
+}
 export interface FormsTemplate {
     id: number;
     title: string;

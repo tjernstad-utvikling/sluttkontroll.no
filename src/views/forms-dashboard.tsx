@@ -27,22 +27,27 @@ const FormsView = () => {
         }
     });
 
-    const download = async () => {
+    const onDownloadForm = async (formId: number) => {
+        const form = forms?.find((f) => f.id === formId);
+        const identification = form?.sjaFormFields.find(
+            (ff) => ff.field.id === form.template.listIdentificationField.id
+        );
         try {
-            const response = await getFormsDocument();
+            const response = await getFormsDocument(formId);
 
             const fileURL = window.URL.createObjectURL(
                 new Blob([response.data])
             );
             const fileLink = document.createElement('a');
             fileLink.href = fileURL;
-            fileLink.setAttribute('download', 'skjema.pdf');
+            fileLink.setAttribute(
+                'download',
+                `Skjema-${identification?.text || ''}.pdf'`
+            );
             document.body.appendChild(fileLink);
             fileLink.click();
         } catch (error) {}
     };
-
-    const onDownloadForm = async (formId: number) => {};
 
     return (
         <>
@@ -52,9 +57,6 @@ const FormsView = () => {
                     <Grid item xs={12}>
                         <Card title="Utfylte skjemaer">
                             <CardContent>
-                                <button onClick={download}>
-                                    Test download
-                                </button>
                                 {forms !== undefined ? (
                                     <TableContainer
                                         columns={columns({

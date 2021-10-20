@@ -22,13 +22,15 @@ export const getFormsByCurrentUser = async (): Promise<{
     }
 };
 
-export const getFormsDocument = async (): Promise<{
+export const getFormsDocument = async (
+    formId: number
+): Promise<{
     status: number;
     data: Blob;
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/download/forms-document/${4}`,
+            `/download/forms-document/${formId}`,
             {
                 responseType: 'blob'
             }

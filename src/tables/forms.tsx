@@ -1,4 +1,4 @@
-import { Forms, FormsField } from '../contracts/formsApi';
+import { FilledField, Forms } from '../contracts/formsApi';
 import {
     GridCellParams,
     GridColDef,
@@ -9,15 +9,22 @@ import {
 import { BaseTable } from './baseTable';
 import IconButton from '@mui/material/IconButton';
 import PrintIcon from '@mui/icons-material/Print';
+import { format } from 'date-fns';
 
 export const ValueGetter = (data: Forms | GridRowData) => {
     const skjema = (): string => {
         return (
             data.sjaFormFields.find(
-                (f: FormsField) =>
-                    f.id === data.template.listIdentificationField?.id
-            ) || ''
+                (f: FilledField) =>
+                    f.field.id === data.template.listIdentificationField?.id
+            )?.text || ''
         );
+    };
+    const date = (dateFormat: string): string => {
+        const date = data.sjaFormFields.find(
+            (f: FilledField) => f.field.id === data.template.listDateField?.id
+        )?.date;
+        return (date && format(new Date(date), dateFormat)) || '';
     };
     const title = (): string => {
         return data.template.title;
@@ -29,7 +36,7 @@ export const ValueGetter = (data: Forms | GridRowData) => {
         return data.user.name;
     };
 
-    return { skjema, title, subTitle, user };
+    return { skjema, title, subTitle, user, date };
 };
 
 interface ColumnsParams {
@@ -48,6 +55,13 @@ export const columns = ({ onDownloadForm }: ColumnsParams) => {
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 ValueGetter(params.row).skjema()
+        },
+        {
+            field: 'date',
+            headerName: 'Signert dato',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                ValueGetter(params.row).date('dd.MM.Y')
         },
         {
             field: 'user',
@@ -108,6 +122,14 @@ export const FormsTable = ({ forms }: FormsTableProps) => {
                     .sort((a, b) =>
                         String(ValueGetter(a).skjema()).localeCompare(
                             String(ValueGetter(b).skjema())
+                        )
+                    );
+            case 'date':
+                return data
+                    .slice()
+                    .sort((a, b) =>
+                        String(ValueGetter(a).skjema()).localeCompare(
+                            String(ValueGetter(b).date('Y-MM-dd'))
                         )
                     );
             case 'title':

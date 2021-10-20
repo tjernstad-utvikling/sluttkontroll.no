@@ -19,6 +19,7 @@ export interface FormsTemplate {
     subTitle: string;
     description: string;
     listIdentificationField: { id: number };
+    listDateField: { id: number };
 }
 
 export interface FormsGroup {

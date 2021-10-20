@@ -6,6 +6,7 @@ import Container from '@mui/material/Container';
 import { Forms } from '../contracts/formsApi';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
+import { format } from 'date-fns';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
@@ -31,6 +32,9 @@ const FormsView = () => {
         const identification = form?.sjaFormFields.find(
             (ff) => ff.field.id === form.template.listIdentificationField.id
         );
+        const dateField = form?.sjaFormFields.find(
+            (ff) => ff.field.id === form.template.listDateField.id
+        );
         try {
             const response = await getFormsDocument(formId);
 
@@ -41,7 +45,11 @@ const FormsView = () => {
             fileLink.href = fileURL;
             fileLink.setAttribute(
                 'download',
-                `Skjema-${identification?.text || ''}.pdf`
+                `Skjema ${identification?.text || ''} ${
+                    (dateField?.date &&
+                        format(new Date(dateField.date), 'dd.MM.Y')) ||
+                    ''
+                }.pdf`
             );
             document.body.appendChild(fileLink);
             fileLink.click();

@@ -117,9 +117,8 @@ export const FormsContextProvider = ({
         template: FormsTemplate
     ): Promise<FormsTemplate | false> => {
         try {
-            console.log('before updateTemplate', { template });
             const { status } = await updateTemplate(template);
-            console.log('after updateTemplate', { status });
+
             if (status === 204) {
                 dispatch({
                     type: ActionType.addTemplates,
@@ -162,10 +161,6 @@ export const FormsContextProvider = ({
             );
 
             if (status === 204) {
-                console.log('updateTemplate', {
-                    ...template,
-                    listIdentificationField: { id: fieldId }
-                });
                 dispatch({
                     type: ActionType.addTemplates,
                     payload: [
@@ -349,7 +344,7 @@ export const FormsContextProvider = ({
                 sortingIndex,
                 groupId
             );
-            console.log({ ...field });
+
             if (status === 200 && field !== undefined) {
                 dispatch({
                     type: ActionType.addFields,
@@ -386,7 +381,7 @@ export const FormsContextProvider = ({
     ): Promise<boolean> => {
         try {
             const { status, field } = await updateTemplateField(updateField);
-            console.log('editTemplateField', { field });
+
             if (status === 200 && field !== undefined) {
                 dispatch({
                     type: ActionType.addFields,

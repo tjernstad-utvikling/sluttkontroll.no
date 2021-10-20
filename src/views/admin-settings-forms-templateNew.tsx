@@ -386,7 +386,6 @@ const FieldTable = () => {
             );
         }
     }
-    console.log(createdTemplate);
 
     return (
         <TableContainer component={Paper}>

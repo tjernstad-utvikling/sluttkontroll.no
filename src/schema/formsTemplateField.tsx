@@ -153,10 +153,7 @@ export const FormsTemplateFieldSchema = ({
                 if (values.type?.value !== undefined) {
                     const objectChoices = values.objectChoices.map((oc) => {
                         if (/^\d+$/.test(String(oc.id))) {
-                            console.log({ oc });
-                            const t = { ...oc, id: Number(oc.id) };
-                            console.log({ t });
-                            return t;
+                            return { ...oc, id: Number(oc.id) };
                         } else {
                             return { ...oc, id: 0 };
                         }

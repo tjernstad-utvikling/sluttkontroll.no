@@ -20,7 +20,6 @@ const FormsView = () => {
             const res = await getFormsByCurrentUser();
             if (res.status === 200) {
                 setForms(res.forms);
-                console.log({ ...res });
             }
         } catch (error: any) {
             console.error(error);

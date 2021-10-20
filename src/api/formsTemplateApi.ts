@@ -67,7 +67,6 @@ export const updateTemplate = async (
     status: number;
     message?: string;
 }> => {
-    console.log('updateTemplateApi Befor put');
     try {
         const { status, data } = await sluttkontrollApi.put(
             `/forms/template/${template.id}`,
@@ -75,7 +74,7 @@ export const updateTemplate = async (
                 ...template
             }
         );
-        console.log({ status });
+
         if (status === 204) {
             return { status, ...data };
         }
@@ -101,7 +100,7 @@ export const setListIdentification = async (
             `/forms/template/set-list-identification/${templateId}/${fieldId}`,
             {}
         );
-        console.log({ status });
+
         if (status === 204) {
             return { status, ...data };
         }

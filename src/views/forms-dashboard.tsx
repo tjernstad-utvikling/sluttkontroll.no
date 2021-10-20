@@ -41,7 +41,7 @@ const FormsView = () => {
             fileLink.href = fileURL;
             fileLink.setAttribute(
                 'download',
-                `Skjema-${identification?.text || ''}.pdf'`
+                `Skjema-${identification?.text || ''}.pdf`
             );
             document.body.appendChild(fileLink);
             fileLink.click();

@@ -6,15 +6,19 @@ import Container from '@mui/material/Container';
 import { Forms } from '../contracts/formsApi';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
+import { errorHandler } from '../tools/errorHandler';
 import { format } from 'date-fns';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 const FormsView = () => {
     const { classes } = usePageStyles();
 
     const [forms, setForms] = useState<Forms[]>();
+
+    const { enqueueSnackbar } = useSnackbar();
 
     useEffectOnce(async () => {
         try {
@@ -28,14 +32,15 @@ const FormsView = () => {
     });
 
     const onDownloadForm = async (formId: number) => {
-        const form = forms?.find((f) => f.id === formId);
-        const identification = form?.sjaFormFields.find(
-            (ff) => ff.field.id === form.template.listIdentificationField.id
-        );
-        const dateField = form?.sjaFormFields.find(
-            (ff) => ff.field.id === form.template.listDateField.id
-        );
         try {
+            const form = forms?.find((f) => f.id === formId);
+            const identification = form?.sjaFormFields.find(
+                (ff) => ff.field.id === form.template.listIdentificationField.id
+            );
+            const dateField = form?.sjaFormFields.find(
+                (ff) => ff.field.id === form.template.listDateField.id
+            );
+
             const response = await getFormsDocument(formId);
 
             const fileURL = window.URL.createObjectURL(
@@ -53,7 +58,15 @@ const FormsView = () => {
             );
             document.body.appendChild(fileLink);
             fileLink.click();
-        } catch (error) {}
+        } catch (error) {
+            errorHandler(error);
+            enqueueSnackbar(
+                'Det har oppstått problemer med generering av pdf',
+                {
+                    variant: 'error'
+                }
+            );
+        }
     };
 
     return (

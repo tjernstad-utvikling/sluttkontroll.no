@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     NavLink as RouterLink,
     NavLinkProps as RouterLinkProps
@@ -20,7 +20,11 @@ import { useClient } from '../data/klient';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useMainStyles } from '../styles/layout/main';
 
-export const KlientMenu = (): JSX.Element => {
+export const KlientMenu = ({
+    searchString
+}: {
+    searchString: string | undefined;
+}): JSX.Element => {
     const {
         state: { klienter },
         loadKlienter
@@ -29,10 +33,33 @@ export const KlientMenu = (): JSX.Element => {
         loadKlienter();
     });
 
-    if (klienter !== undefined) {
+    const [filteredClients, setFilteredClients] = useState<Klient[]>();
+
+    useEffect(() => {
+        if (searchString && searchString.length > 2) {
+            setFilteredClients(
+                klienter?.filter((klient) => {
+                    return (
+                        klient.name
+                            .toLowerCase()
+                            .includes(searchString.toLowerCase()) ||
+                        klient.locations.filter((location) =>
+                            location.name
+                                .toLowerCase()
+                                .includes(searchString.toLowerCase())
+                        ).length > 0
+                    );
+                })
+            );
+        } else {
+            setFilteredClients(klienter);
+        }
+    }, [klienter, searchString]);
+
+    if (filteredClients !== undefined) {
         return (
             <List aria-label="Klienter">
-                {klienter.map((klient) => (
+                {filteredClients.map((klient) => (
                     <KlientListItem klient={klient} key={klient.id} />
                 ))}
             </List>

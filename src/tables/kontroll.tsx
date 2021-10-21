@@ -106,7 +106,7 @@ export const kontrollColumns = (
                 ).localeCompare(
                     String(
                         KontrollValueGetter(
-                            param2.api.getRow(param1.id)
+                            param2.api.getRow(param2.id)
                         ).klient(klienter)
                     )
                 )
@@ -116,7 +116,19 @@ export const kontrollColumns = (
             headerName: 'Lokasjon',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).objekt(klienter)
+                KontrollValueGetter(params.row).objekt(klienter),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    KontrollValueGetter(param1.api.getRow(param1.id)).objekt(
+                        klienter
+                    )
+                ).localeCompare(
+                    String(
+                        KontrollValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).objekt(klienter)
+                    )
+                )
         },
         {
             field: 'name',
@@ -141,7 +153,12 @@ export const kontrollColumns = (
                         {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
                     </span>
                 </Link>
-            )
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                KontrollValueGetter(param1.api.getRow(param1.id)).avvik(avvik)
+                    .open -
+                KontrollValueGetter(param2.api.getRow(param2.id)).avvik(avvik)
+                    .open
         },
         {
             field: 'measurement',
@@ -152,14 +169,33 @@ export const kontrollColumns = (
                     to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/measurement`}>
                     {KontrollValueGetter(params.row).measurement(measurements)}
                 </Link>
-            )
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                KontrollValueGetter(param1.api.getRow(param1.id)).measurement(
+                    measurements
+                ) -
+                KontrollValueGetter(param2.api.getRow(param2.id)).measurement(
+                    measurements
+                )
         },
         {
             field: 'user',
             headerName: 'Utførende',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).user(users)
+                KontrollValueGetter(params.row).user(users),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    KontrollValueGetter(param1.api.getRow(param1.id)).user(
+                        users
+                    )
+                ).localeCompare(
+                    String(
+                        KontrollValueGetter(param2.api.getRow(param2.id)).user(
+                            users
+                        )
+                    )
+                )
         },
         {
             field: 'kommentar',

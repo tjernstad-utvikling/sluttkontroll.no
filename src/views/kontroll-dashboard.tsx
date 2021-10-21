@@ -103,10 +103,6 @@ const KontrollerView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
-                                            klienter={klienter ?? []}
-                                            avvik={avvik ?? []}
-                                            users={users ?? []}
-                                            measurements={measurements ?? []}
                                             kontroller={_kontroller}
                                         />
                                     </TableContainer>

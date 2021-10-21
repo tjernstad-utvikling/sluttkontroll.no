@@ -65,31 +65,5 @@ interface TemplateTableProps {
     templates: FormsTemplate[];
 }
 export const FormsTemplateTable = ({ templates }: TemplateTableProps) => {
-    function CustomSort<T extends keyof FormsTemplate>(
-        data: FormsTemplate[],
-        field: T
-    ): FormsTemplate[] {
-        switch (field.toString()) {
-            case 'count':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(TemplateValueGetter(a).count()).localeCompare(
-                            String(TemplateValueGetter(b).count()),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    );
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            data={templates}
-            customSort={CustomSort}
-            customSortFields={[]}
-        />
-    );
+    return <BaseTable data={templates} />;
 };

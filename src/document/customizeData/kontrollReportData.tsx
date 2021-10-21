@@ -134,9 +134,6 @@ export const KontrollDocAdjusting = ({
                             tableId="skjemaer">
                             <SkjemaTable
                                 skjemaer={_skjemaer}
-                                kontroller={state.kontroller ?? []}
-                                avvik={avvik ?? []}
-                                measurements={measurements ?? []}
                                 onSelected={(ids) => {
                                     setFilteredSkjemaer(
                                         state?.skjemaer?.filter(

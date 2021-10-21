@@ -217,8 +217,6 @@ const AvvikView = () => {
                                         tableId="avvik">
                                         {showTable ? (
                                             <AvvikTable
-                                                skjemaer={skjemaer}
-                                                kontroller={kontroller ?? []}
                                                 avvik={_avvik ?? []}
                                                 selected={selected}
                                                 onSelected={(avvik) => {

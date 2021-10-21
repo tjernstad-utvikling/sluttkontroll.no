@@ -239,21 +239,5 @@ interface InstrumentTableProps {
     instruments: Instrument[];
 }
 export const InstrumentTable = ({ instruments }: InstrumentTableProps) => {
-    function instrumentCustomSort<T extends keyof Instrument>(
-        data: Instrument[],
-        field: T
-    ): Instrument[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            data={instruments}
-            customSort={instrumentCustomSort}
-            customSortFields={['sisteKalibrert', 'user', 'disponent']}
-        />
-    );
+    return <BaseTable data={instruments} />;
 };

@@ -98,9 +98,6 @@ const SkjemaerView = () => {
                                         tableId="skjemaer">
                                         <SkjemaTable
                                             skjemaer={_skjemaer}
-                                            kontroller={kontroller ?? []}
-                                            avvik={avvik ?? []}
-                                            measurements={measurements ?? []}
                                             onSelected={() => console.log()}
                                         />
                                     </TableContainer>

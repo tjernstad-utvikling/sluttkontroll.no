@@ -120,21 +120,5 @@ interface TemplateTableProps {
     templates: Template[];
 }
 export const TemplateTable = ({ templates }: TemplateTableProps) => {
-    function CustomSort<T extends keyof Template>(
-        data: Template[],
-        field: T
-    ): Template[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            data={templates}
-            customSort={CustomSort}
-            customSortFields={[]}
-        />
-    );
+    return <BaseTable data={templates} />;
 };

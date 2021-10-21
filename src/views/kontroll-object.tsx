@@ -166,10 +166,6 @@ const KontrollObjektView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
-                                            users={users ?? []}
-                                            avvik={avvik ?? []}
-                                            measurements={measurements ?? []}
-                                            klienter={klienter ?? []}
                                             kontroller={_kontroller}
                                         />
                                     </TableContainer>

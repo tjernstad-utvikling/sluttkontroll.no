@@ -96,14 +96,5 @@ interface UserTableProps {
     users: User[];
 }
 export const UserTable = ({ users }: UserTableProps) => {
-    function CustomSort<T extends keyof User>(data: User[], field: T): User[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable data={users} customSort={CustomSort} customSortFields={[]} />
-    );
+    return <BaseTable data={users} />;
 };

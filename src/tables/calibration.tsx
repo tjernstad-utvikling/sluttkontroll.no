@@ -100,21 +100,5 @@ interface CalibrationTableProps {
     calibrations: Kalibrering[];
 }
 export const CalibrationTable = ({ calibrations }: CalibrationTableProps) => {
-    function customSort<T extends keyof Kalibrering>(
-        data: Kalibrering[],
-        field: T
-    ): Kalibrering[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            data={calibrations}
-            customSort={customSort}
-            customSortFields={[]}
-        />
-    );
+    return <BaseTable data={calibrations} />;
 };

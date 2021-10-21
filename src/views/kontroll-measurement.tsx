@@ -123,8 +123,6 @@ const MeasurementsView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="measurements">
                                         <MeasurementTable
-                                            skjemaer={skjemaer}
-                                            kontroller={kontroller ?? []}
                                             measurements={_measurements ?? []}
                                         />
                                     </TableContainer>

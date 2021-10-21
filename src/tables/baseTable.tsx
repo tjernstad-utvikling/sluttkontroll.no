@@ -18,21 +18,18 @@ export enum RowStylingEnum {
     disabled = 'disabled'
 }
 
-interface BaseTableProps<T, K extends keyof T> {
+interface BaseTableProps<T> {
     data: Array<T>;
-    customSort: (data: T[], field: K) => T[];
-    customSortFields: any[];
     selectionModel?: number[] | undefined;
     onSelected?: (ids: number[]) => void;
     getRowStyling?: (row: GridRowData) => RowStylingEnum | undefined;
 }
-export const BaseTable = <T extends Data, K extends keyof T>({
+export const BaseTable = <T extends Data>({
     data,
-
     selectionModel,
     onSelected,
     getRowStyling
-}: BaseTableProps<T, K>) => {
+}: BaseTableProps<T>) => {
     const { columns } = useTable();
 
     const [sortModel, setSortModel] = useState<GridSortModel>([

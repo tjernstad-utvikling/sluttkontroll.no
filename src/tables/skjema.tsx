@@ -191,34 +191,9 @@ export const defaultColumns: Array<string> = ['area', 'omrade', 'kontroll'];
 
 interface SkjemaTableProps {
     skjemaer: Skjema[];
-    kontroller: Kontroll[];
-    avvik: Avvik[];
-    measurements: Measurement[];
+
     onSelected: (ids: number[]) => void;
 }
-export const SkjemaTable = ({
-    skjemaer,
-    kontroller,
-    avvik,
-    measurements,
-    onSelected
-}: SkjemaTableProps) => {
-    function CustomSort<T extends keyof Skjema>(
-        data: Skjema[],
-        field: T
-    ): Skjema[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            onSelected={onSelected}
-            data={skjemaer}
-            customSort={CustomSort}
-            customSortFields={[]}
-        />
-    );
+export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
+    return <BaseTable onSelected={onSelected} data={skjemaer} />;
 };

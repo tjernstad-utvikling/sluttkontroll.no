@@ -177,34 +177,13 @@ export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 
 interface SjekklisteTableProps {
     checklists: Array<Checklist>;
-    avvik: Array<Avvik>;
 }
-export const SjekklisteTable = ({
-    checklists,
-    avvik
-}: SjekklisteTableProps) => {
-    function CustomSort<T extends keyof Checklist>(
-        data: Checklist[],
-        field: T
-    ): Checklist[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
+export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
     const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
         if (!row.aktuell) {
             return RowStylingEnum.disabled;
         }
     };
 
-    return (
-        <BaseTable
-            data={checklists}
-            customSort={CustomSort}
-            customSortFields={['prosedyre', 'prosedyreNr', 'avvik']}
-            getRowStyling={getRowStyling}
-        />
-    );
+    return <BaseTable data={checklists} getRowStyling={getRowStyling} />;
 };

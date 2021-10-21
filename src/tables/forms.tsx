@@ -143,21 +143,5 @@ interface FormsTableProps {
     forms: Forms[];
 }
 export const FormsTable = ({ forms }: FormsTableProps) => {
-    function CustomSort<T extends keyof Forms>(
-        data: Forms[],
-        field: T
-    ): Forms[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            data={forms}
-            customSort={CustomSort}
-            customSortFields={['skjema', 'title', 'subTitle', 'user']}
-        />
-    );
+    return <BaseTable data={forms} />;
 };

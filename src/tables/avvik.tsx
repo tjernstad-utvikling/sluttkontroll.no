@@ -211,28 +211,14 @@ export const defaultColumns: Array<string> = [
 
 interface AvvikTableProps {
     avvik: Avvik[];
-    kontroller: Kontroll[];
-    skjemaer: Skjema[];
     onSelected: (ids: number[]) => void;
     selected: number[];
 }
 export const AvvikTable = ({
-    kontroller,
     avvik,
-    skjemaer,
     onSelected,
     selected
 }: AvvikTableProps) => {
-    function CustomSort<T extends keyof Avvik>(
-        data: Avvik[],
-        field: T
-    ): Avvik[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
     const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
         if (row.status === 'lukket') {
             return RowStylingEnum.completed;
@@ -243,8 +229,6 @@ export const AvvikTable = ({
         <BaseTable
             data={avvik}
             onSelected={onSelected}
-            customSort={CustomSort}
-            customSortFields={[]}
             getRowStyling={getRowStyling}
             selectionModel={selected}
         />

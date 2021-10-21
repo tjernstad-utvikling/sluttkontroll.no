@@ -80,22 +80,11 @@ export const CheckpointTable = ({
         }
     }, [checklists, templateList]);
 
-    function CustomSort<T extends keyof Checkpoint>(
-        data: Checkpoint[],
-        field: T
-    ): Checkpoint[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
     return (
         <BaseTable
             selectionModel={selectionModel}
             onSelected={onSelected}
             data={checkpoints}
-            customSort={CustomSort}
-            customSortFields={[]}
         />
     );
 };

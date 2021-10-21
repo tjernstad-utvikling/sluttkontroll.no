@@ -151,29 +151,7 @@ export const defaultColumns: Array<string> = [
 
 interface MeasurementTableProps {
     measurements: Measurement[];
-    kontroller: Kontroll[];
-    skjemaer: Skjema[];
 }
-export const MeasurementTable = ({
-    kontroller,
-    measurements,
-    skjemaer
-}: MeasurementTableProps) => {
-    function CustomSort<T extends keyof Measurement>(
-        data: Measurement[],
-        field: T
-    ): Measurement[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            data={measurements}
-            customSort={CustomSort}
-            customSortFields={['kontroll', 'skjema']}
-        />
-    );
+export const MeasurementTable = ({ measurements }: MeasurementTableProps) => {
+    return <BaseTable data={measurements} />;
 };

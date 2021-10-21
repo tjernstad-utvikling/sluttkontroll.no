@@ -90,7 +90,6 @@ const SjekklisterView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="checklists">
                                         <SjekklisteTable
-                                            avvik={avvik ?? []}
                                             checklists={_checklists}
                                         />
                                     </TableContainer>

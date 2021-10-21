@@ -97,7 +97,19 @@ export const kontrollColumns = (
             headerName: 'Klient',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).klient(klienter)
+                KontrollValueGetter(params.row).klient(klienter),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    KontrollValueGetter(param1.api.getRow(param1.id)).klient(
+                        klienter
+                    )
+                ).localeCompare(
+                    String(
+                        KontrollValueGetter(
+                            param2.api.getRow(param1.id)
+                        ).klient(klienter)
+                    )
+                )
         },
         {
             field: 'objekt',

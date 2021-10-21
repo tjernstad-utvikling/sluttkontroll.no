@@ -79,21 +79,48 @@ export const columns = (
             headerName: 'Areal',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                AvvikValueGetter(params.row).area(skjemaer)
+                AvvikValueGetter(params.row).area(skjemaer),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    AvvikValueGetter(param1.api.getRow(param1.id)).area(
+                        skjemaer
+                    )
+                ).localeCompare(
+                    String(
+                        AvvikValueGetter(param2.api.getRow(param2.id)).area(
+                            skjemaer
+                        )
+                    )
+                )
         },
         {
             field: 'omrade',
             headerName: 'Område',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                AvvikValueGetter(params.row).omrade(skjemaer)
+                AvvikValueGetter(params.row).omrade(skjemaer),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    AvvikValueGetter(param1.api.getRow(param1.id)).omrade(
+                        skjemaer
+                    )
+                ).localeCompare(
+                    String(
+                        AvvikValueGetter(param2.api.getRow(param2.id)).omrade(
+                            skjemaer
+                        )
+                    )
+                )
         },
         {
             field: 'avvikBilder',
             headerName: 'Bilder',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                AvvikValueGetter(params.row).avvikBilder()
+                AvvikValueGetter(params.row).avvikBilder(),
+            sortComparator: (v1, v2, param1, param2) =>
+                AvvikValueGetter(param1.api.getRow(param1.id)).avvikBilder() -
+                AvvikValueGetter(param2.api.getRow(param2.id)).avvikBilder()
         },
         {
             field: 'kommentar',
@@ -117,7 +144,19 @@ export const columns = (
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                AvvikValueGetter(params.row).kontroll(kontroller)
+                AvvikValueGetter(params.row).kontroll(kontroller),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    AvvikValueGetter(param1.api.getRow(param1.id)).kontroll(
+                        kontroller
+                    )
+                ).localeCompare(
+                    String(
+                        AvvikValueGetter(param2.api.getRow(param2.id)).kontroll(
+                            kontroller
+                        )
+                    )
+                )
         },
         {
             field: 'action',
@@ -189,44 +228,6 @@ export const AvvikTable = ({
         field: T
     ): Avvik[] {
         switch (field.toString()) {
-            case 'kontroll':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            AvvikValueGetter(a).kontroll(kontroller)
-                        ).localeCompare(
-                            String(AvvikValueGetter(b).kontroll(kontroller))
-                        )
-                    );
-            case 'area':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            AvvikValueGetter(a).area(skjemaer)
-                        ).localeCompare(
-                            String(AvvikValueGetter(b).area(skjemaer))
-                        )
-                    );
-            case 'omrade':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            AvvikValueGetter(a).omrade(skjemaer)
-                        ).localeCompare(
-                            String(AvvikValueGetter(b).omrade(skjemaer))
-                        )
-                    );
-            case 'avvikBilder':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            AvvikValueGetter(a).avvikBilder() -
-                            AvvikValueGetter(b).avvikBilder()
-                    );
             default:
                 return data;
         }
@@ -243,7 +244,7 @@ export const AvvikTable = ({
             data={avvik}
             onSelected={onSelected}
             customSort={CustomSort}
-            customSortFields={['kontroll', 'area', 'omrade']}
+            customSortFields={[]}
             getRowStyling={getRowStyling}
             selectionModel={selected}
         />

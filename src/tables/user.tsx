@@ -90,7 +90,7 @@ export const columns = ({ currentUser }: columnsOptions) => {
     return columns;
 };
 
-export const defaultColumns: Array<string> = ['name', 'email'];
+export const defaultColumns: string[] = ['name', 'email'];
 
 interface UserTableProps {
     users: User[];
@@ -102,24 +102,6 @@ export const UserTable = ({ users }: UserTableProps) => {
                 return data;
         }
     }
-    // const onSelect = () => {
-    //     const rows: Map<GridRowId, GridRowData> =
-    //         apiRef.current.getSelectedRows();
-
-    //     const cpRows: User[] = [];
-
-    //     rows.forEach((r) =>
-    //         cpRows.push({
-    //             name: r.name,
-    //             id: r.id,
-    //             email: r.email,
-    //             roles: r.roles,
-    //             phone: r.phone,
-    //             sertifikater: r.sertifikater
-    //         })
-    //     );
-    //     onSelected(cpRows);
-    // };
 
     return (
         <BaseTable data={users} customSort={CustomSort} customSortFields={[]} />

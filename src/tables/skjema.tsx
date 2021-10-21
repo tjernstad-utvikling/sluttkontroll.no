@@ -86,7 +86,19 @@ export const columns = (
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                SkjemaValueGetter(params.row).kontroll(kontroller)?.name || ''
+                SkjemaValueGetter(params.row).kontroll(kontroller)?.name || '',
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    SkjemaValueGetter(param1.api.getRow(param1.id)).kontroll(
+                        kontroller
+                    )?.name || ''
+                ).localeCompare(
+                    String(
+                        SkjemaValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).kontroll(kontroller)?.name || ''
+                    )
+                )
         },
         {
             field: 'avvik',
@@ -106,7 +118,12 @@ export const columns = (
                             ){' '}
                         </span>
                     </Link>
-                )
+                ),
+            sortComparator: (v1, v2, param1, param2) =>
+                SkjemaValueGetter(param1.api.getRow(param1.id)).avvik(avvik)
+                    .open -
+                SkjemaValueGetter(param2.api.getRow(param2.id)).avvik(avvik)
+                    .open
         },
         {
             field: 'measurement',
@@ -121,6 +138,13 @@ export const columns = (
                             measurements
                         )}
                     </Link>
+                ),
+            sortComparator: (v1, v2, param1, param2) =>
+                SkjemaValueGetter(param1.api.getRow(param1.id)).measurement(
+                    measurements
+                ) -
+                SkjemaValueGetter(param2.api.getRow(param2.id)).measurement(
+                    measurements
                 )
         },
         {
@@ -184,34 +208,6 @@ export const SkjemaTable = ({
         field: T
     ): Skjema[] {
         switch (field.toString()) {
-            case 'kontroll':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            SkjemaValueGetter(a).kontroll(kontroller)
-                        ).localeCompare(
-                            String(SkjemaValueGetter(b).kontroll(kontroller))
-                        )
-                    );
-            case 'avvik':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            SkjemaValueGetter(a).avvik(avvik).open -
-                            SkjemaValueGetter(b).avvik(avvik).open
-                    );
-
-            case 'measurement':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            SkjemaValueGetter(a).measurement(measurements) -
-                            SkjemaValueGetter(b).measurement(measurements)
-                    );
-
             default:
                 return data;
         }
@@ -222,7 +218,7 @@ export const SkjemaTable = ({
             onSelected={onSelected}
             data={skjemaer}
             customSort={CustomSort}
-            customSortFields={['kontroll', 'avvik', 'measurement']}
+            customSortFields={[]}
         />
     );
 };

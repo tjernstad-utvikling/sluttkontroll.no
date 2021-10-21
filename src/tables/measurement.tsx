@@ -74,14 +74,38 @@ export const columns = (
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 MeasurementValueGetter(params.row).kontroll(kontroller)?.name ||
-                ''
+                '',
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    MeasurementValueGetter(
+                        param1.api.getRow(param1.id)
+                    ).kontroll(kontroller)?.name || ''
+                ).localeCompare(
+                    String(
+                        MeasurementValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).kontroll(kontroller)?.name || ''
+                    )
+                )
         },
         {
             field: 'skjema',
             headerName: 'Skjema',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                MeasurementValueGetter(params.row).skjema(skjemaer)
+                MeasurementValueGetter(params.row).skjema(skjemaer),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    MeasurementValueGetter(param1.api.getRow(param1.id)).skjema(
+                        skjemaer
+                    )
+                ).localeCompare(
+                    String(
+                        MeasurementValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).skjema(skjemaer)
+                    )
+                )
         },
         {
             field: 'action',
@@ -140,28 +164,6 @@ export const MeasurementTable = ({
         field: T
     ): Measurement[] {
         switch (field.toString()) {
-            case 'kontroll':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            MeasurementValueGetter(a).kontroll(kontroller)
-                        ).localeCompare(
-                            String(
-                                MeasurementValueGetter(b).kontroll(kontroller)
-                            )
-                        )
-                    );
-            case 'skjema':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            MeasurementValueGetter(a).skjema(skjemaer)
-                        ).localeCompare(
-                            String(MeasurementValueGetter(b).skjema(skjemaer))
-                        )
-                    );
             default:
                 return data;
         }

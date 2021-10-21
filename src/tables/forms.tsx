@@ -54,35 +54,67 @@ export const columns = ({ onDownloadForm }: ColumnsParams) => {
             headerName: 'Skjema',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                ValueGetter(params.row).skjema()
+                ValueGetter(params.row).skjema(),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    ValueGetter(param1.api.getRow(param1.id)).skjema()
+                ).localeCompare(
+                    String(ValueGetter(param2.api.getRow(param2.id)).skjema())
+                )
         },
         {
             field: 'date',
             headerName: 'Signert dato',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                ValueGetter(params.row).date('dd.MM.Y')
+                ValueGetter(params.row).date('dd.MM.Y'),
+            sortComparator: (v1, v2, param1, param2) =>
+                ValueGetter(param1.api.getRow(param1.id))
+                    .date('Y-MM-dd')
+                    .localeCompare(
+                        ValueGetter(param2.api.getRow(param2.id)).date(
+                            'Y-MM-dd'
+                        )
+                    )
         },
         {
             field: 'user',
             headerName: 'Bruker',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                ValueGetter(params.row).user()
+                ValueGetter(params.row).user(),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    ValueGetter(param1.api.getRow(param1.id)).user()
+                ).localeCompare(
+                    String(ValueGetter(param2.api.getRow(param2.id)).user())
+                )
         },
         {
             field: 'title',
             headerName: 'Tittel',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                ValueGetter(params.row).title()
+                ValueGetter(params.row).title(),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    ValueGetter(param1.api.getRow(param1.id)).title()
+                ).localeCompare(
+                    String(ValueGetter(param2.api.getRow(param2.id)).title())
+                )
         },
         {
             field: 'subTitle',
             headerName: 'Under tittel',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                ValueGetter(params.row).subTitle()
+                ValueGetter(params.row).subTitle(),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    ValueGetter(param1.api.getRow(param1.id)).subTitle()
+                ).localeCompare(
+                    String(ValueGetter(param2.api.getRow(param2.id)).subTitle())
+                )
         },
         {
             field: 'action',
@@ -116,46 +148,6 @@ export const FormsTable = ({ forms }: FormsTableProps) => {
         field: T
     ): Forms[] {
         switch (field.toString()) {
-            case 'skjema':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(ValueGetter(a).skjema()).localeCompare(
-                            String(ValueGetter(b).skjema())
-                        )
-                    );
-            case 'date':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(ValueGetter(a).skjema()).localeCompare(
-                            String(ValueGetter(b).date('Y-MM-dd'))
-                        )
-                    );
-            case 'title':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(ValueGetter(a).title()).localeCompare(
-                            String(ValueGetter(b).title())
-                        )
-                    );
-            case 'subTitle':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(ValueGetter(a).subTitle()).localeCompare(
-                            String(ValueGetter(b).subTitle())
-                        )
-                    );
-            case 'user':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(ValueGetter(a).user()).localeCompare(
-                            String(ValueGetter(b).user())
-                        )
-                    );
             default:
                 return data;
         }

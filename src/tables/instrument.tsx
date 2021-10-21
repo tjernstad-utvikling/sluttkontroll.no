@@ -32,8 +32,14 @@ export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
         }
         return notSelectedString;
     };
+    const disponent = (): string => {
+        if (data.disponent !== null) {
+            return data.disponent.name;
+        }
+        return '';
+    };
 
-    return { sisteKalibrert, user };
+    return { sisteKalibrert, user, disponent };
 };
 
 const RenderDisponentField = ({
@@ -115,14 +121,36 @@ export const instrumentColumns = ({
                         'dd.MM.Y'
                     )}
                 </Link>
-            )
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    InstrumentValueGetter(
+                        param1.api.getRow(param1.id)
+                    ).sisteKalibrert('Y-M-d')
+                ).localeCompare(
+                    String(
+                        InstrumentValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).sisteKalibrert('Y-M-d')
+                    )
+                )
         },
         {
             field: 'user',
             headerName: 'Ansvarlig',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                InstrumentValueGetter(params.row).user('Ansvarlig ikke valgt')
+                InstrumentValueGetter(params.row).user('Ansvarlig ikke valgt'),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    InstrumentValueGetter(param1.api.getRow(param1.id)).user('')
+                ).localeCompare(
+                    String(
+                        InstrumentValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).user('')
+                    )
+                )
         },
         {
             field: 'disponent',
@@ -134,7 +162,19 @@ export const instrumentColumns = ({
                     row={params.row}
                     user={currentUser}
                 />
-            )
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    InstrumentValueGetter(
+                        param1.api.getRow(param1.id)
+                    ).disponent()
+                ).localeCompare(
+                    String(
+                        InstrumentValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).disponent()
+                    )
+                )
         },
         {
             field: 'calibrationInterval',
@@ -204,35 +244,6 @@ export const InstrumentTable = ({ instruments }: InstrumentTableProps) => {
         field: T
     ): Instrument[] {
         switch (field.toString()) {
-            case 'sisteKalibrert':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            InstrumentValueGetter(a).sisteKalibrert('Y-M-d')
-                        ).localeCompare(
-                            String(
-                                InstrumentValueGetter(b).sisteKalibrert('Y-M-d')
-                            )
-                        )
-                    );
-            case 'user':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(InstrumentValueGetter(a).user('')).localeCompare(
-                            String(InstrumentValueGetter(b).user(''))
-                        )
-                    );
-            case 'disponent':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(InstrumentValueGetter(a).user('')).localeCompare(
-                            String(InstrumentValueGetter(b).user(''))
-                        )
-                    );
-
             default:
                 return data;
         }

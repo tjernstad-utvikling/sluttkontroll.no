@@ -53,14 +53,38 @@ export const columns = (
             headerName: 'Prosedyre nr',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                SjekklisteValueGetter(params.row).prosedyreNr()
+                SjekklisteValueGetter(params.row).prosedyreNr(),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    SjekklisteValueGetter(
+                        param1.api.getRow(param1.id)
+                    ).prosedyreNr()
+                ).localeCompare(
+                    String(
+                        SjekklisteValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).prosedyreNr()
+                    )
+                )
         },
         {
             field: 'prosedyre',
             headerName: 'Prosedyre',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                SjekklisteValueGetter(params.row).prosedyre()
+                SjekklisteValueGetter(params.row).prosedyre(),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    SjekklisteValueGetter(
+                        param1.api.getRow(param1.id)
+                    ).prosedyre()
+                ).localeCompare(
+                    String(
+                        SjekklisteValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).prosedyre()
+                    )
+                )
         },
         {
             field: 'avvik',
@@ -91,7 +115,12 @@ export const columns = (
                         <AddIcon />
                     </IconButton>
                 </>
-            )
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                SjekklisteValueGetter(param1.api.getRow(param1.id)).avvik(avvik)
+                    .open -
+                SjekklisteValueGetter(param2.api.getRow(param2.id)).avvik(avvik)
+                    .open
         },
         {
             field: 'aktuell',
@@ -159,37 +188,6 @@ export const SjekklisteTable = ({
         field: T
     ): Checklist[] {
         switch (field.toString()) {
-            case 'prosedyre':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            SjekklisteValueGetter(a).prosedyre()
-                        ).localeCompare(
-                            String(SjekklisteValueGetter(b).prosedyre())
-                        )
-                    );
-            case 'prosedyreNr':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            SjekklisteValueGetter(a).prosedyreNr()
-                        ).localeCompare(
-                            String(SjekklisteValueGetter(b).prosedyreNr()),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    );
-            case 'avvik':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            SjekklisteValueGetter(a).avvik(avvik).open -
-                            SjekklisteValueGetter(b).avvik(avvik).open
-                    );
-
             default:
                 return data;
         }

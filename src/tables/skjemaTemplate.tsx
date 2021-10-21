@@ -63,7 +63,20 @@ export const columns = ({
             headerName: 'Antall punkter',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                TemplateValueGetter(params.row).count()
+                TemplateValueGetter(params.row).count(),
+
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    TemplateValueGetter(param1.api.getRow(param1.id)).count()
+                ).localeCompare(
+                    String(
+                        TemplateValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).count()
+                    ),
+                    undefined,
+                    { numeric: true, sensitivity: 'base' }
+                )
         },
         {
             field: 'action',
@@ -112,16 +125,6 @@ export const TemplateTable = ({ templates }: TemplateTableProps) => {
         field: T
     ): Template[] {
         switch (field.toString()) {
-            case 'count':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(TemplateValueGetter(a).count()).localeCompare(
-                            String(TemplateValueGetter(b).count()),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    );
             default:
                 return data;
         }
@@ -131,7 +134,7 @@ export const TemplateTable = ({ templates }: TemplateTableProps) => {
         <BaseTable
             data={templates}
             customSort={CustomSort}
-            customSortFields={['count']}
+            customSortFields={[]}
         />
     );
 };

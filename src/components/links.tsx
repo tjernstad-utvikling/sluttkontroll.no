@@ -4,7 +4,7 @@ import {
     useRouteMatch
 } from 'react-router-dom';
 
-import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import React from 'react';
@@ -37,7 +37,7 @@ export const ListItemLink = (props: ListItemLinkProps) => {
 
     return (
         <li>
-            <ListItem selected={match !== null} button component={renderLink}>
+            <ListItemButton selected={match !== null} component={renderLink}>
                 {icon ? (
                     <ListItemIcon
                         className={clsx({
@@ -52,7 +52,7 @@ export const ListItemLink = (props: ListItemLinkProps) => {
                     })}
                     primary={primary}
                 />
-            </ListItem>
+            </ListItemButton>
         </li>
     );
 };

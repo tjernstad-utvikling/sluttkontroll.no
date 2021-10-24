@@ -1,3 +1,5 @@
+import './index.css';
+
 import { AppRouter } from './router';
 import { AuthProvider } from './hooks/useAuth';
 import { CacheProvider } from '@emotion/react';

@@ -35,6 +35,8 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Switch from '@mui/material/Switch';
 import TitleIcon from '@mui/icons-material/Title';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useCreateForm } from '../components/forms';
 import { useForms } from '../data/forms';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -311,6 +313,7 @@ const GroupTable = () => {
                     <TableRow>
                         <TableCell>#</TableCell>
                         <TableCell>Tittel</TableCell>
+                        <TableCell>Vis gruppetittel</TableCell>
                         <TableCell align="right"></TableCell>
                     </TableRow>
                 </TableHead>
@@ -324,6 +327,13 @@ const GroupTable = () => {
                                 key={group.id}>
                                 <TableCell scope="row">{group.id}</TableCell>
                                 <TableCell>{group.title}</TableCell>
+                                <TableCell>
+                                    {group.showGroupTitle ? (
+                                        <VisibilityIcon />
+                                    ) : (
+                                        <VisibilityOffIcon />
+                                    )}
+                                </TableCell>
                                 <TableCell align="right">
                                     <ButtonGroup>
                                         <Button

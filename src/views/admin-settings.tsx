@@ -4,14 +4,15 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SettingCard } from '../components/settings';
 import { Theme } from '@mui/material';
-import logo from '../../assets/logoWhite.png';
+import formatListNumbered from '../../assets/format-list-numbered.svg';
 import { makeStyles } from '../theme/makeStyles';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useRouteMatch } from 'react-router';
 
 const SettingsView = () => {
     const { classes } = usePageStyles();
-
     const { classes: classes2 } = useStyles();
+    const { url } = useRouteMatch();
 
     return (
         <>
@@ -23,29 +24,29 @@ const SettingsView = () => {
                             <CardContent>
                                 <div className={classes2.container}>
                                     <SettingCard
-                                        to="/test1"
-                                        image={logo}
-                                        title="Test setting 1"
+                                        to="/admin/users"
+                                        image={formatListNumbered}
+                                        title="Brukere"
                                     />
                                     <SettingCard
-                                        to="/test2"
-                                        image={logo}
-                                        title="Test setting 2"
+                                        to={`${url}/info-text`}
+                                        image={formatListNumbered}
+                                        title="Rapport informasjonstekst"
                                     />
                                     <SettingCard
-                                        to="/test3"
-                                        image={logo}
-                                        title="Test setting 3"
+                                        to={`${url}/template`}
+                                        image={formatListNumbered}
+                                        title="Sjekkliste maler"
                                     />
                                     <SettingCard
-                                        to="/test4"
-                                        image={logo}
-                                        title="Test setting 4"
+                                        to={`${url}/checkpoint`}
+                                        image={formatListNumbered}
+                                        title="Sjekkpunkter"
                                     />
                                     <SettingCard
-                                        to="/test5"
-                                        image={logo}
-                                        title="Test setting 5"
+                                        to={`${url}/forms`}
+                                        image={formatListNumbered}
+                                        title="Risikovurderingsmaler"
                                     />
                                 </div>
                             </CardContent>

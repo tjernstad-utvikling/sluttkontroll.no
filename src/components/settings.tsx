@@ -12,11 +12,15 @@ interface SettingCardProps {
 }
 export const SettingCard = ({ to, image, title }: SettingCardProps) => {
     return (
-        <Card sx={{ maxWidth: 345 }}>
+        <Card sx={{ width: 240, margin: '10px' }}>
             <Link to={to} component={CardActionArea}>
-                <CardMedia component="img" height="140" image={image} alt="" />
+                <CardMedia component="img" height="90" image={image} alt="" />
                 <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
+                    <Typography
+                        gutterBottom
+                        variant="h6"
+                        style={{ textAlign: 'center' }}
+                        component="div">
                         {title}
                     </Typography>
                 </CardContent>

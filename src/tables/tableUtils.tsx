@@ -1,8 +1,3 @@
-import { Theme } from '@mui/material/styles';
-
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-
 import Button from '@mui/material/Button';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import FormControl from '@mui/material/FormControl';
@@ -16,6 +11,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
+import { Theme } from '@mui/material/styles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useTable } from './tableContainer';
 
 export const ColumnSelect = (): JSX.Element => {
@@ -67,7 +65,7 @@ export const ColumnSelect = (): JSX.Element => {
                                                     size="small"
                                                 />
                                             }
-                                            label={c.headerName}
+                                            label={c.headerName || ''}
                                         />
                                     ))}
                             </FormGroup>

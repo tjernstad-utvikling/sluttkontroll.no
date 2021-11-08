@@ -1,11 +1,11 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import { getCheckpoints, newCheckpoints } from '../api/checkpointApi';
 
 import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointModal } from '../modal/checkpoint';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
 import { updateCheckpoints } from '../api/checkpointApi';
@@ -15,7 +15,7 @@ import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 const CheckpointView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [editId, setEditId] = useState<number | undefined>(undefined);
@@ -154,22 +154,24 @@ const CheckpointView = () => {
                                     ]}
                                 />
                             }>
-                            {checkpoints !== undefined ? (
-                                <TableContainer
-                                    columns={columns({
-                                        onEditCheckpoint: (checkpointId) =>
-                                            setEditId(checkpointId),
-                                        editCheckpoint: true
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="checkpoints">
-                                    <CheckpointTable
-                                        checkpoints={checkpoints}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster sjekkpunkter</div>
-                            )}
+                            <CardContent>
+                                {checkpoints !== undefined ? (
+                                    <TableContainer
+                                        columns={columns({
+                                            onEditCheckpoint: (checkpointId) =>
+                                                setEditId(checkpointId),
+                                            editCheckpoint: true
+                                        })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="checkpoints">
+                                        <CheckpointTable
+                                            checkpoints={checkpoints}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster sjekkpunkter</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

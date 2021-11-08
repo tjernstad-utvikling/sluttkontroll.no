@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@date-io/date-fns": "1.x",
-    "@material-ui/core": "^4.11.4",
-    "@material-ui/data-grid": "^4.0.0-alpha.33",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/pickers": "^3.3.10",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@mui/icons-material": "^5.0.3",
+    "@mui/lab": "^5.0.0-alpha.50",
+    "@mui/material": "^5.0.3",
+    "@mui/styles": "^5.0.1",
+    "@mui/x-data-grid-pro": "^5.0.0-beta.3",
     "@react-pdf-viewer/core": "2.7.2",
     "@react-pdf-viewer/get-file": "^2.7.2",
     "@react-pdf/renderer": "^2.0.20",
@@ -16,16 +18,18 @@
     "axios": "^0.21.1",
     "date-fns": "^2.23.0",
     "formik": "^2.2.9",
-    "lodash": "^4.17.21",
-    "notistack": "^1.0.9",
+    "lodash.unionby": "^4.8.0",
+    "notistack": "^2.0.2",
     "pdfjs-dist": "2.6.347",
     "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.3.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-select": "^4.3.1",
-    "web-vitals": "^1.0.1",
+    "tss-react": "^1.0.0",
+    "uuid": "^8.3.2",
     "yup": "^0.32.9"
   },
   "scripts": {
@@ -51,11 +55,14 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.unionby": "^4.8.6",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
+    "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-select": "^4.0.17",
+    "@types/uuid": "^8.3.1",
     "typescript": "^4.1.2"
   }
 }

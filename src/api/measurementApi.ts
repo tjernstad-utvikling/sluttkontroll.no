@@ -7,7 +7,7 @@ import {
 import sluttkontrollApi from './sluttkontroll';
 
 export const getMeasurementByKontrollList = async (
-    ids: Array<number>
+    ids: number[]
 ): Promise<{
     status: number;
     measurements: Array<Measurement>;

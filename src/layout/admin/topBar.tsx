@@ -1,7 +1,7 @@
-import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Toolbar from '@material-ui/core/Toolbar';
+import AppBar from '@mui/material/AppBar';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Toolbar from '@mui/material/Toolbar';
 import clsx from 'clsx';
 import { useMainStyles } from '../../styles/layout/main';
 
@@ -17,7 +17,7 @@ export const TopBar = ({
     toggleRightDrawer,
     module
 }: TopBarProps) => {
-    const classes = useMainStyles();
+    const { classes } = useMainStyles();
     return (
         <AppBar
             position="fixed"
@@ -31,7 +31,8 @@ export const TopBar = ({
                     aria-label="open drawer"
                     onClick={toggleLeftDrawer}
                     edge="start"
-                    className={classes.menuButton}>
+                    className={classes.menuButton}
+                    size="large">
                     <MenuIcon />
                 </IconButton>
 
@@ -40,7 +41,8 @@ export const TopBar = ({
                     color="inherit"
                     aria-label="open drawer"
                     onClick={toggleRightDrawer}
-                    className={classes.menuButton}>
+                    className={classes.menuButton}
+                    size="large">
                     <MenuIcon />
                 </IconButton>
             </Toolbar>

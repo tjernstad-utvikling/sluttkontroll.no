@@ -2,19 +2,17 @@ import {
     GridCellParams,
     GridColDef,
     GridRowData,
-    GridRowId,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from './tableUtils';
-import { useTable } from './tableContainer';
 
 export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
@@ -88,7 +86,19 @@ export const columns = (
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                SkjemaValueGetter(params.row).kontroll(kontroller)?.name || ''
+                SkjemaValueGetter(params.row).kontroll(kontroller)?.name || '',
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    SkjemaValueGetter(param1.api.getRow(param1.id)).kontroll(
+                        kontroller
+                    )?.name || ''
+                ).localeCompare(
+                    String(
+                        SkjemaValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).kontroll(kontroller)?.name || ''
+                    )
+                )
         },
         {
             field: 'avvik',
@@ -108,7 +118,12 @@ export const columns = (
                             ){' '}
                         </span>
                     </Link>
-                )
+                ),
+            sortComparator: (v1, v2, param1, param2) =>
+                SkjemaValueGetter(param1.api.getRow(param1.id)).avvik(avvik)
+                    .open -
+                SkjemaValueGetter(param2.api.getRow(param2.id)).avvik(avvik)
+                    .open
         },
         {
             field: 'measurement',
@@ -123,6 +138,13 @@ export const columns = (
                             measurements
                         )}
                     </Link>
+                ),
+            sortComparator: (v1, v2, param1, param2) =>
+                SkjemaValueGetter(param1.api.getRow(param1.id)).measurement(
+                    measurements
+                ) -
+                SkjemaValueGetter(param2.api.getRow(param2.id)).measurement(
+                    measurements
                 )
         },
         {
@@ -168,83 +190,10 @@ export const columns = (
 export const defaultColumns: Array<string> = ['area', 'omrade', 'kontroll'];
 
 interface SkjemaTableProps {
-    skjemaer: Array<Skjema>;
-    kontroller: Array<Kontroll>;
-    avvik: Avvik[];
-    measurements: Measurement[];
-    onSelected: (checkpoints: Array<Skjema>) => void;
+    skjemaer: Skjema[];
+
+    onSelected: (ids: number[]) => void;
 }
-export const SkjemaTable = ({
-    skjemaer,
-    kontroller,
-    avvik,
-    measurements,
-    onSelected
-}: SkjemaTableProps) => {
-    const { apiRef } = useTable();
-
-    function CustomSort<T extends keyof Skjema>(
-        data: Skjema[],
-        field: T
-    ): Skjema[] {
-        switch (field.toString()) {
-            case 'kontroll':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            SkjemaValueGetter(a).kontroll(kontroller)
-                        ).localeCompare(
-                            String(SkjemaValueGetter(b).kontroll(kontroller))
-                        )
-                    );
-            case 'avvik':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            SkjemaValueGetter(a).avvik(avvik).open -
-                            SkjemaValueGetter(b).avvik(avvik).open
-                    );
-
-            case 'measurement':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            SkjemaValueGetter(a).measurement(measurements) -
-                            SkjemaValueGetter(b).measurement(measurements)
-                    );
-
-            default:
-                return data;
-        }
-    }
-
-    const onSelect = () => {
-        const rows: Map<GridRowId, GridRowData> =
-            apiRef.current.getSelectedRows();
-
-        const sRows: Skjema[] = [];
-
-        rows.forEach((r) =>
-            sRows.push({
-                id: r.id,
-                area: r.area,
-                omrade: r.omrade,
-                kommentar: r.kommentar,
-                kontroll: { id: r.kontroll.id }
-            })
-        );
-        onSelected(sRows);
-    };
-
-    return (
-        <BaseTable
-            onSelected={onSelect}
-            data={skjemaer}
-            customSort={CustomSort}
-            customSortFields={['kontroll', 'avvik', 'measurement']}
-        />
-    );
+export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
+    return <BaseTable onSelected={onSelected} data={skjemaer} />;
 };

@@ -1,6 +1,6 @@
 import { ActionType, AvvikActions, AvvikState } from './contracts';
 
-import _ from 'lodash';
+import unionBy from 'lodash.unionby';
 
 export const initialState: AvvikState = {
     avvik: undefined
@@ -14,7 +14,7 @@ export const userReducer = (
         case ActionType.addAvvik:
             return {
                 ...state,
-                avvik: _.unionBy(action.payload, state.avvik, 'id')
+                avvik: unionBy(action.payload, state.avvik, 'id')
             };
         case ActionType.deleteAvvik:
             return {

@@ -2,51 +2,47 @@ import * as Yup from 'yup';
 
 import { Form, Formik } from 'formik';
 
-import Avatar from '@material-ui/core/Avatar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
+import Avatar from '@mui/material/Avatar';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import { LoadingButton } from '../components/button';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
-import React from 'react';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Paper from '@mui/material/Paper';
 import { TextField } from '../components/input';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '../theme/makeStyles';
 import { useAuth } from '../hooks/useAuth';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
     root: {
         height: '100vh'
     },
     image: {
-        backgroundImage: 'url(https://source.unsplash.com/random)',
+        backgroundImage: 'url(/images/front.jpg)',
         backgroundRepeat: 'no-repeat',
-        backgroundColor:
-            theme.palette.type === 'light'
-                ? theme.palette.grey[50]
-                : theme.palette.grey[900],
+        backgroundColor: 'grey',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
     },
     paper: {
-        margin: theme.spacing(8, 4),
+        margin: '5px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
     },
     avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main
+        margin: '5px',
+        backgroundColor: theme.palette.primary.main
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1)
+        marginTop: '5px'
     },
     submit: {
-        margin: theme.spacing(3, 0, 2)
+        margin: '5px'
     },
     errorText: {
         color: theme.palette.error.main
@@ -54,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FrontPage = () => {
-    const classes = useStyles();
+    const { classes, cx, css, theme } = useStyles();
     const { signIn } = useAuth();
 
     const history = useHistory();
@@ -132,13 +128,13 @@ const FrontPage = () => {
                                     id="password"
                                     autoComplete="current-password"
                                 />
-                                {loginError !== undefined ? (
+                                {loginError !== undefined && (
                                     <Typography
                                         className={classes.errorText}
-                                        component="span">
+                                        component="div">
                                         {loginError}
                                     </Typography>
-                                ) : undefined}
+                                )}
                                 <LoadingButton
                                     isLoading={isSubmitting}
                                     type="submit"
@@ -158,6 +154,43 @@ const FrontPage = () => {
                             </Form>
                         )}
                     </Formik>
+
+                    <div
+                        className={cx(
+                            css({
+                                position: 'fixed',
+                                bottom: 0
+                            })
+                        )}>
+                        <Typography
+                            className={cx(
+                                css({
+                                    color: theme.palette.text.disabled,
+                                    fontSize: '0.756rem'
+                                })
+                            )}>
+                            Photo by{' '}
+                            <a
+                                className={cx(
+                                    css({
+                                        color: theme.palette.text.disabled
+                                    })
+                                )}
+                                href="https://unsplash.com/@esptroy?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                                Troy Bridges
+                            </a>{' '}
+                            on{' '}
+                            <a
+                                className={cx(
+                                    css({
+                                        color: theme.palette.text.disabled
+                                    })
+                                )}
+                                href="https://unsplash.com/s/photos/electrical?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                                Unsplash
+                            </a>
+                        </Typography>
+                    </div>
                 </div>
             </Grid>
         </Grid>

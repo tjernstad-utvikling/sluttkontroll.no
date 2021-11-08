@@ -1,24 +1,24 @@
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikGrid } from '../components/avvik';
 import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikViewParams } from '../contracts/navigation';
-import BuildIcon from '@material-ui/icons/Build';
-import CallMergeIcon from '@material-ui/icons/CallMerge';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import PersonIcon from '@material-ui/icons/Person';
-import ReorderIcon from '@material-ui/icons/Reorder';
+import BuildIcon from '@mui/icons-material/Build';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import PersonIcon from '@mui/icons-material/Person';
+import ReorderIcon from '@mui/icons-material/Reorder';
 import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/tableContainer';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import { getAvvikReport } from '../api/avvikApi';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
@@ -27,13 +27,13 @@ import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const AvvikView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { kontrollId, skjemaId, checklistId } = useParams<AvvikViewParams>();
 
     const { url } = useRouteMatch();
 
     const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
-    const [selected, setSelected] = useState<Avvik[]>([]);
+    const [selected, setSelected] = useState<number[]>([]);
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
     const [showTable, setShowTable] = useState<boolean>(false);
@@ -99,7 +99,7 @@ const AvvikView = () => {
     const close = async (avvikId: number) => {
         const avvikToClose = avvik?.find((a) => a.id === avvikId);
         if (avvikToClose !== undefined) {
-            setSelected([avvikToClose]);
+            setSelected([avvikToClose.id]);
             setModalOpen(Modals.comment);
         }
     };
@@ -121,10 +121,7 @@ const AvvikView = () => {
 
     const downloadAvvikList = async () => {
         try {
-            const response = await getAvvikReport(
-                Number(kontrollId),
-                selected.map((sa) => sa.id)
-            );
+            const response = await getAvvikReport(Number(kontrollId), selected);
 
             const fileURL = window.URL.createObjectURL(
                 new Blob([response.data])
@@ -204,51 +201,52 @@ const AvvikView = () => {
                                     ]}
                                 />
                             }>
-                            {skjemaer !== undefined ? (
-                                <TableContainer
-                                    columns={columns(
-                                        kontroller ?? [],
-                                        skjemaer ?? [],
-                                        url,
-                                        askToDeleteAvvik,
-                                        setEditId,
-                                        openAvvik,
-                                        close
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="avvik">
-                                    {showTable ? (
-                                        <AvvikTable
-                                            skjemaer={skjemaer}
-                                            kontroller={kontroller ?? []}
-                                            avvik={_avvik ?? []}
-                                            selected={selected}
-                                            onSelected={(avvik) => {
-                                                setSelected(avvik);
-                                                setSelectedFromGrid(false);
-                                            }}
-                                            selectedFromGrid={selectedFromGrid}
-                                        />
-                                    ) : (
-                                        <AvvikGrid
-                                            deleteAvvik={askToDeleteAvvik}
-                                            edit={setEditId}
-                                            open={openAvvik}
-                                            close={close}
-                                            avvik={_avvik ?? []}
-                                            selected={selected}
-                                            setSelected={(a) => {
-                                                setSelected(a);
-                                                setSelectedFromGrid(true);
-                                            }}
-                                            selectedFromGrid={selectedFromGrid}
-                                            url={url}
-                                        />
-                                    )}
-                                </TableContainer>
-                            ) : (
-                                <div>Laster avvik</div>
-                            )}
+                            <CardContent>
+                                {skjemaer !== undefined ? (
+                                    <TableContainer
+                                        columns={columns(
+                                            kontroller ?? [],
+                                            skjemaer ?? [],
+                                            url,
+                                            askToDeleteAvvik,
+                                            setEditId,
+                                            openAvvik,
+                                            close
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="avvik">
+                                        {showTable ? (
+                                            <AvvikTable
+                                                avvik={_avvik ?? []}
+                                                selected={selected}
+                                                onSelected={(avvik) => {
+                                                    setSelected(avvik);
+                                                    setSelectedFromGrid(false);
+                                                }}
+                                            />
+                                        ) : (
+                                            <AvvikGrid
+                                                deleteAvvik={askToDeleteAvvik}
+                                                edit={setEditId}
+                                                open={openAvvik}
+                                                close={close}
+                                                avvik={_avvik ?? []}
+                                                selected={selected}
+                                                setSelected={(a) => {
+                                                    setSelected(a);
+                                                    setSelectedFromGrid(true);
+                                                }}
+                                                selectedFromGrid={
+                                                    selectedFromGrid
+                                                }
+                                                url={url}
+                                            />
+                                        )}
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster avvik</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

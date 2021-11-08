@@ -1,8 +1,8 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import { UserTable, columns, defaultColumns } from '../tables/user';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { useAuth } from '../hooks/useAuth';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -10,7 +10,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const UsersView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const {
         state: { users },
@@ -41,16 +41,18 @@ const UsersView = () => {
                                     ]}
                                 />
                             }>
-                            {users !== undefined && user !== undefined ? (
-                                <TableContainer
-                                    columns={columns({ currentUser: user })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="users">
-                                    <UserTable users={users ?? []} />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster brukere</div>
-                            )}
+                            <CardContent>
+                                {users !== undefined && user !== undefined ? (
+                                    <TableContainer
+                                        columns={columns({ currentUser: user })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="users">
+                                        <UserTable users={users ?? []} />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster brukere</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

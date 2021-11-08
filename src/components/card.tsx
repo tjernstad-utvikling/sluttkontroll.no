@@ -1,21 +1,23 @@
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Paper from '@material-ui/core/Paper';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Paper from '@mui/material/Paper';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '../theme/makeStyles';
+
 interface CardProps {
     children: React.ReactNode;
     title: string;
     menu?: React.ReactNode;
 }
 export const Card = ({ children, title, menu }: CardProps) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     return (
         <Paper className={classes.paper}>
@@ -43,7 +45,7 @@ interface CardMenuProps {
     count?: number;
 }
 export const CardMenu = ({ items, count }: CardMenuProps) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -109,10 +111,11 @@ export const CardMenu = ({ items, count }: CardMenuProps) => {
 };
 
 export const CardContent = ({ children }: { children: React.ReactNode }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return <div className={classes.content}>{children}</div>;
 };
-const useStyles = makeStyles((theme) => ({
+
+export const useStyles = makeStyles()((theme: Theme) => ({
     cardHeader: {
         background: theme.palette.primary.main
     },
@@ -127,7 +130,6 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column'
     },
     content: {
-        paddingRight: theme.spacing(2),
-        paddingLeft: theme.spacing(2)
+        padding: theme.spacing(2)
     }
 }));

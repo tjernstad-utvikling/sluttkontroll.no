@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
+import CssBaseline from '@mui/material/CssBaseline';
 import { LeftDrawer } from './leftDrawer';
 import { RightDrawer } from '../main/rightDrawer';
 import { TopBar } from './topBar';
@@ -15,7 +15,7 @@ export const AdminLayout = ({
     children,
     module
 }: AdminLayoutProps): JSX.Element => {
-    const classes = useMainStyles();
+    const { classes } = useMainStyles();
     const [open, setOpen] = useState<boolean>(true);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 

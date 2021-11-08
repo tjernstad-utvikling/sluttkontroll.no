@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollSchema } from '../schema/kontroll';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import { User } from '../contracts/userApi';
 import { useKontroll } from '../data/kontroll';
 import { useModalStyles } from '../styles/modal';
@@ -16,7 +16,7 @@ export const KontrollEditModal = ({
     editId,
     close
 }: KontrollEditModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
     const [kontroll, setKontroll] = useState<Kontroll>();
 
     const {

@@ -1,10 +1,10 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
@@ -17,7 +17,7 @@ import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SkjemaerView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { kontrollId } = useParams<SkjemaerViewParams>();
     const { url } = useRouteMatch();
 
@@ -83,29 +83,28 @@ const SkjemaerView = () => {
                                     ]}
                                 />
                             }>
-                            {skjemaer !== undefined ? (
-                                <TableContainer
-                                    columns={columns(
-                                        kontroller ?? [],
-                                        avvik ?? [],
-                                        measurements ?? [],
-                                        url,
-                                        deleteSkjema,
-                                        setEditId
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="skjemaer">
-                                    <SkjemaTable
-                                        skjemaer={_skjemaer}
-                                        kontroller={kontroller ?? []}
-                                        avvik={avvik ?? []}
-                                        measurements={measurements ?? []}
-                                        onSelected={() => console.log()}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster skjemaer</div>
-                            )}
+                            <CardContent>
+                                {skjemaer !== undefined ? (
+                                    <TableContainer
+                                        columns={columns(
+                                            kontroller ?? [],
+                                            avvik ?? [],
+                                            measurements ?? [],
+                                            url,
+                                            deleteSkjema,
+                                            setEditId
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="skjemaer">
+                                        <SkjemaTable
+                                            skjemaer={_skjemaer}
+                                            onSelected={() => console.log()}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster skjemaer</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

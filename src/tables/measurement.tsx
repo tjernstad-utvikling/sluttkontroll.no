@@ -3,12 +3,12 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { BaseTable } from './baseTable';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from './tableUtils';
 
@@ -74,14 +74,38 @@ export const columns = (
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 MeasurementValueGetter(params.row).kontroll(kontroller)?.name ||
-                ''
+                '',
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    MeasurementValueGetter(
+                        param1.api.getRow(param1.id)
+                    ).kontroll(kontroller)?.name || ''
+                ).localeCompare(
+                    String(
+                        MeasurementValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).kontroll(kontroller)?.name || ''
+                    )
+                )
         },
         {
             field: 'skjema',
             headerName: 'Skjema',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                MeasurementValueGetter(params.row).skjema(skjemaer)
+                MeasurementValueGetter(params.row).skjema(skjemaer),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    MeasurementValueGetter(param1.api.getRow(param1.id)).skjema(
+                        skjemaer
+                    )
+                ).localeCompare(
+                    String(
+                        MeasurementValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).skjema(skjemaer)
+                    )
+                )
         },
         {
             field: 'action',
@@ -127,51 +151,7 @@ export const defaultColumns: Array<string> = [
 
 interface MeasurementTableProps {
     measurements: Measurement[];
-    kontroller: Kontroll[];
-    skjemaer: Skjema[];
 }
-export const MeasurementTable = ({
-    kontroller,
-    measurements,
-    skjemaer
-}: MeasurementTableProps) => {
-    function CustomSort<T extends keyof Measurement>(
-        data: Measurement[],
-        field: T
-    ): Measurement[] {
-        switch (field.toString()) {
-            case 'kontroll':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            MeasurementValueGetter(a).kontroll(kontroller)
-                        ).localeCompare(
-                            String(
-                                MeasurementValueGetter(b).kontroll(kontroller)
-                            )
-                        )
-                    );
-            case 'skjema':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            MeasurementValueGetter(a).skjema(skjemaer)
-                        ).localeCompare(
-                            String(MeasurementValueGetter(b).skjema(skjemaer))
-                        )
-                    );
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            data={measurements}
-            customSort={CustomSort}
-            customSortFields={['kontroll', 'skjema']}
-        />
-    );
+export const MeasurementTable = ({ measurements }: MeasurementTableProps) => {
+    return <BaseTable data={measurements} />;
 };

@@ -1,29 +1,31 @@
-import {
-    Palette,
-    PaletteOptions
-} from '@material-ui/core/styles/createPalette';
+import { createTheme } from '@mui/material/styles';
 
-import { unstable_createMuiStrictModeTheme as createMuiTheme } from '@material-ui/core';
-
-export const theme = createMuiTheme({
+export const theme = createTheme({
     palette: {
         primary: {
             main: '#1A4D27',
-            dark: '#0D2613 '
+            dark: '#0d2613'
         },
         secondary: {
             main: '#F5F5F5'
+        },
+        error: {
+            main: '#ca3c25'
+        },
+        success: {
+            main: '#8fc93a'
+        },
+        info: {
+            main: '#235789'
+        },
+        background: {
+            default: '#F5F5F5'
+        },
+        warning: {
+            main: '#F3A712'
+        },
+        text: {
+            disabled: '#737373'
         }
     }
 });
-
-declare module '@material-ui/core/styles/createMuiTheme' {
-    interface Theme {
-        palette: Palette;
-    }
-
-    // allow configuration using `createMuiTheme`
-    interface ThemeOptions {
-        palette?: PaletteOptions;
-    }
-}

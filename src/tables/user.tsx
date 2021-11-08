@@ -1,9 +1,9 @@
-import { GridCellParams, GridColDef } from '@material-ui/data-grid';
+import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
 import { Roles, RolesDesc, Sertifikat, User } from '../contracts/userApi';
 
 import { BaseTable } from './baseTable';
-import Chip from '@material-ui/core/Chip';
-import EditIcon from '@material-ui/icons/Edit';
+import Chip from '@mui/material/Chip';
+import EditIcon from '@mui/icons-material/Edit';
 import { RowAction } from './tableUtils';
 
 interface columnsOptions {
@@ -51,7 +51,7 @@ export const columns = ({ currentUser }: columnsOptions) => {
             flex: 1,
             renderCell: (params: GridCellParams) => (
                 <>
-                    {params.row.sertifikater.map((sertifikat: Sertifikat) => (
+                    {params.row.sertifikater?.map((sertifikat: Sertifikat) => (
                         <Chip
                             key={sertifikat.id}
                             variant="outlined"
@@ -90,38 +90,11 @@ export const columns = ({ currentUser }: columnsOptions) => {
     return columns;
 };
 
-export const defaultColumns: Array<string> = ['name', 'email'];
+export const defaultColumns: string[] = ['name', 'email'];
 
 interface UserTableProps {
     users: User[];
 }
 export const UserTable = ({ users }: UserTableProps) => {
-    function CustomSort<T extends keyof User>(data: User[], field: T): User[] {
-        switch (field.toString()) {
-            default:
-                return data;
-        }
-    }
-    // const onSelect = () => {
-    //     const rows: Map<GridRowId, GridRowData> =
-    //         apiRef.current.getSelectedRows();
-
-    //     const cpRows: User[] = [];
-
-    //     rows.forEach((r) =>
-    //         cpRows.push({
-    //             name: r.name,
-    //             id: r.id,
-    //             email: r.email,
-    //             roles: r.roles,
-    //             phone: r.phone,
-    //             sertifikater: r.sertifikater
-    //         })
-    //     );
-    //     onSelected(cpRows);
-    // };
-
-    return (
-        <BaseTable data={users} customSort={CustomSort} customSortFields={[]} />
-    );
+    return <BaseTable data={users} />;
 };

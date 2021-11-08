@@ -1,12 +1,12 @@
+import { Card, CardContent } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Card } from '../components/card';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
@@ -16,7 +16,7 @@ import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SjekklisteEditView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const { skjemaId } = useParams<SjekklisterViewParams>();
     const history = useHistory();
@@ -79,35 +79,44 @@ const SjekklisteEditView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Endre sjekkpunkter">
-                            <form onSubmit={onSubmitChecklist}>
-                                <LoadingButton
-                                    isLoading={isSubmitting}
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary">
-                                    Lagre{' '}
-                                    {selected !== undefined
-                                        ? `(Sjekkpunkter: ${selected.length} ) `
-                                        : ''}
-                                </LoadingButton>
-                                {checkpoints !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({})}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checkpoints">
-                                        <CheckpointTable
-                                            checklists={_checklists}
-                                            checkpoints={checkpoints}
-                                            onSelected={(checkpoints) =>
-                                                setSelected(checkpoints)
-                                            }
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster sjekkpunkter</div>
-                                )}
-                            </form>
+                            <CardContent>
+                                <form onSubmit={onSubmitChecklist}>
+                                    <LoadingButton
+                                        isLoading={isSubmitting}
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary">
+                                        Lagre{' '}
+                                        {selected !== undefined
+                                            ? `(Sjekkpunkter: ${selected.length} ) `
+                                            : ''}
+                                    </LoadingButton>
+                                    {checkpoints !== undefined ? (
+                                        <TableContainer
+                                            columns={columns({})}
+                                            defaultColumns={defaultColumns}
+                                            tableId="checkpoints">
+                                            <CheckpointTable
+                                                checklists={_checklists}
+                                                checkpoints={checkpoints}
+                                                onSelected={(ids) =>
+                                                    setSelected(
+                                                        checkpoints?.filter(
+                                                            (c) =>
+                                                                ids.indexOf(
+                                                                    c.id
+                                                                ) !== -1
+                                                        )
+                                                    )
+                                                }
+                                            />
+                                        </TableContainer>
+                                    ) : (
+                                        <div>Laster sjekkpunkter</div>
+                                    )}
+                                </form>
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

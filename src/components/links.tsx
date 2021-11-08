@@ -4,13 +4,13 @@ import {
     useRouteMatch
 } from 'react-router-dom';
 
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { Omit } from '@material-ui/types';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import React from 'react';
+import { Theme } from '@mui/material';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '../theme/makeStyles';
 
 interface ListItemLinkProps {
     icon?: React.ReactElement;
@@ -23,7 +23,7 @@ export const ListItemLink = (props: ListItemLinkProps) => {
     const { icon, primary, to } = props;
     const match = useRouteMatch(to);
 
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     const renderLink = React.useMemo(
         () =>
@@ -37,7 +37,7 @@ export const ListItemLink = (props: ListItemLinkProps) => {
 
     return (
         <li>
-            <ListItem selected={match !== null} button component={renderLink}>
+            <ListItemButton selected={match !== null} component={renderLink}>
                 {icon ? (
                     <ListItemIcon
                         className={clsx({
@@ -52,13 +52,13 @@ export const ListItemLink = (props: ListItemLinkProps) => {
                     })}
                     primary={primary}
                 />
-            </ListItem>
+            </ListItemButton>
         </li>
     );
 };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme: Theme) => ({
     icon: {
         color: '#fff'
     }
-});
+}));

@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     MeasurementTable,
     columns,
@@ -6,8 +6,8 @@ import {
 } from '../tables/measurement';
 import { useEffect, useState } from 'react';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { Measurement } from '../contracts/measurementApi';
 import { MeasurementModal } from '../modal/measurement';
 import { MeasurementsViewParams } from '../contracts/navigation';
@@ -20,7 +20,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 
 const MeasurementsView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { kontrollId, skjemaId } = useParams<MeasurementsViewParams>();
 
     const [_measurements, setMeasurements] = useState<Array<Measurement>>([]);
@@ -108,28 +108,28 @@ const MeasurementsView = () => {
                                     />
                                 )
                             }>
-                            {skjemaer !== undefined ? (
-                                <TableContainer
-                                    columns={columns(
-                                        kontroller ?? [],
-                                        skjemaer ?? [],
-                                        deleteMeasurement,
-                                        (id) => {
-                                            setEditId(id);
-                                            setMeasurementModalOpen(true);
-                                        }
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="measurements">
-                                    <MeasurementTable
-                                        skjemaer={skjemaer}
-                                        kontroller={kontroller ?? []}
-                                        measurements={_measurements ?? []}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster målinger</div>
-                            )}
+                            <CardContent>
+                                {skjemaer !== undefined ? (
+                                    <TableContainer
+                                        columns={columns(
+                                            kontroller ?? [],
+                                            skjemaer ?? [],
+                                            deleteMeasurement,
+                                            (id) => {
+                                                setEditId(id);
+                                                setMeasurementModalOpen(true);
+                                            }
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="measurements">
+                                        <MeasurementTable
+                                            measurements={_measurements ?? []}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster målinger</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

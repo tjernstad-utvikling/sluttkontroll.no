@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 
 import { Checkpoint } from '../contracts/checkpointApi';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import { TextField } from '../components/input';

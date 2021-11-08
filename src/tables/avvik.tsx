@@ -3,21 +3,18 @@ import {
     GridCellParams,
     GridColDef,
     GridRowData,
-    GridRowId,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import BuildIcon from '@material-ui/icons/Build';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import BuildIcon from '@mui/icons-material/Build';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
-import { useTable } from './tableContainer';
 
 export const AvvikValueGetter = (data: Avvik | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): string => {
@@ -82,21 +79,48 @@ export const columns = (
             headerName: 'Areal',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                AvvikValueGetter(params.row).area(skjemaer)
+                AvvikValueGetter(params.row).area(skjemaer),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    AvvikValueGetter(param1.api.getRow(param1.id)).area(
+                        skjemaer
+                    )
+                ).localeCompare(
+                    String(
+                        AvvikValueGetter(param2.api.getRow(param2.id)).area(
+                            skjemaer
+                        )
+                    )
+                )
         },
         {
             field: 'omrade',
             headerName: 'Område',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                AvvikValueGetter(params.row).omrade(skjemaer)
+                AvvikValueGetter(params.row).omrade(skjemaer),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    AvvikValueGetter(param1.api.getRow(param1.id)).omrade(
+                        skjemaer
+                    )
+                ).localeCompare(
+                    String(
+                        AvvikValueGetter(param2.api.getRow(param2.id)).omrade(
+                            skjemaer
+                        )
+                    )
+                )
         },
         {
             field: 'avvikBilder',
             headerName: 'Bilder',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                AvvikValueGetter(params.row).avvikBilder()
+                AvvikValueGetter(params.row).avvikBilder(),
+            sortComparator: (v1, v2, param1, param2) =>
+                AvvikValueGetter(param1.api.getRow(param1.id)).avvikBilder() -
+                AvvikValueGetter(param2.api.getRow(param2.id)).avvikBilder()
         },
         {
             field: 'kommentar',
@@ -120,7 +144,19 @@ export const columns = (
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                AvvikValueGetter(params.row).kontroll(kontroller)
+                AvvikValueGetter(params.row).kontroll(kontroller),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    AvvikValueGetter(param1.api.getRow(param1.id)).kontroll(
+                        kontroller
+                    )
+                ).localeCompare(
+                    String(
+                        AvvikValueGetter(param2.api.getRow(param2.id)).kontroll(
+                            kontroller
+                        )
+                    )
+                )
         },
         {
             field: 'action',
@@ -175,105 +211,14 @@ export const defaultColumns: Array<string> = [
 
 interface AvvikTableProps {
     avvik: Avvik[];
-    kontroller: Kontroll[];
-    skjemaer: Skjema[];
-    onSelected: (checkpoints: Array<Avvik>) => void;
-    selected: Avvik[];
-    selectedFromGrid: boolean;
+    onSelected: (ids: number[]) => void;
+    selected: number[];
 }
 export const AvvikTable = ({
-    kontroller,
     avvik,
-    skjemaer,
     onSelected,
-    selected,
-    selectedFromGrid
+    selected
 }: AvvikTableProps) => {
-    const { apiRef } = useTable();
-
-    function CustomSort<T extends keyof Avvik>(
-        data: Avvik[],
-        field: T
-    ): Avvik[] {
-        switch (field.toString()) {
-            case 'kontroll':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            AvvikValueGetter(a).kontroll(kontroller)
-                        ).localeCompare(
-                            String(AvvikValueGetter(b).kontroll(kontroller))
-                        )
-                    );
-            case 'area':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            AvvikValueGetter(a).area(skjemaer)
-                        ).localeCompare(
-                            String(AvvikValueGetter(b).area(skjemaer))
-                        )
-                    );
-            case 'omrade':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            AvvikValueGetter(a).omrade(skjemaer)
-                        ).localeCompare(
-                            String(AvvikValueGetter(b).omrade(skjemaer))
-                        )
-                    );
-            case 'avvikBilder':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            AvvikValueGetter(a).avvikBilder() -
-                            AvvikValueGetter(b).avvikBilder()
-                    );
-            default:
-                return data;
-        }
-    }
-
-    const onSelect = () => {
-        const rows: Map<GridRowId, GridRowData> =
-            apiRef.current.getSelectedRows();
-
-        const cpRows: Avvik[] = [];
-
-        rows.forEach((r) =>
-            cpRows.push({
-                id: r.id,
-                beskrivelse: r.beskrivelse,
-                avvikBilder: r.avvikBilder,
-                checklist: r.checklist,
-                kommentar: r.kommentar,
-                registrertDato: r.registrertDato,
-                status: r.status,
-                oppdagetAv: r.oppdagetAv,
-                utbedrer: r.utbedrer
-            })
-        );
-        onSelected(cpRows);
-    };
-    useEffect(() => {
-        function checkSelected() {
-            if (apiRef.current !== null && selectedFromGrid) {
-                const selectArray = selected.map((a) => a.id);
-                apiRef.current.selectRows(selectArray);
-            }
-        }
-        if (apiRef.current === null && selectedFromGrid) {
-            setTimeout(checkSelected, 1000);
-        } else if (apiRef.current !== null && selectedFromGrid) {
-            checkSelected();
-        }
-    }, [selected, apiRef, selectedFromGrid]);
-
     const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
         if (row.status === 'lukket') {
             return RowStylingEnum.completed;
@@ -283,11 +228,9 @@ export const AvvikTable = ({
     return (
         <BaseTable
             data={avvik}
-            onSelected={onSelect}
-            customSort={CustomSort}
-            customSortFields={['kontroll', 'area', 'omrade']}
+            onSelected={onSelected}
             getRowStyling={getRowStyling}
-            skipShift={selectedFromGrid}
+            selectionModel={selected}
         />
     );
 };

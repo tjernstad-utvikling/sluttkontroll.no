@@ -4,18 +4,18 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid-pro';
 
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';
 import { Checklist } from '../contracts/kontrollApi';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import { RowAction } from './tableUtils';
-import Typography from '@material-ui/core/Typography';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import Typography from '@mui/material/Typography';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 export const SjekklisteValueGetter = (data: Checklist | GridRowData) => {
     const prosedyre = (): string => {
@@ -53,14 +53,38 @@ export const columns = (
             headerName: 'Prosedyre nr',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                SjekklisteValueGetter(params.row).prosedyreNr()
+                SjekklisteValueGetter(params.row).prosedyreNr(),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    SjekklisteValueGetter(
+                        param1.api.getRow(param1.id)
+                    ).prosedyreNr()
+                ).localeCompare(
+                    String(
+                        SjekklisteValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).prosedyreNr()
+                    )
+                )
         },
         {
             field: 'prosedyre',
             headerName: 'Prosedyre',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                SjekklisteValueGetter(params.row).prosedyre()
+                SjekklisteValueGetter(params.row).prosedyre(),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    SjekklisteValueGetter(
+                        param1.api.getRow(param1.id)
+                    ).prosedyre()
+                ).localeCompare(
+                    String(
+                        SjekklisteValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).prosedyre()
+                    )
+                )
         },
         {
             field: 'avvik',
@@ -86,11 +110,17 @@ export const columns = (
                     <IconButton
                         to={`${url}/checklist/${params.row.id}/avvik/new`}
                         component={RouterLink}
-                        aria-label="nytt avvik">
+                        aria-label="nytt avvik"
+                        size="large">
                         <AddIcon />
                     </IconButton>
                 </>
-            )
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                SjekklisteValueGetter(param1.api.getRow(param1.id)).avvik(avvik)
+                    .open -
+                SjekklisteValueGetter(param2.api.getRow(param2.id)).avvik(avvik)
+                    .open
         },
         {
             field: 'aktuell',
@@ -147,65 +177,13 @@ export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 
 interface SjekklisteTableProps {
     checklists: Array<Checklist>;
-    avvik: Array<Avvik>;
 }
-export const SjekklisteTable = ({
-    checklists,
-    avvik
-}: SjekklisteTableProps) => {
-    function CustomSort<T extends keyof Checklist>(
-        data: Checklist[],
-        field: T
-    ): Checklist[] {
-        switch (field.toString()) {
-            case 'prosedyre':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            SjekklisteValueGetter(a).prosedyre()
-                        ).localeCompare(
-                            String(SjekklisteValueGetter(b).prosedyre())
-                        )
-                    );
-            case 'prosedyreNr':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            SjekklisteValueGetter(a).prosedyreNr()
-                        ).localeCompare(
-                            String(SjekklisteValueGetter(b).prosedyreNr()),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    );
-            case 'avvik':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            SjekklisteValueGetter(a).avvik(avvik).open -
-                            SjekklisteValueGetter(b).avvik(avvik).open
-                    );
-
-            default:
-                return data;
-        }
-    }
-
+export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
     const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
         if (!row.aktuell) {
             return RowStylingEnum.disabled;
         }
     };
 
-    return (
-        <BaseTable
-            data={checklists}
-            customSort={CustomSort}
-            customSortFields={['prosedyre', 'prosedyreNr', 'avvik']}
-            getRowStyling={getRowStyling}
-        />
-    );
+    return <BaseTable data={checklists} getRowStyling={getRowStyling} />;
 };

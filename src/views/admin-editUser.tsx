@@ -1,17 +1,17 @@
+import { Card, CardContent } from '../components/card';
 import { Roles, User } from '../contracts/userApi';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
+import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import { UserSchema } from '../schema/user';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const NewUserView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { userId } = useParams<EditUserViewParams>();
     const history = useHistory();
     const [user, setUser] = useState<User>();
@@ -50,14 +50,14 @@ const NewUserView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Rediger bruker">
-                            <div style={{ padding: 15 }}>
+                            <CardContent>
                                 {user !== undefined && (
                                     <UserSchema
                                         onSubmit={handleEditUser}
                                         user={user}
                                     />
                                 )}
-                            </div>
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

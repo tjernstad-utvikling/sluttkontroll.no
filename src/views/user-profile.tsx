@@ -1,13 +1,14 @@
-import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import { Card, CardContent } from '../components/card';
+
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { Roles } from '../contracts/userApi';
 import { UserProfileSchema } from '../schema/userProfile';
 import { useAuth } from '../hooks/useAuth';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const ProfileView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const { user, updateUser, updatePassword } = useAuth();
 
@@ -35,14 +36,16 @@ const ProfileView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Profil">
-                            {user !== undefined && (
-                                <div style={{ padding: 15 }}>
-                                    <UserProfileSchema
-                                        onSubmit={handleUpdateUser}
-                                        user={user}
-                                    />
-                                </div>
-                            )}
+                            <CardContent>
+                                {user !== undefined && (
+                                    <div style={{ padding: 15 }}>
+                                        <UserProfileSchema
+                                            onSubmit={handleUpdateUser}
+                                            user={user}
+                                        />
+                                    </div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

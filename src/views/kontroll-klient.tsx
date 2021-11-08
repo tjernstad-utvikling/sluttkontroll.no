@@ -8,16 +8,16 @@ import {
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import Button from '@material-ui/core/Button';
-import { CardContent } from '@material-ui/core';
-import Container from '@material-ui/core/Container';
-import EditIcon from '@material-ui/icons/Edit';
-import Grid from '@material-ui/core/Grid';
+import Button from '@mui/material/Button';
+import { CardContent } from '@mui/material';
+import Container from '@mui/material/Container';
+import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
 import { KlientEditSchema } from '../schema/klient';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';
 import { useKontroll } from '../data/kontroll';
@@ -26,7 +26,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const KontrollKlientView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const { klientId } = useParams<KontrollKlientViewParams>();
     const history = useHistory();
@@ -150,29 +150,27 @@ const KontrollKlientView = () => {
                                     ]}
                                 />
                             }>
-                            {kontroller !== undefined ? (
-                                <TableContainer
-                                    columns={kontrollColumns(
-                                        users ?? [],
-                                        klienter ?? [],
-                                        avvik ?? [],
-                                        measurements ?? [],
-                                        editKontroll,
-                                        toggleStatusKontroll
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        klienter={klienter ?? []}
-                                        avvik={avvik ?? []}
-                                        users={users ?? []}
-                                        measurements={measurements ?? []}
-                                        kontroller={_kontroller}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster kontroller</div>
-                            )}
+                            <CardContent>
+                                {kontroller !== undefined ? (
+                                    <TableContainer
+                                        columns={kontrollColumns(
+                                            users ?? [],
+                                            klienter ?? [],
+                                            avvik ?? [],
+                                            measurements ?? [],
+                                            editKontroll,
+                                            toggleStatusKontroll
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="kontroller">
+                                        <KontrollTable
+                                            kontroller={_kontroller}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster kontroller</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

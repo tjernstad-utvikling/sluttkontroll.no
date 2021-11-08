@@ -3,12 +3,13 @@ import {
     columns,
     defaultColumns
 } from '../tables/skjemaTemplate';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { TableContainer } from '../tables/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
-import Typography from '@material-ui/core/Typography';
+import { Theme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '../theme/makeStyles';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useTemplate } from '../data/skjemaTemplate';
 
@@ -22,7 +23,7 @@ export const SelectTemplate = ({
     onOpen,
     isOpen
 }: SelectTemplateProps) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const {
         state: { templates },
         loadTemplates
@@ -69,10 +70,8 @@ export const SelectTemplate = ({
     );
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        wrapper: {
-            margin: theme.spacing(1)
-        }
-    })
-);
+const useStyles = makeStyles()((theme: Theme) => ({
+    wrapper: {
+        margin: theme.spacing(1)
+    }
+}));

@@ -6,16 +6,19 @@ import {
 } from '../../contracts/navigation';
 import React, { useMemo } from 'react';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
 
-import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
-import HomeIcon from '@material-ui/icons/Home';
-import Link from '@material-ui/core/Link';
-import ListIcon from '@material-ui/icons/List';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
-import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
-import Typography from '@material-ui/core/Typography';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import HomeIcon from '@mui/icons-material/Home';
+import Link from '@mui/material/Link';
+import ListIcon from '@mui/icons-material/List';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import Typography from '@mui/material/Typography';
 import { useClient } from '../../data/klient';
 import { useKontroll } from '../../data/kontroll';
 

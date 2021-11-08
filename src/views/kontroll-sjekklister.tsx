@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     SjekklisteTable,
     SjekklisteValueGetter,
@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
 import { Checklist } from '../contracts/kontrollApi';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
@@ -19,7 +19,7 @@ import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SjekklisterView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const { skjemaId } = useParams<SjekklisterViewParams>();
 
     const history = useHistory();
@@ -79,23 +79,24 @@ const SjekklisterView = () => {
                                     ]}
                                 />
                             }>
-                            {checklists !== undefined ? (
-                                <TableContainer
-                                    columns={columns(
-                                        avvik ?? [],
-                                        url,
-                                        toggleAktuellChecklist
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="checklists">
-                                    <SjekklisteTable
-                                        avvik={avvik ?? []}
-                                        checklists={_checklists}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster skjemaer</div>
-                            )}
+                            <CardContent>
+                                {checklists !== undefined ? (
+                                    <TableContainer
+                                        columns={columns(
+                                            avvik ?? [],
+                                            url,
+                                            toggleAktuellChecklist
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="checklists">
+                                        <SjekklisteTable
+                                            checklists={_checklists}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster skjemaer</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

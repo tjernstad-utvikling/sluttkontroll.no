@@ -1,20 +1,18 @@
-import {
-    KeyboardDatePicker,
-    MuiPickersUtilsProvider
-} from '@material-ui/pickers';
 import { useEffect, useState } from 'react';
 
-import Button from '@material-ui/core/Button';
-import DateFnsUtils from '@date-io/date-fns'; // choose your lib
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import Button from '@mui/material/Button';
+import DatePicker from '@mui/lab/DatePicker';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { DropZone } from '../components/uploader';
 import { Instrument } from '../contracts/instrumentApi';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import Typography from '@material-ui/core/Typography';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 import nbLocale from 'date-fns/locale/nb';
 import { useInstrument } from '../data/instrument';
@@ -34,8 +32,9 @@ export function InstrumentCalibrationModal({
     } = useInstrument();
 
     const [instrument, setInstrument] = useState<Instrument>();
-    const [newCalibrationDate, setNewCalibrationDate] =
-        useState<MaterialUiPickersDate>(null);
+    const [newCalibrationDate, setNewCalibrationDate] = useState<Date | null>(
+        null
+    );
     const [files, setFiles] = useState<File[]>([]);
 
     const { enqueueSnackbar } = useSnackbar();
@@ -80,17 +79,17 @@ export function InstrumentCalibrationModal({
                 Registrer kalibrering for {instrument?.name}
             </DialogTitle>
             <DialogContent>
-                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={nbLocale}>
-                    <KeyboardDatePicker
+                <LocalizationProvider
+                    dateAdapter={AdapterDateFns}
+                    locale={nbLocale}>
+                    <DatePicker
                         clearable
-                        fullWidth
                         label="Kalibreringsdato"
-                        inputVariant="outlined"
                         value={newCalibrationDate}
                         onChange={(date) => setNewCalibrationDate(date)}
-                        format="dd.MM.yyyy"
+                        renderInput={(params) => <TextField {...params} />}
                     />
-                </MuiPickersUtilsProvider>
+                </LocalizationProvider>
                 <div style={{ padding: 10 }} />
                 <Typography>Kalibreringsbevis</Typography>
                 <DropZone

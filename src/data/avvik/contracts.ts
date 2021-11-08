@@ -32,8 +32,8 @@ export interface ContextInterface {
     loadAvvikByKontroller: (kontroller: Kontroll[]) => Promise<void>;
     deleteAvvik: (avvikId: number) => Promise<boolean>;
     updateAvvik: (avvik: Avvik) => Promise<boolean>;
-    setUtbedrere: (avvik: Avvik[], utbedrere: User[]) => Promise<boolean>;
-    closeAvvik: (avvik: Avvik[], kommentar: string) => Promise<boolean>;
+    setUtbedrere: (avvikIds: number[], utbedrere: User[]) => Promise<boolean>;
+    closeAvvik: (avvikIds: number[], kommentar: string) => Promise<boolean>;
     openAvvik: (avvikId: number) => Promise<boolean>;
     newAvvik: (
         beskrivelse: string,

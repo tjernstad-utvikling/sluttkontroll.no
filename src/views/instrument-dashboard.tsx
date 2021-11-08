@@ -1,12 +1,12 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     InstrumentTable,
     defaultColumns,
     instrumentColumns
 } from '../tables/instrument';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
 import { TableContainer } from '../tables/tableContainer';
@@ -17,7 +17,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
 
 const InstrumentsView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [calibrationModalId, setCalibrationModalId] = useState<number>();
     const [editId, setEditId] = useState<number>();
@@ -58,28 +58,31 @@ const InstrumentsView = () => {
                                     ]}
                                 />
                             }>
-                            {instruments !== undefined ? (
-                                <TableContainer
-                                    columns={instrumentColumns({
-                                        edit: (id: number) => {
-                                            setEditId(id);
-                                            setIsModalOpen(true);
-                                        },
-                                        regCalibration: (id: number) => {
-                                            setCalibrationModalId(id);
-                                        },
-                                        currentUser: user,
-                                        changeDisponent: handleInstrumentBooking
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="instruments">
-                                    <InstrumentTable
-                                        instruments={instruments ?? []}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster instrumenter</div>
-                            )}
+                            <CardContent>
+                                {instruments !== undefined ? (
+                                    <TableContainer
+                                        columns={instrumentColumns({
+                                            edit: (id: number) => {
+                                                setEditId(id);
+                                                setIsModalOpen(true);
+                                            },
+                                            regCalibration: (id: number) => {
+                                                setCalibrationModalId(id);
+                                            },
+                                            currentUser: user,
+                                            changeDisponent:
+                                                handleInstrumentBooking
+                                        })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="instruments">
+                                        <InstrumentTable
+                                            instruments={instruments ?? []}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster instrumenter</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

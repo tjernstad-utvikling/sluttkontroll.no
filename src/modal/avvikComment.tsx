@@ -1,11 +1,10 @@
-import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentSchema } from '../schema/avvikComment';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import { useAvvik } from '../data/avvik';
 import { useModalStyles } from '../styles/modal';
 
 interface AvvikCommentModalProps {
-    selectedAvvik: Avvik[];
+    selectedAvvik: number[];
     open: boolean;
     close: () => void;
 }
@@ -15,7 +14,7 @@ export const AvvikCommentModal = ({
     open,
     close
 }: AvvikCommentModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
 
     const { closeAvvik } = useAvvik();
 

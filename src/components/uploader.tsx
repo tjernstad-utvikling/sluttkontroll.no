@@ -1,7 +1,8 @@
-import BackupIcon from '@material-ui/icons/Backup';
-import Button from '@material-ui/core/Button';
+import BackupIcon from '@mui/icons-material/Backup';
+import Button from '@mui/material/Button';
+import { Theme } from '@mui/material';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '../theme/makeStyles';
 import { useDropzone } from 'react-dropzone';
 
 interface DropZoneProps {
@@ -18,7 +19,7 @@ export function DropZone({
     files,
     multiple = false
 }: DropZoneProps) {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     function duplicateFileValidator(file: File) {
         const simFile = files.filter((f) => f.name === file.name);
@@ -90,7 +91,7 @@ export function DropZone({
     );
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme: Theme) => ({
     base: {
         flex: 1,
         display: 'flex',
@@ -107,12 +108,12 @@ const useStyles = makeStyles({
         transition: 'border .24s ease-in-out'
     },
     activeStyle: {
-        borderColor: '#2196f3'
+        borderColor: theme.palette.info.main
     },
     acceptStyle: {
-        borderColor: '#00e676'
+        borderColor: theme.palette.success.main
     },
     rejectStyle: {
-        borderColor: '#ff1744'
+        borderColor: theme.palette.error.main
     }
-});
+}));

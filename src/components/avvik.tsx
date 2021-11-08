@@ -1,23 +1,24 @@
 import { Avvik, AvvikBilde } from '../contracts/avvikApi';
 import { useEffect, useMemo, useState } from 'react';
 
-import BuildIcon from '@material-ui/icons/Build';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Checkbox from '@material-ui/core/Checkbox';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import BuildIcon from '@mui/icons-material/Build';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Checkbox from '@mui/material/Checkbox';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 import { Image } from './image';
 import { Link } from 'react-router-dom';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from '../tables/tableUtils';
-import Typography from '@material-ui/core/Typography';
+import { Theme } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '../theme/makeStyles';
 import { useAvvik } from '../data/avvik';
 
 interface AvvikCardProps {
@@ -43,7 +44,7 @@ export function AvvikCard({
     checked,
     url
 }: AvvikCardProps) {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     const textLength = 60;
     const trimmedBeskrivelse = useMemo(
@@ -136,17 +137,17 @@ export function AvvikCard({
 
 interface AvvikGridProps {
     avvik: Avvik[];
-    selected: Avvik[];
+    selected: number[];
     deleteAvvik: (avvikId: number) => void;
     edit: (avvikId: number) => void;
     open: (avvikId: number) => void;
     close: (avvikId: number) => void;
-    setSelected: (selected: Avvik[]) => void;
+    setSelected: (selected: number[]) => void;
     selectedFromGrid: boolean;
     url: string;
 }
 export function AvvikGrid(props: AvvikGridProps) {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [isShift, setIsShift] = useState<boolean>(false);
     const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
 
@@ -168,11 +169,14 @@ export function AvvikGrid(props: AvvikGridProps) {
 
     const handleSelected = (checked: boolean, selection: Avvik[]) => {
         if (checked) {
-            props.setSelected([...props.selected, ...selection]);
+            props.setSelected([
+                ...props.selected,
+                ...selection.map((a) => a.id)
+            ]);
         } else {
             const ids = selection.map((a) => a.id);
             props.setSelected(
-                props.selected.filter((item) => ids.indexOf(item.id) === -1)
+                props.selected.filter((item) => ids.indexOf(item) === -1)
             );
         }
     };
@@ -211,7 +215,7 @@ export function AvvikGrid(props: AvvikGridProps) {
                     {...props}
                     avvik={a}
                     onSelect={handleSelect}
-                    checked={props.selected.some((s) => s.id === a.id)}
+                    checked={props.selected.some((s) => s === a.id)}
                     url={props.url}
                 />
             ))}
@@ -224,7 +228,7 @@ interface AvvikImageCardProps {
     avvik: Avvik;
 }
 export const AvvikImageCard = ({ avvikBilde, avvik }: AvvikImageCardProps) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { deleteAvvikImage } = useAvvik();
     return (
         <Card className={classes.cardRoot}>
@@ -261,7 +265,7 @@ interface NewImageCardProps {
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 export const NewImageCard = ({ file, setFiles }: NewImageCardProps) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const deleteFile = () => {
         setFiles((images) => images.filter((img) => img.name !== file.name));
     };
@@ -288,7 +292,7 @@ export const NewImageCard = ({ file, setFiles }: NewImageCardProps) => {
     );
 };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme: Theme) => ({
     cardRoot: {
         maxWidth: 250,
         margin: 5
@@ -303,11 +307,9 @@ const useStyles = makeStyles({
         height: 140
     },
     cardActions: {
-        background:
-            'linear-gradient(180deg, rgba(255,255,255,1) 75%, #F3A712 100%)'
+        background: `linear-gradient(180deg, rgba(255,255,255,1) 75%, ${theme.palette.warning.main} 100%)`
     },
     cardActionClosed: {
-        background:
-            'linear-gradient(180deg, rgba(255,255,255,1) 75%, #8FC93A 100%)'
+        background: `linear-gradient(180deg, rgba(255,255,255,1) 75%, ${theme.palette.success.main} 100%)`
     }
-});
+}));

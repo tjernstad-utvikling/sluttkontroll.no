@@ -1,4 +1,4 @@
-import { Card, CardMenu } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     KontrollTable,
     defaultColumns,
@@ -6,8 +6,8 @@ import {
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
@@ -22,7 +22,7 @@ import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
 const KontrollerView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const history = useHistory();
     const { user } = useAuth();
@@ -89,29 +89,27 @@ const KontrollerView = () => {
                                     ]}
                                 />
                             }>
-                            {kontroller !== undefined ? (
-                                <TableContainer
-                                    columns={kontrollColumns(
-                                        users ?? [],
-                                        klienter ?? [],
-                                        avvik ?? [],
-                                        measurements ?? [],
-                                        editKontroll,
-                                        toggleStatusKontroll
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        klienter={klienter ?? []}
-                                        avvik={avvik ?? []}
-                                        users={users ?? []}
-                                        measurements={measurements ?? []}
-                                        kontroller={_kontroller}
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster kontroller</div>
-                            )}
+                            <CardContent>
+                                {kontroller !== undefined ? (
+                                    <TableContainer
+                                        columns={kontrollColumns(
+                                            users ?? [],
+                                            klienter ?? [],
+                                            avvik ?? [],
+                                            measurements ?? [],
+                                            editKontroll,
+                                            toggleStatusKontroll
+                                        )}
+                                        defaultColumns={defaultColumns}
+                                        tableId="kontroller">
+                                        <KontrollTable
+                                            kontroller={_kontroller}
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster kontroller</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

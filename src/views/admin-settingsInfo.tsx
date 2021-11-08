@@ -1,9 +1,9 @@
+import { Card, CardContent } from '../components/card';
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import { getInfoText, setInfoText as setInfoTextApi } from '../api/settingsApi';
 
-import { Card } from '../components/card';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -11,7 +11,7 @@ import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 const InfoTextView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
     const [_infoText, setInfoText] = useState<string>();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -52,7 +52,7 @@ const InfoTextView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Sluttkontrollrapport informasjonstekst">
-                            <div style={{ padding: 15 }}>
+                            <CardContent>
                                 <MDEditor
                                     value={_infoText}
                                     onChange={setInfoText}
@@ -80,7 +80,7 @@ const InfoTextView = () => {
                                     color="primary">
                                     Lagre
                                 </LoadingButton>
-                            </div>
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

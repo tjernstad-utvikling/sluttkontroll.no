@@ -1,9 +1,9 @@
+import { Card, CardContent } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 
-import { Card } from '../components/card';
 import { Checkpoint } from '../contracts/checkpointApi';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
 import { TableContainer } from '../tables/tableContainer';
 import { getCheckpoints } from '../api/checkpointApi';
@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useTemplate } from '../data/skjemaTemplate';
 
 const SkjemaTemplateNewView = () => {
-    const classes = usePageStyles();
+    const { classes } = usePageStyles();
 
     const history = useHistory();
 
@@ -57,26 +57,35 @@ const SkjemaTemplateNewView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card title="Ny sjekklistemal">
-                            <SkjemaTemplateSchema
-                                onSubmit={onSaveTemplate}
-                                checkpointCount={selected.length}
-                            />
+                            <CardContent>
+                                <SkjemaTemplateSchema
+                                    onSubmit={onSaveTemplate}
+                                    checkpointCount={selected.length}
+                                />
 
-                            {checkpoints !== undefined ? (
-                                <TableContainer
-                                    columns={columns({})}
-                                    defaultColumns={defaultColumns}
-                                    tableId="checkpoints">
-                                    <CheckpointTable
-                                        checkpoints={checkpoints}
-                                        onSelected={(checkpoints) =>
-                                            setSelected(checkpoints)
-                                        }
-                                    />
-                                </TableContainer>
-                            ) : (
-                                <div>Laster sjekkpunkter</div>
-                            )}
+                                {checkpoints !== undefined ? (
+                                    <TableContainer
+                                        columns={columns({})}
+                                        defaultColumns={defaultColumns}
+                                        tableId="checkpoints">
+                                        <CheckpointTable
+                                            checkpoints={checkpoints}
+                                            onSelected={(ids) =>
+                                                setSelected(
+                                                    checkpoints?.filter(
+                                                        (c) =>
+                                                            ids.indexOf(
+                                                                c.id
+                                                            ) !== -1
+                                                    )
+                                                )
+                                            }
+                                        />
+                                    </TableContainer>
+                                ) : (
+                                    <div>Laster sjekkpunkter</div>
+                                )}
+                            </CardContent>
                         </Card>
                     </Grid>
                 </Grid>

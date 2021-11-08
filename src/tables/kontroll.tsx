@@ -3,14 +3,14 @@ import {
     GridColDef,
     GridRowData,
     GridValueGetterParams
-} from '@material-ui/data-grid';
+} from '@mui/x-data-grid-pro';
 import { Klient, Kontroll } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
-import DescriptionIcon from '@material-ui/icons/Description';
-import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
-import EditIcon from '@material-ui/icons/Edit';
+import DescriptionIcon from '@mui/icons-material/Description';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from '../tables/tableUtils';
@@ -97,14 +97,38 @@ export const kontrollColumns = (
             headerName: 'Klient',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).klient(klienter)
+                KontrollValueGetter(params.row).klient(klienter),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    KontrollValueGetter(param1.api.getRow(param1.id)).klient(
+                        klienter
+                    )
+                ).localeCompare(
+                    String(
+                        KontrollValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).klient(klienter)
+                    )
+                )
         },
         {
             field: 'objekt',
             headerName: 'Lokasjon',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).objekt(klienter)
+                KontrollValueGetter(params.row).objekt(klienter),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    KontrollValueGetter(param1.api.getRow(param1.id)).objekt(
+                        klienter
+                    )
+                ).localeCompare(
+                    String(
+                        KontrollValueGetter(
+                            param2.api.getRow(param2.id)
+                        ).objekt(klienter)
+                    )
+                )
         },
         {
             field: 'name',
@@ -129,7 +153,12 @@ export const kontrollColumns = (
                         {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
                     </span>
                 </Link>
-            )
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                KontrollValueGetter(param1.api.getRow(param1.id)).avvik(avvik)
+                    .open -
+                KontrollValueGetter(param2.api.getRow(param2.id)).avvik(avvik)
+                    .open
         },
         {
             field: 'measurement',
@@ -140,14 +169,33 @@ export const kontrollColumns = (
                     to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/measurement`}>
                     {KontrollValueGetter(params.row).measurement(measurements)}
                 </Link>
-            )
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                KontrollValueGetter(param1.api.getRow(param1.id)).measurement(
+                    measurements
+                ) -
+                KontrollValueGetter(param2.api.getRow(param2.id)).measurement(
+                    measurements
+                )
         },
         {
             field: 'user',
             headerName: 'Utførende',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).user(users)
+                KontrollValueGetter(params.row).user(users),
+            sortComparator: (v1, v2, param1, param2) =>
+                String(
+                    KontrollValueGetter(param1.api.getRow(param1.id)).user(
+                        users
+                    )
+                ).localeCompare(
+                    String(
+                        KontrollValueGetter(param2.api.getRow(param2.id)).user(
+                            users
+                        )
+                    )
+                )
         },
         {
             field: 'kommentar',
@@ -197,88 +245,7 @@ export const defaultColumns: Array<string> = [
 
 interface KontrollTableProps {
     kontroller: Array<Kontroll>;
-    users: User[];
-    klienter: Klient[];
-    avvik: Avvik[];
-    measurements: Measurement[];
 }
-export const KontrollTable = ({
-    kontroller,
-    users,
-    klienter,
-    avvik,
-    measurements
-}: KontrollTableProps) => {
-    function kontrollCustomSort<T extends keyof Kontroll>(
-        data: Kontroll[],
-        field: T
-    ): Kontroll[] {
-        switch (field.toString()) {
-            case 'klient':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            KontrollValueGetter(a).klient(klienter)
-                        ).localeCompare(
-                            String(KontrollValueGetter(b).klient(klienter))
-                        )
-                    );
-
-            case 'objekt':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            KontrollValueGetter(a).objekt(klienter)
-                        ).localeCompare(
-                            String(KontrollValueGetter(b).objekt(klienter))
-                        )
-                    );
-
-            case 'user':
-                return data
-                    .slice()
-                    .sort((a, b) =>
-                        String(
-                            KontrollValueGetter(a).user(users)
-                        ).localeCompare(
-                            String(KontrollValueGetter(b).user(users))
-                        )
-                    );
-            case 'avvik':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            KontrollValueGetter(a).avvik(avvik).open -
-                            KontrollValueGetter(b).avvik(avvik).open
-                    );
-            case 'measurement':
-                return data
-                    .slice()
-                    .sort(
-                        (a, b) =>
-                            KontrollValueGetter(a).measurement(measurements) -
-                            KontrollValueGetter(b).measurement(measurements)
-                    );
-
-            default:
-                return data;
-        }
-    }
-
-    return (
-        <BaseTable
-            data={kontroller}
-            customSort={kontrollCustomSort}
-            customSortFields={[
-                'avvik',
-                'klient',
-                'objekt',
-                'user',
-                'measurement'
-            ]}
-        />
-    );
+export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
+    return <BaseTable data={kontroller} />;
 };

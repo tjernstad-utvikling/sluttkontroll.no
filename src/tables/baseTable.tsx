@@ -1,15 +1,13 @@
 import {
-    GridColumns,
+    DataGridPro,
     GridRowData,
-    GridRowSelectedParams,
     GridSortDirection,
-    GridSortModelParams
-} from '@material-ui/data-grid';
-import { useEffect, useState } from 'react';
+    GridSortModel
+} from '@mui/x-data-grid-pro';
 
 import { ColumnSelect } from './tableUtils';
-import { DataGrid } from '@material-ui/data-grid';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
+import { useState } from 'react';
 import { useTable } from './tableContainer';
 
 interface Data {
@@ -20,146 +18,185 @@ export enum RowStylingEnum {
     disabled = 'disabled'
 }
 
-interface BaseTableProps<T, K extends keyof T> {
+interface BaseTableProps<T> {
     data: Array<T>;
-    customSort: (data: T[], field: K) => T[];
-    customSortFields: any[];
     selectionModel?: number[] | undefined;
-    onSelected?: () => void;
+    onSelected?: (ids: number[]) => void;
     getRowStyling?: (row: GridRowData) => RowStylingEnum | undefined;
-    skipShift?: boolean;
 }
-export const BaseTable = <T extends Data, K extends keyof T>({
+export const BaseTable = <T extends Data>({
     data,
-    customSort,
-    customSortFields,
     selectionModel,
     onSelected,
-    getRowStyling,
-    skipShift
-}: BaseTableProps<T, K>) => {
-    const { columns, apiRef } = useTable();
-    const [isShift, setIsShift] = useState<boolean>(false);
-    const [lastSelectedIndex, setLastSelectedIndex] = useState<number>();
-    const [sortedData, setSortedData] = useState<Array<T>>();
+    getRowStyling
+}: BaseTableProps<T>) => {
+    const { columns } = useTable();
 
-    function sort(
-        data: T[],
-        field: K,
-        mode: GridSortDirection,
-        columns: GridColumns
-    ): T[] {
-        const column = columns.find((c) => c.field === field);
-        let sortedRows: T[] = [];
-        if (column !== undefined && customSortFields.includes(field)) {
-            sortedRows = customSort(data, field);
-        } else {
-            sortedRows = data
-                .slice()
-                .sort((a, b) =>
-                    String(a[field]).localeCompare(String(b[field]))
-                );
+    const [sortModel, setSortModel] = useState<GridSortModel>([
+        {
+            field: 'id',
+            sort: 'asc' as GridSortDirection
         }
+    ]);
 
-        if (mode === 'desc') {
-            sortedRows = sortedRows.reverse();
-        }
-        return sortedRows;
-    }
-
-    const handleSortMode = (sortMode: GridSortModelParams) => {
-        if (sortMode.sortModel.length === 0) {
-            setSortedData(data);
-            return;
-        }
-        const field: any = sortMode.sortModel[0].field;
-        if (sortedData !== undefined) {
-            setSortedData(
-                sort(
-                    sortedData,
-                    field,
-                    sortMode.sortModel[0].sort,
-                    sortMode.columns
-                )
-            );
-        }
-    };
-
-    useEffect(() => {
-        const handleKey = (event: KeyboardEvent, down: boolean) => {
-            if (event.key === 'Shift' && !skipShift) {
-                setIsShift(down);
-            }
-        };
-        window.addEventListener('keydown', (e) => handleKey(e, true));
-        window.addEventListener('keyup', (e) => handleKey(e, false));
-
-        // cleanup this component
-        return () => {
-            window.removeEventListener('keydown', (e) => handleKey(e, true));
-            window.removeEventListener('keyup', (e) => handleKey(e, false));
-        };
-    }, [skipShift]);
-
-    useEffect(() => {
-        setSortedData(data);
-    }, [data]);
-
-    const handleSelect = (row: GridRowSelectedParams) => {
-        if (sortedData !== undefined) {
-            const index = sortedData.findIndex((k) => k.id === row.data.id);
-
-            if (isShift) {
-                if (lastSelectedIndex === undefined) {
-                    return;
-                }
-
-                if (index === lastSelectedIndex) {
-                    return;
-                }
-                const subsetArray = sortedData.slice(
-                    Math.min(index, lastSelectedIndex),
-                    Math.max(index, lastSelectedIndex) + 1
-                );
-
-                const selectArray = subsetArray.map((k) => k.id);
-                apiRef.current.selectRows(selectArray, row.isSelected);
-            }
-            if (onSelected !== undefined) {
-                onSelected();
-            }
-
-            setLastSelectedIndex(index);
+    const handleSelect = (ids: any) => {
+        if (onSelected !== undefined) {
+            onSelected(ids);
         }
     };
     const classes = useTableStyles();
     return (
         <div className={classes.root}>
             <ColumnSelect />
-            {sortedData && (
-                <DataGrid
-                    rows={sortedData}
-                    columns={columns}
-                    selectionModel={selectionModel}
-                    pageSize={15}
-                    checkboxSelection
-                    disableSelectionOnClick
-                    disableColumnSelector
-                    autoHeight
-                    sortingMode="server"
-                    onSortModelChange={handleSortMode}
-                    onRowSelected={handleSelect}
-                    getRowClassName={(params) => {
-                        if (getRowStyling !== undefined) {
-                            const className = getRowStyling(params.row);
-                            if (className !== undefined) {
-                                return `slk-table--${className}`;
-                            }
+
+            <DataGridPro
+                localeText={{
+                    // Root
+                    noRowsLabel: 'Ingen rader',
+                    noResultsOverlayLabel: 'Ikke noe resultat funnet.',
+                    errorOverlayDefaultLabel: 'En feil har oppstått.',
+
+                    // Density selector toolbar button text
+                    toolbarDensity: 'Tetthet',
+                    toolbarDensityLabel: 'Tetthet',
+                    toolbarDensityCompact: 'Kompakt',
+                    toolbarDensityStandard: 'Standard',
+                    toolbarDensityComfortable: 'Komfortabelt',
+
+                    // Columns selector toolbar button text
+                    toolbarColumns: 'Kolonner',
+                    toolbarColumnsLabel: 'Velg kolonner',
+
+                    // Filters toolbar button text
+                    toolbarFilters: 'Filtere',
+                    toolbarFiltersLabel: 'Vis filtere',
+                    toolbarFiltersTooltipHide: 'Gjem filtere',
+                    toolbarFiltersTooltipShow: 'Vis filtere',
+                    toolbarFiltersTooltipActive: (count) =>
+                        count !== 1
+                            ? `${count} aktive filtere`
+                            : `${count} aktive filtere`,
+
+                    // Export selector toolbar button text
+                    toolbarExport: 'Eksporter',
+                    toolbarExportLabel: 'Eksporter',
+                    toolbarExportCSV: 'Last ned som CSV',
+
+                    // Columns panel text
+                    columnsPanelTextFieldLabel: 'Finn kolonne',
+                    columnsPanelTextFieldPlaceholder: 'Kolonne tittel',
+                    columnsPanelDragIconLabel: 'Omorganiser kolonner',
+                    columnsPanelShowAllButton: 'Vis alle',
+                    columnsPanelHideAllButton: 'Gjem alle',
+
+                    // Filter panel text
+                    filterPanelAddFilter: 'Legg til filter',
+                    filterPanelDeleteIconLabel: 'Slett',
+                    filterPanelOperators: 'Operatorer',
+                    filterPanelOperatorAnd: 'Og',
+                    filterPanelOperatorOr: 'Eller',
+                    filterPanelColumns: 'Kolonner',
+                    filterPanelInputLabel: 'Verdi',
+                    filterPanelInputPlaceholder: 'Filter verdi',
+
+                    // Filter operators text
+                    filterOperatorContains: 'inneholder',
+                    filterOperatorEquals: 'er lik',
+                    filterOperatorStartsWith: 'starter med',
+                    filterOperatorEndsWith: 'ender med',
+                    filterOperatorIs: 'er',
+                    filterOperatorNot: 'er ikke',
+                    filterOperatorAfter: 'er etter',
+                    filterOperatorOnOrAfter: 'er på eller etter',
+                    filterOperatorBefore: 'er før',
+                    filterOperatorOnOrBefore: 'er på eller før',
+                    filterOperatorIsEmpty: 'er tom',
+                    filterOperatorIsNotEmpty: 'er ikke tom',
+
+                    // Filter values text
+                    filterValueAny: 'noen',
+                    filterValueTrue: 'sant',
+                    filterValueFalse: 'usant',
+
+                    // Column menu text
+                    columnMenuLabel: 'Meny',
+                    columnMenuShowColumns: 'Vis kolonner',
+                    columnMenuFilter: 'Filter',
+                    columnMenuHideColumn: 'Gjem',
+                    columnMenuUnsort: 'Usortert',
+                    columnMenuSortAsc: 'Sorter stigende',
+                    columnMenuSortDesc: 'Sorter synkende',
+
+                    // Column header text
+                    columnHeaderFiltersTooltipActive: (count) =>
+                        count !== 1
+                            ? `${count} aktive filtere`
+                            : `${count} aktive filter`,
+                    columnHeaderFiltersLabel: 'Vis filter',
+                    columnHeaderSortIconLabel: 'Sorter',
+
+                    // Rows selected footer text
+                    footerRowSelected: (count) =>
+                        count !== 1
+                            ? `${count.toLocaleString()} rader valgt`
+                            : `${count.toLocaleString()} rad valgt`,
+
+                    // Total rows footer text
+                    footerTotalRows: 'Rader totalt:',
+
+                    // Total visible rows footer text
+                    footerTotalVisibleRows: (visibleCount, totalCount) =>
+                        `${visibleCount.toLocaleString()} av ${totalCount.toLocaleString()}`,
+
+                    // Checkbox selection text
+                    checkboxSelectionHeaderName: 'Avmerkingsboks',
+
+                    // Boolean cell text
+                    booleanCellTrueLabel: 'sant',
+                    booleanCellFalseLabel: 'usant',
+
+                    // Actions cell more text
+                    actionsCellMore: 'mer'
+                }}
+                componentsProps={{
+                    pagination: {
+                        labelRowsPerPage: 'Rader per side',
+                        labelDisplayedRows: ({
+                            from,
+                            to,
+                            count
+                        }: {
+                            from: number;
+                            to: number;
+                            count: number;
+                        }) =>
+                            `${from}-${to} av ${
+                                count !== -1 ? count : `mer enn ${to}`
+                            }`
+                    }
+                }}
+                rows={data}
+                columns={columns}
+                selectionModel={selectionModel}
+                pageSize={25}
+                pagination
+                checkboxSelection
+                disableSelectionOnClick
+                disableColumnSelector
+                autoHeight
+                sortModel={sortModel}
+                onSortModelChange={(model) => setSortModel(model)}
+                onSelectionModelChange={handleSelect}
+                getRowClassName={(params) => {
+                    if (getRowStyling !== undefined) {
+                        const className = getRowStyling(params.row);
+                        if (className !== undefined) {
+                            return `slk-table--${className}`;
                         }
-                        return '';
-                    }}
-                />
-            )}
+                    }
+                    return '';
+                }}
+            />
         </div>
     );
 };

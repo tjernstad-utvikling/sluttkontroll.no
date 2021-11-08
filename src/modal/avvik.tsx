@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikSchema } from '../schema/avvik';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import { User } from '../contracts/userApi';
 import { useAvvik } from '../data/avvik';
 import { useModalStyles } from '../styles/modal';
@@ -16,7 +16,7 @@ export const AvvikEditModal = ({
     editId,
     close
 }: AvvikEditModalProps): JSX.Element => {
-    const classes = useModalStyles();
+    const { classes } = useModalStyles();
     const [editAvvik, setEditAvvik] = useState<Avvik>();
 
     const {

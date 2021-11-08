@@ -1,9 +1,9 @@
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import MuiCheckbox from '@material-ui/core/Checkbox';
-import MuiTextField from '@material-ui/core/TextField';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import FormHelperText from '@mui/material/FormHelperText';
+import MuiCheckbox from '@mui/material/Checkbox';
+import MuiTextField from '@mui/material/TextField';
 import React from 'react';
 import { useField } from 'formik';
 

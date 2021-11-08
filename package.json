@@ -15,7 +15,7 @@
     "@react-pdf/renderer": "^2.0.20",
     "@sentry/react": "^6.13.2",
     "@uiw/react-md-editor": "^3.6.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "date-fns": "^2.23.0",
     "formik": "^2.2.9",
     "lodash.unionby": "^4.8.0",

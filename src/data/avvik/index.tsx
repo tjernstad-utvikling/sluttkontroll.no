@@ -1,5 +1,4 @@
 import { ActionType, ContextInterface } from './contracts';
-import { Avvik, AvvikBilde } from '../../contracts/avvikApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     addAvvikApi,
@@ -14,6 +13,7 @@ import {
 } from '../../api/avvikApi';
 import { initialState, userReducer } from './reducer';
 
+import { Avvik } from '../../contracts/avvikApi';
 import { Kontroll } from '../../contracts/kontrollApi';
 import { User } from '../../contracts/userApi';
 import { errorHandler } from '../../tools/errorHandler';
@@ -286,52 +286,40 @@ export const AvvikContextProvider = ({
         avvik: Avvik,
         images: File[]
     ): Promise<boolean> => {
-        const newAvvikBilder: AvvikBilde[] = [];
-        let status = 200;
-
-        await Promise.all(
-            images.map(async (image) => {
-                try {
-                    const { status, avvikBilde, message } = await addImage(
-                        avvik.id,
-                        image
-                    );
-                    if (status === 200 && avvikBilde !== undefined) {
-                        newAvvikBilder.push(avvikBilde);
-                    } else if (status === 400 && message === 'missing file') {
-                        enqueueSnackbar(
-                            'Bildet mangler ved opplastning, prøv igjen eller kontakt support',
-                            {
-                                variant: 'warning'
-                            }
-                        );
-                    } else if (status === 400) {
-                        enqueueSnackbar('Ukjent feil ved opplastning', {
-                            variant: 'warning'
-                        });
+        try {
+            const { status, avvikBilder, message } = await addImage(
+                avvik.id,
+                images
+            );
+            if (status === 200 && avvikBilder !== undefined) {
+                dispatch({
+                    type: ActionType.updateAvvik,
+                    payload: {
+                        ...avvik,
+                        avvikBilder: [...avvik.avvikBilder, ...avvikBilder]
                     }
-                } catch (error: any) {
-                    enqueueSnackbar('Problemer med opplastning av bilde', {
-                        variant: 'error'
-                    });
-                    status = 500;
-                }
-            })
-        );
+                });
 
-        if (status === 200) {
-            dispatch({
-                type: ActionType.updateAvvik,
-                payload: {
-                    ...avvik,
-                    avvikBilder: [...avvik.avvikBilder, ...newAvvikBilder]
-                }
+                enqueueSnackbar('Bilder er lastet opp', {
+                    variant: 'success'
+                });
+                return true;
+            } else if (status === 400 && message === 'missing file') {
+                enqueueSnackbar(
+                    'Bildet mangler ved opplastning, prøv igjen eller kontakt support',
+                    {
+                        variant: 'warning'
+                    }
+                );
+            } else if (status === 400) {
+                enqueueSnackbar('Ukjent feil ved opplastning', {
+                    variant: 'warning'
+                });
+            }
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med opplastning av bilde', {
+                variant: 'error'
             });
-
-            enqueueSnackbar('Bilder er lastet opp', {
-                variant: 'success'
-            });
-            return true;
         }
 
         return false;

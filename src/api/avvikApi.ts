@@ -193,12 +193,18 @@ export const deleteImage = async (
 };
 export const addImage = async (
     avvikId: number,
-    image: File
-): Promise<{ status: number; avvikBilde?: AvvikBilde; message?: string }> => {
+    images: File[]
+): Promise<{
+    status: number;
+    avvikBilder?: AvvikBilde[];
+    message?: string;
+}> => {
     try {
         const formData = new FormData();
 
-        formData.append('image', image);
+        images.forEach((file) => {
+            formData.append('images', file);
+        });
 
         const { status, data } = await sluttkontrollApi.post(
             `/avvik/bilder/add/${avvikId}`,

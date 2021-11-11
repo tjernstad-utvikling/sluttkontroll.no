@@ -139,13 +139,7 @@ export const MeasurementSchema = ({
                             typeof values.min === 'string'
                                 ? +values.min.replace(/,/, '.')
                                 : values.min;
-                        console.log({
-                            valuesResultat: values.min,
-                            min,
-                            resultatTimesHundred: Number(
-                                (min > 0 ? min * 100 : 0).toFixed(0)
-                            )
-                        });
+
                         await onSubmit({
                             ...values,
                             resultat: Number(

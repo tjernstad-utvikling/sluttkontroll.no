@@ -72,7 +72,11 @@ export const columns = ({
         {
             field: 'resultat',
             headerName: 'Resultat',
-            flex: 1
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                params.row.resultat !== undefined && params.row.resultat > 0
+                    ? params.row.resultat / 100
+                    : ''
         },
         {
             field: 'enhet',
@@ -82,12 +86,20 @@ export const columns = ({
         {
             field: 'min',
             headerName: 'Min',
-            flex: 1
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                params.row.min !== undefined && params.row.min > 0
+                    ? params.row.min / 100
+                    : ''
         },
         {
             field: 'maks',
             headerName: 'Maks',
-            flex: 1
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                params.row.maks !== undefined && params.row.maks > 0
+                    ? params.row.maks / 100
+                    : ''
         },
         {
             field: 'kontroll',

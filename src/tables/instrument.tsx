@@ -21,7 +21,7 @@ import { format } from 'date-fns';
 
 export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
     const sisteKalibrert = (formatString: string): string => {
-        if (data.sisteKalibrert !== null) {
+        if (data.sisteKalibrert !== null && data.sisteKalibrert !== undefined) {
             return format(new Date(data.sisteKalibrert.date), formatString);
         }
         return 'Kalibrering ikke registrert';
@@ -52,7 +52,7 @@ const RenderDisponentField = ({
     onClick: (id: number) => void;
 }) => {
     if (user !== undefined) {
-        if (row.disponent !== null) {
+        if (row.disponent !== null && row.disponent !== undefined) {
             return (
                 <>
                     <Button

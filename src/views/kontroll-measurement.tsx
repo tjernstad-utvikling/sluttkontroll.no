@@ -76,7 +76,11 @@ const MeasurementsView = () => {
                 }
             }
             const isConfirmed = await confirm(
-                `Slette (ID: ${measurement.id}) ${mType} ${measurement.element} ${measurement.resultat} ${measurement.enhet}?`
+                `Slette (ID: ${measurement.id}) ${mType} ${
+                    measurement.element
+                } ${
+                    measurement.resultat > 0 ? measurement.resultat / 100 : 0
+                } ${measurement.enhet}?`
             );
 
             if (isConfirmed) {

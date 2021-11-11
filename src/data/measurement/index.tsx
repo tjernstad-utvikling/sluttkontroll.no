@@ -38,24 +38,27 @@ export const MeasurementContextProvider = ({
         kontroller: Kontroll[]
     ): Promise<void> => {
         try {
-            const { status, measurements } = await getMeasurementByKontrollList(
-                kontroller.map((k) => k.id)
-            );
-
-            if (status === 200) {
-                dispatch({
-                    type: ActionType.addMeasurement,
-                    payload: measurements
-                });
-
-                const { status, measurementTypes } =
-                    await getMeasurementTypes();
+            if (kontroller.length > 0) {
+                const { status, measurements } =
+                    await getMeasurementByKontrollList(
+                        kontroller.map((k) => k.id)
+                    );
 
                 if (status === 200) {
                     dispatch({
-                        type: ActionType.setMeasurementTypes,
-                        payload: measurementTypes
+                        type: ActionType.addMeasurement,
+                        payload: measurements
                     });
+
+                    const { status, measurementTypes } =
+                        await getMeasurementTypes();
+
+                    if (status === 200) {
+                        dispatch({
+                            type: ActionType.setMeasurementTypes,
+                            payload: measurementTypes
+                        });
+                    }
                 }
             }
         } catch (error: any) {

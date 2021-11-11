@@ -5,20 +5,17 @@ import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getAvvikByKontrollList = async (
-    ids: Array<number>
+    ids: number[]
 ): Promise<{
     status: number;
-    avvik: Array<Avvik>;
+    avvik: Avvik[];
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
             `/avvik/kontroll-list/${ids.join()}`
         );
 
-        if (status === 200) {
-            return { status, ...data };
-        }
-        throw new Error('not 200');
+        return { status, ...data };
     } catch (error: any) {
         throw new Error(error);
     }
@@ -93,8 +90,8 @@ export const addAvvikApi = async (newAvvik: {
 };
 
 export const setUtbedrereApi = async (
-    avvikList: Array<number>,
-    utbedrer: Array<User>
+    avvikList: number[],
+    utbedrer: User[]
 ): Promise<{
     status: number;
     message: string;

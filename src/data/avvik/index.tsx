@@ -38,15 +38,17 @@ export const AvvikContextProvider = ({
         kontroller: Kontroll[]
     ): Promise<void> => {
         try {
-            const { status, avvik } = await getAvvikByKontrollList(
-                kontroller.map((k) => k.id)
-            );
+            if (kontroller.length > 0) {
+                const { status, avvik } = await getAvvikByKontrollList(
+                    kontroller.map((k) => k.id)
+                );
 
-            if (status === 200) {
-                dispatch({
-                    type: ActionType.addAvvik,
-                    payload: avvik
-                });
+                if (status === 200) {
+                    dispatch({
+                        type: ActionType.addAvvik,
+                        payload: avvik
+                    });
+                }
             }
         } catch (error: any) {
             errorHandler(error);

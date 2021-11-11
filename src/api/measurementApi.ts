@@ -10,16 +10,14 @@ export const getMeasurementByKontrollList = async (
     ids: number[]
 ): Promise<{
     status: number;
-    measurements: Array<Measurement>;
+    measurements: Measurement[];
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
             `/measurement/kontroll-list/${ids.join()}`
         );
-        if (status === 200) {
-            return { status, ...data };
-        }
-        throw new Error('not 200');
+
+        return { status, ...data };
     } catch (error: any) {
         throw new Error(error);
     }

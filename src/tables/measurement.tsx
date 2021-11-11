@@ -1,18 +1,18 @@
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
+import { Measurement, MeasurementType } from '../contracts/measurementApi';
 
 import { BaseTable } from './baseTable';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from './tableUtils';
 
-export const MeasurementValueGetter = (data: Measurement | GridRowData) => {
+export const MeasurementValueGetter = (data: Measurement | GridRowModel) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
         return kontroller.find((k) => k.id === data.skjema.kontroll.id);
     };
@@ -23,15 +23,34 @@ export const MeasurementValueGetter = (data: Measurement | GridRowData) => {
         }
         return '';
     };
+    const mType = (measurementTypes: MeasurementType[] | undefined): string => {
+        const type = measurementTypes?.find((mt) => mt.shortName === data.type);
 
-    return { kontroll, skjema };
+        if (type) {
+            if (type.hasPol) {
+                return type.longName.replace('#', data.pol);
+            }
+            return type.longName;
+        }
+        return '';
+    };
+
+    return { kontroll, skjema, mType };
 };
-export const columns = (
-    kontroller: Kontroll[],
-    skjemaer: Skjema[],
-    deleteMeasurement: (MeasurementId: number) => void,
-    edit: (MeasurementId: number) => void
-) => {
+interface ColumnsProps {
+    kontroller: Kontroll[];
+    skjemaer: Skjema[];
+    deleteMeasurement: (MeasurementId: number) => void;
+    edit: (MeasurementId: number) => void;
+    measurementTypes: MeasurementType[] | undefined;
+}
+export const columns = ({
+    kontroller,
+    skjemaer,
+    deleteMeasurement,
+    edit,
+    measurementTypes
+}: ColumnsProps) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -41,7 +60,9 @@ export const columns = (
         {
             field: 'type',
             headerName: 'Type',
-            flex: 1
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                MeasurementValueGetter(params.row).mType(measurementTypes)
         },
         {
             field: 'element',

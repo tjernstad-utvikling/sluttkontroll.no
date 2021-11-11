@@ -111,15 +111,16 @@ const MeasurementsView = () => {
                             <CardContent>
                                 {skjemaer !== undefined ? (
                                     <TableContainer
-                                        columns={columns(
-                                            kontroller ?? [],
-                                            skjemaer ?? [],
+                                        columns={columns({
+                                            kontroller: kontroller ?? [],
+                                            skjemaer: skjemaer ?? [],
                                             deleteMeasurement,
-                                            (id) => {
+                                            edit: (id) => {
                                                 setEditId(id);
                                                 setMeasurementModalOpen(true);
-                                            }
-                                        )}
+                                            },
+                                            measurementTypes
+                                        })}
                                         defaultColumns={defaultColumns}
                                         tableId="measurements">
                                         <MeasurementTable

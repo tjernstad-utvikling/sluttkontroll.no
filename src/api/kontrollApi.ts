@@ -288,7 +288,7 @@ export const newSkjema = async (
     try {
         const { status, data } = await sluttkontrollApi.post(
             `/skjema/${kontrollId}`,
-            { area, omrade, checkpoints: checkpointIds }
+            { area, omrade, checkpointIds }
         );
         if (status === 200) {
             return { status, ...data };
@@ -346,12 +346,9 @@ export const getChecklistsBySkjema = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `v3/checklist/skjema/${skjema.id}`
+            `checklist/skjema/${skjema.id}`
         );
-        if (status === 200) {
-            return { status, ...data };
-        }
-        throw new Error('not 200');
+        return { status, ...data };
     } catch (error: any) {
         throw new Error(error);
     }

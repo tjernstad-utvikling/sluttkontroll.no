@@ -5,25 +5,17 @@ import { Form, Formik } from 'formik';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Link from '@mui/material/Link';
 import { LoadingButton } from '../components/button';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Paper from '@mui/material/Paper';
 import { Link as RouterLink } from 'react-router-dom';
 import { TextField } from '../components/input';
 import Typography from '@mui/material/Typography';
-import { useAuth } from '../hooks/useAuth';
 import { useFrontStyles } from '../styles/public/front';
-import { useHistory } from 'react-router-dom';
-import { useState } from 'react';
 
-const FrontPage = () => {
+const ForgotPasswordPage = () => {
     const { classes, cx, css, theme } = useFrontStyles();
-    const { signIn } = useAuth();
-
-    const history = useHistory();
-
-    const [loginError, setLoginError] = useState<string>();
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -39,40 +31,23 @@ const FrontPage = () => {
                 square>
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
+                        <HelpOutlineIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Logg inn
+                        Glemt passord
                     </Typography>
                     <Formik
                         initialValues={{
-                            email: '',
-                            password: ''
+                            email: ''
                         }}
                         validationSchema={Yup.object({
                             email: Yup.string()
                                 .email('Epost er ugyldig')
-                                .required('Epost er påkrevd'),
-                            password: Yup.string().required('Påkrevd')
+                                .required('Epost er påkrevd')
                         })}
                         onSubmit={async (values, { setSubmitting }) => {
                             try {
-                                const loginResponse = await signIn(
-                                    values.email,
-                                    values.password
-                                );
-                                if (loginResponse.status) {
-                                    history.push(loginResponse.redirect);
-                                } else {
-                                    setLoginError(
-                                        'Innlogging feilet, epost eller passord eksisterer ikke'
-                                    );
-                                }
-                            } catch (error: any) {
-                                setLoginError(
-                                    'Innlogging feilet, en ukjent feil oppsto'
-                                );
-                            }
+                            } catch (error: any) {}
                         }}>
                         {({ isSubmitting }) => (
                             <Form className={classes.form}>
@@ -87,22 +62,6 @@ const FrontPage = () => {
                                     type="email"
                                 />
 
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    name="password"
-                                    label="Passord"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="current-password"
-                                />
-                                {loginError !== undefined && (
-                                    <Typography
-                                        className={classes.errorText}
-                                        component="div">
-                                        {loginError}
-                                    </Typography>
-                                )}
                                 <LoadingButton
                                     isLoading={isSubmitting}
                                     type="submit"
@@ -110,15 +69,15 @@ const FrontPage = () => {
                                     variant="contained"
                                     color="primary"
                                     className={classes.submit}>
-                                    Logg inn
+                                    Send
                                 </LoadingButton>
                                 <Grid container>
                                     <Grid item xs>
                                         <Link
                                             component={RouterLink}
-                                            to="/forgot-password"
+                                            to="/"
                                             variant="body2">
-                                            Glemt passord?
+                                            Logg inn
                                         </Link>
                                     </Grid>
                                 </Grid>
@@ -168,4 +127,4 @@ const FrontPage = () => {
     );
 };
 
-export default FrontPage;
+export default ForgotPasswordPage;

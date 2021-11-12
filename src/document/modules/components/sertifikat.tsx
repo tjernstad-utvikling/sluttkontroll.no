@@ -39,7 +39,10 @@ export const SertifikatBlock = ({ sertifikater }: SertifikatBlockProps) => {
                             width: 60,
                             padding: 5
                         }}>
-                        <Image src={s.type.logoBase64} />
+                        {s.type.logoBase64 !== undefined &&
+                            s.type.logoBase64.length > 0 && (
+                                <Image src={s.type.logoBase64} />
+                            )}
                     </View>
                 </TableRow>
             ))}

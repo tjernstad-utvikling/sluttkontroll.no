@@ -1,4 +1,5 @@
 import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
+import { useEffect, useState } from 'react';
 
 import { BaseTable } from './baseTable';
 import Button from '@mui/material/Button';
@@ -6,7 +7,6 @@ import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
 import EditIcon from '@mui/icons-material/Edit';
 import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
-import { useMemo } from 'react';
 
 interface ColumnsParams {
     editCheckpoint?: boolean;
@@ -71,19 +71,27 @@ export const CheckpointTable = ({
     templateList,
     onSelected
 }: CheckpointTableProps) => {
-    const selectionModel = useMemo(() => {
+    const [selectionModel, setSelection] = useState<number[]>([]);
+
+    useEffect(() => {
         if (checklists !== undefined) {
-            return checklists.map((cl) => cl.checkpoint.id);
+            setSelection(checklists.map((cl) => cl.checkpoint.id));
         }
         if (templateList !== undefined) {
-            return templateList.map((tl) => tl.checkpoint.id);
+            setSelection(templateList.map((tl) => tl.checkpoint.id));
         }
     }, [checklists, templateList]);
+
+    function onSelection(checkpoints: number[]) {
+        setSelection(checkpoints);
+
+        if (onSelected) onSelected(checkpoints);
+    }
 
     return (
         <BaseTable
             selectionModel={selectionModel}
-            onSelected={onSelected}
+            onSelected={onSelection}
             data={checkpoints}
         />
     );

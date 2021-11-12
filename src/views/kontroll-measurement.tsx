@@ -76,7 +76,11 @@ const MeasurementsView = () => {
                 }
             }
             const isConfirmed = await confirm(
-                `Slette (ID: ${measurement.id}) ${mType} ${measurement.element} ${measurement.resultat} ${measurement.enhet}?`
+                `Slette (ID: ${measurement.id}) ${mType} ${
+                    measurement.element
+                } ${
+                    measurement.resultat > 0 ? measurement.resultat / 100 : 0
+                } ${measurement.enhet}?`
             );
 
             if (isConfirmed) {
@@ -111,15 +115,16 @@ const MeasurementsView = () => {
                             <CardContent>
                                 {skjemaer !== undefined ? (
                                     <TableContainer
-                                        columns={columns(
-                                            kontroller ?? [],
-                                            skjemaer ?? [],
+                                        columns={columns({
+                                            kontroller: kontroller ?? [],
+                                            skjemaer: skjemaer ?? [],
                                             deleteMeasurement,
-                                            (id) => {
+                                            edit: (id) => {
                                                 setEditId(id);
                                                 setMeasurementModalOpen(true);
-                                            }
-                                        )}
+                                            },
+                                            measurementTypes
+                                        })}
                                         defaultColumns={defaultColumns}
                                         tableId="measurements">
                                         <MeasurementTable

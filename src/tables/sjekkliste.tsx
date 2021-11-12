@@ -2,7 +2,7 @@ import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-export const SjekklisteValueGetter = (data: Checklist | GridRowData) => {
+export const SjekklisteValueGetter = (data: Checklist | GridRowModel) => {
     const prosedyre = (): string => {
         return data.checkpoint.prosedyre;
     };
@@ -179,7 +179,7 @@ interface SjekklisteTableProps {
     checklists: Array<Checklist>;
 }
 export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
-    const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (!row.aktuell) {
             return RowStylingEnum.disabled;
         }

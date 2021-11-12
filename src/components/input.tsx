@@ -60,7 +60,7 @@ export const TextField = ({
 };
 
 interface CheckboxProps {
-    label: React.ReactNode;
+    label: string;
     name: string;
 }
 export const Checkbox = ({ label, name }: CheckboxProps) => {

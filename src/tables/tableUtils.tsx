@@ -1,10 +1,8 @@
-import { Theme } from '@mui/material/styles';
-
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-
 import Button from '@mui/material/Button';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -19,64 +17,61 @@ import Switch from '@mui/material/Switch';
 import { useTable } from './tableContainer';
 
 export const ColumnSelect = (): JSX.Element => {
-    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const { columns, toggleColumn } = useTable();
 
-    const handleClick = () => {
-        setOpen((prev) => !prev);
-    };
-
-    const handleClickAway = () => {
-        setOpen(false);
-    };
-
     return (
-        <ClickAwayListener onClickAway={handleClickAway}>
-            <div className={classes.root}>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleClick}>
-                    Velg kolonner
-                </Button>
-                {open ? (
-                    <div className={classes.dropdown}>
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">
-                                Velg kolonner
-                            </FormLabel>
-                            <FormGroup>
-                                {columns
-                                    .filter(
-                                        (c) =>
-                                            c.field !== '__HIDDEN__' &&
-                                            c.field !== 'action'
-                                    )
-                                    .map((c) => (
-                                        <FormControlLabel
-                                            key={c.field}
-                                            control={
-                                                <Switch
-                                                    checked={!c.hide}
-                                                    onChange={() =>
-                                                        toggleColumn(c.field)
-                                                    }
-                                                    name={c.headerName}
-                                                    color="primary"
-                                                    size="small"
-                                                />
-                                            }
-                                            label={c.headerName}
-                                        />
-                                    ))}
-                            </FormGroup>
-                        </FormControl>
-                        {}
-                    </div>
-                ) : null}
-            </div>
-        </ClickAwayListener>
+        <>
+            <Button
+                style={{ margin: '10px', marginLeft: 0 }}
+                variant="contained"
+                color="info"
+                onClick={() => setOpen(true)}>
+                Velg kolonner
+            </Button>
+            <Dialog
+                sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+                maxWidth="xs"
+                open={open}
+                onClose={() => setOpen(false)}>
+                <DialogTitle>Velg kolonner</DialogTitle>
+                <DialogContent dividers>
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Velg kolonner</FormLabel>
+                        <FormGroup>
+                            {columns
+                                .filter(
+                                    (c) =>
+                                        c.field !== '__HIDDEN__' &&
+                                        c.field !== 'action'
+                                )
+                                .map((c) => (
+                                    <FormControlLabel
+                                        key={c.field}
+                                        control={
+                                            <Switch
+                                                checked={!c.hide}
+                                                onChange={() =>
+                                                    toggleColumn(c.field)
+                                                }
+                                                name={c.headerName}
+                                                color="primary"
+                                                size="small"
+                                            />
+                                        }
+                                        label={c.headerName || ''}
+                                    />
+                                ))}
+                        </FormGroup>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={() => setOpen(false)}>
+                        lukk
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 };
 
@@ -153,22 +148,3 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
         </div>
     );
 };
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            position: 'relative'
-        },
-        dropdown: {
-            position: 'absolute',
-            top: 28,
-            right: 0,
-            left: 0,
-            zIndex: 1,
-            width: 300,
-            border: '1px solid',
-            padding: theme.spacing(1),
-            backgroundColor: theme.palette.background.paper
-        }
-    })
-);

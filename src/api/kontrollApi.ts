@@ -155,9 +155,10 @@ export const saveKontrollReportData = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.post(
-            `/rapport/egenskaper/${kontrollId}`,
+            `/report/properties/${kontrollId}`,
             {
                 ...reportProperties,
+                rapportUser: reportProperties.rapportUser?.id,
                 sertifikater: reportProperties.sertifikater.map((s) => {
                     return {
                         id: s.id
@@ -288,7 +289,7 @@ export const newSkjema = async (
     try {
         const { status, data } = await sluttkontrollApi.post(
             `/skjema/${kontrollId}`,
-            { area, omrade, checkpoints: checkpointIds }
+            { area, omrade, checkpointIds }
         );
         if (status === 200) {
             return { status, ...data };
@@ -346,12 +347,9 @@ export const getChecklistsBySkjema = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `v3/checklist/skjema/${skjema.id}`
+            `checklist/skjema/${skjema.id}`
         );
-        if (status === 200) {
-            return { status, ...data };
-        }
-        throw new Error('not 200');
+        return { status, ...data };
     } catch (error: any) {
         throw new Error(error);
     }
@@ -363,13 +361,9 @@ export const deleteSkjemaById = async (
     message: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.delete(
-            `v3/skjema/${skjemaId}`
-        );
-        if (status === 204) {
-            return { status, message: '' };
-        }
-        throw new Error('not 204');
+        const { status } = await sluttkontrollApi.delete(`skjema/${skjemaId}`);
+
+        return { status, message: '' };
     } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };
@@ -384,13 +378,10 @@ export const updateSkjemaApi = async (
     message: string;
 }> => {
     try {
-        const { status } = await sluttkontrollApi.put(
-            `v3/skjema/${skjema.id}`,
-            {
-                area: skjema.area,
-                omrade: skjema.omrade
-            }
-        );
+        const { status } = await sluttkontrollApi.put(`skjema/${skjema.id}`, {
+            area: skjema.area,
+            omrade: skjema.omrade
+        });
         if (status === 204) {
             return { status, message: '' };
         }

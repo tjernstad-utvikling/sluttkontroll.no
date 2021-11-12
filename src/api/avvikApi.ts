@@ -5,20 +5,17 @@ import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 export const getAvvikByKontrollList = async (
-    ids: Array<number>
+    ids: number[]
 ): Promise<{
     status: number;
-    avvik: Array<Avvik>;
+    avvik: Avvik[];
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
             `/avvik/kontroll-list/${ids.join()}`
         );
 
-        if (status === 200) {
-            return { status, ...data };
-        }
-        throw new Error('not 200');
+        return { status, ...data };
     } catch (error: any) {
         throw new Error(error);
     }
@@ -93,8 +90,8 @@ export const addAvvikApi = async (newAvvik: {
 };
 
 export const setUtbedrereApi = async (
-    avvikList: Array<number>,
-    utbedrer: Array<User>
+    avvikList: number[],
+    utbedrer: User[]
 ): Promise<{
     status: number;
     message: string;
@@ -193,12 +190,18 @@ export const deleteImage = async (
 };
 export const addImage = async (
     avvikId: number,
-    image: File
-): Promise<{ status: number; avvikBilde?: AvvikBilde; message?: string }> => {
+    images: File[]
+): Promise<{
+    status: number;
+    avvikBilder?: AvvikBilde[];
+    message?: string;
+}> => {
     try {
         const formData = new FormData();
 
-        formData.append('image', image);
+        images.forEach((file) => {
+            formData.append('images', file);
+        });
 
         const { status, data } = await sluttkontrollApi.post(
             `/avvik/bilder/add/${avvikId}`,

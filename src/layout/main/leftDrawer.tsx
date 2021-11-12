@@ -17,8 +17,6 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
     const { classes } = useMainStyles();
     const [searchString, setSearchString] = useState<string>();
 
-    console.log(searchString);
-
     return (
         <Drawer
             className={classes.drawer}

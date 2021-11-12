@@ -85,37 +85,70 @@ export const MeasurementSchema = ({
                     type: selectedType,
                     pol: measurement?.pol || '1',
                     element: measurement?.element || '',
-                    resultat: measurement?.resultat || '',
+                    resultat:
+                        measurement?.resultat !== undefined &&
+                        measurement?.resultat > 0
+                            ? measurement.resultat / 100
+                            : '',
                     enhet: measurement?.enhet || '',
-                    maks: measurement?.maks || '',
-                    min: measurement?.min || ''
+                    maks:
+                        measurement?.maks !== undefined && measurement?.maks > 0
+                            ? measurement.maks / 100
+                            : '',
+                    min:
+                        measurement?.min !== undefined && measurement?.min > 0
+                            ? measurement.min / 100
+                            : ''
                 }}
                 validationSchema={Yup.object({
                     resultat: Yup.number()
                         .typeError('Resultat må være et tall')
                         .transform((_, value) => {
-                            return +value.replace(/,/, '.');
+                            if (typeof value === 'string')
+                                return +value.replace(/,/, '.');
+                            return value;
                         })
                         .required('Resultat er påkrevd'),
                     enhet: Yup.string().required('Enhet er påkrevd'),
                     maks: Yup.number()
                         .typeError('Maks må være et tall')
                         .transform((_, value) => {
-                            return +value.replace(/,/, '.');
+                            if (typeof value === 'string')
+                                return +value.replace(/,/, '.');
+                            return value;
                         }),
                     min: Yup.number()
                         .typeError('Resultat må være et tall')
                         .transform((_, value) => {
-                            return +value.replace(/,/, '.');
+                            if (typeof value === 'string')
+                                return +value.replace(/,/, '.');
+                            return value;
                         })
                 })}
                 onSubmit={async (values, { setSubmitting }) => {
                     if (values.type !== null) {
+                        const resultat =
+                            typeof values.resultat === 'string'
+                                ? +values.resultat.replace(/,/, '.')
+                                : values.resultat;
+                        const maks =
+                            typeof values.maks === 'string'
+                                ? +values.maks.replace(/,/, '.')
+                                : values.maks;
+                        const min =
+                            typeof values.min === 'string'
+                                ? +values.min.replace(/,/, '.')
+                                : values.min;
+
                         await onSubmit({
                             ...values,
-                            resultat: Number(values.resultat),
-                            maks: Number(values.maks),
-                            min: Number(values.min),
+                            resultat: Number(
+                                (resultat > 0 ? resultat * 100 : 0).toFixed(0)
+                            ),
+                            maks: Number(
+                                (maks > 0 ? maks * 100 : 0).toFixed(0)
+                            ),
+                            min: Number((min > 0 ? min * 100 : 0).toFixed(0)),
                             pol: Number(values.pol),
                             type: values.type.value.shortName
                         });

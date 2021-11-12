@@ -1,6 +1,5 @@
 import { Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
-import { FrontPageBackground } from './utils/frontPageBackground';
 import { FrontPageData } from '../documentContainer';
 import PdfLogo from '../../assets/pdf-logo.png';
 
@@ -10,7 +9,6 @@ interface FrontPageProps {
 export const FrontPage = ({ frontPageData }: FrontPageProps) => {
     return (
         <Page style={{ position: 'relative', top: 0, left: 0 }}>
-            <FrontPageBackground />
             <View style={styles.container}>
                 <View style={styles.text}>
                     <Text style={styles.title}>{'Rapport '}</Text>

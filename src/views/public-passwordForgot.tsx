@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
 import { Form, Formik } from 'formik';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,13 +10,15 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Link from '@mui/material/Link';
 import { LoadingButton } from '../components/button';
 import Paper from '@mui/material/Paper';
-import { Link as RouterLink } from 'react-router-dom';
 import { TextField } from '../components/input';
 import Typography from '@mui/material/Typography';
+import { postForgotEmail } from '../api/auth';
 import { useFrontStyles } from '../styles/public/front';
 
 const ForgotPasswordPage = () => {
     const { classes, cx, css, theme } = useFrontStyles();
+
+    const history = useHistory();
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -47,6 +50,12 @@ const ForgotPasswordPage = () => {
                         })}
                         onSubmit={async (values, { setSubmitting }) => {
                             try {
+                                const { status } = await postForgotEmail(
+                                    values.email
+                                );
+                                if (status === 204) {
+                                    history.push('/password/reset');
+                                }
                             } catch (error: any) {}
                         }}>
                         {({ isSubmitting }) => (

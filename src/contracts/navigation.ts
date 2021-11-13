@@ -44,3 +44,6 @@ export interface AdminTemplateEditViewParams {
 export interface AdminFormsTemplateEditViewParams {
     templateId: string;
 }
+export interface PasswordResetViewParams {
+    token?: string;
+}

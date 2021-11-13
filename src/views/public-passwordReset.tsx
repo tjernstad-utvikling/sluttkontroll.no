@@ -43,7 +43,7 @@ const PasswordResetPage = () => {
                     <Formik
                         initialValues={{
                             password: '',
-                            token: ''
+                            token: token || ''
                         }}
                         validationSchema={Yup.object({
                             password: Yup.string().required('Påkrevd')
@@ -64,12 +64,11 @@ const PasswordResetPage = () => {
                                 <TextField
                                     variant="outlined"
                                     fullWidth
-                                    id="email"
-                                    label="Epost"
-                                    name="email"
-                                    autoComplete="email"
+                                    id="password"
+                                    label="Nytt passord"
+                                    name="password"
                                     autoFocus
-                                    type="email"
+                                    type="password"
                                 />
                                 {token === undefined && (
                                     <TextField

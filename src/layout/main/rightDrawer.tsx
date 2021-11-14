@@ -24,6 +24,9 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
     const { classes } = useMainStyles();
     const { user, userHasRole, signOut } = useAuth();
 
+    const handleSignOut = () => {
+        signOut();
+    };
     return (
         <Drawer
             className={classes.drawer}
@@ -87,7 +90,7 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
             <Divider />
             <List aria-label="Bruker meny">
                 <ListItemAction
-                    action={signOut}
+                    action={handleSignOut}
                     primary="Logg ut"
                     icon={<PersonIcon />}
                 />

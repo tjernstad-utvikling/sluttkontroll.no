@@ -74,6 +74,7 @@ export const postForgotEmail = async (
         };
     }
 };
+
 export const postNewEmail = async (
     password: string,
     resetToken: string
@@ -83,6 +84,20 @@ export const postNewEmail = async (
             '/auth/password-manager/reset',
             { password, resetToken }
         );
+
+        return {
+            status
+        };
+    } catch (error: any) {
+        return {
+            status: error.response.status
+        };
+    }
+};
+
+export const logoutAll = async (): Promise<{ status: number }> => {
+    try {
+        const { status } = await sluttkontrollApi.put('/auth/logout-all');
 
         return {
             status

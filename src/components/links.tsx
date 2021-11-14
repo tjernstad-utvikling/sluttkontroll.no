@@ -56,6 +56,38 @@ export const ListItemLink = (props: ListItemLinkProps) => {
         </li>
     );
 };
+interface ListItemActionProps {
+    icon?: React.ReactElement;
+    primary: string;
+    action: () => void;
+    lightText?: boolean;
+}
+
+export const ListItemAction = (props: ListItemActionProps) => {
+    const { icon, primary, action } = props;
+    const { classes } = useStyles();
+
+    return (
+        <li>
+            <ListItemButton onClick={action}>
+                {icon ? (
+                    <ListItemIcon
+                        className={clsx({
+                            [classes.icon]: props.lightText
+                        })}>
+                        {icon}
+                    </ListItemIcon>
+                ) : null}
+                <ListItemText
+                    className={clsx({
+                        [classes.icon]: props.lightText
+                    })}
+                    primary={primary}
+                />
+            </ListItemButton>
+        </li>
+    );
+};
 
 const useStyles = makeStyles()((theme: Theme) => ({
     icon: {

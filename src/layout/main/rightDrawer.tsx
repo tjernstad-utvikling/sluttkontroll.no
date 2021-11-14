@@ -1,3 +1,5 @@
+import { ListItemAction, ListItemLink } from '../../components/links';
+
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -5,7 +7,6 @@ import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
 import GroupIcon from '@mui/icons-material/Group';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
-import { ListItemLink } from '../../components/links';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import PersonIcon from '@mui/icons-material/Person';
 import { Roles } from '../../contracts/userApi';
@@ -21,7 +22,7 @@ interface RightDrawerProps {
 
 export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
     const { classes } = useMainStyles();
-    const { user, userHasRole } = useAuth();
+    const { user, userHasRole, signOut } = useAuth();
 
     return (
         <Drawer
@@ -82,6 +83,14 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                         icon={<SettingsIcon />}
                     />
                 )}
+            </List>
+            <Divider />
+            <List aria-label="Bruker meny">
+                <ListItemAction
+                    action={signOut}
+                    primary="Logg ut"
+                    icon={<PersonIcon />}
+                />
             </List>
         </Drawer>
     );

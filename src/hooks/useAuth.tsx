@@ -8,6 +8,7 @@ import {
 
 import { StorageKeys } from '../contracts/keys';
 import { refreshLoginToken } from '../api/sluttkontroll';
+import { useHistory } from 'react-router';
 import { useSnackbar } from 'notistack';
 import { useUser } from '../data/user';
 
@@ -24,6 +25,7 @@ export const AuthProvider = ({
 }): JSX.Element => {
     const [user, setUser] = useState<User>();
     const [hasCheckedLocal, setHasCheckedLocal] = useState(false);
+    const history = useHistory();
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -132,6 +134,7 @@ export const AuthProvider = ({
         setUser(undefined);
         localStorage.removeItem(StorageKeys.token);
         localStorage.removeItem(StorageKeys.refreshToken);
+        localStorage.removeItem(StorageKeys.currentUser);
     };
 
     const loadUserFromStorage = async () => {

@@ -8,6 +8,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
+import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import { Roles } from '../../contracts/userApi';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -92,7 +93,7 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                 <ListItemAction
                     action={handleSignOut}
                     primary="Logg ut"
-                    icon={<PersonIcon />}
+                    icon={<LockIcon />}
                 />
             </List>
         </Drawer>

@@ -4,7 +4,7 @@ import {
     getCurrentUser,
     getLogin,
     logoutAll as logoutAllApi
-} from '../api/auth';
+} from '../api/authApi';
 import {
     updatePassword as updatePasswordApi,
     updateUser as updateUserApi

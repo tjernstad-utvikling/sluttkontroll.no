@@ -12,7 +12,7 @@ import { LoadingButton } from '../components/button';
 import Paper from '@mui/material/Paper';
 import { TextField } from '../components/input';
 import Typography from '@mui/material/Typography';
-import { postForgotEmail } from '../api/auth';
+import { postForgotEmail } from '../api/authApi';
 import { useFrontStyles } from '../styles/public/front';
 
 const ForgotPasswordPage = () => {

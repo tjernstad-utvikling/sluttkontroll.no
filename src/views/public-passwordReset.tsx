@@ -13,7 +13,7 @@ import Paper from '@mui/material/Paper';
 import { PasswordResetViewParams } from '../contracts/navigation';
 import { TextField } from '../components/input';
 import Typography from '@mui/material/Typography';
-import { postNewEmail } from '../api/auth';
+import { postNewEmail } from '../api/authApi';
 import { useFrontStyles } from '../styles/public/front';
 
 const PasswordResetPage = () => {

@@ -97,7 +97,7 @@ export const postNewEmail = async (
 
 export const logoutAll = async (): Promise<{ status: number }> => {
     try {
-        const { status } = await sluttkontrollApi.put('/auth/logout-all');
+        const { status } = await sluttkontrollApi.delete('/auth/logout-all');
 
         return {
             status

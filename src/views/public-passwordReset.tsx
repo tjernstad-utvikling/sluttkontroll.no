@@ -1,29 +1,25 @@
 import * as Yup from 'yup';
 
 import { Form, Formik } from 'formik';
+import { Link as RouterLink, useHistory, useParams } from 'react-router-dom';
 
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Link from '@mui/material/Link';
 import { LoadingButton } from '../components/button';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Paper from '@mui/material/Paper';
-import { Link as RouterLink } from 'react-router-dom';
+import { PasswordResetViewParams } from '../contracts/navigation';
 import { TextField } from '../components/input';
 import Typography from '@mui/material/Typography';
-import { useAuth } from '../hooks/useAuth';
+import { postNewEmail } from '../api/authApi';
 import { useFrontStyles } from '../styles/public/front';
-import { useHistory } from 'react-router-dom';
-import { useState } from 'react';
 
-const FrontPage = () => {
+const PasswordResetPage = () => {
     const { classes, cx, css, theme } = useFrontStyles();
-    const { signIn } = useAuth();
-
+    const { token } = useParams<PasswordResetViewParams>();
     const history = useHistory();
-
-    const [loginError, setLoginError] = useState<string>();
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -39,70 +35,51 @@ const FrontPage = () => {
                 square>
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
+                        <HelpOutlineIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Logg inn
+                        Resett passord
                     </Typography>
                     <Formik
                         initialValues={{
-                            email: '',
-                            password: ''
+                            password: '',
+                            token: token || ''
                         }}
                         validationSchema={Yup.object({
-                            email: Yup.string()
-                                .email('Epost er ugyldig')
-                                .required('Epost er påkrevd'),
                             password: Yup.string().required('Påkrevd')
                         })}
                         onSubmit={async (values, { setSubmitting }) => {
                             try {
-                                const loginResponse = await signIn(
-                                    values.email,
-                                    values.password
+                                const { status } = await postNewEmail(
+                                    values.password,
+                                    values.token
                                 );
-                                if (loginResponse.status) {
-                                    history.push(loginResponse.redirect);
-                                } else {
-                                    setLoginError(
-                                        'Innlogging feilet, epost eller passord eksisterer ikke'
-                                    );
+                                if (status === 204) {
+                                    history.push('/');
                                 }
-                            } catch (error: any) {
-                                setLoginError(
-                                    'Innlogging feilet, en ukjent feil oppsto'
-                                );
-                            }
+                            } catch (error: any) {}
                         }}>
                         {({ isSubmitting }) => (
                             <Form className={classes.form}>
                                 <TextField
                                     variant="outlined"
                                     fullWidth
-                                    id="email"
-                                    label="Epost"
-                                    name="email"
-                                    autoComplete="email"
-                                    autoFocus
-                                    type="email"
-                                />
-
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    name="password"
-                                    label="Passord"
-                                    type="password"
                                     id="password"
-                                    autoComplete="current-password"
+                                    label="Nytt passord"
+                                    name="password"
+                                    autoFocus
+                                    type="password"
                                 />
-                                {loginError !== undefined && (
-                                    <Typography
-                                        className={classes.errorText}
-                                        component="div">
-                                        {loginError}
-                                    </Typography>
+                                {token === undefined && (
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        id="token"
+                                        label="Kode fra epost"
+                                        name="token"
+                                    />
                                 )}
+
                                 <LoadingButton
                                     isLoading={isSubmitting}
                                     type="submit"
@@ -110,15 +87,15 @@ const FrontPage = () => {
                                     variant="contained"
                                     color="primary"
                                     className={classes.submit}>
-                                    Logg inn
+                                    Lagre nytt passord
                                 </LoadingButton>
                                 <Grid container>
                                     <Grid item xs>
                                         <Link
                                             component={RouterLink}
-                                            to="/forgot-password"
+                                            to="/"
                                             variant="body2">
-                                            Glemt passord?
+                                            Logg inn
                                         </Link>
                                     </Grid>
                                 </Grid>
@@ -168,4 +145,4 @@ const FrontPage = () => {
     );
 };
 
-export default FrontPage;
+export default PasswordResetPage;

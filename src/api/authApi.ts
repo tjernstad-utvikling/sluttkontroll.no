@@ -56,3 +56,55 @@ export const getCurrentUser = async (): Promise<returnValue> => {
         };
     }
 };
+export const postForgotEmail = async (
+    email: string
+): Promise<{ status: number }> => {
+    try {
+        const { status } = await sluttkontrollApi.post(
+            '/auth/password-manager/send',
+            { email }
+        );
+
+        return {
+            status
+        };
+    } catch (error: any) {
+        return {
+            status: error.response.status
+        };
+    }
+};
+
+export const postNewEmail = async (
+    password: string,
+    resetToken: string
+): Promise<{ status: number }> => {
+    try {
+        const { status } = await sluttkontrollApi.post(
+            '/auth/password-manager/reset',
+            { password, resetToken }
+        );
+
+        return {
+            status
+        };
+    } catch (error: any) {
+        return {
+            status: error.response.status
+        };
+    }
+};
+
+export const logoutAll = async (): Promise<{ status: number }> => {
+    try {
+        const { status } = await sluttkontrollApi.delete('/auth/logout-all');
+
+        return {
+            status
+        };
+    } catch (error: any) {
+        return {
+            status: error.response.status
+        };
+    }
+};

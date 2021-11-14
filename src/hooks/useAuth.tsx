@@ -1,11 +1,23 @@
 import { Roles, User } from '../contracts/userApi';
 import { createContext, useContext, useState } from 'react';
-import { getCurrentUser, getLogin } from '../api/auth';
+import {
+    getCurrentUser,
+    getLogin,
+    logoutAll as logoutAllApi
+} from '../api/authApi';
 import {
     updatePassword as updatePasswordApi,
     updateUser as updateUserApi
 } from '../api/userApi';
 
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
 import { StorageKeys } from '../contracts/keys';
 import { refreshLoginToken } from '../api/sluttkontroll';
 import { useSnackbar } from 'notistack';
@@ -26,8 +38,32 @@ export const AuthProvider = ({
     const [hasCheckedLocal, setHasCheckedLocal] = useState(false);
 
     const { enqueueSnackbar } = useSnackbar();
-
     const { updateUserInState } = useUser();
+
+    const [show, setShow] = useState<boolean>(false);
+
+    const [logoutAll, setLogoutAll] = useState<boolean>(false);
+
+    const onDismiss = () => {
+        setShow(false);
+    };
+
+    const confirmLogout = async () => {
+        if (logoutAll) {
+            try {
+                await logoutAllApi();
+            } catch (error) {
+                enqueueSnackbar('Kunne ikke logge ut av andre enheter', {
+                    variant: 'warning'
+                });
+            }
+        }
+        localStorage.removeItem(StorageKeys.token);
+        localStorage.removeItem(StorageKeys.refreshToken);
+        localStorage.removeItem(StorageKeys.currentUser);
+        setUser(undefined);
+        setShow(false);
+    };
 
     const signIn = async (
         email: string,
@@ -129,9 +165,7 @@ export const AuthProvider = ({
     };
 
     const signOut = () => {
-        setUser(undefined);
-        localStorage.removeItem(StorageKeys.token);
-        localStorage.removeItem(StorageKeys.refreshToken);
+        setShow(true);
     };
 
     const loadUserFromStorage = async () => {
@@ -184,6 +218,13 @@ export const AuthProvider = ({
                 userHasRole,
                 updatePassword
             }}>
+            <ConfirmationDialog
+                open={show}
+                logoutAll={logoutAll}
+                setLogoutAll={setLogoutAll}
+                onConfirm={confirmLogout}
+                onDismiss={onDismiss}
+            />
             {children}
         </Context.Provider>
     );
@@ -207,3 +248,54 @@ interface ContextInterface {
     userHasRole: (requiredRole: Roles) => boolean;
     updatePassword: (password: string) => Promise<boolean>;
 }
+
+interface ConfirmationDialogProps {
+    open: boolean;
+    logoutAll: boolean;
+    setLogoutAll: React.Dispatch<React.SetStateAction<boolean>>;
+    onConfirm: () => void;
+    onDismiss: () => void;
+}
+const ConfirmationDialog = ({
+    open,
+    logoutAll,
+    setLogoutAll,
+    onConfirm,
+    onDismiss
+}: ConfirmationDialogProps) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setLogoutAll(event.target.checked);
+    };
+    return (
+        <Dialog open={open} onClose={onDismiss}>
+            <DialogContent>
+                <DialogContentText>Klikk OK for å logge ut</DialogContentText>
+                <FormGroup>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                value={logoutAll}
+                                onChange={handleChange}
+                            />
+                        }
+                        label={
+                            <DialogContentText>
+                                Velg for å logge ut fra andre enheter også
+                            </DialogContentText>
+                        }
+                    />
+                </FormGroup>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onDismiss}>Avbryt</Button>
+                <Button
+                    autoFocus
+                    color="primary"
+                    variant="contained"
+                    onClick={onConfirm}>
+                    OK
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+};

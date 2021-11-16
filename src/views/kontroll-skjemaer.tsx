@@ -10,6 +10,7 @@ import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
+import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
@@ -23,7 +24,8 @@ const SkjemaerView = () => {
 
     const { confirm } = useConfirm();
 
-    const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>([]);
+    const [_skjemaer, setSkjemaer] = useState<Skjema[]>([]);
+
     const {
         state: { skjemaer, kontroller },
         loadKontroller,
@@ -65,6 +67,25 @@ const SkjemaerView = () => {
         }
     };
 
+    /**
+     * Clipboard
+     */
+    const { openScissors, closeScissors, selectedSkjemaer } = useClipBoard();
+    useEffect(() => {
+        openScissors();
+        return () => {
+            closeScissors();
+        };
+    });
+
+    const onSelectForClipboard = (ids: number[]) => {
+        selectedSkjemaer(
+            _skjemaer.filter((skjema) => {
+                return ids.includes(skjema.id);
+            })
+        );
+    };
+
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -98,7 +119,7 @@ const SkjemaerView = () => {
                                         tableId="skjemaer">
                                         <SkjemaTable
                                             skjemaer={_skjemaer}
-                                            onSelected={() => console.log()}
+                                            onSelected={onSelectForClipboard}
                                         />
                                     </TableContainer>
                                 ) : (

@@ -14,6 +14,7 @@ import { TableContainer } from '../tables/tableContainer';
 import { useAuth } from '../hooks/useAuth';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';
+import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
@@ -53,6 +54,18 @@ const KontrollerView = () => {
         loadKontroller();
         loadUsers();
     });
+
+    /**
+     * Clipboard
+     */
+    const { openScissors, closeScissors } = useClipBoard();
+    useEffect(() => {
+        openScissors();
+        console.log('openScissors');
+        return () => {
+            closeScissors();
+        };
+    }, [closeScissors, openScissors]);
 
     useEffect(() => {
         if (kontroller !== undefined) {

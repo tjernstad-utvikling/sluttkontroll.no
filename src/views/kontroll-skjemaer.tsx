@@ -76,7 +76,8 @@ const SkjemaerView = () => {
         return () => {
             closeScissors();
         };
-    });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onSelectForClipboard = (ids: number[]) => {
         selectedSkjemaer(

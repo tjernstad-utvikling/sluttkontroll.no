@@ -49,6 +49,15 @@ export const ClipBoardContextProvider = ({
         });
     }
 
+    function handleCut() {
+        if (state.skjemaer) {
+            dispatch({
+                type: ActionType.setSkjemaClipboard,
+                payload: state.skjemaer
+            });
+        }
+    }
+
     return (
         <ClipBoardContext.Provider
             value={{
@@ -64,7 +73,8 @@ export const ClipBoardContextProvider = ({
                     <Fab
                         color="primary"
                         aria-label={`Klipp ut valgte, ${cutoutLength} stykk`}
-                        className={classes.fab}>
+                        className={classes.fab}
+                        onClick={handleCut}>
                         <ContentCutIcon />
                         {cutoutLength > 0 && ` (${cutoutLength})`}
                     </Fab>

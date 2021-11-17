@@ -2,7 +2,7 @@ import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
@@ -16,7 +16,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
 
-export const AvvikValueGetter = (data: Avvik | GridRowData) => {
+export const AvvikValueGetter = (data: Avvik | GridRowModel) => {
     const kontroll = (kontroller: Kontroll[]): string => {
         const kontroll = kontroller.find(
             (k) => k.id === data.checklist.skjema.kontroll.id
@@ -219,7 +219,7 @@ export const AvvikTable = ({
     onSelected,
     selected
 }: AvvikTableProps) => {
-    const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (row.status === 'lukket') {
             return RowStylingEnum.completed;
         }

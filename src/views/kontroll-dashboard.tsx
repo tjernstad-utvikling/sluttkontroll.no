@@ -65,7 +65,8 @@ const KontrollerView = () => {
         return () => {
             closeScissors();
         };
-    }, [closeScissors, openScissors]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (kontroller !== undefined) {

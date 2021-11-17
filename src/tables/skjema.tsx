@@ -1,18 +1,20 @@
+import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
     GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import { BaseTable } from './baseTable';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from './tableUtils';
+import { useClipBoard } from '../data/clipboard';
 
 export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
@@ -195,5 +197,21 @@ interface SkjemaTableProps {
     onSelected: (ids: number[]) => void;
 }
 export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
-    return <BaseTable onSelected={onSelected} data={skjemaer} />;
+    const {
+        state: { skjemaClipboard }
+    } = useClipBoard();
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
+        console.log({ skjemaClipboard });
+        if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
+            return RowStylingEnum.cut;
+        }
+    };
+
+    return (
+        <BaseTable
+            onSelected={onSelected}
+            getRowStyling={getRowStyling}
+            data={skjemaer}
+        />
+    );
 };

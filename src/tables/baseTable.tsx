@@ -25,12 +25,14 @@ interface BaseTableProps<T> {
     selectionModel?: number[] | undefined;
     onSelected?: (ids: number[]) => void;
     getRowStyling?: (row: GridRowModel) => RowStylingEnum | undefined;
+    clipboardHas?: boolean;
 }
 export const BaseTable = <T extends Data>({
     data,
     selectionModel,
     onSelected,
-    getRowStyling
+    getRowStyling,
+    clipboardHas
 }: BaseTableProps<T>) => {
     const { columns } = useTable();
 
@@ -51,7 +53,7 @@ export const BaseTable = <T extends Data>({
         <div className={classes.root}>
             <div className={classes.tools}>
                 <div className={classes.pasteTool}>
-                    <PasteButton />
+                    <PasteButton clipboardHas={clipboardHas} />
                 </div>
                 <ColumnSelect />
             </div>

@@ -197,7 +197,8 @@ interface SkjemaTableProps {
 }
 export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
     const {
-        state: { skjemaClipboard }
+        state: { skjemaClipboard },
+        clipboardHasSkjema
     } = useClipBoard();
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
@@ -210,6 +211,7 @@ export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
             onSelected={onSelected}
             getRowStyling={getRowStyling}
             data={skjemaer}
+            clipboardHas={clipboardHasSkjema}
         />
     );
 };

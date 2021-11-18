@@ -27,18 +27,25 @@ export const PasteSmallButton = () => {
         </Tooltip>
     );
 };
-export const PasteButton = () => {
+interface PasteButtonProps {
+    clipboardHas: boolean | undefined;
+}
+export const PasteButton = ({ clipboardHas }: PasteButtonProps) => {
     const { classes } = useStyles();
-    return (
-        <Tooltip title="Lim inn valgte fra utklippstavle">
-            <Fab
-                color="secondary"
-                aria-label="Lim inn valgte fra utklippstavle"
-                className={classes.fab}>
-                <ContentPasteIcon />
-            </Fab>
-        </Tooltip>
-    );
+
+    if (clipboardHas) {
+        return (
+            <Tooltip title="Lim inn valgte fra utklippstavle">
+                <Fab
+                    color="secondary"
+                    aria-label="Lim inn valgte fra utklippstavle"
+                    className={classes.fab}>
+                    <ContentPasteIcon />
+                </Fab>
+            </Tooltip>
+        );
+    }
+    return <div />;
 };
 export const ClipboardCard = ({ children }: { children: React.ReactNode }) => {
     return (

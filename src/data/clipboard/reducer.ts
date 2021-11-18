@@ -21,6 +21,13 @@ export const reducer = (state: State, action: Actions): State => {
                 ...state,
                 skjemaClipboard: unionBy(action.payload, state.skjemaer, 'id')
             };
+        case ActionType.removeSkjemaClipboard:
+            return {
+                ...state,
+                skjemaClipboard: state.skjemaClipboard?.filter(
+                    (sc) => sc.id !== action.payload.id
+                )
+            };
 
         case ActionType.setSkjemaToPast:
             return {

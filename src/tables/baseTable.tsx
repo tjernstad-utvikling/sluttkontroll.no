@@ -24,14 +24,14 @@ interface BaseTableProps<T> {
     selectionModel?: number[] | undefined;
     onSelected?: (ids: number[]) => void;
     getRowStyling?: (row: GridRowModel) => RowStylingEnum | undefined;
-    leftAction?: React.ReactNode;
+    children?: React.ReactNode;
 }
 export const BaseTable = <T extends Data>({
     data,
     selectionModel,
     onSelected,
     getRowStyling,
-    leftAction
+    children
 }: BaseTableProps<T>) => {
     const { columns } = useTable();
 
@@ -51,9 +51,7 @@ export const BaseTable = <T extends Data>({
     return (
         <div className={classes.root}>
             <div className={classes.tools}>
-                <div className={classes.pasteTool}>
-                    {leftAction && { leftAction }}
-                </div>
+                <div className={classes.pasteTool}>{children}</div>
                 <ColumnSelect />
             </div>
             <DataGridPro

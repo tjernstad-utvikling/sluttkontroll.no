@@ -141,7 +141,6 @@ export const KontrollDocAdjusting = ({
                                         )
                                     );
                                 }}
-                                leftAction={<div></div>}
                             />
                         </TableContainer>
                     ) : (

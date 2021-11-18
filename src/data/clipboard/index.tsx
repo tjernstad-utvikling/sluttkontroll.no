@@ -65,11 +65,20 @@ export const ClipBoardContextProvider = ({
         }
     }
 
-    function handlePaste({ skjemaPaste }: PasteOptions) {
+    async function handlePaste({ skjemaPaste }: PasteOptions) {
         if (skjemaPaste !== undefined) {
             for (const skjema of skjemaPaste.skjema) {
-                moveSkjema(skjema, skjemaPaste.kontrollId);
+                if (await moveSkjema(skjema, skjemaPaste.kontrollId)) {
+                    dispatch({
+                        type: ActionType.removeSkjemaClipboard,
+                        payload: skjema
+                    });
+                }
             }
+            dispatch({
+                type: ActionType.setSkjemaToPast,
+                payload: []
+            });
         }
     }
 

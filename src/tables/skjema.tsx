@@ -195,7 +195,7 @@ interface SkjemaTableProps {
     skjemaer: Skjema[];
 
     onSelected: (ids: number[]) => void;
-    leftAction: React.ReactNode;
+    leftAction?: React.ReactNode;
 }
 export const SkjemaTable = ({
     skjemaer,
@@ -215,8 +215,8 @@ export const SkjemaTable = ({
         <BaseTable
             onSelected={onSelected}
             getRowStyling={getRowStyling}
-            data={skjemaer}
-            leftAction={leftAction}
-        />
+            data={skjemaer}>
+            {leftAction}
+        </BaseTable>
     );
 };

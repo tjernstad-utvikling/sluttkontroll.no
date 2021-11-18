@@ -9,6 +9,7 @@ export interface State {
 export enum ActionType {
     setSelectedSkjemaer,
     setSkjemaClipboard,
+    removeSkjemaClipboard,
     setSkjemaToPast
 }
 
@@ -20,6 +21,10 @@ export interface setSkjemaClipboard {
     type: ActionType.setSkjemaClipboard;
     payload: Skjema[];
 }
+export interface removeSkjemaClipboard {
+    type: ActionType.removeSkjemaClipboard;
+    payload: Skjema;
+}
 export interface setSkjemaToPast {
     type: ActionType.setSkjemaToPast;
     payload: Skjema[];
@@ -28,6 +33,7 @@ export interface setSkjemaToPast {
 export type Actions =
     | setSelectedSkjemaer
     | setSkjemaClipboard
+    | removeSkjemaClipboard
     | setSkjemaToPast;
 
 export interface ContextInterface {

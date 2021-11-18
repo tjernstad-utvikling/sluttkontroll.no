@@ -27,4 +27,5 @@ export interface ContextInterface {
     closeScissors: () => void;
     openScissors: () => void;
     selectedSkjemaer: (skjemaer: Skjema[]) => void;
+    clipboardHasSkjema: boolean;
 }

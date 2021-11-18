@@ -66,7 +66,11 @@ export const ClipBoardContextProvider = ({
 
                 openScissors: () => setShowScissor(true),
                 closeScissors,
-                selectedSkjemaer
+                selectedSkjemaer,
+                clipboardHasSkjema:
+                    (state.skjemaClipboard &&
+                        state.skjemaClipboard?.length > 0) ||
+                    false
             }}>
             {children}
             {showScissor && (

@@ -5,7 +5,10 @@ import unionBy from 'lodash.unionby';
 export const initialState: State = {
     skjemaer: undefined,
     skjemaClipboard: undefined,
-    skjemaToPast: []
+    skjemaToPast: [],
+    measurements: undefined,
+    measurementClipboard: undefined,
+    measurementToPast: []
 };
 
 export const reducer = (state: State, action: Actions): State => {
@@ -19,7 +22,11 @@ export const reducer = (state: State, action: Actions): State => {
         case ActionType.setSkjemaClipboard:
             return {
                 ...state,
-                skjemaClipboard: unionBy(action.payload, state.skjemaer, 'id')
+                skjemaClipboard: unionBy(
+                    action.payload,
+                    state.skjemaClipboard,
+                    'id'
+                )
             };
         case ActionType.removeSkjemaClipboard:
             return {
@@ -33,6 +40,34 @@ export const reducer = (state: State, action: Actions): State => {
             return {
                 ...state,
                 skjemaToPast: action.payload
+            };
+        case ActionType.setSelectedMeasurements:
+            return {
+                ...state,
+                measurements: action.payload
+            };
+
+        case ActionType.setMeasurementClipboard:
+            return {
+                ...state,
+                measurementClipboard: unionBy(
+                    action.payload,
+                    state.measurementClipboard,
+                    'id'
+                )
+            };
+        case ActionType.removeMeasurementClipboard:
+            return {
+                ...state,
+                measurementClipboard: state.measurementClipboard?.filter(
+                    (mc) => mc.id !== action.payload.id
+                )
+            };
+
+        case ActionType.setMeasurementToPast:
+            return {
+                ...state,
+                measurementToPast: action.payload
             };
 
         default:

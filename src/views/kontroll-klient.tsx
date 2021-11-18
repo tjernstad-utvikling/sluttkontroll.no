@@ -159,7 +159,9 @@ const KontrollKlientView = () => {
                                             avvik ?? [],
                                             measurements ?? [],
                                             editKontroll,
-                                            toggleStatusKontroll
+                                            toggleStatusKontroll,
+                                            false,
+                                            []
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">

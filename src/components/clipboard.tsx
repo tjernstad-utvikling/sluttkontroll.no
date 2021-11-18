@@ -18,16 +18,25 @@ import Typography from '@mui/material/Typography';
 import { makeStyles } from '../theme/makeStyles';
 import { useClipBoard } from '../data/clipboard';
 
-export const PasteSmallButton = () => {
-    return (
-        <Tooltip title="Lim inn valgte fra utklippstavle">
-            <IconButton
-                color="primary"
-                aria-label="Lim inn valgte fra utklippstavle">
-                <ContentPasteIcon />
-            </IconButton>
-        </Tooltip>
-    );
+export const PasteTableButton = ({
+    clipboardHas,
+    options
+}: PasteButtonProps) => {
+    const { handlePaste } = useClipBoard();
+
+    if (clipboardHas) {
+        return (
+            <Tooltip title="Lim inn valgte fra utklippstavle">
+                <IconButton
+                    color="warning"
+                    onClick={() => handlePaste(options)}
+                    aria-label="Lim inn valgte fra utklippstavle">
+                    <ContentPasteIcon />
+                </IconButton>
+            </Tooltip>
+        );
+    }
+    return <div />;
 };
 interface PasteButtonProps {
     clipboardHas: boolean | undefined;

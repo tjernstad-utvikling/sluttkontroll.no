@@ -4,7 +4,7 @@ import {
     GridRowData,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
-import { Klient, Kontroll } from '../contracts/kontrollApi';
+import { Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { BaseTable } from './baseTable';
@@ -13,6 +13,7 @@ import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
+import { PasteTableButton } from '../components/clipboard';
 import { RowAction } from '../tables/tableUtils';
 import { User } from '../contracts/userApi';
 
@@ -84,7 +85,9 @@ export const kontrollColumns = (
     avvik: Avvik[],
     measurements: Measurement[],
     edit: (id: number) => void,
-    toggleStatus: (id: number) => void
+    toggleStatus: (id: number) => void,
+    clipboardHasSkjema: boolean,
+    skjemaToPast: Skjema[]
 ) => {
     const columns: GridColDef[] = [
         {
@@ -209,26 +212,41 @@ export const kontrollColumns = (
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => (
-                <RowAction
-                    actionItems={[
-                        {
-                            name: 'Rediger',
-                            action: () => edit(params.row.id),
-                            skip: params.row.done,
-                            icon: <EditIcon />
-                        },
-                        {
-                            name: params.row.done ? 'Åpne' : 'Sett som utført',
-                            action: () => toggleStatus(params.row.id),
-                            icon: <DoneOutlineIcon />
-                        },
-                        {
-                            name: 'Kontrollrapport',
-                            to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
-                            icon: <DescriptionIcon />
-                        }
-                    ]}
-                />
+                <>
+                    {clipboardHasSkjema && (
+                        <PasteTableButton
+                            clipboardHas={true}
+                            options={{
+                                skjemaPaste: {
+                                    kontrollId: params.row.id,
+                                    skjema: skjemaToPast
+                                }
+                            }}
+                        />
+                    )}
+                    <RowAction
+                        actionItems={[
+                            {
+                                name: 'Rediger',
+                                action: () => edit(params.row.id),
+                                skip: params.row.done,
+                                icon: <EditIcon />
+                            },
+                            {
+                                name: params.row.done
+                                    ? 'Åpne'
+                                    : 'Sett som utført',
+                                action: () => toggleStatus(params.row.id),
+                                icon: <DoneOutlineIcon />
+                            },
+                            {
+                                name: 'Kontrollrapport',
+                                to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
+                                icon: <DescriptionIcon />
+                            }
+                        ]}
+                    />
+                </>
             )
         }
     ];

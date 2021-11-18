@@ -1,4 +1,5 @@
 import { Card, CardContent, CardMenu } from '../components/card';
+import { ClipboardCard, SkjemaClipboard } from '../components/clipboard';
 import {
     KontrollTable,
     defaultColumns,
@@ -58,7 +59,12 @@ const KontrollerView = () => {
     /**
      * Clipboard
      */
-    const { openScissors, closeScissors } = useClipBoard();
+    const {
+        state: { skjemaToPast },
+        openScissors,
+        closeScissors,
+        clipboardHasSkjema
+    } = useClipBoard();
     useEffect(() => {
         openScissors();
         console.log('openScissors');
@@ -89,7 +95,7 @@ const KontrollerView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid item xs={clipboardHasSkjema ? 9 : 12}>
                         <Card
                             title="Dine kontroller"
                             menu={
@@ -112,7 +118,9 @@ const KontrollerView = () => {
                                             avvik ?? [],
                                             measurements ?? [],
                                             editKontroll,
-                                            toggleStatusKontroll
+                                            toggleStatusKontroll,
+                                            clipboardHasSkjema,
+                                            skjemaToPast
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
@@ -126,6 +134,11 @@ const KontrollerView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
+                    {clipboardHasSkjema && (
+                        <ClipboardCard>
+                            <SkjemaClipboard />
+                        </ClipboardCard>
+                    )}
                 </Grid>
             </Container>
             <KontrollEditModal editId={editId} close={closeEdit} />

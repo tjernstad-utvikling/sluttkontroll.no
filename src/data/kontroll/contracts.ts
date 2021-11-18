@@ -101,6 +101,7 @@ export interface ContextInterface {
         kontrollId: number
     ) => Promise<boolean>;
     updateSkjema: (skjema: Skjema) => Promise<boolean>;
+    moveSkjema: (skjema: Skjema, kontrollId: number) => Promise<boolean>;
     removeSkjema: (skjemaId: number) => Promise<boolean>;
     saveEditChecklist: (
         skjemaId: number,

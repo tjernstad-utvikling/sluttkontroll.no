@@ -8,6 +8,7 @@ import {
     getKontroller,
     getKontrollerByKlient,
     getKontrollerByObjekt,
+    moveSkjemaApi,
     newKontroll,
     newSkjema,
     toggleAktuellStatusChecklist,
@@ -268,6 +269,37 @@ export const KontrollContextProvider = ({
         }
         return false;
     };
+    const moveSkjema = async (
+        skjema: Skjema,
+        kontrollId: number
+    ): Promise<boolean> => {
+        try {
+            const res = await moveSkjemaApi(skjema, kontrollId);
+
+            if (res.status === 204) {
+                dispatch({
+                    type: ActionType.updateSkjema,
+                    payload: { ...skjema, kontroll: { id: kontrollId } }
+                });
+
+                enqueueSnackbar('Skjema er flyttet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (res.status === 400) {
+                enqueueSnackbar('Kontroll eller skjema mangler, prøv igjen', {
+                    variant: 'warning'
+                });
+            }
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med flytting av skjema', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
 
     const removeSkjema = async (skjemaId: number): Promise<boolean> => {
         try {
@@ -370,6 +402,7 @@ export const KontrollContextProvider = ({
 
                 saveNewSkjema,
                 updateSkjema,
+                moveSkjema,
                 removeSkjema,
                 saveEditChecklist,
                 toggleAktuellChecklist

@@ -10,6 +10,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { PasteOptions } from '../data/clipboard/contracts';
+import { Skjema } from '../contracts/kontrollApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -29,9 +31,11 @@ export const PasteSmallButton = () => {
 };
 interface PasteButtonProps {
     clipboardHas: boolean | undefined;
+    options: PasteOptions;
 }
-export const PasteButton = ({ clipboardHas }: PasteButtonProps) => {
+export const PasteButton = ({ clipboardHas, options }: PasteButtonProps) => {
     const { classes } = useStyles();
+    const { handlePaste } = useClipBoard();
 
     if (clipboardHas) {
         return (
@@ -39,6 +43,7 @@ export const PasteButton = ({ clipboardHas }: PasteButtonProps) => {
                 <Fab
                     color="secondary"
                     aria-label="Lim inn valgte fra utklippstavle"
+                    onClick={() => handlePaste(options)}
                     className={classes.fab}>
                     <ContentPasteIcon />
                 </Fab>
@@ -59,10 +64,27 @@ export const ClipboardCard = ({ children }: { children: React.ReactNode }) => {
 
 export const SkjemaClipboard = () => {
     const {
-        state: { skjemaClipboard }
+        state: { skjemaClipboard, skjemaToPast },
+        setSkjemaerToPaste
     } = useClipBoard();
 
     const { classes } = useStyles();
+
+    const handleToggle = (skjema: Skjema | undefined) => () => {
+        if (skjema) {
+            const currentIndex = skjemaToPast
+                ? skjemaToPast.indexOf(skjema)
+                : -1;
+            const newChecked = skjemaToPast ? [...skjemaToPast] : [];
+
+            if (currentIndex === -1) {
+                newChecked.push(skjema);
+            } else {
+                newChecked.splice(currentIndex, 1);
+            }
+            setSkjemaerToPaste(newChecked);
+        }
+    };
 
     return (
         <>
@@ -79,11 +101,17 @@ export const SkjemaClipboard = () => {
 
                     return (
                         <ListItem key={skjema.id} disablePadding>
-                            <ListItemButton role={undefined} dense>
+                            <ListItemButton
+                                role={undefined}
+                                onClick={handleToggle(skjema)}
+                                dense>
                                 <ListItemIcon>
                                     <Checkbox
                                         edge="start"
                                         tabIndex={-1}
+                                        checked={
+                                            skjemaToPast?.indexOf(skjema) !== -1
+                                        }
                                         disableRipple
                                         inputProps={{
                                             'aria-labelledby': labelId

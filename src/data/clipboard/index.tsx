@@ -1,4 +1,4 @@
-import { ActionType, ContextInterface } from './contracts';
+import { ActionType, ContextInterface, PasteOptions } from './contracts';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { initialState, reducer } from './reducer';
 
@@ -8,7 +8,7 @@ import { Skjema } from '../../contracts/kontrollApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '../../theme/makeStyles';
-import { useSnackbar } from 'notistack';
+import { useKontroll } from '../kontroll';
 
 export const useClipBoard = () => {
     return useContext(ClipBoardContext);
@@ -26,16 +26,22 @@ export const ClipBoardContextProvider = ({
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const [showScissor, setShowScissor] = useState<boolean>(false);
-
     const [cutoutLength, setCutoutLength] = useState<number>(0);
 
-    const { enqueueSnackbar } = useSnackbar();
     const { classes } = useStyles();
+
+    const { moveSkjema } = useKontroll();
 
     function selectedSkjemaer(skjemaer: Skjema[]) {
         setCutoutLength(skjemaer.length);
         dispatch({
             type: ActionType.setSelectedSkjemaer,
+            payload: skjemaer
+        });
+    }
+    function setSkjemaerToPaste(skjemaer: Skjema[]) {
+        dispatch({
+            type: ActionType.setSkjemaToPast,
             payload: skjemaer
         });
     }
@@ -59,6 +65,14 @@ export const ClipBoardContextProvider = ({
         }
     }
 
+    function handlePaste({ skjemaPaste }: PasteOptions) {
+        if (skjemaPaste !== undefined) {
+            for (const skjema of skjemaPaste.skjema) {
+                moveSkjema(skjema, skjemaPaste.kontrollId);
+            }
+        }
+    }
+
     return (
         <ClipBoardContext.Provider
             value={{
@@ -66,11 +80,15 @@ export const ClipBoardContextProvider = ({
 
                 openScissors: () => setShowScissor(true),
                 closeScissors,
+
                 selectedSkjemaer,
+                setSkjemaerToPaste,
                 clipboardHasSkjema:
                     (state.skjemaClipboard &&
                         state.skjemaClipboard?.length > 0) ||
-                    false
+                    false,
+
+                handlePaste
             }}>
             {children}
             {showScissor && (

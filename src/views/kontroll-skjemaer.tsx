@@ -6,6 +6,7 @@ import { useParams, useRouteMatch } from 'react-router-dom';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { PasteButton } from '../components/clipboard';
 import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
@@ -72,6 +73,7 @@ const SkjemaerView = () => {
      * Clipboard
      */
     const {
+        state: { skjemaToPast },
         openScissors,
         closeScissors,
         selectedSkjemaer,
@@ -127,6 +129,22 @@ const SkjemaerView = () => {
                                         <SkjemaTable
                                             skjemaer={_skjemaer}
                                             onSelected={onSelectForClipboard}
+                                            leftAction={
+                                                <PasteButton
+                                                    clipboardHas={
+                                                        clipboardHasSkjema
+                                                    }
+                                                    options={{
+                                                        skjemaPaste: {
+                                                            kontrollId:
+                                                                Number(
+                                                                    kontrollId
+                                                                ),
+                                                            skjema: skjemaToPast
+                                                        }
+                                                    }}
+                                                />
+                                            }
                                         />
                                     </TableContainer>
                                 ) : (

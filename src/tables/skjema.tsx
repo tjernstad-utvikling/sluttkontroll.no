@@ -12,6 +12,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
+import React from 'react';
 import { RowAction } from './tableUtils';
 import { useClipBoard } from '../data/clipboard';
 
@@ -194,11 +195,15 @@ interface SkjemaTableProps {
     skjemaer: Skjema[];
 
     onSelected: (ids: number[]) => void;
+    leftAction: React.ReactNode;
 }
-export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
+export const SkjemaTable = ({
+    skjemaer,
+    onSelected,
+    leftAction
+}: SkjemaTableProps) => {
     const {
-        state: { skjemaClipboard },
-        clipboardHasSkjema
+        state: { skjemaClipboard }
     } = useClipBoard();
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
@@ -211,7 +216,7 @@ export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
             onSelected={onSelected}
             getRowStyling={getRowStyling}
             data={skjemaer}
-            clipboardHas={clipboardHasSkjema}
+            leftAction={leftAction}
         />
     );
 };

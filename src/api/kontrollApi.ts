@@ -371,6 +371,7 @@ export const deleteSkjemaById = async (
         throw new Error(error);
     }
 };
+
 export const updateSkjemaApi = async (
     skjema: Skjema
 ): Promise<{
@@ -382,10 +383,29 @@ export const updateSkjemaApi = async (
             area: skjema.area,
             omrade: skjema.omrade
         });
-        if (status === 204) {
-            return { status, message: '' };
+
+        return { status, message: '' };
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
         }
-        throw new Error('not 204');
+        throw new Error(error);
+    }
+};
+
+export const moveSkjemaApi = async (
+    skjema: Skjema,
+    kontrollId: number
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(
+            `skjema/move/${skjema.id}/to/${kontrollId}`
+        );
+
+        return { status };
     } catch (error: any) {
         if (error.response.status === 400) {
             return { status: 400, message: error.response.data.message };

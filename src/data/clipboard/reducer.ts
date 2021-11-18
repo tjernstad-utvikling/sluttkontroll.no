@@ -4,7 +4,8 @@ import unionBy from 'lodash.unionby';
 
 export const initialState: State = {
     skjemaer: undefined,
-    skjemaClipboard: undefined
+    skjemaClipboard: undefined,
+    skjemaToPast: []
 };
 
 export const reducer = (state: State, action: Actions): State => {
@@ -19,6 +20,12 @@ export const reducer = (state: State, action: Actions): State => {
             return {
                 ...state,
                 skjemaClipboard: unionBy(action.payload, state.skjemaer, 'id')
+            };
+
+        case ActionType.setSkjemaToPast:
+            return {
+                ...state,
+                skjemaToPast: action.payload
             };
 
         default:

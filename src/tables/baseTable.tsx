@@ -6,7 +6,6 @@ import {
 } from '@mui/x-data-grid-pro';
 
 import { ColumnSelect } from './tableUtils';
-import { PasteButton } from '../components/clipboard';
 import makeStyles from '@mui/styles/makeStyles';
 import { useState } from 'react';
 import { useTable } from './tableContainer';
@@ -25,14 +24,14 @@ interface BaseTableProps<T> {
     selectionModel?: number[] | undefined;
     onSelected?: (ids: number[]) => void;
     getRowStyling?: (row: GridRowModel) => RowStylingEnum | undefined;
-    clipboardHas?: boolean;
+    leftAction?: React.ReactNode;
 }
 export const BaseTable = <T extends Data>({
     data,
     selectionModel,
     onSelected,
     getRowStyling,
-    clipboardHas
+    leftAction
 }: BaseTableProps<T>) => {
     const { columns } = useTable();
 
@@ -53,7 +52,7 @@ export const BaseTable = <T extends Data>({
         <div className={classes.root}>
             <div className={classes.tools}>
                 <div className={classes.pasteTool}>
-                    <PasteButton clipboardHas={clipboardHas} />
+                    {leftAction && { leftAction }}
                 </div>
                 <ColumnSelect />
             </div>

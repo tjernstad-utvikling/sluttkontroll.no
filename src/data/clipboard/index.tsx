@@ -50,6 +50,7 @@ export const ClipBoardContextProvider = ({
     }
 
     function handleCut() {
+        console.log('handleCut', state);
         if (state.skjemaer) {
             dispatch({
                 type: ActionType.setSkjemaClipboard,

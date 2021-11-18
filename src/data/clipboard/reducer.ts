@@ -18,7 +18,7 @@ export const reducer = (state: State, action: Actions): State => {
         case ActionType.setSkjemaClipboard:
             return {
                 ...state,
-                skjemaer: unionBy(action.payload, state.skjemaer, 'id')
+                skjemaClipboard: unionBy(action.payload, state.skjemaer, 'id')
             };
 
         default:

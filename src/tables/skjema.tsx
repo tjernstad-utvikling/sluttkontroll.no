@@ -2,7 +2,6 @@ import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
     GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
@@ -16,7 +15,7 @@ import { Measurement } from '../contracts/measurementApi';
 import { RowAction } from './tableUtils';
 import { useClipBoard } from '../data/clipboard';
 
-export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
+export const SkjemaValueGetter = (data: Skjema | GridRowModel) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
         return kontroller.find((k) => k.id === data.kontroll.id);
     };
@@ -201,7 +200,6 @@ export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
         state: { skjemaClipboard }
     } = useClipBoard();
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
-        console.log({ skjemaClipboard });
         if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
             return RowStylingEnum.cut;
         }

@@ -1,11 +1,12 @@
 import {
     DataGridPro,
-    GridRowData,
+    GridRowModel,
     GridSortDirection,
     GridSortModel
 } from '@mui/x-data-grid-pro';
 
 import { ColumnSelect } from './tableUtils';
+import { PasteButton } from '../components/clipboard';
 import makeStyles from '@mui/styles/makeStyles';
 import { useState } from 'react';
 import { useTable } from './tableContainer';
@@ -23,7 +24,7 @@ interface BaseTableProps<T> {
     data: Array<T>;
     selectionModel?: number[] | undefined;
     onSelected?: (ids: number[]) => void;
-    getRowStyling?: (row: GridRowData) => RowStylingEnum | undefined;
+    getRowStyling?: (row: GridRowModel) => RowStylingEnum | undefined;
 }
 export const BaseTable = <T extends Data>({
     data,
@@ -48,8 +49,12 @@ export const BaseTable = <T extends Data>({
     const classes = useTableStyles();
     return (
         <div className={classes.root}>
-            <ColumnSelect />
-
+            <div className={classes.tools}>
+                <div className={classes.pasteTool}>
+                    <PasteButton />
+                </div>
+                <ColumnSelect />
+            </div>
             <DataGridPro
                 localeText={{
                     // Root
@@ -222,5 +227,12 @@ const useTableStyles = makeStyles((theme) => ({
                 backgroundColor: '#F9D388'
             }
         }
+    },
+    tools: {
+        display: 'flex',
+        height: '4em'
+    },
+    pasteTool: {
+        flexGrow: 1
     }
 }));

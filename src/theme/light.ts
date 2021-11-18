@@ -27,5 +27,19 @@ export const theme = createTheme({
         text: {
             disabled: '#737373'
         }
+    },
+    components: {
+        // Name of the component
+        MuiFab: {
+            styleOverrides: {
+                // Name of the slot
+                secondary: {
+                    backgroundColor: '#F3A712',
+                    '&:hover': {
+                        backgroundColor: '#F9D388'
+                    }
+                }
+            }
+        }
     }
 });

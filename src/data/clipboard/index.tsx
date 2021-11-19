@@ -124,7 +124,7 @@ export const ClipBoardContextProvider = ({
                 }
             }
             dispatch({
-                type: ActionType.setMeasurementClipboard,
+                type: ActionType.setMeasurementToPast,
                 payload: []
             });
         }

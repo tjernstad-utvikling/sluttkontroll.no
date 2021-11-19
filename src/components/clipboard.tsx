@@ -10,6 +10,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Measurement } from '../contracts/measurementApi';
 import { PasteOptions } from '../data/clipboard/contracts';
 import { Skjema } from '../contracts/kontrollApi';
 import { Theme } from '@mui/material';
@@ -131,6 +132,77 @@ export const SkjemaClipboard = () => {
                                     id={labelId}
                                     primary={skjema.area}
                                     secondary={skjema.omrade}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+            </List>
+        </>
+    );
+};
+export const MeasurementClipboard = () => {
+    const {
+        state: { measurementClipboard, measurementToPast },
+        setMeasurementToPaste
+    } = useClipBoard();
+
+    const { classes } = useStyles();
+
+    const handleToggle = (measurements: Measurement | undefined) => () => {
+        if (measurements) {
+            const currentIndex = measurementToPast
+                ? measurementToPast.indexOf(measurements)
+                : -1;
+            const newChecked = measurementToPast ? [...measurementToPast] : [];
+
+            if (currentIndex === -1) {
+                newChecked.push(measurements);
+            } else {
+                newChecked.splice(currentIndex, 1);
+            }
+            setMeasurementToPaste(newChecked);
+        }
+    };
+
+    return (
+        <>
+            <Typography
+                variant="h3"
+                gutterBottom
+                component="h3"
+                className={classes.title}>
+                Skjemaer
+            </Typography>
+            <List>
+                {measurementClipboard?.map((measurement) => {
+                    const labelId = `checkbox-list-label-${measurement.id}`;
+
+                    return (
+                        <ListItem key={measurement.id} disablePadding>
+                            <ListItemButton
+                                role={undefined}
+                                onClick={handleToggle(measurement)}
+                                dense>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        edge="start"
+                                        tabIndex={-1}
+                                        checked={
+                                            measurementToPast?.indexOf(
+                                                measurement
+                                            ) !== -1
+                                        }
+                                        disableRipple
+                                        inputProps={{
+                                            'aria-labelledby': labelId
+                                        }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    id={labelId}
+                                    primary={` ${measurement.resultat} ${measurement.enhet}`}
+                                    secondary={`${measurement.id} ${measurement.element}`}
                                 />
                             </ListItemButton>
                         </ListItem>

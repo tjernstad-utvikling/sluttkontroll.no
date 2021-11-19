@@ -4,6 +4,7 @@ import { initialState, reducer } from './reducer';
 
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import Fab from '@mui/material/Fab';
+import { Measurement } from '../../contracts/measurementApi';
 import { Skjema } from '../../contracts/kontrollApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
@@ -45,6 +46,19 @@ export const ClipBoardContextProvider = ({
             payload: skjemaer
         });
     }
+    function selectedMeasurements(measurements: Measurement[]) {
+        setCutoutLength(measurements.length);
+        dispatch({
+            type: ActionType.setSelectedMeasurements,
+            payload: measurements
+        });
+    }
+    function setMeasurementToPaste(measurements: Measurement[]) {
+        dispatch({
+            type: ActionType.setMeasurementToPast,
+            payload: measurements
+        });
+    }
 
     function closeScissors() {
         setCutoutLength(0);
@@ -61,6 +75,12 @@ export const ClipBoardContextProvider = ({
             dispatch({
                 type: ActionType.setSkjemaClipboard,
                 payload: state.skjemaer
+            });
+        }
+        if (state.measurements) {
+            dispatch({
+                type: ActionType.setMeasurementClipboard,
+                payload: state.measurements
             });
         }
     }
@@ -95,6 +115,13 @@ export const ClipBoardContextProvider = ({
                 clipboardHasSkjema:
                     (state.skjemaClipboard &&
                         state.skjemaClipboard?.length > 0) ||
+                    false,
+
+                selectedMeasurements,
+                setMeasurementToPaste,
+                clipboardHasMeasurement:
+                    (state.measurementClipboard &&
+                        state.measurementClipboard?.length > 0) ||
                     false,
 
                 handlePaste

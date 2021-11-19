@@ -1,3 +1,4 @@
+import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
@@ -7,10 +8,10 @@ import {
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 
-import { BaseTable } from './baseTable';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { RowAction } from './tableUtils';
+import { useClipBoard } from '../data/clipboard';
 
 export const MeasurementValueGetter = (data: Measurement | GridRowModel) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
@@ -184,7 +185,28 @@ export const defaultColumns: Array<string> = [
 
 interface MeasurementTableProps {
     measurements: Measurement[];
+    onSelected: (ids: number[]) => void;
+    leftAction?: React.ReactNode;
 }
-export const MeasurementTable = ({ measurements }: MeasurementTableProps) => {
-    return <BaseTable data={measurements} />;
+export const MeasurementTable = ({
+    measurements,
+    onSelected,
+    leftAction
+}: MeasurementTableProps) => {
+    const {
+        state: { measurementClipboard }
+    } = useClipBoard();
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
+        if (measurementClipboard?.find((mc) => mc.id === row.id)) {
+            return RowStylingEnum.cut;
+        }
+    };
+    return (
+        <BaseTable
+            onSelected={onSelected}
+            getRowStyling={getRowStyling}
+            data={measurements}>
+            {leftAction}
+        </BaseTable>
+    );
 };

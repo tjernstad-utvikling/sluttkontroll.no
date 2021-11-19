@@ -2,6 +2,7 @@ import { ActionType, ContextInterface, PasteOptions } from './contracts';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { initialState, reducer } from './reducer';
 
+import { Avvik } from '../../contracts/avvikApi';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import Fab from '@mui/material/Fab';
 import { Measurement } from '../../contracts/measurementApi';
@@ -51,6 +52,7 @@ export const ClipBoardContextProvider = ({
             payload: skjemaer
         });
     }
+
     function selectedMeasurements(measurements: Measurement[]) {
         setCutoutLength(measurements.length);
         dispatch({
@@ -62,6 +64,19 @@ export const ClipBoardContextProvider = ({
         dispatch({
             type: ActionType.setMeasurementToPast,
             payload: measurements
+        });
+    }
+    function selectedAvvik(avvik: Avvik[]) {
+        setCutoutLength(avvik.length);
+        dispatch({
+            type: ActionType.setSelectedAvvik,
+            payload: avvik
+        });
+    }
+    function setAvvikToPaste(avvik: Avvik[]) {
+        dispatch({
+            type: ActionType.setAvvikToPaste,
+            payload: avvik
         });
     }
 
@@ -150,6 +165,13 @@ export const ClipBoardContextProvider = ({
                 clipboardHasMeasurement:
                     (state.measurementClipboard &&
                         state.measurementClipboard?.length > 0) ||
+                    false,
+
+                selectedAvvik,
+                setAvvikToPaste,
+                clipboardHasAvvik:
+                    (state.avvikClipboard &&
+                        state.avvikClipboard?.length > 0) ||
                     false,
 
                 handlePaste

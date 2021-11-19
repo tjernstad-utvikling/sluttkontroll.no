@@ -8,7 +8,10 @@ export const initialState: State = {
     skjemaToPast: [],
     measurements: undefined,
     measurementClipboard: undefined,
-    measurementToPast: []
+    measurementToPast: [],
+    avvik: undefined,
+    avvikClipboard: undefined,
+    avvikToPast: []
 };
 
 export const reducer = (state: State, action: Actions): State => {
@@ -41,6 +44,7 @@ export const reducer = (state: State, action: Actions): State => {
                 ...state,
                 skjemaToPast: action.payload
             };
+
         case ActionType.setSelectedMeasurements:
             return {
                 ...state,
@@ -68,6 +72,35 @@ export const reducer = (state: State, action: Actions): State => {
             return {
                 ...state,
                 measurementToPast: action.payload
+            };
+
+        case ActionType.setSelectedAvvik:
+            return {
+                ...state,
+                avvik: action.payload
+            };
+
+        case ActionType.setAvvikClipboard:
+            return {
+                ...state,
+                avvikClipboard: unionBy(
+                    action.payload,
+                    state.avvikClipboard,
+                    'id'
+                )
+            };
+        case ActionType.removeAvvikClipboard:
+            return {
+                ...state,
+                avvikClipboard: state.avvikClipboard?.filter(
+                    (mc) => mc.id !== action.payload.id
+                )
+            };
+
+        case ActionType.setAvvikToPaste:
+            return {
+                ...state,
+                avvikToPast: action.payload
             };
 
         default:

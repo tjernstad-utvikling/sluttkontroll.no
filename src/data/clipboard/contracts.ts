@@ -1,3 +1,4 @@
+import { Avvik } from '../../contracts/avvikApi';
 import { Measurement } from '../../contracts/measurementApi';
 import { Skjema } from '../../contracts/kontrollApi';
 
@@ -9,6 +10,10 @@ export interface State {
     measurements: Measurement[] | undefined;
     measurementClipboard: Measurement[] | undefined;
     measurementToPast: Measurement[];
+
+    avvik: Avvik[] | undefined;
+    avvikClipboard: Avvik[] | undefined;
+    avvikToPast: Avvik[];
 }
 
 export enum ActionType {
@@ -16,10 +21,16 @@ export enum ActionType {
     setSkjemaClipboard,
     removeSkjemaClipboard,
     setSkjemaToPast,
+
     setSelectedMeasurements,
     setMeasurementClipboard,
     removeMeasurementClipboard,
-    setMeasurementToPast
+    setMeasurementToPast,
+
+    setSelectedAvvik,
+    setAvvikClipboard,
+    removeAvvikClipboard,
+    setAvvikToPaste
 }
 
 export interface setSelectedSkjemaer {
@@ -38,6 +49,7 @@ export interface setSkjemaToPast {
     type: ActionType.setSkjemaToPast;
     payload: Skjema[];
 }
+
 export interface setSelectedMeasurements {
     type: ActionType.setSelectedMeasurements;
     payload: Measurement[];
@@ -55,6 +67,23 @@ export interface setMeasurementToPast {
     payload: Measurement[];
 }
 
+export interface setSelectedAvvik {
+    type: ActionType.setSelectedAvvik;
+    payload: Avvik[];
+}
+export interface setAvvikClipboard {
+    type: ActionType.setAvvikClipboard;
+    payload: Avvik[];
+}
+export interface removeAvvikClipboard {
+    type: ActionType.removeAvvikClipboard;
+    payload: Avvik;
+}
+export interface setAvvikToPaste {
+    type: ActionType.setAvvikToPaste;
+    payload: Avvik[];
+}
+
 export type Actions =
     | setSelectedSkjemaer
     | setSkjemaClipboard
@@ -63,7 +92,11 @@ export type Actions =
     | setSelectedMeasurements
     | setMeasurementClipboard
     | removeMeasurementClipboard
-    | setMeasurementToPast;
+    | setMeasurementToPast
+    | setSelectedAvvik
+    | setAvvikClipboard
+    | removeAvvikClipboard
+    | setAvvikToPaste;
 
 export interface ContextInterface {
     state: State;
@@ -79,10 +112,15 @@ export interface ContextInterface {
     setMeasurementToPaste: (measurements: Measurement[]) => void;
     clipboardHasMeasurement: boolean;
 
+    selectedAvvik: (avvik: Avvik[]) => void;
+    setAvvikToPaste: (avvik: Avvik[]) => void;
+    clipboardHasAvvik: boolean;
+
     handlePaste: (options: PasteOptions) => void;
 }
 
 export interface PasteOptions {
     skjemaPaste?: { kontrollId: number; skjema: Skjema[] };
     measurementPaste?: { skjemaId: number; measurement: Measurement[] };
+    avvikPaste?: { checklistId: number; avvik: Avvik[] };
 }

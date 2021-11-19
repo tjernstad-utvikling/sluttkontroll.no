@@ -1,3 +1,4 @@
+import { AvvikClipboard, ClipboardCard } from '../components/clipboard';
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardContent, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ import { TableContainer } from '../tables/tableContainer';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import { getAvvikReport } from '../api/avvikApi';
 import { useAvvik } from '../data/avvik';
+import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
@@ -145,12 +147,38 @@ const AvvikView = () => {
         }
     });
 
+    /**
+     * Clipboard
+     */
+    const {
+        state: { avvikToPast },
+        openScissors,
+        closeScissors,
+        selectedAvvik,
+        clipboardHasAvvik
+    } = useClipBoard();
+    useEffect(() => {
+        openScissors();
+        return () => {
+            closeScissors();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const onSelectForClipboard = (ids: number[]) => {
+        selectedAvvik(
+            _avvik.filter((avvik) => {
+                return ids.includes(avvik.id);
+            })
+        );
+    };
+
     return (
         <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid item xs={clipboardHasAvvik ? 9 : 12}>
                         <Card
                             title="Avvik"
                             menu={
@@ -249,6 +277,11 @@ const AvvikView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
+                    {clipboardHasAvvik && (
+                        <ClipboardCard>
+                            <AvvikClipboard />
+                        </ClipboardCard>
+                    )}
                 </Grid>
             </Container>
             <AvvikEditModal

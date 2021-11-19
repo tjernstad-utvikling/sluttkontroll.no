@@ -1,5 +1,6 @@
 import { Card, CardContent } from '../components/card';
 
+import { Avvik } from '../contracts/avvikApi';
 import Checkbox from '@mui/material/Checkbox';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import Fab from '@mui/material/Fab';
@@ -141,6 +142,7 @@ export const SkjemaClipboard = () => {
         </>
     );
 };
+
 export const MeasurementClipboard = () => {
     const {
         state: { measurementClipboard, measurementToPast },
@@ -203,6 +205,74 @@ export const MeasurementClipboard = () => {
                                     id={labelId}
                                     primary={` ${measurement.resultat} ${measurement.enhet}`}
                                     secondary={`${measurement.id} ${measurement.element}`}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+            </List>
+        </>
+    );
+};
+
+export const AvvikClipboard = () => {
+    const {
+        state: { avvikClipboard, avvikToPast },
+        setAvvikToPaste
+    } = useClipBoard();
+
+    const { classes } = useStyles();
+
+    const handleToggle = (avvik: Avvik | undefined) => () => {
+        if (avvik) {
+            const currentIndex = avvikToPast ? avvikToPast.indexOf(avvik) : -1;
+            const newChecked = avvikToPast ? [...avvikToPast] : [];
+
+            if (currentIndex === -1) {
+                newChecked.push(avvik);
+            } else {
+                newChecked.splice(currentIndex, 1);
+            }
+            setAvvikToPaste(newChecked);
+        }
+    };
+
+    return (
+        <>
+            <Typography
+                variant="h3"
+                gutterBottom
+                component="h3"
+                className={classes.title}>
+                Avvik
+            </Typography>
+            <List>
+                {avvikClipboard?.map((avvik) => {
+                    const labelId = `checkbox-list-label-${avvik.id}`;
+
+                    return (
+                        <ListItem key={avvik.id} disablePadding>
+                            <ListItemButton
+                                role={undefined}
+                                onClick={handleToggle(avvik)}
+                                dense>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        edge="start"
+                                        tabIndex={-1}
+                                        checked={
+                                            avvikToPast?.indexOf(avvik) !== -1
+                                        }
+                                        disableRipple
+                                        inputProps={{
+                                            'aria-labelledby': labelId
+                                        }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    id={labelId}
+                                    primary={avvik.beskrivelse}
+                                    secondary={avvik.id}
                                 />
                             </ListItemButton>
                         </ListItem>

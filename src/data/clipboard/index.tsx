@@ -13,6 +13,7 @@ import { makeStyles } from '../../theme/makeStyles';
 import { useAvvik } from '../avvik';
 import { useKontroll } from '../kontroll';
 import { useMeasurement } from '../measurement';
+import { useSnackbar } from 'notistack';
 
 export const useClipBoard = () => {
     return useContext(ClipBoardContext);
@@ -33,6 +34,7 @@ export const ClipBoardContextProvider = ({
     const [cutoutLength, setCutoutLength] = useState<number>(0);
 
     const { classes } = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
     const {
         state: { skjemaer, checklists },
@@ -106,6 +108,11 @@ export const ClipBoardContextProvider = ({
             });
         }
         if (state.avvik) {
+            if (state.avvik.filter((a) => a.status === 'lukket').length > 0) {
+                enqueueSnackbar('Kan ikke flytte avvik som er lukket', {
+                    variant: 'warning'
+                });
+            }
             dispatch({
                 type: ActionType.setAvvikClipboard,
                 payload: state.avvik.filter((a) => a.status !== 'lukket')

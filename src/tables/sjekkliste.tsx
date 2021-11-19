@@ -11,6 +11,7 @@ import { Avvik } from '../contracts/avvikApi';
 import { Checklist } from '../contracts/kontrollApi';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
+import { PasteTableButton } from '../components/clipboard';
 import { Link as RouterLink } from 'react-router-dom';
 import { RowAction } from './tableUtils';
 import Typography from '@mui/material/Typography';
@@ -40,7 +41,9 @@ export const SjekklisteValueGetter = (data: Checklist | GridRowModel) => {
 export const columns = (
     avvik: Avvik[],
     url: string,
-    toggleAktuell: (id: number) => void
+    toggleAktuell: (id: number) => void,
+    clipboardHasAvvik: boolean,
+    avvikToPast: Avvik[]
 ) => {
     const columns: GridColDef[] = [
         {
@@ -145,26 +148,36 @@ export const columns = (
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => {
-                // const kontroll = SkjemaValueGetter(params.row).kontroll(
-                //     kontroller
-                // );
                 return (
-                    <RowAction
-                        actionItems={[
-                            {
-                                name: params.row.aktuell
-                                    ? 'sett: Ikke aktuell'
-                                    : 'sett: aktuell',
-                                action: () => toggleAktuell(params.row.id),
-                                // skip: kontroll?.done || false,
-                                icon: params.row.aktuell ? (
-                                    <VisibilityOffIcon />
-                                ) : (
-                                    <VisibilityIcon />
-                                )
-                            }
-                        ]}
-                    />
+                    <>
+                        {clipboardHasAvvik && (
+                            <PasteTableButton
+                                clipboardHas={true}
+                                options={{
+                                    avvikPaste: {
+                                        checklistId: params.row.id,
+                                        avvik: avvikToPast
+                                    }
+                                }}
+                            />
+                        )}
+                        <RowAction
+                            actionItems={[
+                                {
+                                    name: params.row.aktuell
+                                        ? 'sett: Ikke aktuell'
+                                        : 'sett: aktuell',
+                                    action: () => toggleAktuell(params.row.id),
+                                    // skip: kontroll?.done || false,
+                                    icon: params.row.aktuell ? (
+                                        <VisibilityOffIcon />
+                                    ) : (
+                                        <VisibilityIcon />
+                                    )
+                                }
+                            ]}
+                        />
+                    </>
                 );
             }
         }

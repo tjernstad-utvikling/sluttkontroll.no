@@ -1,3 +1,4 @@
+import { AvvikClipboard, ClipboardCard } from '../components/clipboard';
 import { Card, CardContent, CardMenu } from '../components/card';
 import {
     SjekklisteTable,
@@ -14,6 +15,7 @@ import Grid from '@mui/material/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
+import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -58,12 +60,20 @@ const SjekklisterView = () => {
         }
     }, [checklists, skjemaId]);
 
+    /**
+     * Clipboard
+     */
+    const {
+        state: { avvikToPast },
+        clipboardHasAvvik
+    } = useClipBoard();
+
     return (
         <div>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid item xs={clipboardHasAvvik ? 9 : 12}>
                         <Card
                             title="Sjekkliste"
                             menu={
@@ -85,7 +95,9 @@ const SjekklisterView = () => {
                                         columns={columns(
                                             avvik ?? [],
                                             url,
-                                            toggleAktuellChecklist
+                                            toggleAktuellChecklist,
+                                            clipboardHasAvvik,
+                                            avvikToPast
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="checklists">
@@ -99,6 +111,11 @@ const SjekklisterView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
+                    {clipboardHasAvvik && (
+                        <ClipboardCard>
+                            <AvvikClipboard />
+                        </ClipboardCard>
+                    )}
                 </Grid>
             </Container>
         </div>

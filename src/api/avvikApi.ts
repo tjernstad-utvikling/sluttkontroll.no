@@ -64,6 +64,27 @@ export const updateAvvikById = async (
         throw new Error(error);
     }
 };
+export const moveAvvikApi = async (
+    avvik: Avvik,
+    checklistId: number
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(
+            `/avvik/move/${avvik.id}/to/${checklistId}`
+        );
+
+        return { status };
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
+
 export const addAvvikApi = async (newAvvik: {
     beskrivelse: string;
     kommentar: string;

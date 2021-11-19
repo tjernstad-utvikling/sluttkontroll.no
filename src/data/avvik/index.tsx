@@ -1,4 +1,5 @@
 import { ActionType, ContextInterface } from './contracts';
+import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     addAvvikApi,
@@ -7,6 +8,7 @@ import {
     deleteAvvikById,
     deleteImage,
     getAvvikByKontrollList,
+    moveAvvikApi,
     openAvvikApi,
     setUtbedrereApi,
     updateAvvikById
@@ -14,7 +16,6 @@ import {
 import { initialState, userReducer } from './reducer';
 
 import { Avvik } from '../../contracts/avvikApi';
-import { Kontroll } from '../../contracts/kontrollApi';
 import { User } from '../../contracts/userApi';
 import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
@@ -90,6 +91,43 @@ export const AvvikContextProvider = ({
             return false;
         }
     };
+
+    const moveAvvik = async (
+        avvik: Avvik,
+        checklist: Checklist,
+        skjema: Skjema
+    ): Promise<boolean> => {
+        try {
+            const { status, message } = await moveAvvikApi(avvik, checklist.id);
+
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.updateAvvik,
+                    payload: { ...avvik, checklist: { ...checklist, skjema } }
+                });
+            }
+            if (status === 400) {
+                if (message === 'avvik closed') {
+                    enqueueSnackbar('Avvik er lukket og kan ikke flyttes', {
+                        variant: 'warning'
+                    });
+                } else {
+                    enqueueSnackbar('Kan ikke oppdatere avviket', {
+                        variant: 'warning'
+                    });
+                }
+                return false;
+            }
+            return true;
+        } catch (error: any) {
+            errorHandler(error);
+            enqueueSnackbar('Problemer med flytting av avvik', {
+                variant: 'error'
+            });
+            return false;
+        }
+    };
+
     const newAvvik = async (
         beskrivelse: string,
         kommentar: string,
@@ -334,6 +372,7 @@ export const AvvikContextProvider = ({
 
                 loadAvvikByKontroller,
                 deleteAvvik,
+                moveAvvik,
                 updateAvvik,
                 newAvvik,
                 setUtbedrere,

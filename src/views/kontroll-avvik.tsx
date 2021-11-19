@@ -1,4 +1,8 @@
-import { AvvikClipboard, ClipboardCard } from '../components/clipboard';
+import {
+    AvvikClipboard,
+    ClipboardCard,
+    PasteButton
+} from '../components/clipboard';
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardContent, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
@@ -249,8 +253,28 @@ const AvvikView = () => {
                                                 selected={selected}
                                                 onSelected={(avvik) => {
                                                     setSelected(avvik);
+                                                    onSelectForClipboard(avvik);
                                                     setSelectedFromGrid(false);
                                                 }}
+                                                leftAction={
+                                                    checklistId !==
+                                                        undefined && (
+                                                        <PasteButton
+                                                            clipboardHas={
+                                                                clipboardHasAvvik
+                                                            }
+                                                            options={{
+                                                                avvikPaste: {
+                                                                    checklistId:
+                                                                        Number(
+                                                                            checklistId
+                                                                        ),
+                                                                    avvik: avvikToPast
+                                                                }
+                                                            }}
+                                                        />
+                                                    )
+                                                }
                                             />
                                         ) : (
                                             <AvvikGrid
@@ -262,6 +286,7 @@ const AvvikView = () => {
                                                 selected={selected}
                                                 setSelected={(a) => {
                                                     setSelected(a);
+                                                    onSelectForClipboard(a);
                                                     setSelectedFromGrid(true);
                                                 }}
                                                 selectedFromGrid={

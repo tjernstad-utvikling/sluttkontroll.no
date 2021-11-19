@@ -10,6 +10,7 @@ import { Skjema } from '../../contracts/kontrollApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '../../theme/makeStyles';
+import { useAvvik } from '../avvik';
 import { useKontroll } from '../kontroll';
 import { useMeasurement } from '../measurement';
 
@@ -34,10 +35,11 @@ export const ClipBoardContextProvider = ({
     const { classes } = useStyles();
 
     const {
-        state: { skjemaer },
+        state: { skjemaer, checklists },
         moveSkjema
     } = useKontroll();
     const { moveMeasurement } = useMeasurement();
+    const { moveAvvik } = useAvvik();
 
     function selectedSkjemaer(skjemaer: Skjema[]) {
         setCutoutLength(skjemaer.length);
@@ -103,13 +105,19 @@ export const ClipBoardContextProvider = ({
                 payload: state.measurements
             });
         }
+        if (state.avvik) {
+            dispatch({
+                type: ActionType.setAvvikClipboard,
+                payload: state.avvik
+            });
+        }
     }
 
     async function handlePaste({
         skjemaPaste,
-        measurementPaste
+        measurementPaste,
+        avvikPaste
     }: PasteOptions) {
-        console.log('handlePaste', measurementPaste);
         if (skjemaPaste !== undefined) {
             for (const skjema of skjemaPaste.skjema) {
                 if (await moveSkjema(skjema, skjemaPaste.kontrollId)) {
@@ -140,6 +148,28 @@ export const ClipBoardContextProvider = ({
             }
             dispatch({
                 type: ActionType.setMeasurementToPast,
+                payload: []
+            });
+        }
+        if (avvikPaste !== undefined) {
+            for (const avvik of avvikPaste.avvik) {
+                const checklist = checklists?.find(
+                    (checklist) => checklist.id === avvikPaste.checklistId
+                );
+                const skjema = skjemaer?.find(
+                    (skjema) => skjema.id === checklist?.skjema.id
+                );
+                if (checklist && skjema) {
+                    if (await moveAvvik(avvik, checklist, skjema)) {
+                        dispatch({
+                            type: ActionType.removeAvvikClipboard,
+                            payload: avvik
+                        });
+                    }
+                }
+            }
+            dispatch({
+                type: ActionType.setAvvikToPaste,
                 payload: []
             });
         }

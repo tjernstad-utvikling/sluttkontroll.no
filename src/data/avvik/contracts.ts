@@ -1,5 +1,6 @@
+import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
+
 import { Avvik } from '../../contracts/avvikApi';
-import { Kontroll } from '../../contracts/kontrollApi';
 import { User } from '../../contracts/userApi';
 
 export interface AvvikState {
@@ -32,6 +33,11 @@ export interface ContextInterface {
     loadAvvikByKontroller: (kontroller: Kontroll[]) => Promise<void>;
     deleteAvvik: (avvikId: number) => Promise<boolean>;
     updateAvvik: (avvik: Avvik) => Promise<boolean>;
+    moveAvvik: (
+        avvik: Avvik,
+        checklist: Checklist,
+        skjema: Skjema
+    ) => Promise<boolean>;
     setUtbedrere: (avvikIds: number[], utbedrere: User[]) => Promise<boolean>;
     closeAvvik: (avvikIds: number[], kommentar: string) => Promise<boolean>;
     openAvvik: (avvikId: number) => Promise<boolean>;

@@ -108,7 +108,7 @@ export const ClipBoardContextProvider = ({
         if (state.avvik) {
             dispatch({
                 type: ActionType.setAvvikClipboard,
-                payload: state.avvik
+                payload: state.avvik.filter((a) => a.status !== 'lukket')
             });
         }
     }

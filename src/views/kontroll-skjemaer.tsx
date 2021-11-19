@@ -1,5 +1,9 @@
 import { Card, CardContent, CardMenu } from '../components/card';
-import { ClipboardCard, SkjemaClipboard } from '../components/clipboard';
+import {
+    ClipboardCard,
+    MeasurementClipboard,
+    SkjemaClipboard
+} from '../components/clipboard';
 import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
@@ -73,11 +77,12 @@ const SkjemaerView = () => {
      * Clipboard
      */
     const {
-        state: { skjemaToPast },
+        state: { skjemaToPast, measurementToPast },
         openScissors,
         closeScissors,
         selectedSkjemaer,
-        clipboardHasSkjema
+        clipboardHasSkjema,
+        clipboardHasMeasurement
     } = useClipBoard();
     useEffect(() => {
         openScissors();
@@ -100,7 +105,13 @@ const SkjemaerView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={clipboardHasSkjema ? 9 : 12}>
+                    <Grid
+                        item
+                        xs={
+                            clipboardHasSkjema || clipboardHasMeasurement
+                                ? 9
+                                : 12
+                        }>
                         <Card
                             title="Skjemaer"
                             menu={
@@ -122,7 +133,9 @@ const SkjemaerView = () => {
                                             measurements ?? [],
                                             url,
                                             deleteSkjema,
-                                            setEditId
+                                            setEditId,
+                                            clipboardHasMeasurement,
+                                            measurementToPast
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="skjemaer">
@@ -153,9 +166,12 @@ const SkjemaerView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    {clipboardHasSkjema && (
+                    {(clipboardHasSkjema || clipboardHasMeasurement) && (
                         <ClipboardCard>
-                            <SkjemaClipboard />
+                            {clipboardHasSkjema && <SkjemaClipboard />}
+                            {clipboardHasMeasurement && (
+                                <MeasurementClipboard />
+                            )}
                         </ClipboardCard>
                     )}
                 </Grid>

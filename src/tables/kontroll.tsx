@@ -1,7 +1,7 @@
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
@@ -17,7 +17,7 @@ import { PasteTableButton } from '../components/clipboard';
 import { RowAction } from '../tables/tableUtils';
 import { User } from '../contracts/userApi';
 
-export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
+export const KontrollValueGetter = (data: Kontroll | GridRowModel) => {
     const klient = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
             const klient = klienter.find(

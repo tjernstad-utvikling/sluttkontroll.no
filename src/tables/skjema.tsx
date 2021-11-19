@@ -12,6 +12,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
+import { PasteTableButton } from '../components/clipboard';
 import React from 'react';
 import { RowAction } from './tableUtils';
 import { useClipBoard } from '../data/clipboard';
@@ -56,6 +57,8 @@ export const columns = (
     url: string,
     deleteSkjema: (skjemaId: number) => void,
     edit: (skjemaId: number) => void,
+    clipboardHasMeasurement: boolean,
+    measurementToPast: Measurement[],
     skipLink?: boolean
 ) => {
     const columns: GridColDef[] = [
@@ -165,22 +168,35 @@ export const columns = (
                     kontroller
                 );
                 return (
-                    <RowAction
-                        actionItems={[
-                            {
-                                name: 'Rediger',
-                                action: () => edit(params.row.id),
-                                skip: kontroll?.done || false,
-                                icon: <EditIcon />
-                            },
-                            {
-                                name: 'Slett',
-                                action: () => deleteSkjema(params.row.id),
-                                skip: kontroll?.done || false,
-                                icon: <DeleteForeverIcon />
-                            }
-                        ]}
-                    />
+                    <>
+                        {clipboardHasMeasurement && (
+                            <PasteTableButton
+                                clipboardHas={true}
+                                options={{
+                                    measurementPaste: {
+                                        skjemaId: params.row.id,
+                                        measurement: measurementToPast
+                                    }
+                                }}
+                            />
+                        )}
+                        <RowAction
+                            actionItems={[
+                                {
+                                    name: 'Rediger',
+                                    action: () => edit(params.row.id),
+                                    skip: kontroll?.done || false,
+                                    icon: <EditIcon />
+                                },
+                                {
+                                    name: 'Slett',
+                                    action: () => deleteSkjema(params.row.id),
+                                    skip: kontroll?.done || false,
+                                    icon: <DeleteForeverIcon />
+                                }
+                            ]}
+                        />
+                    </>
                 );
             }
         }

@@ -1,10 +1,9 @@
+import { Kontroll, Skjema } from '../../contracts/kontrollApi';
 import {
     Measurement,
     MeasurementType,
     NewFormMeasurement
 } from '../../contracts/measurementApi';
-
-import { Kontroll } from '../../contracts/kontrollApi';
 
 export interface MeasurementState {
     measurements: Array<Measurement> | undefined;
@@ -49,5 +48,9 @@ export interface ContextInterface {
         skjemaID: number
     ) => Promise<boolean>;
     updateMeasurement: (measurement: Measurement) => Promise<boolean>;
+    moveMeasurement: (
+        measurement: Measurement,
+        skjema: Skjema
+    ) => Promise<boolean>;
     removeMeasurement: (measurementId: number) => Promise<boolean>;
 }

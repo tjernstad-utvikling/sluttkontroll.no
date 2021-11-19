@@ -1,4 +1,5 @@
 import { ActionType, ContextInterface } from './contracts';
+import { Kontroll, Skjema } from '../../contracts/kontrollApi';
 import {
     Measurement,
     NewFormMeasurement
@@ -8,12 +9,12 @@ import {
     deleteMeasurement,
     getMeasurementByKontrollList,
     getMeasurementTypes,
+    moveMeasurementApi,
     newMeasurement,
     updateMeasurementApi
 } from '../../api/measurementApi';
 import { initialState, userReducer } from './reducer';
 
-import { Kontroll } from '../../contracts/kontrollApi';
 import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
@@ -92,6 +93,7 @@ export const MeasurementContextProvider = ({
         }
         return false;
     };
+
     const updateMeasurement = async (
         measurementData: Measurement
     ): Promise<boolean> => {
@@ -115,6 +117,32 @@ export const MeasurementContextProvider = ({
         }
         return false;
     };
+
+    const moveMeasurement = async (
+        measurement: Measurement,
+        skjema: Skjema
+    ): Promise<boolean> => {
+        try {
+            const { status } = await moveMeasurementApi(measurement, skjema.id);
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.updateMeasurement,
+                    payload: { ...measurement, skjema }
+                });
+
+                enqueueSnackbar('Måling er flyttet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med flytting av måling', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
     const removeMeasurement = async (
         measurementId: number
     ): Promise<boolean> => {
@@ -147,6 +175,7 @@ export const MeasurementContextProvider = ({
 
                 loadMeasurementByKontroller,
                 updateMeasurement,
+                moveMeasurement,
                 removeMeasurement,
                 saveNewMeasurement
             }}>

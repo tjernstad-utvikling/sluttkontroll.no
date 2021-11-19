@@ -172,7 +172,7 @@ export const MeasurementClipboard = () => {
                 gutterBottom
                 component="h3"
                 className={classes.title}>
-                Skjemaer
+                Målinger
             </Typography>
             <List>
                 {measurementClipboard?.map((measurement) => {

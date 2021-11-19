@@ -163,21 +163,23 @@ const MeasurementsView = () => {
                                             measurements={_measurements ?? []}
                                             onSelected={onSelectForClipboard}
                                             leftAction={
-                                                <PasteButton
-                                                    clipboardHas={
-                                                        clipboardHasMeasurement
-                                                    }
-                                                    options={{
-                                                        measurementPaste: {
-                                                            skjemaId:
-                                                                Number(
-                                                                    skjemaId
-                                                                ),
-                                                            measurement:
-                                                                measurementToPast
+                                                skjemaId !== undefined && (
+                                                    <PasteButton
+                                                        clipboardHas={
+                                                            clipboardHasMeasurement
                                                         }
-                                                    }}
-                                                />
+                                                        options={{
+                                                            measurementPaste: {
+                                                                skjemaId:
+                                                                    Number(
+                                                                        skjemaId
+                                                                    ),
+                                                                measurement:
+                                                                    measurementToPast
+                                                            }
+                                                        }}
+                                                    />
+                                                )
                                             }
                                         />
                                     </TableContainer>

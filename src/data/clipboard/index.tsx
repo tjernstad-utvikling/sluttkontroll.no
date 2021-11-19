@@ -10,6 +10,7 @@ import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '../../theme/makeStyles';
 import { useKontroll } from '../kontroll';
+import { useMeasurement } from '../measurement';
 
 export const useClipBoard = () => {
     return useContext(ClipBoardContext);
@@ -31,7 +32,11 @@ export const ClipBoardContextProvider = ({
 
     const { classes } = useStyles();
 
-    const { moveSkjema } = useKontroll();
+    const {
+        state: { skjemaer },
+        moveSkjema
+    } = useKontroll();
+    const { moveMeasurement } = useMeasurement();
 
     function selectedSkjemaer(skjemaer: Skjema[]) {
         setCutoutLength(skjemaer.length);
@@ -85,7 +90,11 @@ export const ClipBoardContextProvider = ({
         }
     }
 
-    async function handlePaste({ skjemaPaste }: PasteOptions) {
+    async function handlePaste({
+        skjemaPaste,
+        measurementPaste
+    }: PasteOptions) {
+        console.log('handlePaste', measurementPaste);
         if (skjemaPaste !== undefined) {
             for (const skjema of skjemaPaste.skjema) {
                 if (await moveSkjema(skjema, skjemaPaste.kontrollId)) {
@@ -97,6 +106,25 @@ export const ClipBoardContextProvider = ({
             }
             dispatch({
                 type: ActionType.setSkjemaToPast,
+                payload: []
+            });
+        }
+        if (measurementPaste !== undefined) {
+            for (const measurement of measurementPaste.measurement) {
+                const skjema = skjemaer?.find(
+                    (skjema) => skjema.id === measurementPaste.skjemaId
+                );
+                if (skjema) {
+                    if (await moveMeasurement(measurement, skjema)) {
+                        dispatch({
+                            type: ActionType.removeMeasurementClipboard,
+                            payload: measurement
+                        });
+                    }
+                }
+            }
+            dispatch({
+                type: ActionType.setMeasurementClipboard,
                 payload: []
             });
         }

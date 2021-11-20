@@ -325,7 +325,7 @@ const AvvikView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    {clipboardHasAvvik && (
+                    {(clipboardHasAvvik || clipboardHasKontroll) && (
                         <ClipboardCard>
                             {clipboardHasKontroll && <KontrollClipboard />}
                             {clipboardHasAvvik && <AvvikClipboard />}

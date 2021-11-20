@@ -197,7 +197,7 @@ const MeasurementsView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    {clipboardHasMeasurement && (
+                    {(clipboardHasMeasurement || clipboardHasKontroll) && (
                         <ClipboardCard>
                             {clipboardHasKontroll && <KontrollClipboard />}
                             {clipboardHasMeasurement && (

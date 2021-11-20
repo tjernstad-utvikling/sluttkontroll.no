@@ -215,8 +215,8 @@ const KontrollKlientView = () => {
                     </Grid>
                     {(clipboardHasSkjema || clipboardHasKontroll) && (
                         <ClipboardCard>
-                            {clipboardHasSkjema && <SkjemaClipboard />}
                             {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasSkjema && <SkjemaClipboard />}
                         </ClipboardCard>
                     )}
                 </Grid>

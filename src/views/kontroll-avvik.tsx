@@ -1,6 +1,7 @@
 import {
     AvvikClipboard,
     ClipboardCard,
+    KontrollClipboard,
     PasteButton
 } from '../components/clipboard';
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
@@ -159,7 +160,8 @@ const AvvikView = () => {
         openScissors,
         closeScissors,
         selectedAvvik,
-        clipboardHasAvvik
+        clipboardHasAvvik,
+        clipboardHasKontroll
     } = useClipBoard();
     useEffect(() => {
         openScissors();
@@ -182,7 +184,9 @@ const AvvikView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={clipboardHasAvvik ? 9 : 12}>
+                    <Grid
+                        item
+                        xs={clipboardHasAvvik || clipboardHasKontroll ? 9 : 12}>
                         <Card
                             title="Avvik"
                             menu={
@@ -323,7 +327,8 @@ const AvvikView = () => {
                     </Grid>
                     {clipboardHasAvvik && (
                         <ClipboardCard>
-                            <AvvikClipboard />
+                            {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasAvvik && <AvvikClipboard />}
                         </ClipboardCard>
                     )}
                 </Grid>

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import {
     ClipboardCard,
+    KontrollClipboard,
     MeasurementClipboard,
     PasteButton
 } from '../components/clipboard';
@@ -103,7 +104,8 @@ const MeasurementsView = () => {
         openScissors,
         closeScissors,
         selectedMeasurements,
-        clipboardHasMeasurement
+        clipboardHasMeasurement,
+        clipboardHasKontroll
     } = useClipBoard();
     useEffect(() => {
         openScissors();
@@ -126,7 +128,13 @@ const MeasurementsView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={clipboardHasMeasurement ? 9 : 12}>
+                    <Grid
+                        item
+                        xs={
+                            clipboardHasMeasurement || clipboardHasKontroll
+                                ? 9
+                                : 12
+                        }>
                         <Card
                             title="Målinger"
                             menu={
@@ -191,7 +199,10 @@ const MeasurementsView = () => {
                     </Grid>
                     {clipboardHasMeasurement && (
                         <ClipboardCard>
-                            <MeasurementClipboard />
+                            {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasMeasurement && (
+                                <MeasurementClipboard />
+                            )}
                         </ClipboardCard>
                     )}
                 </Grid>

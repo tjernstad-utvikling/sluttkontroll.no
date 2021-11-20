@@ -240,8 +240,8 @@ const KontrollObjektView = () => {
                     </Grid>
                     {(clipboardHasSkjema || clipboardHasKontroll) && (
                         <ClipboardCard>
-                            {clipboardHasSkjema && <SkjemaClipboard />}
                             {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasSkjema && <SkjemaClipboard />}
                         </ClipboardCard>
                     )}
                 </Grid>

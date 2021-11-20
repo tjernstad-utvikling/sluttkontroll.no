@@ -1,6 +1,7 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import {
     ClipboardCard,
+    KontrollClipboard,
     MeasurementClipboard,
     SkjemaClipboard
 } from '../components/clipboard';
@@ -82,7 +83,8 @@ const SkjemaerView = () => {
         closeScissors,
         selectedSkjemaer,
         clipboardHasSkjema,
-        clipboardHasMeasurement
+        clipboardHasMeasurement,
+        clipboardHasKontroll
     } = useClipBoard();
     useEffect(() => {
         openScissors();
@@ -108,7 +110,9 @@ const SkjemaerView = () => {
                     <Grid
                         item
                         xs={
-                            clipboardHasSkjema || clipboardHasMeasurement
+                            clipboardHasSkjema ||
+                            clipboardHasMeasurement ||
+                            clipboardHasKontroll
                                 ? 9
                                 : 12
                         }>
@@ -166,8 +170,11 @@ const SkjemaerView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    {(clipboardHasSkjema || clipboardHasMeasurement) && (
+                    {(clipboardHasSkjema ||
+                        clipboardHasMeasurement ||
+                        clipboardHasKontroll) && (
                         <ClipboardCard>
+                            {clipboardHasKontroll && <KontrollClipboard />}
                             {clipboardHasSkjema && <SkjemaClipboard />}
                             {clipboardHasMeasurement && (
                                 <MeasurementClipboard />

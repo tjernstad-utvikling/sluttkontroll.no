@@ -314,7 +314,7 @@ export const KontrollClipboard = () => {
                 gutterBottom
                 component="h3"
                 className={classes.title}>
-                Avvik
+                Kontroller
             </Typography>
             <List>
                 {kontrollClipboard?.map((kontroll) => {

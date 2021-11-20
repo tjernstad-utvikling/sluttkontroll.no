@@ -1,4 +1,8 @@
-import { AvvikClipboard, ClipboardCard } from '../components/clipboard';
+import {
+    AvvikClipboard,
+    ClipboardCard,
+    KontrollClipboard
+} from '../components/clipboard';
 import { Card, CardContent, CardMenu } from '../components/card';
 import {
     SjekklisteTable,
@@ -65,7 +69,8 @@ const SjekklisterView = () => {
      */
     const {
         state: { avvikToPast },
-        clipboardHasAvvik
+        clipboardHasAvvik,
+        clipboardHasKontroll
     } = useClipBoard();
 
     return (
@@ -73,7 +78,9 @@ const SjekklisterView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={clipboardHasAvvik ? 9 : 12}>
+                    <Grid
+                        item
+                        xs={clipboardHasAvvik || clipboardHasKontroll ? 9 : 12}>
                         <Card
                             title="Sjekkliste"
                             menu={
@@ -113,7 +120,8 @@ const SjekklisterView = () => {
                     </Grid>
                     {clipboardHasAvvik && (
                         <ClipboardCard>
-                            <AvvikClipboard />
+                            {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasAvvik && <AvvikClipboard />}
                         </ClipboardCard>
                     )}
                 </Grid>

@@ -7,6 +7,7 @@ import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
 import { UserSchema } from '../schema/user';
+import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
@@ -17,7 +18,8 @@ const NewUserView = () => {
     const [user, setUser] = useState<User>();
     const {
         state: { users },
-        updateUser
+        updateUser,
+        loadUsers
     } = useUser();
     useEffect(() => {
         const _user = users?.find((u) => u.id === Number(userId));
@@ -25,6 +27,10 @@ const NewUserView = () => {
             setUser(_user);
         }
     }, [userId, users]);
+
+    useEffectOnce(() => {
+        loadUsers();
+    });
     const handleEditUser = async (
         name: string,
         phone: string,

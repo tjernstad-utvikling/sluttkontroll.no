@@ -293,6 +293,25 @@ const AvvikView = () => {
                                                     selectedFromGrid
                                                 }
                                                 url={url}
+                                                leftAction={
+                                                    checklistId !==
+                                                        undefined && (
+                                                        <PasteButton
+                                                            clipboardHas={
+                                                                clipboardHasAvvik
+                                                            }
+                                                            options={{
+                                                                avvikPaste: {
+                                                                    checklistId:
+                                                                        Number(
+                                                                            checklistId
+                                                                        ),
+                                                                    avvik: avvikToPast
+                                                                }
+                                                            }}
+                                                        />
+                                                    )
+                                                }
                                             />
                                         )}
                                     </TableContainer>

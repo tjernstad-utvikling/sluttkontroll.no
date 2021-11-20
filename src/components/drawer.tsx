@@ -4,6 +4,7 @@ import {
     NavLinkProps as RouterLinkProps
 } from 'react-router-dom';
 
+import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import { DistributiveOmit } from '@mui/types';
@@ -13,10 +14,13 @@ import IconButton from '@mui/material/IconButton';
 import { Klient } from '../contracts/kontrollApi';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
+import { PasteTableButton } from './clipboard';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../theme/makeStyles';
 import { useClient } from '../data/klient';
+import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useMainStyles } from '../styles/layout/main';
 
@@ -142,6 +146,10 @@ const ObjektListItem = ({
     name: string;
 }): JSX.Element => {
     const { classes } = useStyles();
+    const {
+        state: { kontrollToPast },
+        clipboardHasKontroll
+    } = useClipBoard();
     return (
         <ListItem button className={classes.nested}>
             <ListItemText
@@ -152,6 +160,22 @@ const ObjektListItem = ({
                     </ItemLink>
                 }
             />
+            {clipboardHasKontroll && (
+                <ListItemAvatar>
+                    <Avatar sx={{ bgcolor: '#1A4D27' }}>
+                        <PasteTableButton
+                            clipboardHas={true}
+                            options={{
+                                kontrollPaste: {
+                                    locationId: id,
+                                    klientId: klientId,
+                                    kontroll: kontrollToPast
+                                }
+                            }}
+                        />
+                    </Avatar>
+                </ListItemAvatar>
+            )}
         </ListItem>
     );
 };

@@ -27,8 +27,6 @@ instance.interceptors.response.use(
     async (error) => {
         // Return any error which is not due to authentication back to the calling service
         if (error.response.status === 401) {
-            // Logout user if token refresh didn't work or user is disabled
-
             if (error.config.url === '/auth/refresh-token') {
                 // RootNavigation.navigate('Logg ut', {});
                 error.config = null;
@@ -78,7 +76,7 @@ export const refreshLoginToken = async (): Promise<{
             localStorage.setItem(StorageKeys.token, data.accessToken.token);
             localStorage.setItem(StorageKeys.refreshToken, data.refreshToken);
             return {
-                token: data.token
+                token: data.accessToken.token
             };
         }
         throw new Error('');

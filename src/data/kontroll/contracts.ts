@@ -93,6 +93,11 @@ export interface ContextInterface {
         user: User
     ) => Promise<boolean>;
     updateKontroll: (kontroll: Kontroll) => Promise<boolean>;
+    moveKontroll: (
+        kontroll: Kontroll,
+        klientId: number,
+        locationId: number
+    ) => Promise<boolean>;
     toggleStatusKontroll: (kontrollId: number) => Promise<boolean>;
     saveNewSkjema: (
         area: string,
@@ -101,6 +106,7 @@ export interface ContextInterface {
         kontrollId: number
     ) => Promise<boolean>;
     updateSkjema: (skjema: Skjema) => Promise<boolean>;
+    moveSkjema: (skjema: Skjema, kontrollId: number) => Promise<boolean>;
     removeSkjema: (skjemaId: number) => Promise<boolean>;
     saveEditChecklist: (
         skjemaId: number,

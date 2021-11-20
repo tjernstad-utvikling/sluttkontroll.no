@@ -1,5 +1,11 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import {
+    ClipboardCard,
+    KontrollClipboard,
+    MeasurementClipboard,
+    PasteButton
+} from '../components/clipboard';
+import {
     MeasurementTable,
     columns,
     defaultColumns
@@ -12,6 +18,7 @@ import { Measurement } from '../contracts/measurementApi';
 import { MeasurementModal } from '../modal/measurement';
 import { MeasurementsViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
+import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
@@ -89,12 +96,45 @@ const MeasurementsView = () => {
         }
     };
 
+    /**
+     * Clipboard
+     */
+    const {
+        state: { measurementToPast },
+        openScissors,
+        closeScissors,
+        selectedMeasurements,
+        clipboardHasMeasurement,
+        clipboardHasKontroll
+    } = useClipBoard();
+    useEffect(() => {
+        openScissors();
+        return () => {
+            closeScissors();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const onSelectForClipboard = (ids: number[]) => {
+        selectedMeasurements(
+            _measurements.filter((measurement) => {
+                return ids.includes(measurement.id);
+            })
+        );
+    };
+
     return (
         <div>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid
+                        item
+                        xs={
+                            clipboardHasMeasurement || clipboardHasKontroll
+                                ? 9
+                                : 12
+                        }>
                         <Card
                             title="Målinger"
                             menu={
@@ -129,6 +169,26 @@ const MeasurementsView = () => {
                                         tableId="measurements">
                                         <MeasurementTable
                                             measurements={_measurements ?? []}
+                                            onSelected={onSelectForClipboard}
+                                            leftAction={
+                                                skjemaId !== undefined && (
+                                                    <PasteButton
+                                                        clipboardHas={
+                                                            clipboardHasMeasurement
+                                                        }
+                                                        options={{
+                                                            measurementPaste: {
+                                                                skjemaId:
+                                                                    Number(
+                                                                        skjemaId
+                                                                    ),
+                                                                measurement:
+                                                                    measurementToPast
+                                                            }
+                                                        }}
+                                                    />
+                                                )
+                                            }
                                         />
                                     </TableContainer>
                                 ) : (
@@ -137,6 +197,14 @@ const MeasurementsView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
+                    {(clipboardHasMeasurement || clipboardHasKontroll) && (
+                        <ClipboardCard>
+                            {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasMeasurement && (
+                                <MeasurementClipboard />
+                            )}
+                        </ClipboardCard>
+                    )}
                 </Grid>
             </Container>
             <MeasurementModal

@@ -1,3 +1,9 @@
+import {
+    AvvikClipboard,
+    ClipboardCard,
+    KontrollClipboard,
+    PasteButton
+} from '../components/clipboard';
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardContent, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
@@ -21,6 +27,7 @@ import { TableContainer } from '../tables/tableContainer';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import { getAvvikReport } from '../api/avvikApi';
 import { useAvvik } from '../data/avvik';
+import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
@@ -145,12 +152,41 @@ const AvvikView = () => {
         }
     });
 
+    /**
+     * Clipboard
+     */
+    const {
+        state: { avvikToPast },
+        openScissors,
+        closeScissors,
+        selectedAvvik,
+        clipboardHasAvvik,
+        clipboardHasKontroll
+    } = useClipBoard();
+    useEffect(() => {
+        openScissors();
+        return () => {
+            closeScissors();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const onSelectForClipboard = (ids: number[]) => {
+        selectedAvvik(
+            _avvik.filter((avvik) => {
+                return ids.includes(avvik.id);
+            })
+        );
+    };
+
     return (
         <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid
+                        item
+                        xs={clipboardHasAvvik || clipboardHasKontroll ? 9 : 12}>
                         <Card
                             title="Avvik"
                             menu={
@@ -221,8 +257,28 @@ const AvvikView = () => {
                                                 selected={selected}
                                                 onSelected={(avvik) => {
                                                     setSelected(avvik);
+                                                    onSelectForClipboard(avvik);
                                                     setSelectedFromGrid(false);
                                                 }}
+                                                leftAction={
+                                                    checklistId !==
+                                                        undefined && (
+                                                        <PasteButton
+                                                            clipboardHas={
+                                                                clipboardHasAvvik
+                                                            }
+                                                            options={{
+                                                                avvikPaste: {
+                                                                    checklistId:
+                                                                        Number(
+                                                                            checklistId
+                                                                        ),
+                                                                    avvik: avvikToPast
+                                                                }
+                                                            }}
+                                                        />
+                                                    )
+                                                }
                                             />
                                         ) : (
                                             <AvvikGrid
@@ -234,12 +290,32 @@ const AvvikView = () => {
                                                 selected={selected}
                                                 setSelected={(a) => {
                                                     setSelected(a);
+                                                    onSelectForClipboard(a);
                                                     setSelectedFromGrid(true);
                                                 }}
                                                 selectedFromGrid={
                                                     selectedFromGrid
                                                 }
                                                 url={url}
+                                                leftAction={
+                                                    checklistId !==
+                                                        undefined && (
+                                                        <PasteButton
+                                                            clipboardHas={
+                                                                clipboardHasAvvik
+                                                            }
+                                                            options={{
+                                                                avvikPaste: {
+                                                                    checklistId:
+                                                                        Number(
+                                                                            checklistId
+                                                                        ),
+                                                                    avvik: avvikToPast
+                                                                }
+                                                            }}
+                                                        />
+                                                    )
+                                                }
                                             />
                                         )}
                                     </TableContainer>
@@ -249,6 +325,12 @@ const AvvikView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
+                    {(clipboardHasAvvik || clipboardHasKontroll) && (
+                        <ClipboardCard>
+                            {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasAvvik && <AvvikClipboard />}
+                        </ClipboardCard>
+                    )}
                 </Grid>
             </Container>
             <AvvikEditModal

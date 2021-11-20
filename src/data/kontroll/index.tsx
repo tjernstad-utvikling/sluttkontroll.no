@@ -8,6 +8,8 @@ import {
     getKontroller,
     getKontrollerByKlient,
     getKontrollerByObjekt,
+    moveKontrollApi,
+    moveSkjemaApi,
     newKontroll,
     newSkjema,
     toggleAktuellStatusChecklist,
@@ -129,19 +131,53 @@ export const KontrollContextProvider = ({
 
     const updateKontroll = async (kontroll: Kontroll): Promise<boolean> => {
         try {
-            await updateKontrollApi(kontroll);
+            const { status } = await updateKontrollApi(kontroll);
 
-            dispatch({
-                type: ActionType.updateKontroll,
-                payload: kontroll
-            });
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.updateKontroll,
+                    payload: kontroll
+                });
 
-            enqueueSnackbar('Kontroll oppdatert', {
-                variant: 'success'
-            });
-            return true;
+                enqueueSnackbar('Kontroll oppdatert', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            return false;
         } catch (error: any) {
             enqueueSnackbar('Problemer med oppdatering av kontrollen', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
+    const moveKontroll = async (
+        kontroll: Kontroll,
+        klientId: number,
+        locationId: number
+    ): Promise<boolean> => {
+        try {
+            const { status } = await moveKontrollApi(kontroll, locationId);
+
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.updateKontroll,
+                    payload: {
+                        ...kontroll,
+                        location: { id: locationId, klient: { id: klientId } }
+                    }
+                });
+
+                enqueueSnackbar('Kontroll er flyttet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med flytting av kontrollen', {
                 variant: 'error'
             });
         }
@@ -268,6 +304,37 @@ export const KontrollContextProvider = ({
         }
         return false;
     };
+    const moveSkjema = async (
+        skjema: Skjema,
+        kontrollId: number
+    ): Promise<boolean> => {
+        try {
+            const res = await moveSkjemaApi(skjema, kontrollId);
+
+            if (res.status === 204) {
+                dispatch({
+                    type: ActionType.updateSkjema,
+                    payload: { ...skjema, kontroll: { id: kontrollId } }
+                });
+
+                enqueueSnackbar('Skjema er flyttet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (res.status === 400) {
+                enqueueSnackbar('Kontroll eller skjema mangler, prøv igjen', {
+                    variant: 'warning'
+                });
+            }
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med flytting av skjema', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
 
     const removeSkjema = async (skjemaId: number): Promise<boolean> => {
         try {
@@ -365,11 +432,13 @@ export const KontrollContextProvider = ({
                 loadKontrollerByObjekt,
 
                 updateKontroll,
+                moveKontroll,
                 toggleStatusKontroll,
                 saveNewKontroll,
 
                 saveNewSkjema,
                 updateSkjema,
+                moveSkjema,
                 removeSkjema,
                 saveEditChecklist,
                 toggleAktuellChecklist

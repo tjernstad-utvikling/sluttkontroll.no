@@ -76,6 +76,26 @@ export const updateMeasurementApi = async (
         throw new Error(error);
     }
 };
+export const moveMeasurementApi = async (
+    measurement: Measurement,
+    skjemaId: number
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(
+            `measurement/move/${measurement.id}/to/${skjemaId}`
+        );
+
+        return { status };
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
 export const deleteMeasurement = async (
     measurementId: number
 ): Promise<{

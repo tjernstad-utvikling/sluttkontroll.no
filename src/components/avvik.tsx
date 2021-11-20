@@ -145,6 +145,7 @@ interface AvvikGridProps {
     setSelected: (selected: number[]) => void;
     selectedFromGrid: boolean;
     url: string;
+    leftAction?: React.ReactNode;
 }
 export function AvvikGrid(props: AvvikGridProps) {
     const { classes } = useStyles();
@@ -208,18 +209,21 @@ export function AvvikGrid(props: AvvikGridProps) {
         setLastSelectedIndex(index);
     };
     return (
-        <div className={classes.container}>
-            {props.avvik.map((a) => (
-                <AvvikCard
-                    key={a.id}
-                    {...props}
-                    avvik={a}
-                    onSelect={handleSelect}
-                    checked={props.selected.some((s) => s === a.id)}
-                    url={props.url}
-                />
-            ))}
-        </div>
+        <>
+            <div className={classes.pasteTool}>{props.leftAction}</div>
+            <div className={classes.container}>
+                {props.avvik.map((a) => (
+                    <AvvikCard
+                        key={a.id}
+                        {...props}
+                        avvik={a}
+                        onSelect={handleSelect}
+                        checked={props.selected.some((s) => s === a.id)}
+                        url={props.url}
+                    />
+                ))}
+            </div>
+        </>
     );
 }
 
@@ -311,5 +315,9 @@ const useStyles = makeStyles()((theme: Theme) => ({
     },
     cardActionClosed: {
         background: `linear-gradient(180deg, rgba(255,255,255,1) 75%, ${theme.palette.success.main} 100%)`
+    },
+    pasteTool: {
+        flexGrow: 1,
+        height: '4em'
     }
 }));

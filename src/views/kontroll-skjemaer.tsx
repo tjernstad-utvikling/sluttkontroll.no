@@ -1,15 +1,23 @@
 import { Card, CardContent, CardMenu } from '../components/card';
+import {
+    ClipboardCard,
+    KontrollClipboard,
+    MeasurementClipboard,
+    SkjemaClipboard
+} from '../components/clipboard';
 import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { PasteButton } from '../components/clipboard';
 import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
+import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
@@ -23,7 +31,8 @@ const SkjemaerView = () => {
 
     const { confirm } = useConfirm();
 
-    const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>([]);
+    const [_skjemaer, setSkjemaer] = useState<Skjema[]>([]);
+
     const {
         state: { skjemaer, kontroller },
         loadKontroller,
@@ -65,12 +74,48 @@ const SkjemaerView = () => {
         }
     };
 
+    /**
+     * Clipboard
+     */
+    const {
+        state: { skjemaToPast, measurementToPast },
+        openScissors,
+        closeScissors,
+        selectedSkjemaer,
+        clipboardHasSkjema,
+        clipboardHasMeasurement,
+        clipboardHasKontroll
+    } = useClipBoard();
+    useEffect(() => {
+        openScissors();
+        return () => {
+            closeScissors();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const onSelectForClipboard = (ids: number[]) => {
+        selectedSkjemaer(
+            _skjemaer.filter((skjema) => {
+                return ids.includes(skjema.id);
+            })
+        );
+    };
+
     return (
         <>
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid
+                        item
+                        xs={
+                            clipboardHasSkjema ||
+                            clipboardHasMeasurement ||
+                            clipboardHasKontroll
+                                ? 9
+                                : 12
+                        }>
                         <Card
                             title="Skjemaer"
                             menu={
@@ -92,13 +137,31 @@ const SkjemaerView = () => {
                                             measurements ?? [],
                                             url,
                                             deleteSkjema,
-                                            setEditId
+                                            setEditId,
+                                            clipboardHasMeasurement,
+                                            measurementToPast
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="skjemaer">
                                         <SkjemaTable
                                             skjemaer={_skjemaer}
-                                            onSelected={() => console.log()}
+                                            onSelected={onSelectForClipboard}
+                                            leftAction={
+                                                <PasteButton
+                                                    clipboardHas={
+                                                        clipboardHasSkjema
+                                                    }
+                                                    options={{
+                                                        skjemaPaste: {
+                                                            kontrollId:
+                                                                Number(
+                                                                    kontrollId
+                                                                ),
+                                                            skjema: skjemaToPast
+                                                        }
+                                                    }}
+                                                />
+                                            }
                                         />
                                     </TableContainer>
                                 ) : (
@@ -107,6 +170,17 @@ const SkjemaerView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
+                    {(clipboardHasSkjema ||
+                        clipboardHasMeasurement ||
+                        clipboardHasKontroll) && (
+                        <ClipboardCard>
+                            {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasSkjema && <SkjemaClipboard />}
+                            {clipboardHasMeasurement && (
+                                <MeasurementClipboard />
+                            )}
+                        </ClipboardCard>
+                    )}
                 </Grid>
             </Container>
             <SkjemaEditModal

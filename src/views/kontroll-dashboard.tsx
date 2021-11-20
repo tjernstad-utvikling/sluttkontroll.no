@@ -1,5 +1,10 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import {
+    ClipboardCard,
+    KontrollClipboard,
+    SkjemaClipboard
+} from '../components/clipboard';
+import {
     KontrollTable,
     defaultColumns,
     kontrollColumns
@@ -14,6 +19,7 @@ import { TableContainer } from '../tables/tableContainer';
 import { useAuth } from '../hooks/useAuth';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';
+import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useKontroll } from '../data/kontroll';
@@ -54,6 +60,34 @@ const KontrollerView = () => {
         loadUsers();
     });
 
+    /**
+     * Clipboard
+     */
+    const {
+        state: { skjemaToPast },
+        openScissors,
+        closeScissors,
+        selectedKontroll,
+        clipboardHasKontroll,
+        clipboardHasSkjema
+    } = useClipBoard();
+    useEffect(() => {
+        openScissors();
+        console.log('openScissors');
+        return () => {
+            closeScissors();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const onSelectForClipboard = (ids: number[]) => {
+        selectedKontroll(
+            _kontroller.filter((kontroll) => {
+                return ids.includes(kontroll.id);
+            })
+        );
+    };
+
     useEffect(() => {
         if (kontroller !== undefined) {
             setKontroller(kontroller.filter((k) => k.user.id === user?.id));
@@ -75,7 +109,11 @@ const KontrollerView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid
+                        item
+                        xs={
+                            clipboardHasSkjema || clipboardHasKontroll ? 9 : 12
+                        }>
                         <Card
                             title="Dine kontroller"
                             menu={
@@ -98,12 +136,15 @@ const KontrollerView = () => {
                                             avvik ?? [],
                                             measurements ?? [],
                                             editKontroll,
-                                            toggleStatusKontroll
+                                            toggleStatusKontroll,
+                                            clipboardHasSkjema,
+                                            skjemaToPast
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
                                             kontroller={_kontroller}
+                                            onSelected={onSelectForClipboard}
                                         />
                                     </TableContainer>
                                 ) : (
@@ -112,6 +153,12 @@ const KontrollerView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
+                    {(clipboardHasSkjema || clipboardHasKontroll) && (
+                        <ClipboardCard>
+                            {clipboardHasKontroll && <KontrollClipboard />}
+                            {clipboardHasSkjema && <SkjemaClipboard />}
+                        </ClipboardCard>
+                    )}
                 </Grid>
             </Container>
             <KontrollEditModal editId={editId} close={closeEdit} />

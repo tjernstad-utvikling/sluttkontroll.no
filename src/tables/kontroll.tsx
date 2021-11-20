@@ -1,22 +1,24 @@
+import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
-import { Klient, Kontroll } from '../contracts/kontrollApi';
+import { Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import { BaseTable } from './baseTable';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
+import { PasteTableButton } from '../components/clipboard';
 import { RowAction } from '../tables/tableUtils';
 import { User } from '../contracts/userApi';
+import { useClipBoard } from '../data/clipboard';
 
-export const KontrollValueGetter = (data: Kontroll | GridRowData) => {
+export const KontrollValueGetter = (data: Kontroll | GridRowModel) => {
     const klient = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
             const klient = klienter.find(
@@ -84,7 +86,9 @@ export const kontrollColumns = (
     avvik: Avvik[],
     measurements: Measurement[],
     edit: (id: number) => void,
-    toggleStatus: (id: number) => void
+    toggleStatus: (id: number) => void,
+    clipboardHasSkjema: boolean,
+    skjemaToPast: Skjema[]
 ) => {
     const columns: GridColDef[] = [
         {
@@ -209,26 +213,41 @@ export const kontrollColumns = (
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => (
-                <RowAction
-                    actionItems={[
-                        {
-                            name: 'Rediger',
-                            action: () => edit(params.row.id),
-                            skip: params.row.done,
-                            icon: <EditIcon />
-                        },
-                        {
-                            name: params.row.done ? 'Åpne' : 'Sett som utført',
-                            action: () => toggleStatus(params.row.id),
-                            icon: <DoneOutlineIcon />
-                        },
-                        {
-                            name: 'Kontrollrapport',
-                            to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
-                            icon: <DescriptionIcon />
-                        }
-                    ]}
-                />
+                <>
+                    {clipboardHasSkjema && (
+                        <PasteTableButton
+                            clipboardHas={true}
+                            options={{
+                                skjemaPaste: {
+                                    kontrollId: params.row.id,
+                                    skjema: skjemaToPast
+                                }
+                            }}
+                        />
+                    )}
+                    <RowAction
+                        actionItems={[
+                            {
+                                name: 'Rediger',
+                                action: () => edit(params.row.id),
+                                skip: params.row.done,
+                                icon: <EditIcon />
+                            },
+                            {
+                                name: params.row.done
+                                    ? 'Åpne'
+                                    : 'Sett som utført',
+                                action: () => toggleStatus(params.row.id),
+                                icon: <DoneOutlineIcon />
+                            },
+                            {
+                                name: 'Kontrollrapport',
+                                to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
+                                icon: <DescriptionIcon />
+                            }
+                        ]}
+                    />
+                </>
             )
         }
     ];
@@ -236,16 +255,34 @@ export const kontrollColumns = (
     return columns;
 };
 
-export const defaultColumns: Array<string> = [
-    'klient',
-    'objekt',
-    'name',
-    'user'
-];
+export const defaultColumns: string[] = ['klient', 'objekt', 'name', 'user'];
 
 interface KontrollTableProps {
-    kontroller: Array<Kontroll>;
+    kontroller: Kontroll[];
+
+    onSelected: (ids: number[]) => void;
+    leftAction?: React.ReactNode;
 }
-export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
-    return <BaseTable data={kontroller} />;
+export const KontrollTable = ({
+    kontroller,
+    onSelected,
+    leftAction
+}: KontrollTableProps) => {
+    const {
+        state: { kontrollClipboard }
+    } = useClipBoard();
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
+        if (kontrollClipboard?.find((kc) => kc.id === row.id)) {
+            return RowStylingEnum.cut;
+        }
+    };
+
+    return (
+        <BaseTable
+            onSelected={onSelected}
+            getRowStyling={getRowStyling}
+            data={kontroller}>
+            {leftAction}
+        </BaseTable>
+    );
 };

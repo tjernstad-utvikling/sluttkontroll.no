@@ -1,6 +1,6 @@
 import {
     DataGridPro,
-    GridRowData,
+    GridRowModel,
     GridSortDirection,
     GridSortModel
 } from '@mui/x-data-grid-pro';
@@ -15,20 +15,23 @@ interface Data {
 }
 export enum RowStylingEnum {
     completed = 'completed',
-    disabled = 'disabled'
+    disabled = 'disabled',
+    cut = 'cut'
 }
 
 interface BaseTableProps<T> {
     data: Array<T>;
     selectionModel?: number[] | undefined;
     onSelected?: (ids: number[]) => void;
-    getRowStyling?: (row: GridRowData) => RowStylingEnum | undefined;
+    getRowStyling?: (row: GridRowModel) => RowStylingEnum | undefined;
+    children?: React.ReactNode;
 }
 export const BaseTable = <T extends Data>({
     data,
     selectionModel,
     onSelected,
-    getRowStyling
+    getRowStyling,
+    children
 }: BaseTableProps<T>) => {
     const { columns } = useTable();
 
@@ -47,8 +50,10 @@ export const BaseTable = <T extends Data>({
     const classes = useTableStyles();
     return (
         <div className={classes.root}>
-            <ColumnSelect />
-
+            <div className={classes.tools}>
+                <div className={classes.pasteTool}>{children}</div>
+                <ColumnSelect />
+            </div>
             <DataGridPro
                 localeText={{
                     // Root
@@ -214,6 +219,19 @@ const useTableStyles = makeStyles((theme) => ({
             '&:hover': {
                 backgroundColor: '#ACD76C'
             }
+        },
+        '& .slk-table--cut': {
+            backgroundColor: '#F3A712',
+            '&:hover': {
+                backgroundColor: '#F9D388'
+            }
         }
+    },
+    tools: {
+        display: 'flex',
+        height: '4em'
+    },
+    pasteTool: {
+        flexGrow: 1
     }
 }));

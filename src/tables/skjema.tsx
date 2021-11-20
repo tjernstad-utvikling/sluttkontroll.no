@@ -1,20 +1,23 @@
+import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import { BaseTable } from './baseTable';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
+import { PasteTableButton } from '../components/clipboard';
+import React from 'react';
 import { RowAction } from './tableUtils';
+import { useClipBoard } from '../data/clipboard';
 
-export const SkjemaValueGetter = (data: Skjema | GridRowData) => {
+export const SkjemaValueGetter = (data: Skjema | GridRowModel) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
         return kontroller.find((k) => k.id === data.kontroll.id);
     };
@@ -54,6 +57,8 @@ export const columns = (
     url: string,
     deleteSkjema: (skjemaId: number) => void,
     edit: (skjemaId: number) => void,
+    clipboardHasMeasurement: boolean,
+    measurementToPast: Measurement[],
     skipLink?: boolean
 ) => {
     const columns: GridColDef[] = [
@@ -163,22 +168,35 @@ export const columns = (
                     kontroller
                 );
                 return (
-                    <RowAction
-                        actionItems={[
-                            {
-                                name: 'Rediger',
-                                action: () => edit(params.row.id),
-                                skip: kontroll?.done || false,
-                                icon: <EditIcon />
-                            },
-                            {
-                                name: 'Slett',
-                                action: () => deleteSkjema(params.row.id),
-                                skip: kontroll?.done || false,
-                                icon: <DeleteForeverIcon />
-                            }
-                        ]}
-                    />
+                    <>
+                        {clipboardHasMeasurement && (
+                            <PasteTableButton
+                                clipboardHas={true}
+                                options={{
+                                    measurementPaste: {
+                                        skjemaId: params.row.id,
+                                        measurement: measurementToPast
+                                    }
+                                }}
+                            />
+                        )}
+                        <RowAction
+                            actionItems={[
+                                {
+                                    name: 'Rediger',
+                                    action: () => edit(params.row.id),
+                                    skip: kontroll?.done || false,
+                                    icon: <EditIcon />
+                                },
+                                {
+                                    name: 'Slett',
+                                    action: () => deleteSkjema(params.row.id),
+                                    skip: kontroll?.done || false,
+                                    icon: <DeleteForeverIcon />
+                                }
+                            ]}
+                        />
+                    </>
                 );
             }
         }
@@ -193,7 +211,28 @@ interface SkjemaTableProps {
     skjemaer: Skjema[];
 
     onSelected: (ids: number[]) => void;
+    leftAction?: React.ReactNode;
 }
-export const SkjemaTable = ({ skjemaer, onSelected }: SkjemaTableProps) => {
-    return <BaseTable onSelected={onSelected} data={skjemaer} />;
+export const SkjemaTable = ({
+    skjemaer,
+    onSelected,
+    leftAction
+}: SkjemaTableProps) => {
+    const {
+        state: { skjemaClipboard }
+    } = useClipBoard();
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
+        if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
+            return RowStylingEnum.cut;
+        }
+    };
+
+    return (
+        <BaseTable
+            onSelected={onSelected}
+            getRowStyling={getRowStyling}
+            data={skjemaer}>
+            {leftAction}
+        </BaseTable>
+    );
 };

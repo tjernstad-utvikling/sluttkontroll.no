@@ -2,7 +2,7 @@ import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
@@ -15,8 +15,9 @@ import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
+import { useClipBoard } from '../data/clipboard';
 
-export const AvvikValueGetter = (data: Avvik | GridRowData) => {
+export const AvvikValueGetter = (data: Avvik | GridRowModel) => {
     const kontroll = (kontroller: Kontroll[]): string => {
         const kontroll = kontroller.find(
             (k) => k.id === data.checklist.skjema.kontroll.id
@@ -213,13 +214,21 @@ interface AvvikTableProps {
     avvik: Avvik[];
     onSelected: (ids: number[]) => void;
     selected: number[];
+    leftAction?: React.ReactNode;
 }
 export const AvvikTable = ({
     avvik,
     onSelected,
-    selected
+    selected,
+    leftAction
 }: AvvikTableProps) => {
-    const getRowStyling = (row: GridRowData): RowStylingEnum | undefined => {
+    const {
+        state: { skjemaClipboard }
+    } = useClipBoard();
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
+        if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
+            return RowStylingEnum.cut;
+        }
         if (row.status === 'lukket') {
             return RowStylingEnum.completed;
         }
@@ -230,7 +239,8 @@ export const AvvikTable = ({
             data={avvik}
             onSelected={onSelected}
             getRowStyling={getRowStyling}
-            selectionModel={selected}
-        />
+            selectionModel={selected}>
+            {leftAction}
+        </BaseTable>
     );
 };

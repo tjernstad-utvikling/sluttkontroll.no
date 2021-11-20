@@ -8,6 +8,7 @@ import {
     getKontroller,
     getKontrollerByKlient,
     getKontrollerByObjekt,
+    moveKontrollApi,
     moveSkjemaApi,
     newKontroll,
     newSkjema,
@@ -130,19 +131,53 @@ export const KontrollContextProvider = ({
 
     const updateKontroll = async (kontroll: Kontroll): Promise<boolean> => {
         try {
-            await updateKontrollApi(kontroll);
+            const { status } = await updateKontrollApi(kontroll);
 
-            dispatch({
-                type: ActionType.updateKontroll,
-                payload: kontroll
-            });
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.updateKontroll,
+                    payload: kontroll
+                });
 
-            enqueueSnackbar('Kontroll oppdatert', {
-                variant: 'success'
-            });
-            return true;
+                enqueueSnackbar('Kontroll oppdatert', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            return false;
         } catch (error: any) {
             enqueueSnackbar('Problemer med oppdatering av kontrollen', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+
+    const moveKontroll = async (
+        kontroll: Kontroll,
+        klientId: number,
+        locationId: number
+    ): Promise<boolean> => {
+        try {
+            const { status } = await moveKontrollApi(kontroll, locationId);
+
+            if (status === 204) {
+                dispatch({
+                    type: ActionType.updateKontroll,
+                    payload: {
+                        ...kontroll,
+                        location: { id: locationId, klient: { id: klientId } }
+                    }
+                });
+
+                enqueueSnackbar('Kontroll er flyttet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med flytting av kontrollen', {
                 variant: 'error'
             });
         }
@@ -397,6 +432,7 @@ export const KontrollContextProvider = ({
                 loadKontrollerByObjekt,
 
                 updateKontroll,
+                moveKontroll,
                 toggleStatusKontroll,
                 saveNewKontroll,
 

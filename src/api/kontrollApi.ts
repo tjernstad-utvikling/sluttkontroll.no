@@ -254,6 +254,27 @@ export const updateKontroll = async (
     }
 };
 
+export const moveKontrollApi = async (
+    kontroll: Kontroll,
+    locationId: number
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status } = await sluttkontrollApi.put(
+            `kontroll/move/${kontroll.id}/to/${locationId}`
+        );
+
+        return { status };
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        throw new Error(error);
+    }
+};
+
 export const newKontroll = async (
     name: string,
     avvikUtbedrere: Array<User>,

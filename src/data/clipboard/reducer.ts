@@ -11,7 +11,10 @@ export const initialState: State = {
     measurementToPast: [],
     avvik: undefined,
     avvikClipboard: undefined,
-    avvikToPast: []
+    avvikToPast: [],
+    kontroll: undefined,
+    kontrollClipboard: undefined,
+    kontrollToPast: []
 };
 
 export const reducer = (state: State, action: Actions): State => {
@@ -101,6 +104,35 @@ export const reducer = (state: State, action: Actions): State => {
             return {
                 ...state,
                 avvikToPast: action.payload
+            };
+
+        case ActionType.setSelectedKontroll:
+            return {
+                ...state,
+                kontroll: action.payload
+            };
+
+        case ActionType.setKontrollClipboard:
+            return {
+                ...state,
+                kontrollClipboard: unionBy(
+                    action.payload,
+                    state.kontrollClipboard,
+                    'id'
+                )
+            };
+        case ActionType.removeKontrollClipboard:
+            return {
+                ...state,
+                kontrollClipboard: state.kontrollClipboard?.filter(
+                    (kc) => kc.id !== action.payload.id
+                )
+            };
+
+        case ActionType.setKontrollToPaste:
+            return {
+                ...state,
+                kontrollToPast: action.payload
             };
 
         default:

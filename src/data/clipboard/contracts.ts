@@ -1,6 +1,7 @@
+import { Kontroll, Skjema } from '../../contracts/kontrollApi';
+
 import { Avvik } from '../../contracts/avvikApi';
 import { Measurement } from '../../contracts/measurementApi';
-import { Skjema } from '../../contracts/kontrollApi';
 
 export interface State {
     skjemaer: Skjema[] | undefined;
@@ -14,6 +15,10 @@ export interface State {
     avvik: Avvik[] | undefined;
     avvikClipboard: Avvik[] | undefined;
     avvikToPast: Avvik[];
+
+    kontroll: Kontroll[] | undefined;
+    kontrollClipboard: Kontroll[] | undefined;
+    kontrollToPast: Kontroll[];
 }
 
 export enum ActionType {
@@ -30,7 +35,12 @@ export enum ActionType {
     setSelectedAvvik,
     setAvvikClipboard,
     removeAvvikClipboard,
-    setAvvikToPaste
+    setAvvikToPaste,
+
+    setSelectedKontroll,
+    setKontrollClipboard,
+    removeKontrollClipboard,
+    setKontrollToPaste
 }
 
 export interface setSelectedSkjemaer {
@@ -84,6 +94,23 @@ export interface setAvvikToPaste {
     payload: Avvik[];
 }
 
+export interface setSelectedKontroll {
+    type: ActionType.setSelectedKontroll;
+    payload: Kontroll[];
+}
+export interface setKontrollClipboard {
+    type: ActionType.setKontrollClipboard;
+    payload: Kontroll[];
+}
+export interface removeKontrollClipboard {
+    type: ActionType.removeKontrollClipboard;
+    payload: Kontroll;
+}
+export interface setKontrollToPaste {
+    type: ActionType.setKontrollToPaste;
+    payload: Kontroll[];
+}
+
 export type Actions =
     | setSelectedSkjemaer
     | setSkjemaClipboard
@@ -96,7 +123,11 @@ export type Actions =
     | setSelectedAvvik
     | setAvvikClipboard
     | removeAvvikClipboard
-    | setAvvikToPaste;
+    | setAvvikToPaste
+    | setSelectedKontroll
+    | setKontrollClipboard
+    | removeKontrollClipboard
+    | setKontrollToPaste;
 
 export interface ContextInterface {
     state: State;
@@ -116,6 +147,10 @@ export interface ContextInterface {
     setAvvikToPaste: (avvik: Avvik[]) => void;
     clipboardHasAvvik: boolean;
 
+    selectedKontroll: (avvik: Kontroll[]) => void;
+    setKontrollToPaste: (avvik: Kontroll[]) => void;
+    clipboardHasKontroll: boolean;
+
     handlePaste: (options: PasteOptions) => void;
 }
 
@@ -123,4 +158,9 @@ export interface PasteOptions {
     skjemaPaste?: { kontrollId: number; skjema: Skjema[] };
     measurementPaste?: { skjemaId: number; measurement: Measurement[] };
     avvikPaste?: { checklistId: number; avvik: Avvik[] };
+    kontrollPaste?: {
+        locationId: number;
+        klientId: number;
+        kontroll: Kontroll[];
+    };
 }

@@ -1,4 +1,5 @@
 import { ActionType, ContextInterface, PasteOptions } from './contracts';
+import { Kontroll, Skjema } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { initialState, reducer } from './reducer';
 
@@ -6,7 +7,6 @@ import { Avvik } from '../../contracts/avvikApi';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import Fab from '@mui/material/Fab';
 import { Measurement } from '../../contracts/measurementApi';
-import { Skjema } from '../../contracts/kontrollApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '../../theme/makeStyles';
@@ -38,7 +38,8 @@ export const ClipBoardContextProvider = ({
 
     const {
         state: { skjemaer, checklists },
-        moveSkjema
+        moveSkjema,
+        moveKontroll
     } = useKontroll();
     const { moveMeasurement } = useMeasurement();
     const { moveAvvik } = useAvvik();
@@ -83,6 +84,19 @@ export const ClipBoardContextProvider = ({
             payload: avvik
         });
     }
+    function selectedKontroll(kontroll: Kontroll[]) {
+        setCutoutLength(kontroll.length);
+        dispatch({
+            type: ActionType.setSelectedKontroll,
+            payload: kontroll
+        });
+    }
+    function setKontrollToPaste(kontroll: Kontroll[]) {
+        dispatch({
+            type: ActionType.setKontrollToPaste,
+            payload: kontroll
+        });
+    }
 
     function closeScissors() {
         setCutoutLength(0);
@@ -118,12 +132,19 @@ export const ClipBoardContextProvider = ({
                 payload: state.avvik.filter((a) => a.status !== 'lukket')
             });
         }
+        if (state.kontroll) {
+            dispatch({
+                type: ActionType.setKontrollClipboard,
+                payload: state.kontroll
+            });
+        }
     }
 
     async function handlePaste({
         skjemaPaste,
         measurementPaste,
-        avvikPaste
+        avvikPaste,
+        kontrollPaste
     }: PasteOptions) {
         if (skjemaPaste !== undefined) {
             for (const skjema of skjemaPaste.skjema) {
@@ -180,6 +201,26 @@ export const ClipBoardContextProvider = ({
                 payload: []
             });
         }
+        if (kontrollPaste !== undefined) {
+            for (const kontroll of kontrollPaste.kontroll) {
+                if (
+                    await moveKontroll(
+                        kontroll,
+                        kontrollPaste.klientId,
+                        kontrollPaste.locationId
+                    )
+                ) {
+                    dispatch({
+                        type: ActionType.removeKontrollClipboard,
+                        payload: kontroll
+                    });
+                }
+            }
+            dispatch({
+                type: ActionType.setKontrollToPaste,
+                payload: []
+            });
+        }
     }
 
     return (
@@ -209,6 +250,12 @@ export const ClipBoardContextProvider = ({
                 clipboardHasAvvik:
                     (state.avvikClipboard &&
                         state.avvikClipboard?.length > 0) ||
+                    false,
+                selectedKontroll,
+                setKontrollToPaste,
+                clipboardHasKontroll:
+                    (state.kontrollClipboard &&
+                        state.kontrollClipboard?.length > 0) ||
                     false,
 
                 handlePaste

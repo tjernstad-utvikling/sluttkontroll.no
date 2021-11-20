@@ -1,3 +1,4 @@
+import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
@@ -7,7 +8,6 @@ import {
 import { Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import { BaseTable } from './baseTable';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,6 +16,7 @@ import { Measurement } from '../contracts/measurementApi';
 import { PasteTableButton } from '../components/clipboard';
 import { RowAction } from '../tables/tableUtils';
 import { User } from '../contracts/userApi';
+import { useClipBoard } from '../data/clipboard';
 
 export const KontrollValueGetter = (data: Kontroll | GridRowModel) => {
     const klient = (klienter: Klient[]): string => {
@@ -254,16 +255,34 @@ export const kontrollColumns = (
     return columns;
 };
 
-export const defaultColumns: Array<string> = [
-    'klient',
-    'objekt',
-    'name',
-    'user'
-];
+export const defaultColumns: string[] = ['klient', 'objekt', 'name', 'user'];
 
 interface KontrollTableProps {
-    kontroller: Array<Kontroll>;
+    kontroller: Kontroll[];
+
+    onSelected: (ids: number[]) => void;
+    leftAction?: React.ReactNode;
 }
-export const KontrollTable = ({ kontroller }: KontrollTableProps) => {
-    return <BaseTable data={kontroller} />;
+export const KontrollTable = ({
+    kontroller,
+    onSelected,
+    leftAction
+}: KontrollTableProps) => {
+    const {
+        state: { kontrollClipboard }
+    } = useClipBoard();
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
+        if (kontrollClipboard?.find((kc) => kc.id === row.id)) {
+            return RowStylingEnum.cut;
+        }
+    };
+
+    return (
+        <BaseTable
+            onSelected={onSelected}
+            getRowStyling={getRowStyling}
+            data={kontroller}>
+            {leftAction}
+        </BaseTable>
+    );
 };

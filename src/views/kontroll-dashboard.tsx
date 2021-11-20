@@ -1,5 +1,9 @@
 import { Card, CardContent, CardMenu } from '../components/card';
-import { ClipboardCard, SkjemaClipboard } from '../components/clipboard';
+import {
+    ClipboardCard,
+    KontrollClipboard,
+    SkjemaClipboard
+} from '../components/clipboard';
 import {
     KontrollTable,
     defaultColumns,
@@ -63,6 +67,8 @@ const KontrollerView = () => {
         state: { skjemaToPast },
         openScissors,
         closeScissors,
+        selectedKontroll,
+        clipboardHasKontroll,
         clipboardHasSkjema
     } = useClipBoard();
     useEffect(() => {
@@ -73,6 +79,14 @@ const KontrollerView = () => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const onSelectForClipboard = (ids: number[]) => {
+        selectedKontroll(
+            _kontroller.filter((kontroll) => {
+                return ids.includes(kontroll.id);
+            })
+        );
+    };
 
     useEffect(() => {
         if (kontroller !== undefined) {
@@ -95,7 +109,11 @@ const KontrollerView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
-                    <Grid item xs={clipboardHasSkjema ? 9 : 12}>
+                    <Grid
+                        item
+                        xs={
+                            clipboardHasSkjema || clipboardHasKontroll ? 9 : 12
+                        }>
                         <Card
                             title="Dine kontroller"
                             menu={
@@ -126,6 +144,7 @@ const KontrollerView = () => {
                                         tableId="kontroller">
                                         <KontrollTable
                                             kontroller={_kontroller}
+                                            onSelected={onSelectForClipboard}
                                         />
                                     </TableContainer>
                                 ) : (
@@ -134,9 +153,10 @@ const KontrollerView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    {clipboardHasSkjema && (
+                    {(clipboardHasSkjema || clipboardHasKontroll) && (
                         <ClipboardCard>
-                            <SkjemaClipboard />
+                            {clipboardHasSkjema && <SkjemaClipboard />}
+                            {clipboardHasKontroll && <KontrollClipboard />}
                         </ClipboardCard>
                     )}
                 </Grid>

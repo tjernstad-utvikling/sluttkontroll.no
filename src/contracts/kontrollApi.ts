@@ -3,7 +3,7 @@ import { Sertifikat } from './userApi';
 export interface Klient {
     id: number;
     name: string;
-    locations: Array<Location>;
+    locations: Location[];
 }
 
 export interface Location {
@@ -26,7 +26,7 @@ export interface Kontroll {
     user: {
         id: number;
     };
-    avvikUtbedrere: Array<{ id: number }>;
+    avvikUtbedrere: { id: number }[];
 }
 export interface ReportKontroll {
     id: number;
@@ -43,7 +43,7 @@ export interface ReportKontroll {
     user: {
         id: number;
     };
-    avvikUtbedrere: Array<{ id: number }>;
+    avvikUtbedrere: { id: number }[];
     rapportEgenskaper: RapportEgenskaper | null;
 }
 

@@ -1,4 +1,5 @@
 import { Card, CardContent } from '../components/card';
+import { Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import Checkbox from '@mui/material/Checkbox';
@@ -13,7 +14,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { Measurement } from '../contracts/measurementApi';
 import { PasteOptions } from '../data/clipboard/contracts';
-import { Skjema } from '../contracts/kontrollApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -273,6 +273,78 @@ export const AvvikClipboard = () => {
                                     id={labelId}
                                     primary={avvik.beskrivelse}
                                     secondary={avvik.id}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
+            </List>
+        </>
+    );
+};
+
+export const KontrollClipboard = () => {
+    const {
+        state: { kontrollClipboard, kontrollToPast },
+        setKontrollToPaste
+    } = useClipBoard();
+
+    const { classes } = useStyles();
+
+    const handleToggle = (kontroll: Kontroll | undefined) => () => {
+        if (kontroll) {
+            const currentIndex = kontrollToPast
+                ? kontrollToPast.indexOf(kontroll)
+                : -1;
+            const newChecked = kontrollToPast ? [...kontrollToPast] : [];
+
+            if (currentIndex === -1) {
+                newChecked.push(kontroll);
+            } else {
+                newChecked.splice(currentIndex, 1);
+            }
+            setKontrollToPaste(newChecked);
+        }
+    };
+
+    return (
+        <>
+            <Typography
+                variant="h3"
+                gutterBottom
+                component="h3"
+                className={classes.title}>
+                Avvik
+            </Typography>
+            <List>
+                {kontrollClipboard?.map((kontroll) => {
+                    const labelId = `checkbox-list-label-${kontroll.id}`;
+
+                    return (
+                        <ListItem key={kontroll.id} disablePadding>
+                            <ListItemButton
+                                role={undefined}
+                                onClick={handleToggle(kontroll)}
+                                dense>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        edge="start"
+                                        tabIndex={-1}
+                                        checked={
+                                            kontrollToPast?.indexOf(
+                                                kontroll
+                                            ) !== -1
+                                        }
+                                        disableRipple
+                                        inputProps={{
+                                            'aria-labelledby': labelId
+                                        }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    id={labelId}
+                                    primary={kontroll.name}
+                                    secondary={kontroll.id}
                                 />
                             </ListItemButton>
                         </ListItem>

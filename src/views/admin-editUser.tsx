@@ -31,6 +31,7 @@ const NewUserView = () => {
     useEffectOnce(() => {
         loadUsers();
     });
+
     const handleEditUser = async (
         name: string,
         phone: string,

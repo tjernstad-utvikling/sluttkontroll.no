@@ -50,13 +50,13 @@ export const CertificateList = ({ user }: CertificateListProps) => {
             <CardContent>
                 {certificates !== undefined ? (
                     <TableContainer
-                        columns={columns({})}
+                        columns={columns()}
                         defaultColumns={defaultColumns}
                         tableId="certificates">
                         <CertificateTable certificates={certificates ?? []} />
                     </TableContainer>
                 ) : (
-                    <div>Laster brukere</div>
+                    <div>Laster Sertifikater</div>
                 )}
             </CardContent>
         </Card>

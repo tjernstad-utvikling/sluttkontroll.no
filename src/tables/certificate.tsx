@@ -19,8 +19,8 @@ export const CertificateValueGetter = (data: Sertifikat | GridRowModel) => {
 
     return { validTo, type };
 };
-interface columnsOptions {}
-export const columns = (props: columnsOptions) => {
+
+export const columns = () => {
     const columns: GridColDef[] = [
         {
             field: 'id',

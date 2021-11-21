@@ -1,15 +1,13 @@
 import * as Yup from 'yup';
 
-import { Form, Formik, useFormikContext } from 'formik';
-import { Roles, RolesOptions } from '../contracts/userApi';
+import { DateInput, TextField } from '../components/input';
+import { Form, Formik } from 'formik';
 
 import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
+import { Roles } from '../contracts/userApi';
 import Select from 'react-select';
 import { SertifikatType } from '../contracts/certificateApi';
-import { TextField } from '../components/input';
-import Typography from '@mui/material/Typography';
-import { useAuth } from '../hooks/useAuth';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
@@ -18,12 +16,6 @@ interface Option {
     label: string;
 }
 
-interface FormValues {
-    name: string;
-    phone: string;
-    email: string;
-    roles: Option[] | null;
-}
 interface CertificateSchemaProps {
     onSubmit: (
         name: string,
@@ -31,12 +23,22 @@ interface CertificateSchemaProps {
         email: string,
         roles: Roles[] | undefined
     ) => Promise<boolean>;
-    certificateTypes: SertifikatType;
+    certificateTypes: SertifikatType[];
 }
 export const CertificateSchema = ({
     onSubmit,
     certificateTypes
 }: CertificateSchemaProps): JSX.Element => {
+    const [sertifikatOptions, setSertifikatOptions] = useState<Option[]>();
+
+    useEffect(() => {
+        if (certificateTypes !== undefined) {
+            setSertifikatOptions(
+                certificateTypes.map((st) => ({ value: st, label: st.name }))
+            );
+        }
+    }, [certificateTypes]);
+
     return (
         <Formik
             initialValues={{
@@ -51,20 +53,38 @@ export const CertificateSchema = ({
                     .required('Epost er påkrevd')
             })}
             onSubmit={async (values, { setSubmitting }) => {
-                await onSubmit(values.name, values.phone, values.email, roles);
+                // await onSubmit(values.name, values.phone, values.email, roles);
             }}>
             {({ isSubmitting, setFieldValue, values, errors }) => {
                 return (
                     <Form>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    id="name"
-                                    label="Navn"
-                                    name="name"
-                                />
+                                <div>
+                                    <label htmlFor="sertifikat-select">
+                                        Sertifikater
+                                    </label>
+                                    <Select
+                                        inputId="sertifikat-select"
+                                        className="basic-single"
+                                        classNamePrefix="select"
+                                        isSearchable
+                                        isMulti
+                                        onChange={(selected) => {
+                                            setFieldValue('utbedrer', selected);
+                                        }}
+                                        value={values.type}
+                                        name="sertifikater"
+                                        options={sertifikatOptions}
+                                        styles={{
+                                            menuPortal: (base) => ({
+                                                ...base,
+                                                zIndex: 9999
+                                            })
+                                        }}
+                                        menuPortalTarget={document.body}
+                                    />
+                                </div>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -77,14 +97,7 @@ export const CertificateSchema = ({
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    id="phone"
-                                    label="Telefon"
-                                    name="phone"
-                                    type="tel"
-                                />
+                                <DateInput label="Gyldig til" name="validTo" />
                             </Grid>
 
                             <Grid item xs={12}>
@@ -102,75 +115,5 @@ export const CertificateSchema = ({
                 );
             }}
         </Formik>
-    );
-};
-
-const RoleSelectField = () => {
-    const {
-        values: { roles },
-        setFieldValue
-    } = useFormikContext<FormValues>();
-
-    const [options, setOptions] = useState<Array<Option>>();
-    const { userHasRole } = useAuth();
-
-    useEffect(() => {
-        setOptions(RolesOptions);
-    }, []);
-
-    useEffect(() => {
-        if (roles !== null) {
-            if (roles.find((opt) => opt.value === Roles.ROLE_LUKKE_AVVIK)) {
-                setOptions(
-                    RolesOptions.map((opt) => {
-                        if (opt.value !== Roles.ROLE_LUKKE_AVVIK) {
-                            return { ...opt, isDisabled: true };
-                        }
-                        return opt;
-                    })
-                );
-            } else {
-                setOptions(RolesOptions);
-            }
-        }
-    }, [roles]);
-
-    return (
-        <>
-            {options && (
-                <>
-                    <label htmlFor="roller-select">Bruker roller</label>
-                    <Select
-                        inputId="roller-select"
-                        className="basic-single"
-                        classNamePrefix="select"
-                        isSearchable
-                        isMulti
-                        isDisabled={!userHasRole(Roles.ROLE_EDIT_ROLES)}
-                        onChange={(selected) => {
-                            setFieldValue('roles', selected);
-                        }}
-                        value={roles}
-                        name="roles"
-                        options={options}
-                        styles={{
-                            menuPortal: (base) => ({
-                                ...base,
-                                zIndex: 9999
-                            })
-                        }}
-                        menuPortalTarget={document.body}
-                    />
-                    {roles?.find(
-                        (opt) => opt.value === Roles.ROLE_LUKKE_AVVIK
-                    ) && (
-                        <Typography>
-                            Ved brukerrolle "lukke avvik" kan ikke andre roller
-                            registreres
-                        </Typography>
-                    )}
-                </>
-            )}
-        </>
     );
 };

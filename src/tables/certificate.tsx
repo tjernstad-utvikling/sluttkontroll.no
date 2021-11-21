@@ -25,12 +25,12 @@ export const columns = (props: columnsOptions) => {
         {
             field: 'id',
             headerName: '#',
-            flex: 1
+            width: 100
         },
         {
             field: 'icon',
             headerName: '',
-            flex: 1,
+            width: 100,
             renderCell: (params: GridCellParams) => (
                 <img
                     src={params.row.type.logoBase64}

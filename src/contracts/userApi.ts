@@ -1,4 +1,4 @@
-import { Sertifikat } from './certificate';
+import { Sertifikat } from './certificateApi';
 
 export interface User {
     name: string;

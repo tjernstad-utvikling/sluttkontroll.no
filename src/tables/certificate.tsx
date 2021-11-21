@@ -1,36 +1,26 @@
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
-import Avatar from '@mui/material/Avatar';
 import { BaseTable } from './baseTable';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import { Kalibrering } from '../contracts/instrumentApi';
-import { Sertifikat } from '../contracts/certificate';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Sertifikat } from '../contracts/certificateApi';
 import { format } from 'date-fns';
 
-export const CertificateValueGetter = (data: Kalibrering | GridRowData) => {
-    const date = (formatString: string): string => {
-        return format(new Date(data.date), formatString);
+export const CertificateValueGetter = (data: Sertifikat | GridRowModel) => {
+    const validTo = (formatString: string): string => {
+        return format(new Date(data.validTo), formatString);
+    };
+    const type = (): string => {
+        return data.type.name;
     };
 
-    return { date };
+    return { validTo, type };
 };
-interface certificateColumnsOptions {
-    openCertificateId: number | undefined;
-    instrumentLastCalibration: Kalibrering | null;
-    openCertificate: (calibrationId: number) => Promise<void>;
-}
-export const certificateColumns = ({
-    openCertificate,
-    instrumentLastCalibration,
-    openCertificateId
-}: certificateColumnsOptions) => {
+interface certificateColumnsOptions {}
+export const certificateColumns = (props: certificateColumnsOptions) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -38,64 +28,46 @@ export const certificateColumns = ({
             flex: 1
         },
         {
-            field: 'date',
-            headerName: 'Dato',
-            width: 180,
-            valueGetter: (params: GridValueGetterParams) =>
-                CalibrationValueGetter(params.row).date('dd.MM.Y')
-        },
-        {
-            field: 'status',
-            headerName: 'Status',
+            field: 'icon',
+            headerName: '',
             flex: 1,
-            sortable: false,
-            filterable: false,
-            disableColumnMenu: true,
-            renderCell: (params: GridCellParams) => {
-                return (
-                    <>
-                        {instrumentLastCalibration?.id === params.row.id && (
-                            <Chip
-                                variant="outlined"
-                                color="primary"
-                                avatar={<Avatar>Ny</Avatar>}
-                                label="Siste kalibrering"
-                            />
-                        )}
-                        {openCertificateId === params.row.id && (
-                            <Chip
-                                variant="outlined"
-                                color="primary"
-                                icon={<VisibilityIcon />}
-                                label="Åpen"
-                            />
-                        )}
-                    </>
-                );
-            }
-        },
-
-        {
-            field: 'action',
-            headerName: ' ',
-            sortable: false,
-            filterable: false,
-            disableColumnMenu: true,
             renderCell: (params: GridCellParams) => (
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => openCertificate(params.row.id)}>
-                    Åpne
-                </Button>
+                <img
+                    src={params.row.type.logoBase64}
+                    alt={`Sertifikat icon for ${params.row.type.name}`}
+                    style={{
+                        objectFit: 'contain',
+                        width: '100%',
+                        height: '100%'
+                    }}
+                />
             )
+        },
+        {
+            field: 'type',
+            headerName: 'Type',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                CertificateValueGetter(params.row).type()
+        },
+        {
+            field: 'number',
+            headerName: 'Sertifikat nummer',
+            flex: 1
+        },
+        {
+            field: 'validTo',
+            headerName: 'Gyldig til',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                CertificateValueGetter(params.row).validTo('dd.MM.Y')
         }
     ];
 
     return columns;
 };
 
-export const defaultColumns: string[] = ['type', 'number', 'validTo'];
+export const defaultColumns: string[] = ['icon', 'type', 'number', 'validTo'];
 
 interface CertificateTableProps {
     certificate: Sertifikat[];

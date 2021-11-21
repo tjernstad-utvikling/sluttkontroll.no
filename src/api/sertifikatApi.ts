@@ -1,4 +1,4 @@
-import { Sertifikat } from '../contracts/certificate';
+import { Sertifikat } from '../contracts/certificateApi';
 import { User } from '../contracts/userApi';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';

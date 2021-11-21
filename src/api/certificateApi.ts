@@ -7,7 +7,7 @@ export const getSertifikatByUser = async (
     user: User
 ): Promise<{
     status: number;
-    certificates: Sertifikat;
+    certificates: Sertifikat[];
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(

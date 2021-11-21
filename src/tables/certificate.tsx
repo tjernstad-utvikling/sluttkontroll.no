@@ -19,8 +19,8 @@ export const CertificateValueGetter = (data: Sertifikat | GridRowModel) => {
 
     return { validTo, type };
 };
-interface certificateColumnsOptions {}
-export const certificateColumns = (props: certificateColumnsOptions) => {
+interface columnsOptions {}
+export const columns = (props: columnsOptions) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -70,8 +70,8 @@ export const certificateColumns = (props: certificateColumnsOptions) => {
 export const defaultColumns: string[] = ['icon', 'type', 'number', 'validTo'];
 
 interface CertificateTableProps {
-    certificate: Sertifikat[];
+    certificates: Sertifikat[];
 }
-export const CertificateTable = ({ certificate }: CertificateTableProps) => {
-    return <BaseTable data={certificate} />;
+export const CertificateTable = ({ certificates }: CertificateTableProps) => {
+    return <BaseTable data={certificates} />;
 };

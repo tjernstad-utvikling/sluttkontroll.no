@@ -3,6 +3,7 @@ import { Roles, User } from '../contracts/userApi';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import { CertificateList } from '../components/certificate';
 import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
@@ -66,6 +67,9 @@ const NewUserView = () => {
                                 )}
                             </CardContent>
                         </Card>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <CertificateList user={user} />
                     </Grid>
                 </Grid>
             </Container>

@@ -8,20 +8,20 @@ import { SertifikatType } from '../contracts/certificateApi';
 import { useSnackbar } from 'notistack';
 
 interface CertificateModalProps {
-    regId: number | undefined;
+    isOpen: boolean;
     certificateTypes: SertifikatType[];
     close: () => void;
 }
 export function CertificateModal({
     close,
-    regId,
+    isOpen,
     certificateTypes
 }: CertificateModalProps) {
     const { enqueueSnackbar } = useSnackbar();
 
     return (
         <Dialog
-            open={Boolean(regId)}
+            open={isOpen}
             onClose={close}
             aria-labelledby="add-Picture-Dialog">
             <DialogTitle id="add-Picture-Dialog">

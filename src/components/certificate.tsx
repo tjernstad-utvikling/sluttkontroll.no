@@ -1,12 +1,13 @@
-import { Card, CardContent } from '../components/card';
+import { Card, CardContent, CardMenu } from '../components/card';
 import {
     CertificateTable,
     columns,
     defaultColumns
 } from '../tables/certificate';
+import { Sertifikat, SertifikatType } from '../contracts/certificateApi';
 import { useEffect, useState } from 'react';
 
-import { Sertifikat } from '../contracts/certificateApi';
+import { CertificateModal } from '../modal/certificate';
 import { TableContainer } from '../tables/tableContainer';
 import { User } from '../contracts/userApi';
 import { errorHandler } from '../tools/errorHandler';
@@ -18,6 +19,11 @@ interface CertificateListProps {
 }
 export const CertificateList = ({ user }: CertificateListProps) => {
     const [certificates, setCertificates] = useState<Sertifikat[]>();
+    const [certificateTypes, setCertificateTypes] = useState<SertifikatType[]>(
+        []
+    );
+
+    const [addNew, setAddNew] = useState<boolean>(false);
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -46,19 +52,39 @@ export const CertificateList = ({ user }: CertificateListProps) => {
         };
     });
     return (
-        <Card title="Sertifikater">
-            <CardContent>
-                {certificates !== undefined ? (
-                    <TableContainer
-                        columns={columns()}
-                        defaultColumns={defaultColumns}
-                        tableId="certificates">
-                        <CertificateTable certificates={certificates ?? []} />
-                    </TableContainer>
-                ) : (
-                    <div>Laster Sertifikater</div>
-                )}
-            </CardContent>
-        </Card>
+        <>
+            <Card
+                title="Sertifikater"
+                menu={
+                    <CardMenu
+                        items={[
+                            {
+                                label: 'Nytt sertifikat',
+                                action: () => setAddNew(!addNew)
+                            }
+                        ]}
+                    />
+                }>
+                <CardContent>
+                    {certificates !== undefined ? (
+                        <TableContainer
+                            columns={columns()}
+                            defaultColumns={defaultColumns}
+                            tableId="certificates">
+                            <CertificateTable
+                                certificates={certificates ?? []}
+                            />
+                        </TableContainer>
+                    ) : (
+                        <div>Laster Sertifikater</div>
+                    )}
+                </CardContent>
+            </Card>
+            <CertificateModal
+                certificateTypes={certificateTypes}
+                isOpen={addNew}
+                close={() => setAddNew(false)}
+            />
+        </>
     );
 };

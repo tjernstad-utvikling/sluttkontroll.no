@@ -52,9 +52,7 @@ export const CertificateSchema = ({
                     .email('Epost er ikke gyldig')
                     .required('Epost er påkrevd')
             })}
-            onSubmit={async (values, { setSubmitting }) => {
-                // await onSubmit(values.name, values.phone, values.email, roles);
-            }}>
+            onSubmit={async (values, { setSubmitting }) => {}}>
             {({ isSubmitting, setFieldValue, values, errors }) => {
                 return (
                     <Form>

@@ -17,6 +17,7 @@ const NewUserView = () => {
     const { userId } = useParams<EditUserViewParams>();
     const history = useHistory();
     const [user, setUser] = useState<User>();
+
     const {
         state: { users },
         updateUser,

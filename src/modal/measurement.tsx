@@ -1,10 +1,13 @@
 import { Measurement, NewFormMeasurement } from '../contracts/measurementApi';
 import { useEffect, useState } from 'react';
 
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { MeasurementSchema } from '../schema/measurement';
-import Modal from '@mui/material/Modal';
 import { useMeasurement } from '../data/measurement';
-import { useModalStyles } from '../styles/modal';
 
 interface MeasurementModalProps {
     open: boolean;
@@ -19,8 +22,6 @@ export const MeasurementModal = ({
     skjemaId,
     editId
 }: MeasurementModalProps): JSX.Element => {
-    const { classes } = useModalStyles();
-
     const [measurement, setMeasurement] = useState<Measurement>();
 
     const {
@@ -63,11 +64,14 @@ export const MeasurementModal = ({
     };
 
     return (
-        <Modal open={open} onClose={close} aria-labelledby="modal-title">
-            <div className={classes.root}>
-                <h2 id="modal-title">
-                    {editId !== undefined ? 'Rediger Måling' : 'Ny måling'}
-                </h2>
+        <Dialog
+            open={open}
+            onClose={close}
+            aria-labelledby="add-Picture-Dialog">
+            <DialogTitle id="add-Picture-Dialog">
+                {editId !== undefined ? 'Rediger Måling' : 'Ny måling'}
+            </DialogTitle>
+            <DialogContent>
                 {measurement !== undefined || editId === undefined ? (
                     <MeasurementSchema
                         onSubmit={handleSave}
@@ -76,7 +80,12 @@ export const MeasurementModal = ({
                 ) : (
                     <div />
                 )}
-            </div>
-        </Modal>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={close} color="error">
+                    Avbryt
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };

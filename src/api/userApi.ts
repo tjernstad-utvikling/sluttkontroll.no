@@ -84,7 +84,8 @@ export const updateByIdUser = async (
 }> => {
     try {
         const { status } = await sluttkontrollApi.put(`/user/${user.id}`, {
-            ...user
+            ...user,
+            sertifikater: null
         });
         if (status === 204) {
             return { status };

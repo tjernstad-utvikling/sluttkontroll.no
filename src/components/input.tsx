@@ -1,10 +1,14 @@
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DatePicker from '@mui/lab/DatePicker';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import FormHelperText from '@mui/material/FormHelperText';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MuiCheckbox from '@mui/material/Checkbox';
 import MuiTextField from '@mui/material/TextField';
 import React from 'react';
+import nbLocale from 'date-fns/locale/nb';
 import { useField } from 'formik';
 
 interface TextFieldProps {
@@ -81,5 +85,38 @@ export const Checkbox = ({ label, name }: CheckboxProps) => {
             </FormGroup>
             <FormHelperText>{meta.error}</FormHelperText>
         </FormControl>
+    );
+};
+
+interface DateInputProps {
+    label: string;
+    name: string;
+}
+export const DateInput = ({ label, name }: DateInputProps) => {
+    // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
+    // which we can spread on <input>. We can use field meta to show an error
+    // message if the field is invalid and it has been touched (i.e. visited)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [field, meta, helpers] = useField(name);
+
+    const { value } = meta;
+    const { setValue } = helpers;
+    return (
+        <LocalizationProvider dateAdapter={AdapterDateFns} locale={nbLocale}>
+            <DatePicker
+                clearable
+                label={label}
+                value={value}
+                onChange={(date) => setValue(date)}
+                renderInput={(params) => (
+                    <MuiTextField
+                        {...params}
+                        margin="normal"
+                        error={meta.touched && meta.error ? true : false}
+                        helperText={meta.error}
+                    />
+                )}
+            />
+        </LocalizationProvider>
     );
 };

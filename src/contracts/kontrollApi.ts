@@ -1,4 +1,4 @@
-import { Sertifikat } from './userApi';
+import { Sertifikat } from './certificateApi';
 
 export interface Klient {
     id: number;

@@ -4,8 +4,8 @@ import { Suspense, lazy } from 'react';
 import { AdminLayout } from '../../layout/admin';
 
 const UsersView = lazy(() => import('../../views/admin-users'));
-const NewUserView = lazy(() => import('../../views/admin-newUser'));
-const EditUserView = lazy(() => import('../../views/admin-editUser'));
+const NewUserView = lazy(() => import('../../views/admin-userNew'));
+const EditUserView = lazy(() => import('../../views/admin-userEdit'));
 
 export const Users = () => {
     let { path } = useRouteMatch();

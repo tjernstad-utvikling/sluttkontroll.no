@@ -6,14 +6,15 @@ import {
     RapportEgenskaper,
     ReportKontroll
 } from '../contracts/kontrollApi';
-import { Sertifikat, User } from '../contracts/userApi';
 import { useEffect, useMemo } from 'react';
 
 import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import Select from 'react-select';
+import { Sertifikat } from '../contracts/certificateApi';
 import { TextField } from '../components/input';
 import Typography from '@mui/material/Typography';
+import { User } from '../contracts/userApi';
 import makeStyles from '@mui/styles/makeStyles';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';

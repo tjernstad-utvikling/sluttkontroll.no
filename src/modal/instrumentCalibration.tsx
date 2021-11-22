@@ -106,7 +106,7 @@ export function InstrumentCalibrationModal({
                 </DropZone>
             </DialogContent>
             <DialogActions>
-                <Button onClick={close} color="primary">
+                <Button onClick={close} color="error">
                     Avbryt
                 </Button>
                 <Button onClick={saveCalibration} color="primary">

@@ -1,8 +1,3 @@
-import { Theme } from '@mui/material';
-
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-
 import { Avvik } from '../contracts/avvikApi';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -11,6 +6,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { DropZone } from '../components/uploader';
 import { NewImageCard } from '../components/avvik';
+import { Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useAvvik } from '../data/avvik';
 import { useState } from 'react';
 
@@ -56,7 +54,7 @@ export function NewImageModal({ open, close, avvik }: NewImageModalProps) {
                 </DropZone>
             </DialogContent>
             <DialogActions>
-                <Button onClick={close} color="primary">
+                <Button onClick={close} color="error">
                     Avbryt
                 </Button>
                 <Button onClick={saveNewImages} color="primary">

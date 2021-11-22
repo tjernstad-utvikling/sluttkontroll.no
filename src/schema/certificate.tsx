@@ -42,7 +42,7 @@ export const CertificateSchema = ({
     return (
         <Formik
             initialValues={{
-                type: {} as Option,
+                type: null,
                 number: '',
                 validTo: ''
             }}
@@ -67,9 +67,8 @@ export const CertificateSchema = ({
                                         className="basic-single"
                                         classNamePrefix="select"
                                         isSearchable
-                                        isMulti
                                         onChange={(selected) => {
-                                            setFieldValue('utbedrer', selected);
+                                            setFieldValue('type', selected);
                                         }}
                                         value={values.type}
                                         name="sertifikater"

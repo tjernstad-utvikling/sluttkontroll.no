@@ -9,7 +9,7 @@ import { useSnackbar } from 'notistack';
 
 interface CertificateModalProps {
     isOpen: boolean;
-    certificateTypes: SertifikatType[];
+    certificateTypes: SertifikatType[] | undefined;
     close: () => void;
 }
 export function CertificateModal({
@@ -28,19 +28,20 @@ export function CertificateModal({
                 Register nytt sertifikat
             </DialogTitle>
             <DialogContent>
-                <CertificateSchema
-                    onSubmit={async () => {
-                        return false;
-                    }}
-                    certificateTypes={certificateTypes}
-                />
+                {certificateTypes !== undefined ? (
+                    <CertificateSchema
+                        onSubmit={async () => {
+                            return false;
+                        }}
+                        certificateTypes={certificateTypes}
+                    />
+                ) : (
+                    <div>Laster sertifikattyper</div>
+                )}
             </DialogContent>
             <DialogActions>
-                <Button onClick={close} color="primary">
+                <Button onClick={close} color="error">
                     Avbryt
-                </Button>
-                <Button onClick={() => console.log()} color="primary">
-                    Lagre
                 </Button>
             </DialogActions>
         </Dialog>

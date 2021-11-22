@@ -1,4 +1,5 @@
-import { Sertifikat } from '../contracts/certificateApi';
+import { Sertifikat, SertifikatType } from '../contracts/certificateApi';
+
 import { User } from '../contracts/userApi';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
@@ -12,6 +13,21 @@ export const getSertifikatByUser = async (
     try {
         const { status, data } = await sluttkontrollApi.get(
             `/certificate/${user.id}`
+        );
+
+        return { status, ...data };
+    } catch (error: any) {
+        errorHandler(error);
+        throw new Error(error);
+    }
+};
+export const getSertifikatTypes = async (): Promise<{
+    status: number;
+    certificateTypes: SertifikatType[];
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            '/certificate/types'
         );
 
         return { status, ...data };

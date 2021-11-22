@@ -7,6 +7,7 @@ import { CertificateList } from '../components/certificate';
 import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
+import { Sertifikat } from '../contracts/certificateApi';
 import { UserSchema } from '../schema/user';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -21,7 +22,8 @@ const NewUserView = () => {
     const {
         state: { users },
         updateUser,
-        loadUsers
+        loadUsers,
+        updateUserInState
     } = useUser();
     useEffect(() => {
         const _user = users?.find((u) => u.id === Number(userId));
@@ -52,6 +54,16 @@ const NewUserView = () => {
         }
         return false;
     };
+
+    const handleAddCertificateToUser = (certificate: Sertifikat) => {
+        if (user) {
+            updateUserInState({
+                ...user,
+                sertifikater: [...user.sertifikater, certificate]
+            });
+        }
+    };
+
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -70,7 +82,10 @@ const NewUserView = () => {
                         </Card>
                     </Grid>
                     <Grid item xs={12}>
-                        <CertificateList user={user} />
+                        <CertificateList
+                            addCertificate={handleAddCertificateToUser}
+                            user={user}
+                        />
                     </Grid>
                 </Grid>
             </Container>

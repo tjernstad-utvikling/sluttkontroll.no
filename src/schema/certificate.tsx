@@ -2,13 +2,12 @@ import * as Yup from 'yup';
 
 import { DateInput, TextField } from '../components/input';
 import { Form, Formik } from 'formik';
+import { Sertifikat, SertifikatType } from '../contracts/certificateApi';
+import { useEffect, useMemo } from 'react';
 
 import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
-import { Roles } from '../contracts/userApi';
 import Select from 'react-select';
-import { SertifikatType } from '../contracts/certificateApi';
-import { useEffect } from 'react';
 import { useState } from 'react';
 
 interface Option {
@@ -18,16 +17,17 @@ interface Option {
 
 interface CertificateSchemaProps {
     onSubmit: (
-        name: string,
-        phone: string,
-        email: string,
-        roles: Roles[] | undefined
+        number: string,
+        type: SertifikatType,
+        validTo: string
     ) => Promise<boolean>;
     certificateTypes: SertifikatType[];
+    certificate?: Sertifikat | undefined;
 }
 export const CertificateSchema = ({
     onSubmit,
-    certificateTypes
+    certificateTypes,
+    certificate
 }: CertificateSchemaProps): JSX.Element => {
     const [sertifikatOptions, setSertifikatOptions] = useState<Option[]>();
 
@@ -39,21 +39,45 @@ export const CertificateSchema = ({
         }
     }, [certificateTypes]);
 
+    const selectedType = useMemo(() => {
+        let preSelectedType: SertifikatType | null = null;
+        if (certificate !== undefined) {
+            preSelectedType = certificate.type;
+        }
+        const option = sertifikatOptions?.find(
+            (o) => o.value === preSelectedType
+        );
+        if (option !== undefined) {
+            return option;
+        }
+        return null;
+    }, [certificate, sertifikatOptions]);
+
     return (
         <Formik
             initialValues={{
-                type: null,
+                type: selectedType,
                 number: '',
                 validTo: ''
             }}
             validationSchema={Yup.object({
-                name: Yup.string().required('Navn er påkrevd'),
-                email: Yup.string()
-                    .email('Epost er ikke gyldig')
-                    .required('Epost er påkrevd')
+                number: Yup.string().required('Sertifikat nummer er påkrevd'),
+                validTo: Yup.string().required('Gyldig til dato er påkrevd')
+            }).shape({
+                type: Yup.object()
+                    .nullable(true)
+                    .required('Sertifikat type er påkrevd')
             })}
-            onSubmit={async (values, { setSubmitting }) => {}}>
-            {({ isSubmitting, setFieldValue, values, errors }) => {
+            onSubmit={async (values, { setSubmitting }) => {
+                if (values.type) {
+                    await onSubmit(
+                        values.number,
+                        values.type.value,
+                        values.validTo
+                    );
+                }
+            }}>
+            {({ isSubmitting, setFieldValue, values, errors, touched }) => {
                 return (
                     <Form>
                         <Grid container spacing={3}>
@@ -81,6 +105,9 @@ export const CertificateSchema = ({
                                         }}
                                         menuPortalTarget={document.body}
                                     />
+                                    {errors.type && touched.type && (
+                                        <span>{errors.type}</span>
+                                    )}
                                 </div>
                             </Grid>
                             <Grid item xs={12} sm={6}>

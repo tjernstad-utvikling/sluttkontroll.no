@@ -4,7 +4,7 @@ export interface User {
     name: string;
     id: number;
     email: string;
-    roles: Array<Roles>;
+    roles: Roles[];
     phone: string;
     sertifikater: Sertifikat[];
 }

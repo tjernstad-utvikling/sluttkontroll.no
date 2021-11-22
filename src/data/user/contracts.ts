@@ -1,7 +1,7 @@
 import { Roles, User } from '../../contracts/userApi';
 
 export interface UserState {
-    users: Array<User> | undefined;
+    users: User[] | undefined;
 }
 
 export enum ActionType {
@@ -11,7 +11,7 @@ export enum ActionType {
 
 export interface addUsers {
     type: ActionType.addUsers;
-    payload: Array<User>;
+    payload: User[];
 }
 
 export interface UpdateUser {

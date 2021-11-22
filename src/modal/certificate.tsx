@@ -5,20 +5,23 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { SertifikatType } from '../contracts/certificateApi';
-import { useSnackbar } from 'notistack';
 
 interface CertificateModalProps {
     isOpen: boolean;
     certificateTypes: SertifikatType[] | undefined;
     close: () => void;
+    handleSubmit: (
+        number: string,
+        type: SertifikatType,
+        validTo: string
+    ) => Promise<boolean>;
 }
 export function CertificateModal({
     close,
     isOpen,
-    certificateTypes
+    certificateTypes,
+    handleSubmit
 }: CertificateModalProps) {
-    const { enqueueSnackbar } = useSnackbar();
-
     return (
         <Dialog
             open={isOpen}
@@ -30,9 +33,7 @@ export function CertificateModal({
             <DialogContent>
                 {certificateTypes !== undefined ? (
                     <CertificateSchema
-                        onSubmit={async () => {
-                            return false;
-                        }}
+                        onSubmit={handleSubmit}
                         certificateTypes={certificateTypes}
                     />
                 ) : (

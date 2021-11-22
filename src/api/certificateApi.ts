@@ -21,6 +21,29 @@ export const getSertifikatByUser = async (
         throw new Error(error);
     }
 };
+export const saveNewSertifikat = async (
+    number: string,
+    typeId: number,
+    validTo: string,
+    userId: number
+): Promise<{
+    status: number;
+    certificate: Sertifikat;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post('/certificate', {
+            number,
+            typeId,
+            validTo,
+            userId
+        });
+
+        return { status, ...data };
+    } catch (error: any) {
+        errorHandler(error);
+        throw new Error(error);
+    }
+};
 export const getSertifikatTypes = async (): Promise<{
     status: number;
     certificateTypes: SertifikatType[];

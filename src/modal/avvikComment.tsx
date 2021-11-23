@@ -31,7 +31,8 @@ export const AvvikCommentModal = ({
         <Dialog
             open={open}
             onClose={close}
-            aria-labelledby="add-Picture-Dialog">
+            aria-labelledby="add-Picture-Dialog"
+            fullWidth>
             <DialogTitle id="add-Picture-Dialog">
                 Kommentar til avvikene
             </DialogTitle>

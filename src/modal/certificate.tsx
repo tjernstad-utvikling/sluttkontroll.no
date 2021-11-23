@@ -26,7 +26,8 @@ export function CertificateModal({
         <Dialog
             open={isOpen}
             onClose={close}
-            aria-labelledby="add-Picture-Dialog">
+            aria-labelledby="add-Picture-Dialog"
+            fullWidth>
             <DialogTitle id="add-Picture-Dialog">
                 Register nytt sertifikat
             </DialogTitle>

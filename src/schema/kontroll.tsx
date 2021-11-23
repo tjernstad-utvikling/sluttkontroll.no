@@ -129,6 +129,13 @@ export const KontrollSchema = ({
                                         value={values.avvikUtbedrere}
                                         name="avvikUtbedrere"
                                         options={userOptions}
+                                        styles={{
+                                            menuPortal: (base) => ({
+                                                ...base,
+                                                zIndex: 9999
+                                            })
+                                        }}
+                                        menuPortalTarget={document.body}
                                     />
                                 </div>
                             )}

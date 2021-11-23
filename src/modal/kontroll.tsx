@@ -57,7 +57,8 @@ export const KontrollEditModal = ({
         <Dialog
             open={Boolean(editId)}
             onClose={close}
-            aria-labelledby="add-Picture-Dialog">
+            aria-labelledby="add-Picture-Dialog"
+            fullWidth>
             <DialogTitle id="add-Picture-Dialog">Rediger kontroll</DialogTitle>
             <DialogContent>
                 {kontroll && (

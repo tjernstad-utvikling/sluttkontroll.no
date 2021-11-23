@@ -56,7 +56,8 @@ export const AvvikEditModal = ({
         <Dialog
             open={Boolean(editId)}
             onClose={close}
-            aria-labelledby="add-Picture-Dialog">
+            aria-labelledby="add-Picture-Dialog"
+            fullWidth>
             <DialogTitle id="add-Picture-Dialog">Rediger Avvik</DialogTitle>
             <DialogContent>
                 {editAvvik && (

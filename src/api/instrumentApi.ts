@@ -26,10 +26,11 @@ export const newInstrument = async (instrument: {
     calibrationInterval: number;
 }): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
     try {
-        const { status, data } = await sluttkontrollApi.post(
-            '/instrument/',
-            instrument
-        );
+        const user = instrument.user ? { id: instrument.user.id } : null;
+        const { status, data } = await sluttkontrollApi.post('/instrument/', {
+            ...instrument,
+            user
+        });
         return { status, ...data };
     } catch (error: any) {
         if (error.response.status === 400) {
@@ -43,9 +44,14 @@ export const editInstrument = async (
     instrument: Instrument
 ): Promise<{ status: number; message: string }> => {
     try {
+        const user = instrument.user ? { id: instrument.user.id } : null;
+        const disponent = instrument.disponent
+            ? { id: instrument.disponent.id }
+            : null;
+
         const { status, data } = await sluttkontrollApi.put(
             `/instrument/${instrument.id}`,
-            instrument
+            { ...instrument, user, disponent }
         );
         return { status, ...data };
     } catch (error: any) {

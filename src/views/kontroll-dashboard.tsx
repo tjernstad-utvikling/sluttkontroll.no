@@ -11,6 +11,7 @@ import {
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 
+import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { Kontroll } from '../contracts/kontrollApi';
@@ -95,6 +96,7 @@ const KontrollerView = () => {
     }, [kontroller, user?.id]);
 
     const [editId, setEditId] = useState<number>();
+    const [commentId, setCommentId] = useState<number | undefined>(undefined);
 
     const editKontroll = (id: number) => {
         setEditId(id);
@@ -138,7 +140,8 @@ const KontrollerView = () => {
                                             editKontroll,
                                             toggleStatusKontroll,
                                             clipboardHasSkjema,
-                                            skjemaToPast
+                                            skjemaToPast,
+                                            setCommentId
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
@@ -162,6 +165,11 @@ const KontrollerView = () => {
                 </Grid>
             </Container>
             <KontrollEditModal editId={editId} close={closeEdit} />
+            <CommentModal
+                kontrollId={commentId}
+                open={commentId ? true : false}
+                close={() => setCommentId(undefined)}
+            />
         </>
     );
 };

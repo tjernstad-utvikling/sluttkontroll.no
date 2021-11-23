@@ -1,7 +1,7 @@
 import { Image, Text, View } from '@react-pdf/renderer';
 import { TableHeader, TableRow } from './table';
 
-import { Sertifikat } from '../../../contracts/userApi';
+import { Sertifikat } from '../../../contracts/certificateApi';
 import { format } from 'date-fns';
 
 interface SertifikatBlockProps {

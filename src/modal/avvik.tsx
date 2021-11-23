@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikSchema } from '../schema/avvik';
-import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { User } from '../contracts/userApi';
 import { useAvvik } from '../data/avvik';
-import { useModalStyles } from '../styles/modal';
 
 interface AvvikEditModalProps {
     editId: number | undefined;
@@ -16,7 +19,6 @@ export const AvvikEditModal = ({
     editId,
     close
 }: AvvikEditModalProps): JSX.Element => {
-    const { classes } = useModalStyles();
     const [editAvvik, setEditAvvik] = useState<Avvik>();
 
     const {
@@ -51,16 +53,21 @@ export const AvvikEditModal = ({
     };
 
     return (
-        <Modal
+        <Dialog
             open={Boolean(editId)}
             onClose={close}
-            aria-labelledby="modal-title">
-            <div className={classes.root}>
-                <h2 id="modal-title">Rediger Avvik</h2>
+            aria-labelledby="add-Picture-Dialog">
+            <DialogTitle id="add-Picture-Dialog">Rediger Avvik</DialogTitle>
+            <DialogContent>
                 {editAvvik && (
                     <AvvikSchema onSubmit={handleUpdate} avvik={editAvvik} />
                 )}
-            </div>
-        </Modal>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={close} color="error">
+                    Avbryt
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };

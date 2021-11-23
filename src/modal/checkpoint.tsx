@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 
+import Button from '@mui/material/Button';
 import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointSchema } from '../schema/checkpoint';
-import Modal from '@mui/material/Modal';
-import { useModalStyles } from '../styles/modal';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 interface CheckpointModalProps {
     editId?: number;
@@ -25,7 +28,6 @@ export const CheckpointModal = ({
     close,
     onSubmit
 }: CheckpointModalProps): JSX.Element => {
-    const { classes } = useModalStyles();
     const [checkpoint, setCheckpoint] = useState<Checkpoint>();
 
     useEffect(() => {
@@ -35,14 +37,14 @@ export const CheckpointModal = ({
     }, [editId, checkpoints]);
 
     return (
-        <Modal
-            open={Boolean(editId) || isOpen}
+        <Dialog
+            open={isOpen}
             onClose={close}
-            aria-labelledby="modal-title">
-            <div className={classes.root}>
-                <h2 id="modal-title">
-                    {editId ? 'Rediger' : 'Nytt'} sjekkpunkt
-                </h2>
+            aria-labelledby="add-Picture-Dialog">
+            <DialogTitle id="add-Picture-Dialog">
+                {editId ? 'Rediger' : 'Nytt'} sjekkpunkt
+            </DialogTitle>
+            <DialogContent>
                 {checkpoint !== undefined ? (
                     <CheckpointSchema
                         onSubmit={onSubmit}
@@ -51,7 +53,12 @@ export const CheckpointModal = ({
                 ) : (
                     <CheckpointSchema onSubmit={onSubmit} />
                 )}
-            </div>
-        </Modal>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={close} color="error">
+                    Avbryt
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };

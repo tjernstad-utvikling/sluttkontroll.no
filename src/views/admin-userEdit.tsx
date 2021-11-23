@@ -3,10 +3,13 @@ import { Roles, User } from '../contracts/userApi';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import { CertificateList } from '../components/certificate';
 import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
+import { Sertifikat } from '../contracts/certificateApi';
 import { UserSchema } from '../schema/user';
+import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
@@ -15,9 +18,12 @@ const NewUserView = () => {
     const { userId } = useParams<EditUserViewParams>();
     const history = useHistory();
     const [user, setUser] = useState<User>();
+
     const {
         state: { users },
-        updateUser
+        updateUser,
+        loadUsers,
+        updateUserInState
     } = useUser();
     useEffect(() => {
         const _user = users?.find((u) => u.id === Number(userId));
@@ -25,6 +31,11 @@ const NewUserView = () => {
             setUser(_user);
         }
     }, [userId, users]);
+
+    useEffectOnce(() => {
+        loadUsers();
+    });
+
     const handleEditUser = async (
         name: string,
         phone: string,
@@ -43,6 +54,16 @@ const NewUserView = () => {
         }
         return false;
     };
+
+    const handleAddCertificateToUser = (certificate: Sertifikat) => {
+        if (user) {
+            updateUserInState({
+                ...user,
+                sertifikater: [...user.sertifikater, certificate]
+            });
+        }
+    };
+
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -59,6 +80,12 @@ const NewUserView = () => {
                                 )}
                             </CardContent>
                         </Card>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <CertificateList
+                            addCertificate={handleAddCertificateToUser}
+                            user={user}
+                        />
                     </Grid>
                 </Grid>
             </Container>

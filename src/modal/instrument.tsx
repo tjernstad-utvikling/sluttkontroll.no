@@ -83,11 +83,8 @@ export function InstrumentModal({ open, close, editId }: InstrumentModalProps) {
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={close} color="primary">
+                <Button onClick={close} color="error">
                     Avbryt
-                </Button>
-                <Button onClick={close} color="primary">
-                    Lagre
                 </Button>
             </DialogActions>
         </Dialog>

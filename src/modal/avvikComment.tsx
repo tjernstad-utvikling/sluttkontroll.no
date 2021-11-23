@@ -1,7 +1,10 @@
 import { AvvikCommentSchema } from '../schema/avvikComment';
-import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { useAvvik } from '../data/avvik';
-import { useModalStyles } from '../styles/modal';
 
 interface AvvikCommentModalProps {
     selectedAvvik: number[];
@@ -14,8 +17,6 @@ export const AvvikCommentModal = ({
     open,
     close
 }: AvvikCommentModalProps): JSX.Element => {
-    const { classes } = useModalStyles();
-
     const { closeAvvik } = useAvvik();
 
     const handleUpdate = async (kommentar: string): Promise<boolean> => {
@@ -27,11 +28,21 @@ export const AvvikCommentModal = ({
     };
 
     return (
-        <Modal open={open} onClose={close} aria-labelledby="modal-title">
-            <div className={classes.root}>
-                <h2 id="modal-title">Kommentar til avvikene</h2>
+        <Dialog
+            open={open}
+            onClose={close}
+            aria-labelledby="add-Picture-Dialog">
+            <DialogTitle id="add-Picture-Dialog">
+                Kommentar til avvikene
+            </DialogTitle>
+            <DialogContent>
                 <AvvikCommentSchema onSubmit={handleUpdate} />
-            </div>
-        </Modal>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={close} color="error">
+                    Avbryt
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };

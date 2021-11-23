@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaSchema } from '../schema/skjema';
 import { useKontroll } from '../data/kontroll';
-import { useModalStyles } from '../styles/modal';
 
 interface SkjemaEditModalProps {
     editId: number | undefined;
@@ -15,7 +18,6 @@ export const SkjemaEditModal = ({
     editId,
     close
 }: SkjemaEditModalProps): JSX.Element => {
-    const { classes } = useModalStyles();
     const [skjema, setSkjema] = useState<Skjema>();
 
     const {
@@ -42,16 +44,21 @@ export const SkjemaEditModal = ({
     };
 
     return (
-        <Modal
+        <Dialog
             open={Boolean(editId)}
             onClose={close}
-            aria-labelledby="modal-title">
-            <div className={classes.root}>
-                <h2 id="modal-title">Rediger skjema</h2>
+            aria-labelledby="add-Picture-Dialog">
+            <DialogTitle id="add-Picture-Dialog">Rediger skjema</DialogTitle>
+            <DialogContent>
                 {skjema && (
                     <SkjemaSchema onSubmit={handleUpdate} skjema={skjema} />
                 )}
-            </div>
-        </Modal>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={close} color="error">
+                    Avbryt
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };

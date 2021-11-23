@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
+import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
@@ -92,6 +93,7 @@ const KontrollObjektView = () => {
     }, [kontroller, klientId, klienter, objectId]);
 
     const [editId, setEditId] = useState<number>();
+    const [commentId, setCommentId] = useState<number | undefined>(undefined);
 
     const editKontroll = (id: number) => {
         setEditId(id);
@@ -202,7 +204,8 @@ const KontrollObjektView = () => {
                                             editKontroll,
                                             toggleStatusKontroll,
                                             clipboardHasSkjema,
-                                            skjemaToPast
+                                            skjemaToPast,
+                                            setCommentId
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
@@ -247,6 +250,11 @@ const KontrollObjektView = () => {
                 </Grid>
             </Container>
             <KontrollEditModal editId={editId} close={closeEdit} />
+            <CommentModal
+                kontrollId={commentId}
+                open={commentId ? true : false}
+                close={() => setCommentId(undefined)}
+            />
         </div>
     );
 };

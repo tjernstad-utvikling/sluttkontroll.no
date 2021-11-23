@@ -9,6 +9,7 @@ import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 
+import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { PasteButton } from '../components/clipboard';
@@ -52,6 +53,7 @@ const SkjemaerView = () => {
     });
 
     const [editId, setEditId] = useState<number>();
+    const [commentId, setCommentId] = useState<number | undefined>(undefined);
 
     useEffect(() => {
         if (skjemaer !== undefined) {
@@ -139,7 +141,8 @@ const SkjemaerView = () => {
                                             deleteSkjema,
                                             setEditId,
                                             clipboardHasMeasurement,
-                                            measurementToPast
+                                            measurementToPast,
+                                            setCommentId
                                         )}
                                         defaultColumns={defaultColumns}
                                         tableId="skjemaer">
@@ -186,6 +189,11 @@ const SkjemaerView = () => {
             <SkjemaEditModal
                 editId={editId}
                 close={() => setEditId(undefined)}
+            />
+            <CommentModal
+                skjemaId={commentId}
+                open={commentId ? true : false}
+                close={() => setCommentId(undefined)}
             />
         </>
     );

@@ -10,6 +10,7 @@ import { Kontroll, Skjema } from '../contracts/kontrollApi';
 import { Avvik } from '../contracts/avvikApi';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
+import InsertCommentIcon from '@mui/icons-material/InsertComment';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { PasteTableButton } from '../components/clipboard';
@@ -59,6 +60,7 @@ export const columns = (
     edit: (skjemaId: number) => void,
     clipboardHasMeasurement: boolean,
     measurementToPast: Measurement[],
+    editComment: (id: number) => void,
     skipLink?: boolean
 ) => {
     const columns: GridColDef[] = [
@@ -182,6 +184,12 @@ export const columns = (
                         )}
                         <RowAction
                             actionItems={[
+                                {
+                                    name: 'Kommentar',
+                                    action: () => editComment(params.row.id),
+                                    skip: params.row.done,
+                                    icon: <InsertCommentIcon />
+                                },
                                 {
                                     name: 'Rediger',
                                     action: () => edit(params.row.id),

@@ -33,6 +33,7 @@ export const CommentSchema = ({
                             id="kommentar"
                             label="Kommentar"
                             name="kommentar"
+                            multiline
                             autoFocus
                         />
 

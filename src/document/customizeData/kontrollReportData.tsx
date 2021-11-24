@@ -13,6 +13,8 @@ import { ReportPropertiesSchema } from '../../schema/reportProperties';
 import Switch from '@mui/material/Switch';
 import { TableContainer } from '../../tables/tableContainer';
 import TextField from '@mui/material/TextField';
+import { Theme } from '@mui/material';
+import { makeStyles } from '../../theme/makeStyles';
 import { saveKontrollReportData } from '../../api/kontrollApi';
 import { useAvvik } from '../../data/avvik';
 import { useClient } from '../../data/klient';
@@ -31,7 +33,7 @@ export const FrontPageAdjusting = () => {
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass
+                Tilpass rapport tittel
             </Button>
             <Dialog
                 open={open}
@@ -50,8 +52,8 @@ export const FrontPageAdjusting = () => {
                             autoFocus
                             margin="dense"
                             id="name"
-                            label="Email Address"
-                            type="email"
+                            label="Rapport tittel"
+                            type="text"
                             fullWidth
                             value={frontPageData.title}
                             onChange={(e) =>
@@ -104,7 +106,7 @@ export const KontrollDocAdjusting = ({
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass
+                Velg kontrollskjemaer til rapporten
             </Button>
             <Dialog
                 fullScreen
@@ -169,7 +171,7 @@ export const MeasurementAdjusting = () => {
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass
+                Tilpass måleprotokoll
             </Button>
             <Dialog
                 open={open}
@@ -216,8 +218,10 @@ export const MeasurementAdjusting = () => {
         </>
     );
 };
+
 export const ReportProperties = () => {
     const [open, setOpen] = useState<boolean>(false);
+    const { classes } = useStyles();
 
     const { kontroll, updateKontroll } = useReport();
     const { enqueueSnackbar } = useSnackbar();
@@ -265,7 +269,7 @@ export const ReportProperties = () => {
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass
+                Tilpass rapportegenskaper
             </Button>
             <Dialog
                 fullScreen
@@ -277,11 +281,13 @@ export const ReportProperties = () => {
                 </DialogTitle>
                 <DialogContent>
                     {kontroll !== undefined && klienter !== undefined && (
-                        <ReportPropertiesSchema
-                            onSubmit={saveReportProperties}
-                            kontroll={kontroll}
-                            klienter={klienter}
-                        />
+                        <div className={classes.propertiesBox}>
+                            <ReportPropertiesSchema
+                                onSubmit={saveReportProperties}
+                                kontroll={kontroll}
+                                klienter={klienter}
+                            />
+                        </div>
                     )}
                 </DialogContent>
                 <DialogActions>
@@ -293,3 +299,9 @@ export const ReportProperties = () => {
         </>
     );
 };
+
+const useStyles = makeStyles()((theme: Theme) => ({
+    propertiesBox: {
+        padding: theme.spacing(2)
+    }
+}));

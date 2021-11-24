@@ -13,9 +13,10 @@ import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import { Sertifikat } from '../contracts/certificateApi';
 import { TextField } from '../components/input';
+import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '../theme/makeStyles';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
 import { useUser } from '../data/user';
@@ -52,7 +53,7 @@ export const ReportPropertiesSchema = ({
     kontroll,
     klienter
 }: ReportPropertiesSchemaProps): JSX.Element => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const {
         state: { users },
         loadUsers
@@ -369,11 +370,12 @@ export const ReportPropertiesSchema = ({
     }
     return <div>Laster</div>;
 };
-
-export const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
     formGroup: {
         borderStyle: 'solid',
-        borderColor: 'red',
+        borderColor: '#7A7A7A',
+        backgroundColor: '#ffffff',
+        padding: theme.spacing(2),
         borderWidth: '1px',
         borderRadius: 3,
         marginBottom: 18,

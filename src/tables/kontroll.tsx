@@ -250,7 +250,7 @@ export const kontrollColumns = (
                                 icon: <DoneOutlineIcon />
                             },
                             {
-                                name: 'Kontrollrapport',
+                                name: 'Kontrollerklæring',
                                 to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report-statement`,
                                 skip: params.row.done,
                                 icon: <SummarizeIcon />

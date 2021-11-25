@@ -15,6 +15,9 @@ const KontrollKlientView = lazy(() => import('../../views/kontroll-klient'));
 const KontrollNewView = lazy(() => import('../../views/kontroll-new'));
 const KontrollObjektView = lazy(() => import('../../views/kontroll-object'));
 const KontrollReportView = lazy(() => import('../../views/kontroll-report'));
+const ReportStatementView = lazy(
+    () => import('../../views/kontroll-reportStatement')
+);
 const KontrollerView = lazy(() => import('../../views/kontroll-dashboard'));
 const MeasurementsView = lazy(() => import('../../views/kontroll-measurement'));
 const SjekklisteEditView = lazy(
@@ -83,6 +86,10 @@ export const Kontroll = () => {
                         <Route
                             path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/avvik`}>
                             <AvvikView />
+                        </Route>
+                        <Route
+                            path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/report-statement`}>
+                            <ReportStatementView />
                         </Route>
                         <Route
                             path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/report`}>

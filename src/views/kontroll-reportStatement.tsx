@@ -1,50 +1,82 @@
 import { Card, CardContent } from '../components/card';
 import MDEditor, { commands } from '@uiw/react-md-editor';
-import { getInfoText, setInfoText as setInfoTextApi } from '../api/settingsApi';
+import { getReportStatement, updateReportStatement } from '../api/reportApi';
+import { useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { KontrollReportStatementViewParams } from '../contracts/navigation';
 import { LoadingButton } from '../components/button';
+import { useDebounce } from '../hooks/useDebounce';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useParams } from 'react-router';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
 
 const ReportStatement = () => {
     const { classes } = usePageStyles();
-    const [_infoText, setInfoText] = useState<string>();
+    const [statement, setStatement] = useState<string>();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const { kontrollId } = useParams<KontrollReportStatementViewParams>();
 
     const { enqueueSnackbar } = useSnackbar();
 
+    const debouncedSearchTerm: string = useDebounce<string>(
+        statement || '',
+        800
+    );
+    // Effect for API call
+    useEffect(
+        () => {
+            const save = async () => {
+                if (debouncedSearchTerm) {
+                    setIsSubmitting(true);
+                    updateReportStatement(
+                        debouncedSearchTerm,
+                        Number(kontrollId)
+                    ).then((results) => {
+                        setIsSubmitting(false);
+                        // setResults(results);
+                    });
+                } else {
+                    // setResults([]);
+                }
+            };
+            save();
+        },
+        [debouncedSearchTerm, kontrollId] // Only call effect if debounced search term changes
+    );
+
     useEffectOnce(async () => {
         setIsSubmitting(true);
-        const { status, infoText } = await getInfoText();
+        const { status, rapportStatement: text } = await getReportStatement(
+            Number(kontrollId)
+        );
         if (status === 200) {
-            setInfoText(infoText);
+            setStatement(text || '');
             setIsSubmitting(false);
         }
     });
 
-    const handleSaving = async () => {
-        setIsSubmitting(true);
-        if (_infoText !== undefined) {
-            const { status } = await setInfoTextApi(_infoText);
-            if (status === 204) {
-                enqueueSnackbar('informasjonstekst er lagret', {
-                    variant: 'success'
-                });
-            } else {
-                enqueueSnackbar(
-                    'Ukjent problem med lagring av informasjonstekst',
-                    {
-                        variant: 'error'
-                    }
-                );
-            }
-        }
-        setIsSubmitting(false);
-    };
+    // const handleSaving = async () => {
+    //     setIsSubmitting(true);
+    //     if (_infoText !== undefined) {
+    //         const { status } = await setInfoTextApi(_infoText);
+    //         if (status === 204) {
+    //             enqueueSnackbar('informasjonstekst er lagret', {
+    //                 variant: 'success'
+    //             });
+    //         } else {
+    //             enqueueSnackbar(
+    //                 'Ukjent problem med lagring av informasjonstekst',
+    //                 {
+    //                     variant: 'error'
+    //                 }
+    //             );
+    //         }
+    //     }
+    //     setIsSubmitting(false);
+    // };
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -54,8 +86,8 @@ const ReportStatement = () => {
                         <Card title="Kontrollerklæring">
                             <CardContent>
                                 <MDEditor
-                                    value={_infoText}
-                                    onChange={setInfoText}
+                                    value={statement}
+                                    onChange={setStatement}
                                     commands={[
                                         // Custom Toolbars
 
@@ -68,13 +100,15 @@ const ReportStatement = () => {
                                                     'aria-label': 'Insert title'
                                                 }
                                             }
-                                        )
+                                        ),
+                                        commands.bold,
+                                        commands.italic
                                     ]}
                                 />
                                 <LoadingButton
                                     isLoading={isSubmitting}
                                     type="button"
-                                    onClick={handleSaving}
+                                    onClick={() => console.log()}
                                     fullWidth
                                     variant="contained"
                                     color="primary">

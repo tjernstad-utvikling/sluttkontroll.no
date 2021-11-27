@@ -1,9 +1,10 @@
 import { Card, CardContent } from '../components/card';
-import MDEditor, { commands } from '@uiw/react-md-editor';
+// import MDEditor, { commands } from '@uiw/react-md-editor';
 import { getReportStatement, updateReportStatement } from '../api/reportApi';
 import { useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
+import { Editor } from '../tools/editor';
 import Grid from '@mui/material/Grid';
 import { KontrollReportStatementViewParams } from '../contracts/navigation';
 import { LoadingButton } from '../components/button';
@@ -85,7 +86,8 @@ const ReportStatement = () => {
                     <Grid item xs={12}>
                         <Card title="Kontrollerklæring">
                             <CardContent>
-                                <MDEditor
+                                <Editor />
+                                {/* <MDEditor
                                     value={statement}
                                     onChange={setStatement}
                                     commands={[
@@ -104,8 +106,8 @@ const ReportStatement = () => {
                                         commands.bold,
                                         commands.italic
                                     ]}
-                                />
-                                <LoadingButton
+                                /> */}
+                                {/* <LoadingButton
                                     isLoading={isSubmitting}
                                     type="button"
                                     onClick={() => console.log()}
@@ -113,7 +115,7 @@ const ReportStatement = () => {
                                     variant="contained"
                                     color="primary">
                                     Lagre
-                                </LoadingButton>
+                                </LoadingButton> */}
                             </CardContent>
                         </Card>
                     </Grid>

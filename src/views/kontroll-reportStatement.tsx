@@ -1,5 +1,4 @@
 import { Card, CardContent } from '../components/card';
-// import MDEditor, { commands } from '@uiw/react-md-editor';
 import { getReportStatement, updateReportStatement } from '../api/reportApi';
 import { useEffect, useState } from 'react';
 
@@ -8,6 +7,7 @@ import { Editor } from '../tools/editor';
 import Grid from '@mui/material/Grid';
 import { KontrollReportStatementViewParams } from '../contracts/navigation';
 import { LoadingButton } from '../components/button';
+import { OutputData } from '@editorjs/editorjs';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -16,16 +16,15 @@ import { useSnackbar } from 'notistack';
 
 const ReportStatement = () => {
     const { classes } = usePageStyles();
-    const [statement, setStatement] = useState<string>();
+    const [statement, setStatement] = useState<OutputData>();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const { kontrollId } = useParams<KontrollReportStatementViewParams>();
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const debouncedSearchTerm: string = useDebounce<string>(
-        statement || '',
-        800
-    );
+    const debouncedSearchTerm: OutputData | undefined = useDebounce<
+        OutputData | undefined
+    >(statement, 800);
     // Effect for API call
     useEffect(
         () => {
@@ -54,7 +53,7 @@ const ReportStatement = () => {
             Number(kontrollId)
         );
         if (status === 200) {
-            setStatement(text || '');
+            setStatement(text);
             setIsSubmitting(false);
         }
     });
@@ -86,28 +85,9 @@ const ReportStatement = () => {
                     <Grid item xs={12}>
                         <Card title="Kontrollerklæring">
                             <CardContent>
-                                <Editor />
-                                {/* <MDEditor
-                                    value={statement}
-                                    onChange={setStatement}
-                                    commands={[
-                                        // Custom Toolbars
+                                <Editor setContent={setStatement} />
 
-                                        commands.group(
-                                            [commands.title1, commands.title2],
-                                            {
-                                                name: 'title',
-                                                groupName: 'title',
-                                                buttonProps: {
-                                                    'aria-label': 'Insert title'
-                                                }
-                                            }
-                                        ),
-                                        commands.bold,
-                                        commands.italic
-                                    ]}
-                                /> */}
-                                {/* <LoadingButton
+                                <LoadingButton
                                     isLoading={isSubmitting}
                                     type="button"
                                     onClick={() => console.log()}
@@ -115,7 +95,7 @@ const ReportStatement = () => {
                                     variant="contained"
                                     color="primary">
                                     Lagre
-                                </LoadingButton> */}
+                                </LoadingButton>
                             </CardContent>
                         </Card>
                     </Grid>

@@ -5,7 +5,10 @@ import Header from '@editorjs/header';
 
 const EDITOR_HOLDER_ID = 'editorjs';
 
-export const Editor = () => {
+interface EditorProps {
+    setContent: (content: OutputData | undefined) => void;
+}
+export const Editor = ({ setContent }: EditorProps) => {
     const ejInstance = useRef<EditorJS | null>(null);
     // This will run only once
     useEffect(() => {
@@ -16,6 +19,7 @@ export const Editor = () => {
             ejInstance?.current?.destroy();
             ejInstance.current = null;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const initEditor = () => {
@@ -36,7 +40,7 @@ export const Editor = () => {
     };
 
     async function save() {
-        console.log(await ejInstance.current?.saver.save());
+        setContent(await ejInstance.current?.saver.save());
     }
 
     return (

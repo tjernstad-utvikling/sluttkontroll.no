@@ -1,48 +1,40 @@
+import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
-import { useEffect, useState } from 'react';
-
-import { parseMd } from '../utils/parseMd';
 
 interface InfoBoxProps {
-    text: string;
+    text: OutputData;
 }
 export const InfoBox = ({ text }: InfoBoxProps) => {
-    const [info, setInfo] = useState<
-        Array<{
-            t: string;
-            v: string;
-        }>
-    >([]);
-    useEffect(() => {
-        setInfo(parseMd(text));
-    }, [text]);
-
-    const block = (block: { t: string; v: string }): JSX.Element => {
-        switch (block.t) {
-            case 'h1':
+    const header = (block: OutputBlockData<string, any>): JSX.Element => {
+        switch (block.data.level) {
+            case 1:
                 return (
                     <Text
                         style={{ fontSize: 24, textAlign: 'center' }}
-                        key={block.v}>
-                        {block.v}
+                        key={block.id}>
+                        {block.data.text}
                     </Text>
                 );
-            case 'h2':
+            case 2:
                 return (
-                    <Text style={{ fontSize: 16 }} key={block.v}>
-                        {block.v}
+                    <Text style={{ fontSize: 16 }} key={block.id}>
+                        {block.data.text}
                     </Text>
                 );
-            case 'h3':
-            case 'h4':
-            case 'h5':
-            case 'h6':
-            case 'p':
+            default:
+                return <Text></Text>;
+        }
+    };
+    const block = (block: OutputBlockData<string, any>): JSX.Element => {
+        switch (block.type) {
+            case 'header':
+                return header(block);
+            case 'paragraph':
                 return (
                     <Text
                         style={{ fontSize: 12, paddingBottom: 10 }}
-                        key={block.v}>
-                        {block.v}
+                        key={block.id}>
+                        {block.data.text}
                     </Text>
                 );
             default:
@@ -51,7 +43,7 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
     };
     return (
         <View style={styles.tableBorder}>
-            {info.map((i) => block(i))}
+            {text.blocks.map((b) => block(b))}
             <Text></Text>
         </View>
     );

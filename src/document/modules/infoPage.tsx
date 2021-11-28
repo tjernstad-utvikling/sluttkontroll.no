@@ -6,12 +6,13 @@ import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
 import { InfoBox } from './components/box';
+import { OutputData } from '@editorjs/editorjs';
 import { SertifikatBlock } from './components/sertifikat';
 import { Spacer } from './components/spacing';
 
 interface InfoPageProps {
     frontPageData: FrontPageData;
-    infoText: string;
+    infoText: OutputData;
     rapportEgenskaper: RapportEgenskaper;
     rapportUser: RapportUser;
 }

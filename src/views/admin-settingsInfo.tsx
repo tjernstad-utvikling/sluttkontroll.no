@@ -1,10 +1,11 @@
 import { Card, CardContent } from '../components/card';
-import MDEditor, { commands } from '@uiw/react-md-editor';
 import { getInfoText, setInfoText as setInfoTextApi } from '../api/settingsApi';
 
 import Container from '@mui/material/Container';
+import { Editor } from '../tools/editor';
 import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
+import { OutputData } from '@editorjs/editorjs';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useSnackbar } from 'notistack';
@@ -12,7 +13,8 @@ import { useState } from 'react';
 
 const InfoTextView = () => {
     const { classes } = usePageStyles();
-    const [_infoText, setInfoText] = useState<string>();
+    const [_infoText, setInfoText] = useState<OutputData>();
+    const [hasLoaded, setHasLoaded] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const { enqueueSnackbar } = useSnackbar();
@@ -23,6 +25,7 @@ const InfoTextView = () => {
         if (status === 200) {
             setInfoText(infoText);
             setIsSubmitting(false);
+            setHasLoaded(true);
         }
     });
 
@@ -53,24 +56,12 @@ const InfoTextView = () => {
                     <Grid item xs={12}>
                         <Card title="Sluttkontrollrapport informasjonstekst">
                             <CardContent>
-                                <MDEditor
-                                    value={_infoText}
-                                    onChange={setInfoText}
-                                    commands={[
-                                        // Custom Toolbars
-
-                                        commands.group(
-                                            [commands.title1, commands.title2],
-                                            {
-                                                name: 'title',
-                                                groupName: 'title',
-                                                buttonProps: {
-                                                    'aria-label': 'Insert title'
-                                                }
-                                            }
-                                        )
-                                    ]}
-                                />
+                                {hasLoaded && (
+                                    <Editor
+                                        setContent={setInfoText}
+                                        text={_infoText}
+                                    />
+                                )}
                                 <LoadingButton
                                     isLoading={isSubmitting}
                                     type="button"

@@ -3,6 +3,7 @@ import { Measurement, MeasurementType } from '../contracts/measurementApi';
 import { createContext, useContext, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
+import { OutputData } from '@editorjs/editorjs';
 import { format } from 'date-fns';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
@@ -37,7 +38,7 @@ export const DocumentContainer = ({
     >([]);
     const [_kontroll, setKontroll] = useState<ReportKontroll>();
     const [frontPageData, setFrontPageData] = useState<FrontPageData>();
-    const [_infoText, setInfoText] = useState<string>();
+    const [_infoText, setInfoText] = useState<OutputData>();
 
     const {
         state: { skjemaer, checklists },
@@ -183,7 +184,7 @@ interface ContextInterface {
         React.SetStateAction<FrontPageData | undefined>
     >;
 
-    infoText: string | undefined;
+    infoText: OutputData | undefined;
 
     kontroll: ReportKontroll | undefined;
     updateKontroll: (reportKontroll: ReportKontroll) => void;

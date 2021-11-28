@@ -1,24 +1,28 @@
+import { OutputData } from '@editorjs/editorjs';
+import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
-
 export const getInfoText = async (): Promise<{
     status: number;
-    infoText: string;
+    infoText?: OutputData | undefined;
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
             '/settings/get-info-text'
         );
         if (status === 200) {
-            return { status, ...data };
+            return {
+                status,
+                infoText: data.infoText ? JSON.parse(data.infoText) : undefined
+            };
         }
-        throw new Error('not 200');
+        return { status, ...data };
     } catch (error: any) {
-        console.error(error);
-        throw new Error('');
+        errorHandler(error);
+        return { status: 500 };
     }
 };
 export const setInfoText = async (
-    infoText: string
+    infoText: OutputData
 ): Promise<{
     status: number;
     message: string;
@@ -27,13 +31,13 @@ export const setInfoText = async (
         const { status, data } = await sluttkontrollApi.put(
             '/settings/set-info-text',
             {
-                infoText
+                infoText: JSON.stringify(infoText)
             }
         );
 
         return { status, ...data };
     } catch (error: any) {
-        console.error(error);
-        throw new Error('');
+        errorHandler(error);
+        return { status: 500, message: 'unknown error' };
     }
 };

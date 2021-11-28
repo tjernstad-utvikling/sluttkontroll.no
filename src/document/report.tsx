@@ -7,13 +7,14 @@ import { FrontPage } from '../document/modules/frontPage';
 import { FrontPageData } from './documentContainer';
 import { InfoPage } from '../document/modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
+import { OutputData } from '@editorjs/editorjs';
 import { SkjemaPage } from './modules/skjemaPage';
 
 interface ReportProps {
     hasFrontPage: boolean;
     frontPageData?: FrontPageData;
     hasInfoPage: boolean;
-    infoText: string | undefined;
+    infoText: OutputData | undefined;
     kontroll: ReportKontroll | undefined;
     hasSkjemaPage: boolean;
     skjemaer: Skjema[] | undefined;

@@ -1,3 +1,14 @@
+import {
+    BoldText,
+    Header1,
+    Header2,
+    Header3,
+    Header4,
+    Header5,
+    Header6,
+    ItalicText,
+    Paragraph
+} from '../components/text';
 import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 
@@ -8,19 +19,17 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
     function header(block: OutputBlockData<string, any>): JSX.Element {
         switch (block.data.level) {
             case 1:
-                return (
-                    <Text
-                        style={{ fontSize: 24, textAlign: 'center' }}
-                        key={block.id}>
-                        {block.data.text}
-                    </Text>
-                );
+                return <Header1 key={block.id}>{block.data.text}</Header1>;
             case 2:
-                return (
-                    <Text style={{ fontSize: 16 }} key={block.id}>
-                        {block.data.text}
-                    </Text>
-                );
+                return <Header2 key={block.id}>{block.data.text}</Header2>;
+            case 3:
+                return <Header3 key={block.id}>{block.data.text}</Header3>;
+            case 4:
+                return <Header4 key={block.id}>{block.data.text}</Header4>;
+            case 5:
+                return <Header5 key={block.id}>{block.data.text}</Header5>;
+            case 6:
+                return <Header6 key={block.id}>{block.data.text}</Header6>;
             default:
                 return <Text></Text>;
         }
@@ -34,24 +43,10 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
 
         for (const splitText of text.split(boldOrItalic)) {
             if (textStyling[textStyling.length - 1] === 'bold') {
-                output.push(
-                    <Text
-                        key={splitText}
-                        style={{
-                            fontWeight: 'bold'
-                        }}>
-                        {splitText}
-                    </Text>
-                );
+                output.push(<BoldText key={splitText}>{splitText}</BoldText>);
             } else if (textStyling[textStyling.length - 1] === 'italic') {
                 output.push(
-                    <Text
-                        key={splitText}
-                        style={{
-                            fontStyle: 'italic'
-                        }}>
-                        {splitText}
-                    </Text>
+                    <ItalicText key={splitText}>{splitText}</ItalicText>
                 );
             } else {
                 if (splitText !== '<b>' && splitText !== '<i>')
@@ -62,17 +57,7 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
             else textStyling.push('');
         }
 
-        return (
-            <Text
-                style={{
-                    fontSize: 12,
-                    paddingBottom: 10,
-                    fontFamily: 'Arial'
-                }}
-                key={id}>
-                {output}
-            </Text>
-        );
+        return <Paragraph key={id}>{output}</Paragraph>;
     }
 
     const block = (block: OutputBlockData<string, any>): JSX.Element => {

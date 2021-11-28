@@ -1,3 +1,4 @@
+import { OutputData } from '@editorjs/editorjs';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
@@ -5,13 +6,21 @@ export const getReportStatement = async (
     kontrollId: number
 ): Promise<{
     status: number;
-    rapportStatement?: string;
+    rapportStatement?: OutputData | undefined;
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
             `/report/statement/${kontrollId}`
         );
 
+        if (status === 200) {
+            return {
+                status,
+                rapportStatement: data.rapportStatement
+                    ? JSON.parse(data.rapportStatement)
+                    : undefined
+            };
+        }
         return { status, ...data };
     } catch (error: any) {
         errorHandler(error);
@@ -19,7 +28,7 @@ export const getReportStatement = async (
     }
 };
 export const updateReportStatement = async (
-    statement: string,
+    statement: OutputData,
     kontrollId: number
 ): Promise<{
     status: number;
@@ -29,7 +38,7 @@ export const updateReportStatement = async (
         const { status, data } = await sluttkontrollApi.post(
             `/report/statement/${kontrollId}`,
             {
-                statement
+                statement: JSON.stringify(statement)
             }
         );
 

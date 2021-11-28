@@ -18,13 +18,14 @@ const ReportStatement = () => {
     const { classes } = usePageStyles();
     const [statement, setStatement] = useState<OutputData>();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [hasLoaded, setHasLoaded] = useState<boolean>(false);
     const { kontrollId } = useParams<KontrollReportStatementViewParams>();
 
     const { enqueueSnackbar } = useSnackbar();
 
     const debouncedSearchTerm: OutputData | undefined = useDebounce<
         OutputData | undefined
-    >(statement, 800);
+    >(statement, 3000);
     // Effect for API call
     useEffect(
         () => {
@@ -36,10 +37,7 @@ const ReportStatement = () => {
                         Number(kontrollId)
                     ).then((results) => {
                         setIsSubmitting(false);
-                        // setResults(results);
                     });
-                } else {
-                    // setResults([]);
                 }
             };
             save();
@@ -55,6 +53,7 @@ const ReportStatement = () => {
         if (status === 200) {
             setStatement(text);
             setIsSubmitting(false);
+            setHasLoaded(true);
         }
     });
 
@@ -85,8 +84,12 @@ const ReportStatement = () => {
                     <Grid item xs={12}>
                         <Card title="Kontrollerklæring">
                             <CardContent>
-                                <Editor setContent={setStatement} />
-
+                                {hasLoaded && (
+                                    <Editor
+                                        setContent={setStatement}
+                                        text={statement}
+                                    />
+                                )}
                                 <LoadingButton
                                     isLoading={isSubmitting}
                                     type="button"

@@ -32,7 +32,11 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
             case 'paragraph':
                 return (
                     <Text
-                        style={{ fontSize: 12, paddingBottom: 10 }}
+                        style={{
+                            fontSize: 12,
+                            paddingBottom: 10,
+                            fontFamily: 'Arial'
+                        }}
                         key={block.id}>
                         {block.data.text}
                     </Text>

@@ -1,15 +1,41 @@
 import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
+import { Document, Font } from '@react-pdf/renderer';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import { Document } from '@react-pdf/renderer';
 import { FrontPage } from '../document/modules/frontPage';
 import { FrontPageData } from './documentContainer';
 import { InfoPage } from '../document/modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
 import { OutputData } from '@editorjs/editorjs';
 import { SkjemaPage } from './modules/skjemaPage';
+import arial from '../assets/fonts/ArialCE.ttf';
+import arialBold from '../assets/fonts/ArialCEBold.ttf';
+import arialBoldItalic from '../assets/fonts/ArialCEBoldItalic.ttf';
+import arialItalic from '../assets/fonts/ArialCEItalic.ttf';
 
+Font.register({
+    family: 'Arial',
+    fonts: [
+        {
+            src: arial
+        },
+        {
+            src: arialBold,
+            fontWeight: 'bold'
+        },
+        {
+            src: arialItalic,
+            fontWeight: 'normal',
+            fontStyle: 'italic'
+        },
+        {
+            src: arialBoldItalic,
+            fontWeight: 'bold',
+            fontStyle: 'italic'
+        }
+    ]
+});
 interface ReportProps {
     hasFrontPage: boolean;
     frontPageData?: FrontPageData;

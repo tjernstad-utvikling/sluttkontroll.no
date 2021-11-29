@@ -36,7 +36,7 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
     }
 
     function paragraph(text: string, id: string | undefined): JSX.Element {
-        const boldOrItalic = /(<(?:b|i)>)([^<]+)<\/(?:b|i)>/gim;
+        const boldOrItalic = /(<[abi]><[abi]>)?(?:<[abi]\s*(?:(href)=["'](.*)["'])?>)?([^<>]+)(?:<\/(?:\w)>)+(<\/[abi]><\/[abi]>)?/gim;
 
         const output: JSX.Element[] = [];
         const textStyling: string[] = [];

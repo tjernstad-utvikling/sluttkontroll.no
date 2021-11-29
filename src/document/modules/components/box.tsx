@@ -33,7 +33,7 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
             case 6:
                 return <Header6 key={block.id}>{block.data.text}</Header6>;
             default:
-                return <Text></Text>;
+                return <Text key={block.id}></Text>;
         }
     }
 
@@ -133,13 +133,12 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
             case 'paragraph':
                 return paragraph(block.data.text, block.id);
             default:
-                return <Text></Text>;
+                return <Text key={block.id}></Text>;
         }
     };
     return (
         <View style={styles.tableBorder}>
             {text.blocks.map((b) => block(b))}
-            <Text></Text>
         </View>
     );
 };

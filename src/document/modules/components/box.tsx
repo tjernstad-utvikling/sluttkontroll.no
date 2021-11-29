@@ -8,6 +8,7 @@ import {
     Header6,
     ItalicBoldText,
     ItalicText,
+    LinkText,
     Paragraph
 } from '../components/text';
 import { OutputBlockData, OutputData } from '@editorjs/editorjs';
@@ -42,16 +43,12 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
         const anchor = /<a/i;
         const output: JSX.Element[] = [];
         const textStyling: string[] = [];
+        let linkUrl = '';
 
-        console.log(text.split(boldOrItalic));
         for (const splitText of text.split(boldOrItalic)) {
             if (splitText === undefined) continue;
 
             if (textStyling[textStyling.length - 1] === 'bold') {
-                console.log('bold', [
-                    splitText,
-                    textStyling[textStyling.length - 1]
-                ]);
                 output.push(<BoldText key={splitText}>{splitText}</BoldText>);
             } else if (textStyling[textStyling.length - 1] === 'italic') {
                 output.push(
@@ -60,6 +57,12 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
             } else if (textStyling[textStyling.length - 1] === 'italicBold') {
                 output.push(
                     <ItalicBoldText key={splitText}>{splitText}</ItalicBoldText>
+                );
+            } else if (textStyling[textStyling.length - 1] === 'anchor') {
+                output.push(
+                    <LinkText hrefObj={linkUrl} key={splitText}>
+                        {splitText}
+                    </LinkText>
                 );
             } else {
                 if (
@@ -75,11 +78,11 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
             else if (splitText === '<i>') textStyling.push('italic');
             else if (splitText === '<i><b>' || splitText === '<b><i>')
                 textStyling.push('italicBold');
-            else if (splitText?.match(anchor)) textStyling.push('anchor');
-            else textStyling.push('');
+            else if (splitText?.match(anchor)) {
+                textStyling.push('anchor');
+                linkUrl = splitText;
+            } else textStyling.push('');
         }
-
-        console.log(textStyling);
 
         return <Paragraph key={id}>{output}</Paragraph>;
     }

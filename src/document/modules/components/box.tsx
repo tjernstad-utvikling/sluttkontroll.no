@@ -91,13 +91,17 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
                     }
                     break;
             }
+
             /**
-             * switch for setting up styling for next splitText
+             * drop switch if it is an link, cannot check witch match in switch
              */
             if (splitText?.match(anchor)) {
                 textStyling.push('anchor');
                 linkUrl = splitText;
             } else {
+                /**
+                 * switch for setting up styling for next splitText
+                 */
                 switch (splitText) {
                     case '<b>':
                         textStyling.push('bold');

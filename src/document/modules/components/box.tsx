@@ -45,7 +45,9 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
         const textStyling: string[] = [];
         let linkUrl = '';
 
-        for (const splitText of text.split(boldOrItalic)) {
+        for (const splitText of text
+            .replace(/<br>/gi, '\n')
+            .split(boldOrItalic)) {
             /**
              * Skip if splitText is undefined
              */

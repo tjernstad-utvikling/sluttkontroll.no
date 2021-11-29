@@ -2,6 +2,7 @@ import EditorJS, { OutputData } from '@editorjs/editorjs';
 import { Fragment, useEffect, useRef } from 'react';
 
 import Header from '@editorjs/header';
+import ImageTool from '@editorjs/image';
 
 const EDITOR_HOLDER_ID = 'editorjs';
 
@@ -21,8 +22,12 @@ const DEFAULT: OutputData = {
 interface EditorProps {
     setContent: (content: OutputData | undefined) => void;
     text: OutputData | undefined;
+    uploadImage: (file: File) => Promise<{
+        success: boolean;
+        file: { url: string };
+    }>;
 }
-export const Editor = ({ setContent, text }: EditorProps) => {
+export const Editor = ({ setContent, text, uploadImage }: EditorProps) => {
     const ejInstance = useRef<EditorJS | null>(null);
     // This will run only once
     useEffect(() => {
@@ -49,7 +54,25 @@ export const Editor = ({ setContent, text }: EditorProps) => {
             },
             autofocus: true,
             tools: {
-                header: Header
+                header: Header,
+                image: {
+                    class: ImageTool,
+                    config: {
+                        uploader: {
+                            /**
+                             * Upload file to the server and return an uploaded image data
+                             * @param {File} file - file selected from the device or pasted by drag-n-drop
+                             * @return {Promise.<{success, file: {url}}>}
+                             */
+                            async uploadByFile(file: File): Promise<{
+                                success: boolean;
+                                file: { url: string };
+                            }> {
+                                return await uploadImage(file);
+                            }
+                        }
+                    }
+                }
             }
         });
     };

@@ -5,6 +5,7 @@
   "dependencies": {
     "@editorjs/editorjs": "^2.22.2",
     "@editorjs/header": "^2.6.2",
+    "@editorjs/image": "^2.6.2",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.0.3",

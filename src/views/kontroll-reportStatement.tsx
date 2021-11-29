@@ -57,25 +57,12 @@ const ReportStatement = () => {
         }
     });
 
-    // const handleSaving = async () => {
-    //     setIsSubmitting(true);
-    //     if (_infoText !== undefined) {
-    //         const { status } = await setInfoTextApi(_infoText);
-    //         if (status === 204) {
-    //             enqueueSnackbar('informasjonstekst er lagret', {
-    //                 variant: 'success'
-    //             });
-    //         } else {
-    //             enqueueSnackbar(
-    //                 'Ukjent problem med lagring av informasjonstekst',
-    //                 {
-    //                     variant: 'error'
-    //                 }
-    //             );
-    //         }
-    //     }
-    //     setIsSubmitting(false);
-    // };
+    async function handleSaveImage(file: File): Promise<{
+        success: boolean;
+        file: { url: string };
+    }> {
+        return { success: false, file: { url: '' } };
+    }
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -88,6 +75,7 @@ const ReportStatement = () => {
                                     <Editor
                                         setContent={setStatement}
                                         text={statement}
+                                        uploadImage={handleSaveImage}
                                     />
                                 )}
                                 <LoadingButton

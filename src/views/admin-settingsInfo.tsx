@@ -48,6 +48,13 @@ const InfoTextView = () => {
         }
         setIsSubmitting(false);
     };
+
+    async function handleSaveImage(file: File): Promise<{
+        success: boolean;
+        file: { url: string };
+    }> {
+        return { success: false, file: { url: '' } };
+    }
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -60,6 +67,7 @@ const InfoTextView = () => {
                                     <Editor
                                         setContent={setInfoText}
                                         text={_infoText}
+                                        uploadImage={handleSaveImage}
                                     />
                                 )}
                                 <LoadingButton

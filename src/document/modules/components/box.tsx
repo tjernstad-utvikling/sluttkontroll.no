@@ -7,7 +7,8 @@ import {
     Header5,
     Header6,
     ItalicText,
-    Paragraph
+    Paragraph,
+    ItalicBoldText
 } from '../components/text';
 import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
@@ -36,8 +37,8 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
     }
 
     function paragraph(text: string, id: string | undefined): JSX.Element {
-        const boldOrItalic = /(<[abi]><[abi]>)?(?:<[abi]\s*(?:(href)=["'](.*)["'])?>)?([^<>]+)(?:<\/(?:\w)>)+(<\/[abi]><\/[abi]>)?/gim;
-
+        const boldOrItalic = /(<[abi]><[abi]>)?(<[abi]\s*(?:href=["'](.*)["'])?>)?([^<>]+)(?:<\/(?:[abi])>)+(<\/[abi]><\/[abi]>)?/gim;
+        const anchor = /<a/i;
         const output: JSX.Element[] = [];
         const textStyling: string[] = [];
 
@@ -48,12 +49,18 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
                 output.push(
                     <ItalicText key={splitText}>{splitText}</ItalicText>
                 );
+            } else if (textStyling[textStyling.length - 1] === 'italicBold') {
+                output.push(
+                    <ItalicBoldText key={splitText}>{splitText}</ItalicBoldText>
+                );
             } else {
-                if (splitText !== '<b>' && splitText !== '<i>')
+                if (splitText !== '<b>' && splitText !== '<i>' && !splitText.match(anchor))
                     output.push(<Text key={splitText}>{splitText}</Text>);
             }
             if (splitText === '<b>') textStyling.push('bold');
             else if (splitText === '<i>') textStyling.push('italic');
+            else if (splitText === '<i><b>' || splitText === '<b><i>') textStyling.push('italicBold');
+            else if (splitText.match(anchor)) textStyling.push('anchor');
             else textStyling.push('');
         }
 

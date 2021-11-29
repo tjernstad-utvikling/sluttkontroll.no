@@ -46,42 +46,75 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
         let linkUrl = '';
 
         for (const splitText of text.split(boldOrItalic)) {
+            /**
+             * Skip if splitText is undefined
+             */
             if (splitText === undefined) continue;
 
-            if (textStyling[textStyling.length - 1] === 'bold') {
-                output.push(<BoldText key={splitText}>{splitText}</BoldText>);
-            } else if (textStyling[textStyling.length - 1] === 'italic') {
-                output.push(
-                    <ItalicText key={splitText}>{splitText}</ItalicText>
-                );
-            } else if (textStyling[textStyling.length - 1] === 'italicBold') {
-                output.push(
-                    <ItalicBoldText key={splitText}>{splitText}</ItalicBoldText>
-                );
-            } else if (textStyling[textStyling.length - 1] === 'anchor') {
-                output.push(
-                    <LinkText hrefObj={linkUrl} key={splitText}>
-                        {splitText}
-                    </LinkText>
-                );
-            } else {
-                if (
-                    splitText !== '<b>' &&
-                    splitText !== '<i>' &&
-                    splitText !== '<i><b>' &&
-                    splitText !== '<b><i>' &&
-                    !splitText?.match(anchor)
-                )
-                    output.push(<Text key={splitText}>{splitText}</Text>);
+            /**
+             * Switch for returning jsx element
+             */
+            switch (textStyling[textStyling.length - 1]) {
+                case 'bold':
+                    output.push(
+                        <BoldText key={splitText}>{splitText}</BoldText>
+                    );
+                    break;
+                case 'italic':
+                    output.push(
+                        <ItalicText key={splitText}>{splitText}</ItalicText>
+                    );
+                    break;
+                case 'italicBold':
+                    output.push(
+                        <ItalicBoldText key={splitText}>
+                            {splitText}
+                        </ItalicBoldText>
+                    );
+                    break;
+                case 'anchor':
+                    output.push(
+                        <LinkText hrefObj={linkUrl} key={splitText}>
+                            {splitText}
+                        </LinkText>
+                    );
+                    break;
+                default:
+                    if (
+                        splitText !== '<b>' &&
+                        splitText !== '<i>' &&
+                        splitText !== '<i><b>' &&
+                        splitText !== '<b><i>' &&
+                        !splitText?.match(anchor)
+                    ) {
+                        output.push(<Text key={splitText}>{splitText}</Text>);
+                    }
+                    break;
             }
-            if (splitText === '<b>') textStyling.push('bold');
-            else if (splitText === '<i>') textStyling.push('italic');
-            else if (splitText === '<i><b>' || splitText === '<b><i>')
-                textStyling.push('italicBold');
-            else if (splitText?.match(anchor)) {
+            /**
+             * switch for setting up styling for next splitText
+             */
+            if (splitText?.match(anchor)) {
                 textStyling.push('anchor');
                 linkUrl = splitText;
-            } else textStyling.push('');
+            } else {
+                switch (splitText) {
+                    case '<b>':
+                        textStyling.push('bold');
+                        break;
+                    case '<i>':
+                        textStyling.push('italic');
+                        break;
+                    case '<i><b>':
+                    case '<b><i>':
+                        textStyling.push('italicBold');
+                        break;
+
+                    default:
+                        textStyling.push('');
+                        break;
+                }
+            }
         }
 
         return <Paragraph key={id}>{output}</Paragraph>;

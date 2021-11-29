@@ -6,9 +6,9 @@ import {
     Header4,
     Header5,
     Header6,
+    ItalicBoldText,
     ItalicText,
-    Paragraph,
-    ItalicBoldText
+    Paragraph
 } from '../components/text';
 import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
@@ -37,13 +37,21 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
     }
 
     function paragraph(text: string, id: string | undefined): JSX.Element {
-        const boldOrItalic = /(<[abi]><[abi]>)?(<[abi]\s*(?:href=["'](.*)["'])?>)?([^<>]+)(?:<\/(?:[abi])>)+(<\/[abi]><\/[abi]>)?/gim;
+        const boldOrItalic =
+            /(<[abi]><[abi]>)?(<[abi]\s*[a-zæøå:/\\ .="']*>)?([^<>]+)(?:<\/(?:[abi])>)+(?:<\/[abi]><\/[abi]>)?/gim;
         const anchor = /<a/i;
         const output: JSX.Element[] = [];
         const textStyling: string[] = [];
 
+        console.log(text.split(boldOrItalic));
         for (const splitText of text.split(boldOrItalic)) {
+            if (splitText === undefined) continue;
+
             if (textStyling[textStyling.length - 1] === 'bold') {
+                console.log('bold', [
+                    splitText,
+                    textStyling[textStyling.length - 1]
+                ]);
                 output.push(<BoldText key={splitText}>{splitText}</BoldText>);
             } else if (textStyling[textStyling.length - 1] === 'italic') {
                 output.push(
@@ -54,15 +62,24 @@ export const InfoBox = ({ text }: InfoBoxProps) => {
                     <ItalicBoldText key={splitText}>{splitText}</ItalicBoldText>
                 );
             } else {
-                if (splitText !== '<b>' && splitText !== '<i>' && !splitText.match(anchor))
+                if (
+                    splitText !== '<b>' &&
+                    splitText !== '<i>' &&
+                    splitText !== '<i><b>' &&
+                    splitText !== '<b><i>' &&
+                    !splitText?.match(anchor)
+                )
                     output.push(<Text key={splitText}>{splitText}</Text>);
             }
             if (splitText === '<b>') textStyling.push('bold');
             else if (splitText === '<i>') textStyling.push('italic');
-            else if (splitText === '<i><b>' || splitText === '<b><i>') textStyling.push('italicBold');
-            else if (splitText.match(anchor)) textStyling.push('anchor');
+            else if (splitText === '<i><b>' || splitText === '<b><i>')
+                textStyling.push('italicBold');
+            else if (splitText?.match(anchor)) textStyling.push('anchor');
             else textStyling.push('');
         }
+
+        console.log(textStyling);
 
         return <Paragraph key={id}>{output}</Paragraph>;
     }

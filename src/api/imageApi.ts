@@ -30,3 +30,18 @@ export const uploadImageFile = async (
         throw new Error(error);
     }
 };
+
+export const getImageFile = async (
+    name: string
+): Promise<{ status: number; data: Blob }> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(`/image/${name}`, {
+            responseType: 'blob'
+        });
+
+        return { status, data: data };
+    } catch (error: any) {
+        errorHandler(error);
+        throw new Error(error);
+    }
+};

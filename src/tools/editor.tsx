@@ -26,8 +26,14 @@ interface EditorProps {
         success: boolean;
         file: { url: string; id: number };
     }>;
+    loadImage: (name: string) => Promise<{ data: Blob }>;
 }
-export const Editor = ({ setContent, text, uploadImage }: EditorProps) => {
+export const Editor = ({
+    setContent,
+    text,
+    uploadImage,
+    loadImage
+}: EditorProps) => {
     const ejInstance = useRef<EditorJS | null>(null);
     // This will run only once
     useEffect(() => {
@@ -70,7 +76,8 @@ export const Editor = ({ setContent, text, uploadImage }: EditorProps) => {
                             }> {
                                 return await uploadImage(file);
                             }
-                        }
+                        },
+                        loadImagePreview: loadImage
                     }
                 }
             }

@@ -10,6 +10,7 @@ import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
+import { getImageFile } from '../api/imageApi';
 
 const InfoTextView = () => {
     const { classes } = usePageStyles();
@@ -55,6 +56,22 @@ const InfoTextView = () => {
     }> {
         return { success: false, file: { url: '', id: 0 } };
     }
+    async function handleGetImage(name: string): Promise<{
+        data: Blob;
+    }> {
+        try {
+            const res = await getImageFile(name);
+            if (res.status === 200) {
+                return res;
+            }
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lasting av bildet', {
+                variant: 'error'
+            });
+            throw new Error(error);
+        }
+        throw new Error('');
+    }
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -68,6 +85,7 @@ const InfoTextView = () => {
                                         setContent={setInfoText}
                                         text={_infoText}
                                         uploadImage={handleSaveImage}
+                                        loadImage={handleGetImage}
                                     />
                                 )}
                                 <LoadingButton

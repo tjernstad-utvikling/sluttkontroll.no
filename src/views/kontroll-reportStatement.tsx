@@ -1,4 +1,5 @@
 import { Card, CardContent } from '../components/card';
+import { getImageFile, uploadImageFile } from '../api/imageApi';
 import { getReportStatement, updateReportStatement } from '../api/reportApi';
 import { useEffect, useState } from 'react';
 
@@ -8,8 +9,6 @@ import Grid from '@mui/material/Grid';
 import { KontrollReportStatementViewParams } from '../contracts/navigation';
 import { LoadingButton } from '../components/button';
 import { OutputData } from '@editorjs/editorjs';
-import { apiUrl } from '../api/sluttkontroll';
-import { uploadImageFile } from '../api/imageApi';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -74,7 +73,7 @@ const ReportStatement = () => {
                 });
                 return {
                     success: true,
-                    file: { url: `${apiUrl}/image/${image.url}`, id: image.id }
+                    file: image
                 };
             }
         } catch (error) {
@@ -83,6 +82,22 @@ const ReportStatement = () => {
             });
         }
         return { success: false, file: { url: '', id: 0 } };
+    }
+    async function handleGetImage(name: string): Promise<{
+        data: Blob;
+    }> {
+        try {
+            const res = await getImageFile(name);
+            if (res.status === 200) {
+                return res;
+            }
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lasting av bildet', {
+                variant: 'error'
+            });
+            throw new Error(error);
+        }
+        throw new Error('');
     }
     return (
         <>
@@ -97,6 +112,7 @@ const ReportStatement = () => {
                                         setContent={setStatement}
                                         text={statement}
                                         uploadImage={handleSaveImage}
+                                        loadImage={handleGetImage}
                                     />
                                 )}
                                 <LoadingButton

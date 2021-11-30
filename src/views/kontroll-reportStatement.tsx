@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import { KontrollReportStatementViewParams } from '../contracts/navigation';
 import { LoadingButton } from '../components/button';
 import { OutputData } from '@editorjs/editorjs';
+import { apiUrl } from '../api/sluttkontroll';
 import { uploadImageFile } from '../api/imageApi';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -71,7 +72,10 @@ const ReportStatement = () => {
                 enqueueSnackbar('Bilde er lastet opp', {
                     variant: 'success'
                 });
-                return { success: true, file: { url: '', id: image.id } };
+                return {
+                    success: true,
+                    file: { url: `${apiUrl}/image/${image.url}`, id: image.id }
+                };
             }
         } catch (error) {
             enqueueSnackbar('Problemer med lagring av bildet', {

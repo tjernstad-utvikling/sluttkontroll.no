@@ -4,7 +4,6 @@ import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
 import { OutputData } from '@editorjs/editorjs';
-import { TableHeader } from './components/table';
 import { TextBox } from './components/box';
 
 interface StatementPageProps {

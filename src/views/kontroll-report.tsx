@@ -68,6 +68,16 @@ const KontrollReportView = () => {
                                                 justifyContent: 'space-between'
                                             }}>
                                             <ReportSwitch
+                                                id={ReportModules.statementPage}
+                                                label="Generell vurdering"
+                                            />
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}>
+                                            <ReportSwitch
                                                 id={ReportModules.controlModule}
                                                 label="Kontrolldokumentasjon"
                                             />

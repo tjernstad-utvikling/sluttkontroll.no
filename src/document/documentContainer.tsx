@@ -7,6 +7,7 @@ import { OutputData } from '@editorjs/editorjs';
 import { format } from 'date-fns';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
+import { getReportStatement } from '../api/reportApi';
 import { useAvvik } from '../data/avvik';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -39,13 +40,14 @@ export const DocumentContainer = ({
     const [_kontroll, setKontroll] = useState<ReportKontroll>();
     const [frontPageData, setFrontPageData] = useState<FrontPageData>();
     const [_infoText, setInfoText] = useState<OutputData>();
+    const [_statementText, setStatementText] = useState<OutputData>();
 
     const {
         state: { skjemaer, checklists },
         loadKontrollerByObjekt
     } = useKontroll();
-    const [_skjemaer, setSkjemaer] = useState<Array<Skjema>>();
-    const [filteredSkjemaer, setFilteredSkjemaer] = useState<Array<Skjema>>();
+    const [_skjemaer, setSkjemaer] = useState<Skjema[]>();
+    const [filteredSkjemaer, setFilteredSkjemaer] = useState<Skjema[]>();
 
     const {
         state: { avvik },
@@ -71,6 +73,12 @@ export const DocumentContainer = ({
             setInfoText(infoText);
             loadKontrollerByObjekt(objectId);
             loadAvvikByKontroller([kontroll]);
+        }
+        const { status, rapportStatement: text } = await getReportStatement(
+            Number(kontrollId)
+        );
+        if (status === 200) {
+            setStatementText(text);
         }
     });
 
@@ -160,6 +168,7 @@ export const DocumentContainer = ({
                 frontPageData,
                 setFrontPageData,
                 infoText: _infoText,
+                statementText: _statementText,
                 kontroll: _kontroll,
                 updateKontroll,
                 skjemaer: _skjemaer,
@@ -185,6 +194,7 @@ interface ContextInterface {
     >;
 
     infoText: OutputData | undefined;
+    statementText: OutputData | undefined;
 
     kontroll: ReportKontroll | undefined;
     updateKontroll: (reportKontroll: ReportKontroll) => void;
@@ -204,6 +214,7 @@ interface ContextInterface {
 export enum ReportModules {
     frontPage = 'FrontPage',
     infoPage = 'InfoPage',
+    statementPage = 'StatementPage',
     controlModule = 'controlModule',
     skjemaPage = 'skjemaPage',
     measurementPage = 'measurementPage',

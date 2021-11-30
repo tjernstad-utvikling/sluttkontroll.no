@@ -14,10 +14,10 @@ import {
 import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 
-interface InfoBoxProps {
+interface TextBoxProps {
     text: OutputData;
 }
-export const InfoBox = ({ text }: InfoBoxProps) => {
+export const TextBox = ({ text }: TextBoxProps) => {
     function header(block: OutputBlockData<string, any>): JSX.Element {
         switch (block.data.level) {
             case 1:

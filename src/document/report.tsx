@@ -3,12 +3,13 @@ import { Document, Font } from '@react-pdf/renderer';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 
 import { Avvik } from '../contracts/avvikApi';
-import { FrontPage } from '../document/modules/frontPage';
+import { FrontPage } from './modules/frontPage';
 import { FrontPageData } from './documentContainer';
-import { InfoPage } from '../document/modules/infoPage';
+import { InfoPage } from './modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
 import { OutputData } from '@editorjs/editorjs';
 import { SkjemaPage } from './modules/skjemaPage';
+import { StatementPage } from './modules/statementPage';
 import arial from '../assets/fonts/ArialCE.ttf';
 import arialBold from '../assets/fonts/ArialCEBold.ttf';
 import arialBoldItalic from '../assets/fonts/ArialCEBoldItalic.ttf';
@@ -41,6 +42,8 @@ interface ReportProps {
     frontPageData?: FrontPageData;
     hasInfoPage: boolean;
     infoText: OutputData | undefined;
+    hasStatementPage: boolean;
+    statementText: OutputData | undefined;
     kontroll: ReportKontroll | undefined;
     hasSkjemaPage: boolean;
     skjemaer: Skjema[] | undefined;
@@ -56,6 +59,8 @@ export const Report = ({
     frontPageData,
     hasInfoPage,
     infoText,
+    hasStatementPage,
+    statementText,
     kontroll,
     hasSkjemaPage,
     skjemaer,
@@ -82,6 +87,15 @@ export const Report = ({
                         frontPageData={frontPageData}
                         rapportEgenskaper={kontroll.rapportEgenskaper}
                         rapportUser={kontroll.rapportEgenskaper.rapportUser}
+                    />
+                )}
+            {hasStatementPage &&
+                frontPageData !== undefined &&
+                statementText !== undefined &&
+                kontroll !== undefined && (
+                    <StatementPage
+                        frontPageData={frontPageData}
+                        statement={statementText}
                     />
                 )}
             {hasSkjemaPage &&

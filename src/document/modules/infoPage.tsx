@@ -5,10 +5,10 @@ import { TableCell, TableHeader, TableRow } from './components/table';
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
 import { Header } from './utils/header';
-import { InfoBox } from './components/box';
 import { OutputData } from '@editorjs/editorjs';
 import { SertifikatBlock } from './components/sertifikat';
 import { Spacer } from './components/spacing';
+import { TextBox } from './components/box';
 
 interface InfoPageProps {
     frontPageData: FrontPageData;
@@ -101,7 +101,7 @@ export const InfoPage = ({
             )}
             <Spacer />
 
-            <InfoBox text={infoText} />
+            <TextBox text={infoText} />
 
             <Footer />
         </Page>

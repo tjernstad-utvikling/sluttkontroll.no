@@ -1,10 +1,11 @@
+import { StatementImage } from '../contracts/imageApi';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 export const uploadImageFile = async (
     kontrollId: number,
     image: File
-): Promise<{ status: number; image?: any; message?: string }> => {
+): Promise<{ status: number; image?: StatementImage; message?: string }> => {
     try {
         const formData = new FormData();
 

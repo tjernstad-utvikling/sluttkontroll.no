@@ -24,7 +24,7 @@ interface EditorProps {
     text: OutputData | undefined;
     uploadImage: (file: File) => Promise<{
         success: boolean;
-        file: { url: string };
+        file: { url: string; id: number };
     }>;
 }
 export const Editor = ({ setContent, text, uploadImage }: EditorProps) => {

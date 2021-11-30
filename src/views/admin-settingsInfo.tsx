@@ -51,9 +51,9 @@ const InfoTextView = () => {
 
     async function handleSaveImage(file: File): Promise<{
         success: boolean;
-        file: { url: string };
+        file: { url: string; id: number };
     }> {
-        return { success: false, file: { url: '' } };
+        return { success: false, file: { url: '', id: 0 } };
     }
     return (
         <>

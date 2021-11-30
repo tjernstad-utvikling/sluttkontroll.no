@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import { KontrollReportStatementViewParams } from '../contracts/navigation';
 import { LoadingButton } from '../components/button';
 import { OutputData } from '@editorjs/editorjs';
+import { uploadImageFile } from '../api/imageApi';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -59,9 +60,25 @@ const ReportStatement = () => {
 
     async function handleSaveImage(file: File): Promise<{
         success: boolean;
-        file: { url: string };
+        file: { url: string; id: number };
     }> {
-        return { success: false, file: { url: '' } };
+        try {
+            const { status, image } = await uploadImageFile(
+                Number(kontrollId),
+                file
+            );
+            if (status === 200 && image) {
+                enqueueSnackbar('Bilde er lastet opp', {
+                    variant: 'success'
+                });
+                return { success: true, file: { url: '', id: image.id } };
+            }
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av bildet', {
+                variant: 'error'
+            });
+        }
+        return { success: false, file: { url: '', id: 0 } };
     }
     return (
         <>

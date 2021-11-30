@@ -10,10 +10,10 @@ import { MeasurementPage } from './modules/measurementPage';
 import { OutputData } from '@editorjs/editorjs';
 import { SkjemaPage } from './modules/skjemaPage';
 import { StatementPage } from './modules/statementPage';
-import arial from '../assets/fonts/ArialCE.ttf';
-import arialBold from '../assets/fonts/ArialCEBold.ttf';
-import arialBoldItalic from '../assets/fonts/ArialCEBoldItalic.ttf';
-import arialItalic from '../assets/fonts/ArialCEItalic.ttf';
+import arial from '../assets/fonts/arial.ttf';
+import arialBold from '../assets/fonts/arialBold.ttf';
+import arialBoldItalic from '../assets/fonts/arialBoldItalic.ttf';
+import arialItalic from '../assets/fonts/arialItalic.ttf';
 
 Font.register({
     family: 'Arial',

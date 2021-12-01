@@ -1,5 +1,5 @@
 import { FrontPageData, Image } from '../documentContainer';
-import { Page, StyleSheet } from '@react-pdf/renderer';
+import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { Footer } from './utils/footer';
 import { Header } from './utils/header';
@@ -7,30 +7,39 @@ import { OutputData } from '@editorjs/editorjs';
 import { TextBox } from './components/box';
 
 interface StatementPageProps {
-    statement: OutputData;
-    frontPageData: FrontPageData;
+    statement: OutputData | undefined;
+    frontPageData: FrontPageData | undefined;
     images: Image[];
 }
 export const StatementPage = ({
     statement,
     frontPageData,
     images
-}: StatementPageProps) => {
+}: StatementPageProps): JSX.Element => {
+    if (statement && frontPageData && images) {
+        return (
+            <Page
+                style={[
+                    { position: 'relative', top: 0, left: 0 },
+                    styles.container
+                ]}>
+                <Header
+                    title={frontPageData.title}
+                    location={frontPageData.kontrollsted}
+                    date={frontPageData.date}
+                />
+
+                <TextBox text={statement} images={images} />
+
+                <Footer />
+            </Page>
+        );
+    }
     return (
-        <Page
-            style={[
-                { position: 'relative', top: 0, left: 0 },
-                styles.container
-            ]}>
-            <Header
-                title={frontPageData.title}
-                location={frontPageData.kontrollsted}
-                date={frontPageData.date}
-            />
-
-            <TextBox text={statement} images={images} />
-
-            <Footer />
+        <Page style={{ position: 'relative', top: 0, left: 0 }}>
+            <View style={styles.container}>
+                <Text>Det mangler data for generering av tekst side</Text>
+            </View>
         </Page>
     );
 };

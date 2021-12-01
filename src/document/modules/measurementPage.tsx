@@ -1,5 +1,5 @@
 import { Measurement, MeasurementType } from '../../contracts/measurementApi';
-import { Page, StyleSheet, Text } from '@react-pdf/renderer';
+import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { Footer } from './utils/footer';
 import { FrontPageData } from '../documentContainer';
@@ -9,11 +9,11 @@ import { Skjema } from '../../contracts/kontrollApi';
 import { Spacer } from './components/spacing';
 
 interface MeasurementPageProps {
-    frontPageData: FrontPageData;
+    frontPageData: FrontPageData | undefined;
     skjema: Skjema;
-    measurements: Measurement[];
+    measurements: Measurement[] | undefined;
     index: number;
-    measurementTypes: MeasurementType[];
+    measurementTypes: MeasurementType[] | undefined;
 }
 export const MeasurementPage = ({
     frontPageData,
@@ -21,31 +21,40 @@ export const MeasurementPage = ({
     measurements,
     index,
     measurementTypes
-}: MeasurementPageProps) => {
-    return (
-        <Page
-            style={[
-                { position: 'relative', top: 0, left: 0 },
-                styles.container
-            ]}>
-            <Header
-                title={frontPageData.title}
-                location={frontPageData.kontrollsted}
-                date={frontPageData.date}
-            />
-            {index === 0 && (
-                <Text style={{ paddingVertical: 5 }}>Måleprotokoll</Text>
-            )}
-            <Text style={{ paddingVertical: 5 }}>
-                {skjema.area}, {skjema.omrade}
-            </Text>
-            <MeasurementModule
-                measurementTypes={measurementTypes}
-                measurements={measurements}
-            />
-            <Spacer />
+}: MeasurementPageProps): JSX.Element => {
+    if (frontPageData && measurements && measurementTypes) {
+        return (
+            <Page
+                style={[
+                    { position: 'relative', top: 0, left: 0 },
+                    styles.container
+                ]}>
+                <Header
+                    title={frontPageData.title}
+                    location={frontPageData.kontrollsted}
+                    date={frontPageData.date}
+                />
+                {index === 0 && (
+                    <Text style={{ paddingVertical: 5 }}>Måleprotokoll</Text>
+                )}
+                <Text style={{ paddingVertical: 5 }}>
+                    {skjema.area}, {skjema.omrade}
+                </Text>
+                <MeasurementModule
+                    measurementTypes={measurementTypes}
+                    measurements={measurements}
+                />
+                <Spacer />
 
-            <Footer />
+                <Footer />
+            </Page>
+        );
+    }
+    return (
+        <Page style={{ position: 'relative', top: 0, left: 0 }}>
+            <View style={styles.container}>
+                <Text>Det mangler data for generering av tekst side</Text>
+            </View>
         </Page>
     );
 };

@@ -56,48 +56,33 @@ export const SlkReport = () => {
     return (
         <PDFViewer height={size.height - 120}>
             <Document>
-                {visibleReportModules.includes(ReportModules.frontPage) &&
-                    frontPageData !== undefined && (
-                        <FrontPage frontPageData={frontPageData} />
-                    )}
-                {visibleReportModules.includes(ReportModules.infoPage) &&
-                    frontPageData !== undefined &&
-                    infoText !== undefined &&
-                    kontroll !== undefined &&
-                    kontroll.rapportEgenskaper !== null &&
-                    kontroll.rapportEgenskaper.rapportUser !== null && (
-                        <InfoPage
-                            infoText={infoText}
-                            frontPageData={frontPageData}
-                            rapportEgenskaper={kontroll.rapportEgenskaper}
-                            rapportUser={kontroll.rapportEgenskaper.rapportUser}
-                        />
-                    )}
-                {visibleReportModules.includes(ReportModules.statementPage) &&
-                    frontPageData !== undefined &&
-                    statementText !== undefined &&
-                    kontroll !== undefined && (
-                        <StatementPage
-                            frontPageData={frontPageData}
-                            statement={statementText}
-                            images={images}
-                        />
-                    )}
+                {visibleReportModules.includes(ReportModules.frontPage) && (
+                    <FrontPage frontPageData={frontPageData} />
+                )}
+                {visibleReportModules.includes(ReportModules.infoPage) && (
+                    <InfoPage
+                        infoText={infoText}
+                        frontPageData={frontPageData}
+                        rapportEgenskaper={kontroll?.rapportEgenskaper}
+                        rapportUser={kontroll?.rapportEgenskaper?.rapportUser}
+                    />
+                )}
+                {visibleReportModules.includes(ReportModules.statementPage) && (
+                    <StatementPage
+                        frontPageData={frontPageData}
+                        statement={statementText}
+                        images={images}
+                    />
+                )}
                 {visibleReportModules.includes(ReportModules.skjemaPage) &&
                     visibleReportModules.includes(
                         ReportModules.controlModule
                     ) &&
-                    frontPageData !== undefined &&
-                    filteredSkjemaer !== undefined &&
-                    checklists !== undefined &&
-                    avvik !== undefined &&
-                    measurements !== undefined &&
-                    measurementTypes !== undefined &&
-                    filteredSkjemaer.map((s) => (
+                    filteredSkjemaer?.map((s) => (
                         <SkjemaPage
                             key={s.id}
                             skjema={s}
-                            checklists={checklists.filter(
+                            checklists={checklists?.filter(
                                 (ch) => ch.skjema.id === s.id
                             )}
                             avvik={avvik}
@@ -110,7 +95,7 @@ export const SlkReport = () => {
                                     ReportModules.inlineMeasurementModule
                                 )
                             }
-                            measurements={measurements.filter(
+                            measurements={measurements?.filter(
                                 (m) => m.skjema.id === s.id
                             )}
                             measurementTypes={measurementTypes}
@@ -123,16 +108,12 @@ export const SlkReport = () => {
                     !visibleReportModules.includes(
                         ReportModules.inlineMeasurementModule
                     ) &&
-                    frontPageData !== undefined &&
-                    filteredSkjemaer !== undefined &&
-                    measurements !== undefined &&
-                    measurementTypes !== undefined &&
-                    filteredSkjemaer.map((s, i) => (
+                    filteredSkjemaer?.map((s, i) => (
                         <MeasurementPage
                             key={s.id}
                             skjema={s}
                             index={i}
-                            measurements={measurements.filter(
+                            measurements={measurements?.filter(
                                 (m) => m.skjema.id === s.id
                             )}
                             frontPageData={frontPageData}

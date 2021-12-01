@@ -1,8 +1,7 @@
 import {
     Block,
     ReportPropertiesViewer,
-    ReportSwitch,
-    ReportViewer
+    ReportSwitch
 } from '../components/report';
 import { Card, CardContent } from '../components/card';
 import {
@@ -19,6 +18,7 @@ import {
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
+import { SlkReport } from '../document/report';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 
@@ -103,8 +103,6 @@ const KontrollReportView = () => {
                                                         }
                                                         label="KontrollSkjema"
                                                     />
-                                                    {/*
-                                    <FrontPageAdjusting /> */}
                                                 </div>
                                                 <div
                                                     style={{
@@ -126,7 +124,7 @@ const KontrollReportView = () => {
                                 </Card>
                             </Grid>
                             <Grid item xs={12} sm={4}>
-                                <ReportViewer />
+                                <SlkReport />
                             </Grid>
                         </Grid>
                     </ReportPropertiesViewer>

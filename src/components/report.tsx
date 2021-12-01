@@ -1,9 +1,7 @@
 import { ReportModules, useReport } from '../document/documentContainer';
 
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { PDFViewer } from '@react-pdf/renderer';
 import { RapportEgenskaper } from '../contracts/kontrollApi';
-import { Report } from '../document/report';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@mui/material/Switch';
 import { saveKontrollReportData } from '../api/kontrollApi';
@@ -11,7 +9,6 @@ import { useClient } from '../data/klient';
 import { useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useWindowSize } from '../hooks/useWindowSize';
 
 interface ReportSwitchProps {
     id: ReportModules;
@@ -31,73 +28,6 @@ export const ReportSwitch = ({ id, label }: ReportSwitchProps) => {
             }
             label={label}
         />
-    );
-};
-
-export const ReportViewer = () => {
-    const {
-        visibleReportModules,
-        frontPageData,
-        infoText,
-        kontroll,
-        filteredSkjemaer,
-        checklists,
-        avvik,
-        statementText,
-        images,
-        measurements,
-        measurementTypes
-    } = useReport();
-
-    const size = useWindowSize();
-
-    return (
-        <PDFViewer height={size.height - 120}>
-            <Report
-                hasFrontPage={visibleReportModules.includes(
-                    ReportModules.frontPage
-                )}
-                frontPageData={frontPageData}
-                hasInfoPage={visibleReportModules.includes(
-                    ReportModules.infoPage
-                )}
-                hasStatementPage={visibleReportModules.includes(
-                    ReportModules.statementPage
-                )}
-                statementText={statementText}
-                images={images}
-                infoText={infoText}
-                kontroll={kontroll}
-                hasSkjemaPage={
-                    visibleReportModules.includes(ReportModules.skjemaPage) &&
-                    visibleReportModules.includes(ReportModules.controlModule)
-                }
-                skjemaer={filteredSkjemaer}
-                checklists={checklists}
-                avvik={avvik}
-                hasMeasurementPage={
-                    visibleReportModules.includes(
-                        ReportModules.measurementPage
-                    ) &&
-                    visibleReportModules.includes(
-                        ReportModules.controlModule
-                    ) &&
-                    !visibleReportModules.includes(
-                        ReportModules.inlineMeasurementModule
-                    )
-                }
-                hasInlineMeasurements={
-                    visibleReportModules.includes(
-                        ReportModules.measurementPage
-                    ) &&
-                    visibleReportModules.includes(
-                        ReportModules.inlineMeasurementModule
-                    )
-                }
-                measurements={measurements}
-                measurementTypes={measurementTypes}
-            />
-        </PDFViewer>
     );
 };
 

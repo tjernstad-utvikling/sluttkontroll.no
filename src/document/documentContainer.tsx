@@ -5,6 +5,7 @@ import { createContext, useContext, useState } from 'react';
 import { Avvik } from '../contracts/avvikApi';
 import { OutputData } from '@editorjs/editorjs';
 import { format } from 'date-fns';
+import { getImageFile } from '../api/imageApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
 import { getReportStatement } from '../api/reportApi';
@@ -41,6 +42,35 @@ export const DocumentContainer = ({
     const [frontPageData, setFrontPageData] = useState<FrontPageData>();
     const [_infoText, setInfoText] = useState<OutputData>();
     const [_statementText, setStatementText] = useState<OutputData>();
+
+    const [images, setImages] = useState<Image[]>([]);
+
+    useEffect(() => {
+        async function loadImages() {
+            if (_statementText) {
+                for (const block of _statementText.blocks) {
+                    if (block.type === 'image') {
+                        const res = await getImageFile(block.data.file.url);
+
+                        if (res.status === 200) {
+                            setImages((prev) => [
+                                ...prev,
+                                {
+                                    name: block.data.file.url,
+                                    url: URL.createObjectURL(res.data)
+                                }
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+        loadImages();
+    }, [_statementText]);
+
+    useEffect(() => {
+        console.log(images);
+    }, [images]);
 
     const {
         state: { skjemaer, checklists },
@@ -169,6 +199,7 @@ export const DocumentContainer = ({
                 setFrontPageData,
                 infoText: _infoText,
                 statementText: _statementText,
+                images,
                 kontroll: _kontroll,
                 updateKontroll,
                 skjemaer: _skjemaer,
@@ -195,6 +226,10 @@ interface ContextInterface {
 
     infoText: OutputData | undefined;
     statementText: OutputData | undefined;
+    images: {
+        name: string;
+        url: string;
+    }[];
 
     kontroll: ReportKontroll | undefined;
     updateKontroll: (reportKontroll: ReportKontroll) => void;
@@ -226,4 +261,9 @@ export interface FrontPageData {
     title: string;
     user: string;
     kontrollsted: string;
+}
+
+export interface Image {
+    name: string;
+    url: string;
 }

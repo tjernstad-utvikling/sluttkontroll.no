@@ -44,6 +44,7 @@ export const ReportViewer = () => {
         checklists,
         avvik,
         statementText,
+        images,
         measurements,
         measurementTypes
     } = useReport();
@@ -64,6 +65,7 @@ export const ReportViewer = () => {
                     ReportModules.statementPage
                 )}
                 statementText={statementText}
+                images={images}
                 infoText={infoText}
                 kontroll={kontroll}
                 hasSkjemaPage={

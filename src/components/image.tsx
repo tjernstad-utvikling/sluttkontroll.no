@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { Image as RPRImage } from '@react-pdf/renderer';
 import { errorHandler } from '../tools/errorHandler';
 import { getImageFile } from '../api/avvikApi';
 
@@ -48,30 +47,6 @@ export const Image = ({ src, file, alt, objectFit }: ImageProps) => {
             onLoad={() => URL.revokeObjectURL(objectUrl)}
         />
     );
-};
-
-export const PdfImage = ({ src }: { src: string }) => {
-    const [objectUrl, setObjectUrl] = useState<string | undefined>(undefined);
-
-    useEffect(() => {
-        const loadImage = async () => {
-            try {
-                const response = await getImageFile(src);
-                if (response.status === 200) {
-                    setObjectUrl(URL.createObjectURL(response.data));
-                }
-            } catch (error: any) {
-                errorHandler(error);
-            }
-        };
-
-        loadImage();
-    }, [src]);
-
-    if (objectUrl === undefined) {
-        return <></>;
-    }
-    return <RPRImage src={objectUrl} />;
 };
 
 const placeholderImage =

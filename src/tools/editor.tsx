@@ -28,6 +28,7 @@ interface EditorProps {
     }>;
     loadImage: (name: string) => Promise<{ data: Blob }>;
 }
+
 export const Editor = ({
     setContent,
     text,
@@ -94,3 +95,11 @@ export const Editor = ({
         </Fragment>
     );
 };
+
+export interface ImageBlockData {
+    file: { url: string; id: number };
+    caption: string;
+    withBorder: boolean;
+    stretched: boolean;
+    withBackground: string;
+}

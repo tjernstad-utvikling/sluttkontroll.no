@@ -1,10 +1,10 @@
 import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
 import { Document, Font } from '@react-pdf/renderer';
+import { FrontPageData, Image } from './documentContainer';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 
 import { Avvik } from '../contracts/avvikApi';
 import { FrontPage } from './modules/frontPage';
-import { FrontPageData } from './documentContainer';
 import { InfoPage } from './modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
 import { OutputData } from '@editorjs/editorjs';
@@ -44,6 +44,7 @@ interface ReportProps {
     infoText: OutputData | undefined;
     hasStatementPage: boolean;
     statementText: OutputData | undefined;
+    images: Image[];
     kontroll: ReportKontroll | undefined;
     hasSkjemaPage: boolean;
     skjemaer: Skjema[] | undefined;
@@ -61,6 +62,7 @@ export const Report = ({
     infoText,
     hasStatementPage,
     statementText,
+    images,
     kontroll,
     hasSkjemaPage,
     skjemaer,
@@ -96,6 +98,7 @@ export const Report = ({
                     <StatementPage
                         frontPageData={frontPageData}
                         statement={statementText}
+                        images={images}
                     />
                 )}
             {hasSkjemaPage &&

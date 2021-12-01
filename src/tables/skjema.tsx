@@ -61,7 +61,8 @@ export const columns = (
     clipboardHasMeasurement: boolean,
     measurementToPast: Measurement[],
     editComment: (id: number) => void,
-    skipLink?: boolean
+    skipLink?: boolean,
+    skipAction?: boolean
 ) => {
     const columns: GridColDef[] = [
         {
@@ -166,46 +167,51 @@ export const columns = (
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => {
-                const kontroll = SkjemaValueGetter(params.row).kontroll(
-                    kontroller
-                );
-                return (
-                    <>
-                        {clipboardHasMeasurement && (
-                            <PasteTableButton
-                                clipboardHas={true}
-                                options={{
-                                    measurementPaste: {
-                                        skjemaId: params.row.id,
-                                        measurement: measurementToPast
+                if (!skipAction) {
+                    const kontroll = SkjemaValueGetter(params.row).kontroll(
+                        kontroller
+                    );
+                    return (
+                        <>
+                            {clipboardHasMeasurement && (
+                                <PasteTableButton
+                                    clipboardHas={true}
+                                    options={{
+                                        measurementPaste: {
+                                            skjemaId: params.row.id,
+                                            measurement: measurementToPast
+                                        }
+                                    }}
+                                />
+                            )}
+                            <RowAction
+                                actionItems={[
+                                    {
+                                        name: 'Kommentar',
+                                        action: () =>
+                                            editComment(params.row.id),
+                                        skip: params.row.done,
+                                        icon: <InsertCommentIcon />
+                                    },
+                                    {
+                                        name: 'Rediger',
+                                        action: () => edit(params.row.id),
+                                        skip: kontroll?.done || false,
+                                        icon: <EditIcon />
+                                    },
+                                    {
+                                        name: 'Slett',
+                                        action: () =>
+                                            deleteSkjema(params.row.id),
+                                        skip: kontroll?.done || false,
+                                        icon: <DeleteForeverIcon />
                                     }
-                                }}
+                                ]}
                             />
-                        )}
-                        <RowAction
-                            actionItems={[
-                                {
-                                    name: 'Kommentar',
-                                    action: () => editComment(params.row.id),
-                                    skip: params.row.done,
-                                    icon: <InsertCommentIcon />
-                                },
-                                {
-                                    name: 'Rediger',
-                                    action: () => edit(params.row.id),
-                                    skip: kontroll?.done || false,
-                                    icon: <EditIcon />
-                                },
-                                {
-                                    name: 'Slett',
-                                    action: () => deleteSkjema(params.row.id),
-                                    skip: kontroll?.done || false,
-                                    icon: <DeleteForeverIcon />
-                                }
-                            ]}
-                        />
-                    </>
-                );
+                        </>
+                    );
+                }
+                return <div />;
             }
         }
     ];

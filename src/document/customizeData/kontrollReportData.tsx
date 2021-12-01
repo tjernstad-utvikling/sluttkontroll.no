@@ -133,6 +133,7 @@ export const KontrollDocAdjusting = ({
                                 false,
                                 [],
                                 (a) => console.log(a),
+                                true,
                                 true
                             )}
                             defaultColumns={defaultColumns}

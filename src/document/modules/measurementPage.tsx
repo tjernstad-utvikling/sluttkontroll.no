@@ -1,9 +1,9 @@
 import { Measurement, MeasurementType } from '../../contracts/measurementApi';
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
-import { Footer } from './utils/footer';
+import { Footer } from './components/footer';
 import { FrontPageData } from '../documentContainer';
-import { Header } from './utils/header';
+import { Header } from './components/header';
 import { MeasurementModule } from './components/measurement';
 import { Skjema } from '../../contracts/kontrollApi';
 import { Spacer } from './components/spacing';

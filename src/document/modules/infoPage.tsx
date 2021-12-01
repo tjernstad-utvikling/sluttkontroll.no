@@ -2,9 +2,9 @@ import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { RapportEgenskaper, RapportUser } from '../../contracts/kontrollApi';
 import { TableCell, TableHeader, TableRow } from './components/table';
 
-import { Footer } from './utils/footer';
+import { Footer } from './components/footer';
 import { FrontPageData } from '../documentContainer';
-import { Header } from './utils/header';
+import { Header } from './components/header';
 import { OutputData } from '@editorjs/editorjs';
 import { SertifikatBlock } from './components/sertifikat';
 import { Spacer } from './components/spacing';

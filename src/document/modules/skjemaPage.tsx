@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react';
 
 import { Avvik } from '../../contracts/avvikApi';
 import { ChecklistRow } from './components/skjema';
-import { Footer } from './utils/footer';
+import { Footer } from './components/footer';
 import { FrontPageData } from '../documentContainer';
-import { Header } from './utils/header';
+import { Header } from './components/header';
 import { MeasurementModule } from './components/measurement';
 import { SjekklisteValueGetter } from '../../tables/sjekkliste';
 import { Spacer } from './components/spacing';

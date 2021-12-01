@@ -1,8 +1,8 @@
 import { FrontPageData, Image } from '../documentContainer';
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
-import { Footer } from './utils/footer';
-import { Header } from './utils/header';
+import { Footer } from './components/footer';
+import { Header } from './components/header';
 import { OutputData } from '@editorjs/editorjs';
 import { TextBox } from './components/box';
 

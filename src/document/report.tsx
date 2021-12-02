@@ -47,7 +47,6 @@ export const SlkReport = () => {
         checklists,
         avvik,
         statementText,
-        images,
         measurements,
         measurementTypes
     } = useReport();
@@ -72,7 +71,6 @@ export const SlkReport = () => {
                     <StatementPage
                         frontPageData={frontPageData}
                         statement={statementText}
-                        images={images}
                     />
                 )}
                 {visibleReportModules.includes(ReportModules.skjemaPage) &&

@@ -1,7 +1,7 @@
-import { FrontPageData, Image } from '../documentContainer';
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { Footer } from './components/footer';
+import { FrontPageData } from '../documentContainer';
 import { Header } from './components/header';
 import { OutputData } from '@editorjs/editorjs';
 import { TextBox } from './components/box';
@@ -9,14 +9,12 @@ import { TextBox } from './components/box';
 interface StatementPageProps {
     statement: OutputData | undefined;
     frontPageData: FrontPageData | undefined;
-    images: Image[];
 }
 export const StatementPage = ({
     statement,
-    frontPageData,
-    images
+    frontPageData
 }: StatementPageProps): JSX.Element => {
-    if (statement && frontPageData && images) {
+    if (statement && frontPageData) {
         return (
             <Page
                 style={[
@@ -29,7 +27,7 @@ export const StatementPage = ({
                     date={frontPageData.date}
                 />
 
-                <TextBox text={statement} images={images} />
+                <TextBox text={statement} />
 
                 <Footer />
             </Page>

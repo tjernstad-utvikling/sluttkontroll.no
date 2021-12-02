@@ -14,15 +14,13 @@ import {
 import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 
-import { Image } from '../../documentContainer';
 import { ImageBlockData } from '../../../tools/editor';
 import { PdfImage } from './image';
 
 interface TextBoxProps {
     text: OutputData;
-    images?: Image[];
 }
-export const TextBox = ({ text, images }: TextBoxProps) => {
+export const TextBox = ({ text }: TextBoxProps) => {
     function header(block: OutputBlockData<string, any>): JSX.Element {
         switch (block.data.level) {
             case 1:
@@ -132,11 +130,7 @@ export const TextBox = ({ text, images }: TextBoxProps) => {
     }
 
     function imageBlock(data: ImageBlockData, id: string | undefined) {
-        const image = images?.find((i) => i.name === data.file.url);
-        if (image) {
-            return <PdfImage key={id} src={image.url} caption={data.caption} />;
-        }
-        return <Text key={id}>image</Text>;
+        return <PdfImage key={id} src={data.file.url} caption={data.caption} />;
     }
 
     const block = (block: OutputBlockData<string, any>): JSX.Element => {
@@ -146,7 +140,7 @@ export const TextBox = ({ text, images }: TextBoxProps) => {
             case 'paragraph':
                 return paragraph(block.data.text, block.id);
             case 'image':
-                console.log(block.data, images);
+                console.log(block.data);
                 return imageBlock(block.data, block.id);
             default:
                 return <Text key={block.id}></Text>;

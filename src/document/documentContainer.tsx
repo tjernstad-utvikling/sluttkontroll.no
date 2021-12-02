@@ -93,7 +93,7 @@ export const DocumentContainer = ({
                     _blocks = [..._blocks, block];
                 }
             }
-            setStatementText(text);
+            setStatementText({ ...text, blocks: _blocks });
         }
     });
 

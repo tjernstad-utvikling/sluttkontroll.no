@@ -1,5 +1,3 @@
-import { RapportEgenskaper, Skjema } from '../../contracts/kontrollApi';
-import { ReportModules, useReport } from '../documentContainer';
 import { SkjemaTable, columns, defaultColumns } from '../../tables/skjema';
 
 import Button from '@mui/material/Button';
@@ -9,7 +7,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
+import { RapportEgenskaper } from '../../contracts/reportApi';
+import { ReportModules } from '../../contracts/reportApi';
 import { ReportPropertiesSchema } from '../../schema/reportProperties';
+import { Skjema } from '../../contracts/kontrollApi';
 import Switch from '@mui/material/Switch';
 import { TableContainer } from '../../tables/tableContainer';
 import TextField from '@mui/material/TextField';
@@ -21,6 +22,7 @@ import { useClient } from '../../data/klient';
 import { useEffect } from 'react';
 import { useKontroll } from '../../data/kontroll';
 import { useMeasurement } from '../../data/measurement';
+import { useReport } from '../documentContainer';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 

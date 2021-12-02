@@ -5,10 +5,6 @@ import {
 } from '../components/report';
 import { Card, CardContent } from '../components/card';
 import {
-    DocumentContainer,
-    ReportModules
-} from '../document/documentContainer';
-import {
     FrontPageAdjusting,
     KontrollDocAdjusting,
     MeasurementAdjusting,
@@ -16,8 +12,10 @@ import {
 } from '../document/customizeData/kontrollReportData';
 
 import Container from '@mui/material/Container';
+import { DocumentContainer } from '../document/documentContainer';
 import Grid from '@mui/material/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
+import { ReportModules } from '../contracts/reportApi';
 import { SlkReport } from '../document/report';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
@@ -31,7 +29,6 @@ const KontrollReportView = () => {
             <div className={classes.appBarSpacer} />
             <Container maxWidth="lg" className={classes.container}>
                 <DocumentContainer
-                    reportTypeId="kontroll"
                     kontrollId={Number(kontrollId)}
                     objectId={Number(objectId)}>
                     <ReportPropertiesViewer>

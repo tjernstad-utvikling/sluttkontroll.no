@@ -1,12 +1,12 @@
-import { ReportModules, useReport } from '../document/documentContainer';
+import { RapportEgenskaper, ReportModules } from '../contracts/reportApi';
 
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { RapportEgenskaper } from '../contracts/kontrollApi';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@mui/material/Switch';
 import { saveKontrollReportData } from '../api/kontrollApi';
 import { useClient } from '../data/klient';
 import { useEffect } from 'react';
+import { useReport } from '../document/documentContainer';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 

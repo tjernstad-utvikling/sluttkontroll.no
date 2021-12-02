@@ -1,5 +1,6 @@
 import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
+import { ReportModules, ReportSetting } from '../contracts/reportApi';
 import { createContext, useContext, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
@@ -8,6 +9,7 @@ import { format } from 'date-fns';
 import { getImageFile } from '../api/imageApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
+import { getReportSetting } from '../api/reportApi';
 import { getReportStatement } from '../api/reportApi';
 import { useAvvik } from '../data/avvik';
 import { useEffect } from 'react';
@@ -35,6 +37,7 @@ export const DocumentContainer = ({
         ReportModules[]
     >([]);
     const [_kontroll, setKontroll] = useState<ReportKontroll>();
+    const [reportSetting, setReportSetting] = useState<ReportSetting>();
     const [frontPageData, setFrontPageData] = useState<FrontPageData>();
     const [_infoText, setInfoText] = useState<OutputData>();
     const [_statementText, setStatementText] = useState<OutputData>();
@@ -64,10 +67,6 @@ export const DocumentContainer = ({
         loadImages();
     }, [_statementText]);
 
-    useEffect(() => {
-        console.log(images);
-    }, [images]);
-
     const {
         state: { skjemaer, checklists },
         loadKontrollerByObjekt
@@ -94,6 +93,8 @@ export const DocumentContainer = ({
         const { kontroll } = await getKontrollReportData(Number(kontrollId));
 
         setKontroll(kontroll);
+
+        const res = await getReportSetting(Number(kontrollId));
 
         const { infoText } = await getInfoText();
         setInfoText(infoText);
@@ -240,16 +241,6 @@ interface ContextInterface {
 
     measurements: Measurement[] | undefined;
     measurementTypes: MeasurementType[] | undefined;
-}
-
-export enum ReportModules {
-    frontPage = 'FrontPage',
-    infoPage = 'InfoPage',
-    statementPage = 'StatementPage',
-    controlModule = 'controlModule',
-    skjemaPage = 'skjemaPage',
-    measurementPage = 'measurementPage',
-    inlineMeasurementModule = 'inlineMeasurementModule'
 }
 
 export interface FrontPageData {

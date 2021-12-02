@@ -1,4 +1,5 @@
 import { OutputData } from '@editorjs/editorjs';
+import { ReportSetting } from '../contracts/reportApi';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
@@ -42,6 +43,24 @@ export const updateReportStatement = async (
             }
         );
 
+        return { status, ...data };
+    } catch (error: any) {
+        errorHandler(error);
+        return { status: 500 };
+    }
+};
+
+export const getReportSetting = async (
+    kontrollId: number
+): Promise<{
+    status: number;
+    setting?: ReportSetting | null;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `/report/setting/${kontrollId}`
+        );
+        console.log({ ...data });
         return { status, ...data };
     } catch (error: any) {
         errorHandler(error);

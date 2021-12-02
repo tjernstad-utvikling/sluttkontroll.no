@@ -1,16 +1,17 @@
 import { Document, Font } from '@react-pdf/renderer';
-import { ReportModules, useReport } from './documentContainer';
 
 import { FrontPage } from './modules/frontPage';
 import { InfoPage } from './modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
 import { PDFViewer } from '@react-pdf/renderer';
+import { ReportModules } from '../contracts/reportApi';
 import { SkjemaPage } from './modules/skjemaPage';
 import { StatementPage } from './modules/statementPage';
 import arial from '../assets/fonts/arial.ttf';
 import arialBold from '../assets/fonts/arialBold.ttf';
 import arialBoldItalic from '../assets/fonts/arialBoldItalic.ttf';
 import arialItalic from '../assets/fonts/arialItalic.ttf';
+import { useReport } from './documentContainer';
 import { useWindowSize } from '../hooks/useWindowSize';
 
 Font.register({

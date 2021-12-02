@@ -3,11 +3,11 @@ import {
     Klient,
     Kontroll,
     Location,
-    RapportEgenskaper,
     ReportKontroll,
     Skjema
 } from '../contracts/kontrollApi';
 
+import { RapportEgenskaper } from '../contracts/reportApi';
 import { User } from '../contracts/userApi';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';

@@ -1,5 +1,5 @@
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
-import { RapportEgenskaper, RapportUser } from '../../contracts/kontrollApi';
+import { RapportEgenskaper, RapportUser } from '../../contracts/reportApi';
 import { TableCell, TableHeader, TableRow } from './components/table';
 
 import { Footer } from './components/footer';

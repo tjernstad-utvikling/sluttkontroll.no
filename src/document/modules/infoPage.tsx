@@ -1,9 +1,12 @@
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
-import { RapportEgenskaper, RapportUser } from '../../contracts/reportApi';
+import {
+    RapportEgenskaper,
+    RapportUser,
+    ReportSetting
+} from '../../contracts/reportApi';
 import { TableCell, TableHeader, TableRow } from './components/table';
 
 import { Footer } from './components/footer';
-import { FrontPageData } from '../documentContainer';
 import { Header } from './components/header';
 import { OutputData } from '@editorjs/editorjs';
 import { SertifikatBlock } from './components/sertifikat';
@@ -11,18 +14,18 @@ import { Spacer } from './components/spacing';
 import { TextBox } from './components/box';
 
 interface InfoPageProps {
-    frontPageData: FrontPageData | undefined;
+    reportSetting: ReportSetting | undefined;
     infoText: OutputData | undefined;
     rapportEgenskaper: RapportEgenskaper | undefined | null;
     rapportUser: RapportUser | undefined | null;
 }
 export const InfoPage = ({
-    frontPageData,
+    reportSetting,
     infoText,
     rapportEgenskaper,
     rapportUser
 }: InfoPageProps): JSX.Element => {
-    if (frontPageData && infoText && rapportEgenskaper && rapportUser) {
+    if (reportSetting && infoText && rapportEgenskaper && rapportUser) {
         return (
             <Page
                 style={[
@@ -30,9 +33,9 @@ export const InfoPage = ({
                     styles.container
                 ]}>
                 <Header
-                    title={frontPageData.title}
-                    location={frontPageData.kontrollsted}
-                    date={frontPageData.date}
+                    title={reportSetting.reportTitle}
+                    location={reportSetting.reportSite}
+                    date={reportSetting.reportDate}
                 />
                 <TableHeader title="Informasjon om inspeksjonssted" />
 

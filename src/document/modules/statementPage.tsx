@@ -1,20 +1,20 @@
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { Footer } from './components/footer';
-import { FrontPageData } from '../documentContainer';
 import { Header } from './components/header';
 import { OutputData } from '@editorjs/editorjs';
+import { ReportSetting } from '../../contracts/reportApi';
 import { TextBox } from './components/box';
 
 interface StatementPageProps {
     statement: OutputData | undefined;
-    frontPageData: FrontPageData | undefined;
+    reportSetting: ReportSetting | undefined;
 }
 export const StatementPage = ({
     statement,
-    frontPageData
+    reportSetting
 }: StatementPageProps): JSX.Element => {
-    if (statement && frontPageData) {
+    if (statement && reportSetting) {
         return (
             <Page
                 style={[
@@ -22,9 +22,9 @@ export const StatementPage = ({
                     styles.container
                 ]}>
                 <Header
-                    title={frontPageData.title}
-                    location={frontPageData.kontrollsted}
-                    date={frontPageData.date}
+                    title={reportSetting.reportTitle}
+                    location={reportSetting.reportSite}
+                    date={reportSetting.reportDate}
                 />
 
                 <TextBox text={statement} />

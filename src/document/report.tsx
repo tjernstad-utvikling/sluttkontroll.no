@@ -39,8 +39,8 @@ Font.register({
 
 export const SlkReport = () => {
     const {
-        visibleReportModules,
-        frontPageData,
+        isModuleActive,
+        reportSetting,
         infoText,
         kontroll,
         filteredSkjemaer,
@@ -56,27 +56,28 @@ export const SlkReport = () => {
     return (
         <PDFViewer height={size.height - 120}>
             <Document>
-                {visibleReportModules.includes(ReportModules.frontPage) && (
-                    <FrontPage frontPageData={frontPageData} />
+                {isModuleActive(ReportModules.frontPage) && (
+                    <FrontPage
+                        reportSetting={reportSetting}
+                        kontroll={kontroll}
+                    />
                 )}
-                {visibleReportModules.includes(ReportModules.infoPage) && (
+                {isModuleActive(ReportModules.infoPage) && (
                     <InfoPage
                         infoText={infoText}
-                        frontPageData={frontPageData}
+                        reportSetting={reportSetting}
                         rapportEgenskaper={kontroll?.rapportEgenskaper}
                         rapportUser={kontroll?.rapportEgenskaper?.rapportUser}
                     />
                 )}
-                {visibleReportModules.includes(ReportModules.statementPage) && (
+                {isModuleActive(ReportModules.statementPage) && (
                     <StatementPage
-                        frontPageData={frontPageData}
+                        reportSetting={reportSetting}
                         statement={statementText}
                     />
                 )}
-                {visibleReportModules.includes(ReportModules.skjemaPage) &&
-                    visibleReportModules.includes(
-                        ReportModules.controlModule
-                    ) &&
+                {isModuleActive(ReportModules.skjemaPage) &&
+                    isModuleActive(ReportModules.controlModule) &&
                     filteredSkjemaer?.map((s) => (
                         <SkjemaPage
                             key={s.id}
@@ -85,12 +86,10 @@ export const SlkReport = () => {
                                 (ch) => ch.skjema.id === s.id
                             )}
                             avvik={avvik}
-                            frontPageData={frontPageData}
+                            reportSetting={reportSetting}
                             hasInlineMeasurements={
-                                visibleReportModules.includes(
-                                    ReportModules.measurementPage
-                                ) &&
-                                visibleReportModules.includes(
+                                isModuleActive(ReportModules.measurementPage) &&
+                                isModuleActive(
                                     ReportModules.inlineMeasurementModule
                                 )
                             }
@@ -100,13 +99,9 @@ export const SlkReport = () => {
                             measurementTypes={measurementTypes}
                         />
                     ))}
-                {visibleReportModules.includes(ReportModules.measurementPage) &&
-                    visibleReportModules.includes(
-                        ReportModules.controlModule
-                    ) &&
-                    !visibleReportModules.includes(
-                        ReportModules.inlineMeasurementModule
-                    ) &&
+                {isModuleActive(ReportModules.measurementPage) &&
+                    isModuleActive(ReportModules.controlModule) &&
+                    !isModuleActive(ReportModules.inlineMeasurementModule) &&
                     filteredSkjemaer?.map((s, i) => (
                         <MeasurementPage
                             key={s.id}
@@ -115,7 +110,7 @@ export const SlkReport = () => {
                             measurements={measurements?.filter(
                                 (m) => m.skjema.id === s.id
                             )}
-                            frontPageData={frontPageData}
+                            reportSetting={reportSetting}
                             measurementTypes={measurementTypes}
                         />
                     ))}

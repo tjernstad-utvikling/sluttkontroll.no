@@ -7,14 +7,14 @@ import { useEffect, useState } from 'react';
 import { Avvik } from '../../contracts/avvikApi';
 import { ChecklistRow } from './components/skjema';
 import { Footer } from './components/footer';
-import { FrontPageData } from '../documentContainer';
 import { Header } from './components/header';
 import { MeasurementModule } from './components/measurement';
+import { ReportSetting } from '../../contracts/reportApi';
 import { SjekklisteValueGetter } from '../../tables/sjekkliste';
 import { Spacer } from './components/spacing';
 
 interface SkjemaPageProps {
-    frontPageData: FrontPageData | undefined;
+    reportSetting: ReportSetting | undefined;
     skjema: Skjema;
     checklists: Checklist[] | undefined;
     avvik: Avvik[] | undefined;
@@ -23,7 +23,7 @@ interface SkjemaPageProps {
     measurementTypes: MeasurementType[] | undefined;
 }
 export const SkjemaPage = ({
-    frontPageData,
+    reportSetting,
     skjema,
     checklists,
     avvik,
@@ -48,7 +48,7 @@ export const SkjemaPage = ({
             );
         }
     }, [checklists]);
-    if (frontPageData && avvik && measurements && measurementTypes) {
+    if (reportSetting && avvik && measurements && measurementTypes) {
         return (
             <Page
                 style={[
@@ -56,9 +56,9 @@ export const SkjemaPage = ({
                     styles.container
                 ]}>
                 <Header
-                    title={frontPageData.title}
-                    location={frontPageData.kontrollsted}
-                    date={frontPageData.date}
+                    title={reportSetting.reportTitle}
+                    location={reportSetting.reportSite}
+                    date={reportSetting.reportDate}
                 />
                 <Text style={{ paddingVertical: 5 }}>
                     {skjema.area}, {skjema.omrade}

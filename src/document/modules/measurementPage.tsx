@@ -2,27 +2,27 @@ import { Measurement, MeasurementType } from '../../contracts/measurementApi';
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { Footer } from './components/footer';
-import { FrontPageData } from '../documentContainer';
 import { Header } from './components/header';
 import { MeasurementModule } from './components/measurement';
+import { ReportSetting } from '../../contracts/reportApi';
 import { Skjema } from '../../contracts/kontrollApi';
 import { Spacer } from './components/spacing';
 
 interface MeasurementPageProps {
-    frontPageData: FrontPageData | undefined;
+    reportSetting: ReportSetting | undefined;
     skjema: Skjema;
     measurements: Measurement[] | undefined;
     index: number;
     measurementTypes: MeasurementType[] | undefined;
 }
 export const MeasurementPage = ({
-    frontPageData,
+    reportSetting,
     skjema,
     measurements,
     index,
     measurementTypes
 }: MeasurementPageProps): JSX.Element => {
-    if (frontPageData && measurements && measurementTypes) {
+    if (reportSetting && measurements && measurementTypes) {
         return (
             <Page
                 style={[
@@ -30,9 +30,9 @@ export const MeasurementPage = ({
                     styles.container
                 ]}>
                 <Header
-                    title={frontPageData.title}
-                    location={frontPageData.kontrollsted}
-                    date={frontPageData.date}
+                    title={reportSetting.reportTitle}
+                    location={reportSetting.reportSite}
+                    date={reportSetting.reportDate}
                 />
                 {index === 0 && (
                     <Text style={{ paddingVertical: 5 }}>Måleprotokoll</Text>

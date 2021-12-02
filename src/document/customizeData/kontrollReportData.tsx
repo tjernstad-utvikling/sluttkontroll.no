@@ -13,7 +13,7 @@ import { ReportPropertiesSchema } from '../../schema/reportProperties';
 import { Skjema } from '../../contracts/kontrollApi';
 import Switch from '@mui/material/Switch';
 import { TableContainer } from '../../tables/tableContainer';
-import TextField from '@mui/material/TextField';
+// import TextField from '@mui/material/TextField';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../../theme/makeStyles';
 import { saveKontrollReportData } from '../../api/kontrollApi';
@@ -28,7 +28,7 @@ import { useState } from 'react';
 
 export const FrontPageAdjusting = () => {
     const [open, setOpen] = useState<boolean>(false);
-    const { frontPageData, setFrontPageData } = useReport();
+    // const { frontPageData, setFrontPageData } = useReport();
     return (
         <>
             <Button
@@ -49,7 +49,7 @@ export const FrontPageAdjusting = () => {
                         Framside er fylt ut med standard tittel, den kan endres
                         her
                     </DialogContentText>
-                    {frontPageData !== undefined && (
+                    {/* {frontPageData !== undefined && (
                         <TextField
                             autoFocus
                             margin="dense"
@@ -65,7 +65,7 @@ export const FrontPageAdjusting = () => {
                                 })
                             }
                         />
-                    )}
+                    )} */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)} color="primary">
@@ -167,7 +167,7 @@ export const KontrollDocAdjusting = ({
 
 export const MeasurementAdjusting = () => {
     const [open, setOpen] = useState<boolean>(false);
-    const { visibleReportModules, toggleModuleVisibilityState } = useReport();
+    const { isModuleActive, toggleModuleVisibilityState } = useReport();
     return (
         <>
             <Button
@@ -195,7 +195,7 @@ export const MeasurementAdjusting = () => {
                         <Grid item>Separat måleprotokoll</Grid>
                         <Grid item>
                             <Switch
-                                checked={visibleReportModules.includes(
+                                checked={isModuleActive(
                                     ReportModules.inlineMeasurementModule
                                 )}
                                 onChange={() =>

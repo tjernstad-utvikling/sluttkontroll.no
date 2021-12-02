@@ -15,12 +15,12 @@ interface ReportSwitchProps {
     label: string;
 }
 export const ReportSwitch = ({ id, label }: ReportSwitchProps) => {
-    const { visibleReportModules, toggleModuleVisibilityState } = useReport();
+    const { isModuleActive, toggleModuleVisibilityState } = useReport();
     return (
         <FormControlLabel
             control={
                 <Switch
-                    checked={visibleReportModules.includes(id)}
+                    checked={isModuleActive(id)}
                     onChange={() => toggleModuleVisibilityState(id)}
                     name={id}
                     color="primary"
@@ -109,8 +109,8 @@ interface BlockProps {
     children: React.ReactNode;
 }
 export const Block = ({ dependency, children }: BlockProps) => {
-    const { visibleReportModules } = useReport();
-    if (visibleReportModules.includes(dependency)) {
+    const { isModuleActive } = useReport();
+    if (isModuleActive(dependency)) {
         return <>{children}</>;
     }
     return <div />;

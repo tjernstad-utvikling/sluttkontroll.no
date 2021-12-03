@@ -1,5 +1,6 @@
 import { Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
+import { DateText } from './components/text';
 import PdfLogo from '../../assets/pdf-logo.png';
 import { ReportKontroll } from '../../contracts/kontrollApi';
 import { ReportSetting } from '../../contracts/reportApi';
@@ -24,7 +25,7 @@ export const FrontPage = ({ reportSetting, kontroll }: FrontPageProps) => {
                     </View>
                     <View style={[styles.text, styles.subText]}>
                         <Text>{reportSetting.reportSite}</Text>
-                        <Text>{reportSetting.reportDate}</Text>
+                        <DateText>{reportSetting.reportDate}</DateText>
                         <Text>Den elektriske installasjon er vurdert av:</Text>
                         <Text>
                             {kontroll.rapportEgenskaper?.rapportUser?.name}

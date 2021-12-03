@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, View } from '@react-pdf/renderer';
 
+import { DateText } from './text';
 import pdfLogo from '../../../assets/pdf-logo.png';
 
 interface HeaderProps {
@@ -35,7 +36,7 @@ export const Header = ({ title, location, date }: HeaderProps) => {
                 </View>
 
                 <Text style={{ alignSelf: 'center', fontSize: 12 }}>
-                    {date}
+                    <DateText>{date}</DateText>
                 </Text>
             </View>
         </View>

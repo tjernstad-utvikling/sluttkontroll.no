@@ -1,10 +1,25 @@
 import { Link, StyleSheet, Text } from '@react-pdf/renderer';
 
+import { format } from 'date-fns';
+
 interface TextProps {
     children?: React.ReactNode;
 }
 export const Paragraph = ({ children }: TextProps) => {
     return <Text style={styles.p}>{children}</Text>;
+};
+interface DateTextProps {
+    children: string | undefined;
+}
+export const DateText = ({ children }: DateTextProps) => {
+    if (children) {
+        return (
+            <Text style={styles.tekst}>
+                {format(new Date(children), 'dd.MM.yyyy')}
+            </Text>
+        );
+    }
+    return <Text style={styles.tekst}>{children}</Text>;
 };
 
 export const BoldText = ({ children }: TextProps) => {
@@ -60,6 +75,9 @@ const styles = StyleSheet.create({
     p: {
         fontSize: 12,
         paddingBottom: 10,
+        fontFamily: 'Arial'
+    },
+    tekst: {
         fontFamily: 'Arial'
     },
     bold: {

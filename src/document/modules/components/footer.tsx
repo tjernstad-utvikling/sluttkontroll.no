@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 
+import { DateText } from './text';
+
 export const Footer = () => {
     return (
         <View style={styles.headerContainer} fixed>
@@ -11,7 +13,9 @@ export const Footer = () => {
                     padding: 5,
                     color: 'grey'
                 }}>
-                <Text style={{ fontSize: 12 }}>Utskrift: 28.07.2021</Text>
+                <Text style={{ fontSize: 12 }}>
+                    Utskrift: <DateText>28.07.2021</DateText>
+                </Text>
                 <Text style={{ fontSize: 12 }}>Sluttkontroll.no</Text>
 
                 <Text

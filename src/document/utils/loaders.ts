@@ -57,7 +57,7 @@ export async function handleReportSettings({
                 if (kontroll.completedDate !== null) {
                     date = new Date(kontroll.completedDate);
                 }
-                reportSetting.reportDate = format(date, 'dd.MM.yyyy');
+                reportSetting.reportDate = format(date, 'yyyy-MM-dd');
                 reportSetting.reportSite =
                     kontroll.rapportEgenskaper?.kontrollsted || '';
                 reportSetting.selectedSkjemaer = [];

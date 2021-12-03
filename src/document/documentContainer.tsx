@@ -14,7 +14,9 @@ import { errorHandler } from '../tools/errorHandler';
 import { getImageFile } from '../api/imageApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
+import { updateReportSetting } from '../api/reportApi';
 import { useAvvik } from '../data/avvik';
+import { useDebounce } from '../hooks/useDebounce';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
@@ -41,6 +43,23 @@ export const DocumentContainer = ({
 
     const [kontroll, setKontroll] = useState<ReportKontroll>();
     const [reportSetting, setReportSetting] = useState<ReportSetting>();
+
+    const debouncedSetting = useDebounce<ReportSetting | undefined>(
+        reportSetting,
+        3000
+    );
+    // Effect for API call
+    useEffect(
+        () => {
+            const save = async () => {
+                if (debouncedSetting) {
+                    updateReportSetting(debouncedSetting, kontrollId);
+                }
+            };
+            save();
+        },
+        [debouncedSetting, kontrollId] // Only call effect if debounced search term changes
+    );
 
     const [_infoText, setInfoText] = useState<OutputData>();
     const [_statementText, setStatementText] = useState<OutputData>();
@@ -184,6 +203,15 @@ export const DocumentContainer = ({
     const updateFilteredSkjemaer = (skjemaer: Skjema[] | undefined) => {
         setPreviewDocument(false);
         setFilteredSkjemaer(skjemaer);
+
+        setReportSetting((prev) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    selectedSkjemaer: skjemaer?.map((s) => s.id) || []
+                };
+            }
+        });
     };
 
     return (

@@ -54,7 +54,7 @@ export const getReportSetting = async (
     kontrollId: number
 ): Promise<{
     status: number;
-    setting?: ReportSetting | null;
+    rapportSetting?: ReportSetting | null;
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
@@ -64,5 +64,28 @@ export const getReportSetting = async (
     } catch (error: any) {
         errorHandler(error);
         return { status: 500 };
+    }
+};
+
+export const updateReportSetting = async (
+    setting: ReportSetting,
+    kontrollId: number
+): Promise<{
+    status: number;
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.post(
+            `/report/setting/${kontrollId}`,
+            setting
+        );
+
+        return { status, ...data };
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        errorHandler(error);
+        return { status: error.response.status };
     }
 };

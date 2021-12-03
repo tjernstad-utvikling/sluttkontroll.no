@@ -38,26 +38,27 @@ export async function handleReportSettings({
     setReportSetting
 }: HandleReportSettingsOptions) {
     try {
-        const { status, setting } = await getReportSetting(kontroll.id);
+        const { status, rapportSetting } = await getReportSetting(kontroll.id);
+        console.log({ status, rapportSetting });
         if (status === 200) {
-            if (!setting) {
-                const reportSetting = {} as ReportSetting;
+            if (!rapportSetting) {
+                const _reportSetting = {} as ReportSetting;
 
-                reportSetting.modules = [];
-                reportSetting.reportTitle = '3. Partskontroll';
+                _reportSetting.modules = [];
+                _reportSetting.reportTitle = '3. Partskontroll';
 
                 let date = new Date();
                 if (kontroll.completedDate !== null) {
                     date = new Date(kontroll.completedDate);
                 }
-                reportSetting.reportDate = format(date, 'yyyy-MM-dd');
-                reportSetting.reportSite =
+                _reportSetting.reportDate = format(date, 'yyyy-MM-dd');
+                _reportSetting.reportSite =
                     kontroll.rapportEgenskaper?.kontrollsted || '';
-                reportSetting.selectedSkjemaer = [];
+                _reportSetting.selectedSkjemaer = [];
 
-                setReportSetting(reportSetting);
-            } else if (setting) {
-                setReportSetting(setting);
+                setReportSetting(_reportSetting);
+            } else if (rapportSetting) {
+                setReportSetting(rapportSetting);
             }
         }
     } catch (error: any) {}

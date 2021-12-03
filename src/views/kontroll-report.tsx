@@ -34,7 +34,7 @@ const KontrollReportView = () => {
                     objectId={Number(objectId)}>
                     <ReportPropertiesViewer>
                         <Grid container spacing={0}>
-                            <Grid item xs={12} sm={8}>
+                            <Grid item xs={12}>
                                 <Card title="Kontroll rapport">
                                     <CardContent>
                                         <div

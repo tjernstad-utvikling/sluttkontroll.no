@@ -316,25 +316,36 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
         }
     }, [statementText]);
 
-    const debouncedSearchTerm: OutputData | undefined = useDebounce<
-        OutputData | undefined
-    >(statement, 3000);
+    const debouncedStatement = useDebounce<OutputData | undefined>(
+        statement,
+        3000
+    );
     // Effect for API call
     useEffect(
         () => {
             const save = async () => {
-                if (debouncedSearchTerm) {
-                    updateReportStatement(debouncedSearchTerm, kontrollId).then(
-                        (results) => {
-                            setStatementText(debouncedSearchTerm);
-                        }
-                    );
+                if (debouncedStatement) {
+                    updateReportStatement(
+                        {
+                            ...debouncedStatement,
+                            blocks: debouncedStatement.blocks.map((b) => {
+                                const _block = b;
+                                if (b.type === 'image') {
+                                    _block.data.file.localUrl = undefined;
+                                }
+                                return _block;
+                            })
+                        },
+                        kontrollId
+                    ).then((results) => {
+                        setStatementText(debouncedStatement);
+                    });
                 }
             };
             save();
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [debouncedSearchTerm, kontrollId] // Only call effect if debounced search term changes
+        [debouncedStatement, kontrollId] // Only call effect if debounced search term changes
     );
 
     async function handleSaveImage(file: File): Promise<{

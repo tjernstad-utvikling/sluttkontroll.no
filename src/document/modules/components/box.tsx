@@ -130,7 +130,13 @@ export const TextBox = ({ text }: TextBoxProps) => {
     }
 
     function imageBlock(data: ImageBlockData, id: string | undefined) {
-        return <PdfImage key={id} src={data.file.url} caption={data.caption} />;
+        return (
+            <PdfImage
+                key={id}
+                src={data.file.localUrl}
+                caption={data.caption}
+            />
+        );
     }
 
     const block = (block: OutputBlockData<string, any>): JSX.Element => {
@@ -140,7 +146,6 @@ export const TextBox = ({ text }: TextBoxProps) => {
             case 'paragraph':
                 return paragraph(block.data.text, block.id);
             case 'image':
-                console.log(block.data);
                 return imageBlock(block.data, block.id);
             default:
                 return <Text key={block.id}></Text>;

@@ -20,7 +20,9 @@ export async function loadReportStatement(
                     const res = await getImageFile(block.data.file.url);
 
                     if (res.status === 200) {
-                        block.data.file.url = URL.createObjectURL(res.data);
+                        block.data.file.localUrl = URL.createObjectURL(
+                            res.data
+                        );
                         _blocks = [..._blocks, block];
                     }
                 } else {

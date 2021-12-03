@@ -97,7 +97,7 @@ export const Editor = ({
 };
 
 export interface ImageBlockData {
-    file: { url: string; id: number };
+    file: { url: string; id: number; localUrl?: string };
     caption: string;
     withBorder: boolean;
     stretched: boolean;

@@ -60,7 +60,6 @@ export const getReportSetting = async (
         const { status, data } = await sluttkontrollApi.get(
             `/report/setting/${kontrollId}`
         );
-        console.log({ ...data });
         return { status, ...data };
     } catch (error: any) {
         errorHandler(error);

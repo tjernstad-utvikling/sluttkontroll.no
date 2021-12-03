@@ -47,7 +47,7 @@ export async function handleReportSettings({
     try {
         const { status, setting } = await getReportSetting(kontroll.id);
         if (status === 200) {
-            if (setting === null) {
+            if (!setting) {
                 const reportSetting = {} as ReportSetting;
 
                 reportSetting.modules = [];
@@ -61,6 +61,7 @@ export async function handleReportSettings({
                 reportSetting.reportSite =
                     kontroll.rapportEgenskaper?.kontrollsted || '';
                 reportSetting.selectedSkjemaer = [];
+
                 setReportSetting(reportSetting);
             } else if (setting) {
                 setReportSetting(setting);

@@ -124,7 +124,7 @@ const KontrollReportView = () => {
                                     </CardContent>
                                 </Card>
                             </Grid>
-                            <Grid item xs={12} sm={4}>
+                            <Grid item xs={12}>
                                 <SlkReport />
                             </Grid>
                         </Grid>

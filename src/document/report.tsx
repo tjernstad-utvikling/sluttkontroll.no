@@ -55,7 +55,7 @@ export const SlkReport = () => {
     const size = useWindowSize();
     if (previewDocument) {
         return (
-            <PDFViewer height={size.height - 120}>
+            <PDFViewer height={size.height}>
                 <Document>
                     {isModuleActive(ReportModules.frontPage) && (
                         <FrontPage

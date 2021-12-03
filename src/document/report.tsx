@@ -40,6 +40,7 @@ Font.register({
 export const SlkReport = () => {
     const {
         isModuleActive,
+        previewDocument,
         reportSetting,
         infoText,
         kontroll,
@@ -52,69 +53,77 @@ export const SlkReport = () => {
     } = useReport();
 
     const size = useWindowSize();
-
-    return (
-        <PDFViewer height={size.height - 120}>
-            <Document>
-                {isModuleActive(ReportModules.frontPage) && (
-                    <FrontPage
-                        reportSetting={reportSetting}
-                        kontroll={kontroll}
-                    />
-                )}
-                {isModuleActive(ReportModules.infoPage) && (
-                    <InfoPage
-                        infoText={infoText}
-                        reportSetting={reportSetting}
-                        rapportEgenskaper={kontroll?.rapportEgenskaper}
-                        rapportUser={kontroll?.rapportEgenskaper?.rapportUser}
-                    />
-                )}
-                {isModuleActive(ReportModules.statementPage) && (
-                    <StatementPage
-                        reportSetting={reportSetting}
-                        statement={statementText}
-                    />
-                )}
-                {isModuleActive(ReportModules.skjemaPage) &&
-                    isModuleActive(ReportModules.controlModule) &&
-                    filteredSkjemaer?.map((s) => (
-                        <SkjemaPage
-                            key={s.id}
-                            skjema={s}
-                            checklists={checklists?.filter(
-                                (ch) => ch.skjema.id === s.id
-                            )}
-                            avvik={avvik}
+    if (previewDocument) {
+        return (
+            <PDFViewer height={size.height - 120}>
+                <Document>
+                    {isModuleActive(ReportModules.frontPage) && (
+                        <FrontPage
                             reportSetting={reportSetting}
-                            hasInlineMeasurements={
-                                isModuleActive(ReportModules.measurementPage) &&
-                                isModuleActive(
-                                    ReportModules.inlineMeasurementModule
-                                )
+                            kontroll={kontroll}
+                        />
+                    )}
+                    {isModuleActive(ReportModules.infoPage) && (
+                        <InfoPage
+                            infoText={infoText}
+                            reportSetting={reportSetting}
+                            rapportEgenskaper={kontroll?.rapportEgenskaper}
+                            rapportUser={
+                                kontroll?.rapportEgenskaper?.rapportUser
                             }
-                            measurements={measurements?.filter(
-                                (m) => m.skjema.id === s.id
-                            )}
-                            measurementTypes={measurementTypes}
                         />
-                    ))}
-                {isModuleActive(ReportModules.measurementPage) &&
-                    isModuleActive(ReportModules.controlModule) &&
-                    !isModuleActive(ReportModules.inlineMeasurementModule) &&
-                    filteredSkjemaer?.map((s, i) => (
-                        <MeasurementPage
-                            key={s.id}
-                            skjema={s}
-                            index={i}
-                            measurements={measurements?.filter(
-                                (m) => m.skjema.id === s.id
-                            )}
+                    )}
+                    {isModuleActive(ReportModules.statementPage) && (
+                        <StatementPage
                             reportSetting={reportSetting}
-                            measurementTypes={measurementTypes}
+                            statement={statementText}
                         />
-                    ))}
-            </Document>
-        </PDFViewer>
-    );
+                    )}
+                    {isModuleActive(ReportModules.skjemaPage) &&
+                        isModuleActive(ReportModules.controlModule) &&
+                        filteredSkjemaer?.map((s) => (
+                            <SkjemaPage
+                                key={s.id}
+                                skjema={s}
+                                checklists={checklists?.filter(
+                                    (ch) => ch.skjema.id === s.id
+                                )}
+                                avvik={avvik}
+                                reportSetting={reportSetting}
+                                hasInlineMeasurements={
+                                    isModuleActive(
+                                        ReportModules.measurementPage
+                                    ) &&
+                                    isModuleActive(
+                                        ReportModules.inlineMeasurementModule
+                                    )
+                                }
+                                measurements={measurements?.filter(
+                                    (m) => m.skjema.id === s.id
+                                )}
+                                measurementTypes={measurementTypes}
+                            />
+                        ))}
+                    {isModuleActive(ReportModules.measurementPage) &&
+                        isModuleActive(ReportModules.controlModule) &&
+                        !isModuleActive(
+                            ReportModules.inlineMeasurementModule
+                        ) &&
+                        filteredSkjemaer?.map((s, i) => (
+                            <MeasurementPage
+                                key={s.id}
+                                skjema={s}
+                                index={i}
+                                measurements={measurements?.filter(
+                                    (m) => m.skjema.id === s.id
+                                )}
+                                reportSetting={reportSetting}
+                                measurementTypes={measurementTypes}
+                            />
+                        ))}
+                </Document>
+            </PDFViewer>
+        );
+    }
+    return <div />;
 };

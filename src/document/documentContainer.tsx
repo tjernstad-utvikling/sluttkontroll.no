@@ -36,6 +36,8 @@ export const DocumentContainer = ({
     const [_infoText, setInfoText] = useState<OutputData>();
     const [_statementText, setStatementText] = useState<OutputData>();
 
+    const [previewDocument, setPreviewDocument] = useState<boolean>(false);
+
     const {
         state: { skjemaer, checklists },
         loadKontrollerByObjekt
@@ -118,6 +120,7 @@ export const DocumentContainer = ({
     };
 
     const updateKontroll = (reportKontroll: ReportKontroll) => {
+        setPreviewDocument(false);
         setKontroll(reportKontroll);
     };
 
@@ -125,6 +128,8 @@ export const DocumentContainer = ({
         <Context.Provider
             value={{
                 toggleModuleVisibilityState,
+                previewDocument,
+
                 isModuleActive,
                 infoText: _infoText,
                 statementText: _statementText,
@@ -149,6 +154,7 @@ export const DocumentContainer = ({
 
 interface ContextInterface {
     toggleModuleVisibilityState: (id: ReportModules) => void;
+    previewDocument: boolean;
 
     infoText: OutputData | undefined;
     statementText: OutputData | undefined;

@@ -86,6 +86,7 @@ export const DocumentContainer = ({
         state: { skjemaer, checklists },
         loadKontrollerByObjekt
     } = useKontroll();
+
     const [_skjemaer, setSkjemaer] = useState<Skjema[]>();
     const [filteredSkjemaer, setFilteredSkjemaer] = useState<Skjema[]>();
 
@@ -138,6 +139,7 @@ export const DocumentContainer = ({
     }, [skjemaer, kontrollId, reportSetting?.selectedSkjemaer]);
 
     const toggleModuleVisibilityState = (id: ReportModules) => {
+        setPreviewDocument(false);
         if (reportSetting) {
             if (reportSetting.modules.includes(id)) {
                 setReportSetting((prev) => {
@@ -170,6 +172,21 @@ export const DocumentContainer = ({
         setKontroll(reportKontroll);
     };
 
+    const updateStatement = (text: OutputData) => {
+        setPreviewDocument(false);
+        setStatementText(text);
+    };
+
+    const updateSetting = (setting: ReportSetting) => {
+        setPreviewDocument(false);
+        setReportSetting(setting);
+    };
+
+    const updateFilteredSkjemaer = (skjemaer: Skjema[] | undefined) => {
+        setPreviewDocument(false);
+        setFilteredSkjemaer(skjemaer);
+    };
+
     return (
         <Context.Provider
             value={{
@@ -181,15 +198,15 @@ export const DocumentContainer = ({
                 isModuleActive,
                 infoText: _infoText,
                 statementText: _statementText,
-                setStatementText,
+                updateStatement,
                 reportSetting,
-                setReportSetting,
+                updateSetting,
 
                 kontroll,
                 updateKontroll,
                 skjemaer: _skjemaer,
                 filteredSkjemaer,
-                setFilteredSkjemaer,
+                updateFilteredSkjemaer,
                 checklists,
                 avvik: avvik,
                 measurements,
@@ -208,13 +225,9 @@ interface ContextInterface {
 
     infoText: OutputData | undefined;
     statementText: OutputData | undefined;
-    setStatementText: React.Dispatch<
-        React.SetStateAction<OutputData | undefined>
-    >;
+    updateStatement: (text: OutputData) => void;
     reportSetting: ReportSetting | undefined;
-    setReportSetting: React.Dispatch<
-        React.SetStateAction<ReportSetting | undefined>
-    >;
+    updateSetting: (setting: ReportSetting) => void;
     isModuleActive: (reportModule: ReportModules) => boolean;
 
     kontroll: ReportKontroll | undefined;
@@ -222,9 +235,7 @@ interface ContextInterface {
     skjemaer: Skjema[] | undefined;
     filteredSkjemaer: Skjema[] | undefined;
     checklists: Checklist[] | undefined;
-    setFilteredSkjemaer: React.Dispatch<
-        React.SetStateAction<Skjema[] | undefined>
-    >;
+    updateFilteredSkjemaer: (skjemaer: Skjema[] | undefined) => void;
 
     avvik: Avvik[] | undefined;
 

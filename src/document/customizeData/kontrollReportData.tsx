@@ -32,7 +32,7 @@ import { useSnackbar } from 'notistack';
 
 export const FrontPageAdjusting = () => {
     const [open, setOpen] = useState<boolean>(false);
-    const { reportSetting, setReportSetting } = useReport();
+    const { reportSetting, updateSetting } = useReport();
     return (
         <>
             <Button
@@ -56,8 +56,7 @@ export const FrontPageAdjusting = () => {
                     {reportSetting && (
                         <ReportSettingsSchema
                             onSubmit={(r) => {
-                                console.log(r);
-                                setReportSetting(r);
+                                updateSetting(r);
                                 setOpen(false);
                             }}
                             reportSetting={reportSetting}
@@ -82,7 +81,7 @@ export const KontrollDocAdjusting = ({
 }: KontrollDocAdjustingProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const [_skjemaer, set_Skjemaer] = useState<Skjema[]>();
-    const { setFilteredSkjemaer, skjemaer } = useReport();
+    const { updateFilteredSkjemaer, skjemaer } = useReport();
     const { state } = useKontroll();
     const {
         state: { avvik }
@@ -140,7 +139,7 @@ export const KontrollDocAdjusting = ({
                             <SkjemaTable
                                 skjemaer={_skjemaer}
                                 onSelected={(ids) => {
-                                    setFilteredSkjemaer(
+                                    updateFilteredSkjemaer(
                                         state?.skjemaer?.filter(
                                             (s) => ids.indexOf(s.id) !== -1
                                         )
@@ -306,7 +305,7 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const { classes } = useStyles();
 
-    const { statementText, setStatementText } = useReport();
+    const { statementText, updateStatement } = useReport();
     const { enqueueSnackbar } = useSnackbar();
     const [statement, setStatement] = useState<OutputData>();
 
@@ -338,7 +337,7 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
                         },
                         kontrollId
                     ).then((results) => {
-                        setStatementText(debouncedStatement);
+                        updateStatement(debouncedStatement);
                     });
                 }
             };

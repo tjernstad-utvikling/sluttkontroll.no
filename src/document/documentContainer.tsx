@@ -55,7 +55,6 @@ export const DocumentContainer = ({
                             const res = await getImageFile(block.data.file.url);
 
                             if (res.status === 200) {
-                                console.log(res);
                                 const url = URL.createObjectURL(res.data);
 
                                 setStatementImages((prev) => {

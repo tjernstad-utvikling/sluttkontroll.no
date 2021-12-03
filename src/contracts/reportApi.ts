@@ -5,7 +5,6 @@ export interface ReportSetting {
     reportTitle: string;
     reportSite: string;
     reportDate: string;
-    reportUserName: string;
     selectedSkjemaer: number[];
     modules: ReportModules[];
 }

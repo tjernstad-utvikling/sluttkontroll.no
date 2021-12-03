@@ -10,10 +10,10 @@ import Grid from '@mui/material/Grid';
 import { RapportEgenskaper } from '../../contracts/reportApi';
 import { ReportModules } from '../../contracts/reportApi';
 import { ReportPropertiesSchema } from '../../schema/reportProperties';
+import { ReportSettingsSchema } from '../../schema/reportSettings';
 import { Skjema } from '../../contracts/kontrollApi';
 import Switch from '@mui/material/Switch';
 import { TableContainer } from '../../tables/tableContainer';
-// import TextField from '@mui/material/TextField';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../../theme/makeStyles';
 import { saveKontrollReportData } from '../../api/kontrollApi';
@@ -28,44 +28,37 @@ import { useState } from 'react';
 
 export const FrontPageAdjusting = () => {
     const [open, setOpen] = useState<boolean>(false);
-    // const { frontPageData, setFrontPageData } = useReport();
+    const { reportSetting, setReportSetting } = useReport();
     return (
         <>
             <Button
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass rapport tittel
+                Tilpass rapportinnstillinger
             </Button>
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}
                 aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">
-                    Tilpass fremside
+                    Tilpass rapportinnstillinger
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Framside er fylt ut med standard tittel, den kan endres
                         her
                     </DialogContentText>
-                    {/* {frontPageData !== undefined && (
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Rapport tittel"
-                            type="text"
-                            fullWidth
-                            value={frontPageData.title}
-                            onChange={(e) =>
-                                setFrontPageData({
-                                    ...frontPageData,
-                                    title: e.target.value
-                                })
-                            }
+                    {reportSetting && (
+                        <ReportSettingsSchema
+                            onSubmit={(r) => {
+                                console.log(r);
+                                setReportSetting(r);
+                                setOpen(false);
+                            }}
+                            reportSetting={reportSetting}
                         />
-                    )} */}
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)} color="primary">

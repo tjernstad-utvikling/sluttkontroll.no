@@ -1,4 +1,6 @@
 import { SkjemaTable, columns, defaultColumns } from '../../tables/skjema';
+import { getImageFile, uploadImageFile } from '../../api/imageApi';
+import { useEffect, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -6,7 +8,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { Editor } from '../../tools/editor';
 import Grid from '@mui/material/Grid';
+import { OutputData } from '@editorjs/editorjs';
 import { RapportEgenskaper } from '../../contracts/reportApi';
 import { ReportModules } from '../../contracts/reportApi';
 import { ReportPropertiesSchema } from '../../schema/reportProperties';
@@ -17,14 +21,14 @@ import { TableContainer } from '../../tables/tableContainer';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../../theme/makeStyles';
 import { saveKontrollReportData } from '../../api/kontrollApi';
+import { updateReportStatement } from '../../api/reportApi';
 import { useAvvik } from '../../data/avvik';
 import { useClient } from '../../data/klient';
-import { useEffect } from 'react';
+import { useDebounce } from '../../hooks/useDebounce';
 import { useKontroll } from '../../data/kontroll';
 import { useMeasurement } from '../../data/measurement';
 import { useReport } from '../documentContainer';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
 
 export const FrontPageAdjusting = () => {
     const [open, setOpen] = useState<boolean>(false);
@@ -285,6 +289,121 @@ export const ReportProperties = () => {
                             />
                         </div>
                     )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)} color="primary">
+                        Lukk
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+};
+interface ReportStatementProps {
+    kontrollId: number;
+}
+export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
+    const [open, setOpen] = useState<boolean>(false);
+    const { classes } = useStyles();
+
+    const { statementText, setStatementText } = useReport();
+    const { enqueueSnackbar } = useSnackbar();
+    const [statement, setStatement] = useState<OutputData>();
+
+    useEffect(() => {
+        if (statementText) {
+            setStatement(statementText);
+        }
+    }, [statementText]);
+
+    const debouncedSearchTerm: OutputData | undefined = useDebounce<
+        OutputData | undefined
+    >(statement, 3000);
+    // Effect for API call
+    useEffect(
+        () => {
+            const save = async () => {
+                if (debouncedSearchTerm) {
+                    updateReportStatement(debouncedSearchTerm, kontrollId).then(
+                        (results) => {
+                            setStatementText(debouncedSearchTerm);
+                        }
+                    );
+                }
+            };
+            save();
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [debouncedSearchTerm, kontrollId] // Only call effect if debounced search term changes
+    );
+
+    async function handleSaveImage(file: File): Promise<{
+        success: boolean;
+        file: { url: string; id: number };
+    }> {
+        try {
+            const { status, image } = await uploadImageFile(
+                Number(kontrollId),
+                file
+            );
+            if (status === 200 && image) {
+                enqueueSnackbar('Bilde er lastet opp', {
+                    variant: 'success'
+                });
+                return {
+                    success: true,
+                    file: image
+                };
+            }
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av bildet', {
+                variant: 'error'
+            });
+        }
+        return { success: false, file: { url: '', id: 0 } };
+    }
+    async function handleGetImage(name: string): Promise<{
+        data: Blob;
+    }> {
+        try {
+            const res = await getImageFile(name);
+            if (res.status === 200) {
+                return res;
+            }
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lasting av bildet', {
+                variant: 'error'
+            });
+            throw new Error(error);
+        }
+        throw new Error('');
+    }
+
+    return (
+        <>
+            <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => setOpen(!open)}>
+                Tilpass generell vurdering
+            </Button>
+            <Dialog
+                fullScreen
+                open={open}
+                onClose={() => setOpen(false)}
+                aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">
+                    Tilpass generell vurdering
+                </DialogTitle>
+                <DialogContent>
+                    <div className={classes.propertiesBox}>
+                        <Editor
+                            setContent={setStatement}
+                            text={statement}
+                            uploadImage={handleSaveImage}
+                            loadImage={handleGetImage}
+                        />
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)} color="primary">

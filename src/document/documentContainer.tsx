@@ -128,6 +128,7 @@ export const DocumentContainer = ({
                 isModuleActive,
                 infoText: _infoText,
                 statementText: _statementText,
+                setStatementText,
                 reportSetting,
                 setReportSetting,
 
@@ -151,6 +152,9 @@ interface ContextInterface {
 
     infoText: OutputData | undefined;
     statementText: OutputData | undefined;
+    setStatementText: React.Dispatch<
+        React.SetStateAction<OutputData | undefined>
+    >;
     reportSetting: ReportSetting | undefined;
     setReportSetting: React.Dispatch<
         React.SetStateAction<ReportSetting | undefined>

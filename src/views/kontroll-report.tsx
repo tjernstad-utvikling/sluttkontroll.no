@@ -8,7 +8,8 @@ import {
     FrontPageAdjusting,
     KontrollDocAdjusting,
     MeasurementAdjusting,
-    ReportProperties
+    ReportProperties,
+    ReportStatement
 } from '../document/customizeData/kontrollReportData';
 
 import Container from '@mui/material/Container';
@@ -67,6 +68,9 @@ const KontrollReportView = () => {
                                             <ReportSwitch
                                                 id={ReportModules.statementPage}
                                                 label="Generell vurdering"
+                                            />
+                                            <ReportStatement
+                                                kontrollId={Number(kontrollId)}
                                             />
                                         </div>
                                         <div

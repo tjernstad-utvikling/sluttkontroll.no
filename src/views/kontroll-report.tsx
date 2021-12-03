@@ -43,7 +43,7 @@ const KontrollReportView = () => {
                                             }}>
                                             <ReportSwitch
                                                 id={ReportModules.frontPage}
-                                                label="Forside"
+                                                label="Framside"
                                             />
 
                                             <FrontPageAdjusting />

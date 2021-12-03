@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { DateText } from './text';
+import { format } from 'date-fns';
 
 export const Footer = () => {
     return (
@@ -14,7 +15,8 @@ export const Footer = () => {
                     color: 'grey'
                 }}>
                 <Text style={{ fontSize: 12 }}>
-                    Utskrift: <DateText>28.07.2021</DateText>
+                    Utskrift:{' '}
+                    <DateText>{format(new Date(), 'yyyy-MM-dd')}</DateText>
                 </Text>
                 <Text style={{ fontSize: 12 }}>Sluttkontroll.no</Text>
 

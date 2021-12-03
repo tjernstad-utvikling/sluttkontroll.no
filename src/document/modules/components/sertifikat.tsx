@@ -3,7 +3,6 @@ import { TableHeader, TableRow } from './table';
 
 import { DateText } from './text';
 import { Sertifikat } from '../../../contracts/certificateApi';
-import { format } from 'date-fns';
 
 interface SertifikatBlockProps {
     sertifikater: Sertifikat[];

@@ -1,18 +1,20 @@
+import { LocalImage, ReportSetting } from '../../contracts/reportApi';
 import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { Footer } from './components/footer';
 import { Header } from './components/header';
 import { OutputData } from '@editorjs/editorjs';
-import { ReportSetting } from '../../contracts/reportApi';
 import { TextBox } from './components/box';
 
 interface StatementPageProps {
     statement: OutputData | undefined;
     reportSetting: ReportSetting | undefined;
+    statementImages: LocalImage[];
 }
 export const StatementPage = ({
     statement,
-    reportSetting
+    reportSetting,
+    statementImages
 }: StatementPageProps): JSX.Element => {
     if (statement && reportSetting) {
         return (
@@ -27,7 +29,7 @@ export const StatementPage = ({
                     date={reportSetting.reportDate}
                 />
 
-                <TextBox text={statement} />
+                <TextBox text={statement} statementImages={statementImages} />
 
                 <Footer />
             </Page>

@@ -1,11 +1,17 @@
 import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
+import {
+    LocalImage,
+    ReportModules,
+    ReportSetting
+} from '../contracts/reportApi';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
-import { ReportModules, ReportSetting } from '../contracts/reportApi';
 import { createContext, useContext, useState } from 'react';
 import { handleReportSettings, loadReportStatement } from './utils/loaders';
 
 import { Avvik } from '../contracts/avvikApi';
 import { OutputData } from '@editorjs/editorjs';
+import { errorHandler } from '../tools/errorHandler';
+import { getImageFile } from '../api/imageApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
 import { useAvvik } from '../data/avvik';
@@ -13,6 +19,7 @@ import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { useMeasurement } from '../data/measurement';
+import { useSnackbar } from 'notistack';
 import { useUser } from '../data/user';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
@@ -30,11 +37,48 @@ export const DocumentContainer = ({
     kontrollId: number;
     objectId: number;
 }): JSX.Element => {
+    const { enqueueSnackbar } = useSnackbar();
+
     const [kontroll, setKontroll] = useState<ReportKontroll>();
     const [reportSetting, setReportSetting] = useState<ReportSetting>();
 
     const [_infoText, setInfoText] = useState<OutputData>();
     const [_statementText, setStatementText] = useState<OutputData>();
+    const [_statementImages, setStatementImages] = useState<LocalImage[]>([]);
+
+    useEffect(() => {
+        const load = async () => {
+            if (_statementText) {
+                for (const block of _statementText.blocks) {
+                    if (block.type === 'image') {
+                        try {
+                            const res = await getImageFile(block.data.file.url);
+
+                            if (res.status === 200) {
+                                console.log(res);
+                                const url = URL.createObjectURL(res.data);
+
+                                setStatementImages((prev) => {
+                                    return [
+                                        ...prev,
+                                        { name: block.data.file.url, uri: url }
+                                    ];
+                                });
+                            }
+                        } catch (error: any) {
+                            enqueueSnackbar('Problemer med lasting av bilder');
+                            errorHandler(error);
+                        }
+                    }
+                }
+            }
+        };
+        load();
+        return () => {
+            _statementImages.forEach((i) => URL.revokeObjectURL(i.uri));
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [_statementText]);
 
     const [previewDocument, setPreviewDocument] = useState<boolean>(false);
 
@@ -71,7 +115,9 @@ export const DocumentContainer = ({
         loadKontrollerByObjekt(objectId);
         loadAvvikByKontroller([_kontroll]);
 
-        setStatementText(await loadReportStatement(kontrollId));
+        setStatementText(
+            await loadReportStatement(kontrollId, enqueueSnackbar)
+        );
     });
 
     useEffect(() => {
@@ -129,6 +175,8 @@ export const DocumentContainer = ({
             value={{
                 toggleModuleVisibilityState,
                 previewDocument,
+                setPreviewDocument,
+                statementImages: _statementImages,
 
                 isModuleActive,
                 infoText: _infoText,
@@ -155,6 +203,8 @@ export const DocumentContainer = ({
 interface ContextInterface {
     toggleModuleVisibilityState: (id: ReportModules) => void;
     previewDocument: boolean;
+    setPreviewDocument: React.Dispatch<React.SetStateAction<boolean>>;
+    statementImages: LocalImage[];
 
     infoText: OutputData | undefined;
     statementText: OutputData | undefined;

@@ -105,7 +105,7 @@ export const InfoPage = ({
                 )}
                 <Spacer />
 
-                <TextBox text={infoText} />
+                <TextBox text={infoText} statementImages={[]} />
 
                 <Footer />
             </Page>

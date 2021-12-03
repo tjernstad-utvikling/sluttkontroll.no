@@ -1,38 +1,29 @@
-import { OutputBlockData, OutputData } from '@editorjs/editorjs';
+import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { getReportSetting, getReportStatement } from '../../api/reportApi';
 
+import { OutputData } from '@editorjs/editorjs';
 import { ReportKontroll } from '../../contracts/kontrollApi';
 import { ReportSetting } from '../../contracts/reportApi';
+import { errorHandler } from '../../tools/errorHandler';
 import { format } from 'date-fns';
-import { getImageFile } from '../../api/imageApi';
 
 export async function loadReportStatement(
-    kontrollId: number
+    kontrollId: number,
+    enqueueSnackbar: (
+        message: SnackbarMessage,
+        options?: OptionsObject | undefined
+    ) => SnackbarKey
 ): Promise<OutputData | undefined> {
     try {
         const { status, rapportStatement: text } = await getReportStatement(
             kontrollId
         );
-        let _blocks: OutputBlockData<string, any>[] = [];
         if (status === 200 && text) {
-            for (let block of text.blocks) {
-                if (block.type === 'image') {
-                    const res = await getImageFile(block.data.file.url);
-
-                    if (res.status === 200) {
-                        block.data.file.localUrl = URL.createObjectURL(
-                            res.data
-                        );
-                        _blocks = [..._blocks, block];
-                    }
-                } else {
-                    _blocks = [..._blocks, block];
-                }
-            }
-            return { ...text, blocks: _blocks };
+            return text;
         }
     } catch (error: any) {
-        throw new Error(error);
+        enqueueSnackbar('Feil ved henting av kontrollerklæring');
+        errorHandler(error);
     }
 }
 

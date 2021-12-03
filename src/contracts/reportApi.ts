@@ -39,3 +39,8 @@ export interface RapportUser {
     name: string;
     phone: string;
 }
+
+export interface LocalImage {
+    name: string;
+    uri: string;
+}

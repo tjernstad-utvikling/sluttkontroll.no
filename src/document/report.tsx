@@ -1,5 +1,6 @@
 import { Document, Font } from '@react-pdf/renderer';
 
+import Button from '@mui/material/Button';
 import { FrontPage } from './modules/frontPage';
 import { InfoPage } from './modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
@@ -41,6 +42,8 @@ export const SlkReport = () => {
     const {
         isModuleActive,
         previewDocument,
+        setPreviewDocument,
+        statementImages,
         reportSetting,
         infoText,
         kontroll,
@@ -55,7 +58,7 @@ export const SlkReport = () => {
     const size = useWindowSize();
     if (previewDocument) {
         return (
-            <PDFViewer height={size.height}>
+            <PDFViewer height={size.height} width={size.width - 400}>
                 <Document>
                     {isModuleActive(ReportModules.frontPage) && (
                         <FrontPage
@@ -77,6 +80,7 @@ export const SlkReport = () => {
                         <StatementPage
                             reportSetting={reportSetting}
                             statement={statementText}
+                            statementImages={statementImages}
                         />
                     )}
                     {isModuleActive(ReportModules.skjemaPage) &&
@@ -125,5 +129,14 @@ export const SlkReport = () => {
             </PDFViewer>
         );
     }
-    return <div />;
+    return (
+        <div>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setPreviewDocument(true)}>
+                Forhåndsvis rapport
+            </Button>
+        </div>
+    );
 };

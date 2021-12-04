@@ -1,4 +1,4 @@
-import { Link, StyleSheet, Text } from '@react-pdf/renderer';
+import { Link, Text as PdfRTExt, StyleSheet } from '@react-pdf/renderer';
 
 import { format } from 'date-fns';
 
@@ -6,7 +6,7 @@ interface TextProps {
     children?: React.ReactNode;
 }
 export const Paragraph = ({ children }: TextProps) => {
-    return <Text style={styles.p}>{children}</Text>;
+    return <PdfRTExt style={styles.p}>{children}</PdfRTExt>;
 };
 interface DateTextProps {
     children: string | undefined;
@@ -14,50 +14,55 @@ interface DateTextProps {
 export const DateText = ({ children }: DateTextProps) => {
     if (children) {
         return (
-            <Text style={styles.tekst}>
+            <PdfRTExt style={styles.tekst}>
                 {format(new Date(children), 'dd.MM.yyyy')}
-            </Text>
+            </PdfRTExt>
         );
     }
-    return <Text style={styles.tekst}>{children}</Text>;
+    return <PdfRTExt style={styles.tekst}>{children}</PdfRTExt>;
 };
 
 export const BoldText = ({ children }: TextProps) => {
-    return <Text style={styles.bold}>{children}</Text>;
+    return <PdfRTExt style={styles.bold}>{children}</PdfRTExt>;
+};
+export const Text = ({ children }: TextProps) => {
+    return <PdfRTExt style={styles.tekst}>{children}</PdfRTExt>;
 };
 
 export const ItalicText = ({ children }: TextProps) => {
-    return <Text style={styles.italic}>{children}</Text>;
+    return <PdfRTExt style={styles.italic}>{children}</PdfRTExt>;
 };
 
 export const ItalicBoldText = ({ children }: TextProps) => {
-    return <Text style={[styles.italic, styles.bold]}>{children}</Text>;
+    return <PdfRTExt style={[styles.italic, styles.bold]}>{children}</PdfRTExt>;
 };
 
 export const Header1 = ({ children }: TextProps) => {
     return (
-        <Text style={{ fontSize: 24, textAlign: 'center' }}>{children}</Text>
+        <PdfRTExt style={{ fontSize: 24, textAlign: 'center' }}>
+            {children}
+        </PdfRTExt>
     );
 };
 
 export const Header2 = ({ children }: TextProps) => {
-    return <Text style={{ fontSize: 22 }}>{children}</Text>;
+    return <PdfRTExt style={{ fontSize: 22 }}>{children}</PdfRTExt>;
 };
 
 export const Header3 = ({ children }: TextProps) => {
-    return <Text style={{ fontSize: 18 }}>{children}</Text>;
+    return <PdfRTExt style={{ fontSize: 18 }}>{children}</PdfRTExt>;
 };
 
 export const Header4 = ({ children }: TextProps) => {
-    return <Text style={{ fontSize: 16 }}>{children}</Text>;
+    return <PdfRTExt style={{ fontSize: 16 }}>{children}</PdfRTExt>;
 };
 
 export const Header5 = ({ children }: TextProps) => {
-    return <Text style={{ fontSize: 12 }}>{children}</Text>;
+    return <PdfRTExt style={{ fontSize: 12 }}>{children}</PdfRTExt>;
 };
 
 export const Header6 = ({ children }: TextProps) => {
-    return <Text style={{ fontSize: 10 }}>{children}</Text>;
+    return <PdfRTExt style={{ fontSize: 10 }}>{children}</PdfRTExt>;
 };
 
 interface LinkTextProps {
@@ -75,10 +80,10 @@ const styles = StyleSheet.create({
     p: {
         fontSize: 12,
         paddingBottom: 10,
-        fontFamily: 'Arial'
+        fontFamily: 'Roboto'
     },
     tekst: {
-        fontFamily: 'Arial'
+        fontFamily: 'Roboto'
     },
     bold: {
         fontWeight: 'bold'

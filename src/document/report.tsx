@@ -6,32 +6,32 @@ import { InfoPage } from './modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
 import { PDFViewer } from '@react-pdf/renderer';
 import { ReportModules } from '../contracts/reportApi';
+import RobotoBold from '../assets/fonts/Roboto-Bold.ttf';
+import RobotoBoldItalic from '../assets/fonts/Roboto-BoldItalic.ttf';
+import RobotoItalic from '../assets/fonts/Roboto-Italic.ttf';
+import RobotoRegular from '../assets/fonts/Roboto-Regular.ttf';
 import { SkjemaPage } from './modules/skjemaPage';
 import { StatementPage } from './modules/statementPage';
-import arial from '../assets/fonts/arial.ttf';
-import arialBold from '../assets/fonts/arialBold.ttf';
-import arialBoldItalic from '../assets/fonts/arialBoldItalic.ttf';
-import arialItalic from '../assets/fonts/arialItalic.ttf';
 import { useReport } from './documentContainer';
 import { useWindowSize } from '../hooks/useWindowSize';
 
 Font.register({
-    family: 'Arial',
+    family: 'Roboto',
     fonts: [
         {
-            src: arial
+            src: RobotoRegular
         },
         {
-            src: arialBold,
+            src: RobotoBold,
             fontWeight: 'bold'
         },
         {
-            src: arialItalic,
+            src: RobotoBoldItalic,
             fontWeight: 'normal',
             fontStyle: 'italic'
         },
         {
-            src: arialBoldItalic,
+            src: RobotoItalic,
             fontWeight: 'bold',
             fontStyle: 'italic'
         }

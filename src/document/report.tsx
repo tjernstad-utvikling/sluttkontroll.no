@@ -52,10 +52,14 @@ export const SlkReport = () => {
         avvik,
         statementText,
         measurements,
-        measurementTypes
+        measurementTypes,
+        hasLoaded
     } = useReport();
 
     const size = useWindowSize();
+    if (!hasLoaded) {
+        return <div>Laster...</div>;
+    }
     if (previewDocument) {
         return (
             <PDFViewer height={size.height} width={size.width - 400}>

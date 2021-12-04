@@ -44,6 +44,8 @@ export const DocumentContainer = ({
     const [kontroll, setKontroll] = useState<ReportKontroll>();
     const [reportSetting, setReportSetting] = useState<ReportSetting>();
 
+    const [hasLoaded, setHasLoaded] = useState<boolean>(false);
+
     const debouncedSetting = useDebounce<ReportSetting | undefined>(
         reportSetting,
         3000
@@ -109,8 +111,7 @@ export const DocumentContainer = ({
     const [filteredSkjemaer, setFilteredSkjemaer] = useState<Skjema[]>();
 
     const {
-        state: { avvik },
-        loadAvvikByKontroller
+        state: { avvik }
     } = useAvvik();
 
     const {
@@ -121,26 +122,30 @@ export const DocumentContainer = ({
 
     useEffectOnce(async () => {
         loadUsers();
-        const { kontroll: _kontroll } = await getKontrollReportData(kontrollId);
-
-        setKontroll(_kontroll);
-        await handleReportSettings({
-            kontroll: _kontroll,
-            setReportSetting
-        });
-
-        const { infoText } = await getInfoText();
-        setInfoText(infoText);
-        loadKontrollerByObjekt(objectId);
-        loadAvvikByKontroller([_kontroll]);
-
-        setStatementText(
-            await loadReportStatement(kontrollId, enqueueSnackbar)
+        const { status, kontroll: _kontroll } = await getKontrollReportData(
+            kontrollId
         );
+        if (status === 200) {
+            setKontroll(_kontroll);
+            await handleReportSettings({
+                kontroll: _kontroll,
+                setReportSetting
+            });
+
+            const { infoText } = await getInfoText();
+            setInfoText(infoText);
+
+            await loadKontrollerByObjekt(objectId);
+
+            setStatementText(
+                await loadReportStatement(kontrollId, enqueueSnackbar)
+            );
+            setHasLoaded(true);
+        }
     });
 
     useEffect(() => {
-        if (skjemaer !== undefined) {
+        if (skjemaer !== undefined && hasLoaded) {
             setSkjemaer(skjemaer.filter((s) => s.kontroll.id === kontrollId));
             if (reportSetting?.selectedSkjemaer.length === 0) {
                 setFilteredSkjemaer(
@@ -154,7 +159,7 @@ export const DocumentContainer = ({
                 );
             }
         }
-    }, [skjemaer, kontrollId, reportSetting?.selectedSkjemaer]);
+    }, [skjemaer, kontrollId, reportSetting, hasLoaded]);
 
     const toggleModuleVisibilityState = (id: ReportModules) => {
         setPreviewDocument(false);
@@ -219,6 +224,7 @@ export const DocumentContainer = ({
             value={{
                 toggleModuleVisibilityState,
                 previewDocument,
+                hasLoaded,
                 setPreviewDocument,
                 statementImages: _statementImages,
 
@@ -247,6 +253,7 @@ export const DocumentContainer = ({
 interface ContextInterface {
     toggleModuleVisibilityState: (id: ReportModules) => void;
     previewDocument: boolean;
+    hasLoaded: boolean;
     setPreviewDocument: React.Dispatch<React.SetStateAction<boolean>>;
     statementImages: LocalImage[];
 

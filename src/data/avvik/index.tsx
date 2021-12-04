@@ -37,7 +37,7 @@ export const AvvikContextProvider = ({
 
     const loadAvvikByKontroller = async (
         kontroller: Kontroll[]
-    ): Promise<void> => {
+    ): Promise<boolean> => {
         try {
             if (kontroller.length > 0) {
                 const { status, avvik } = await getAvvikByKontrollList(
@@ -49,10 +49,13 @@ export const AvvikContextProvider = ({
                         type: ActionType.addAvvik,
                         payload: avvik
                     });
+                    return true;
                 }
             }
+            return false;
         } catch (error: any) {
             errorHandler(error);
+            return true;
         }
     };
 

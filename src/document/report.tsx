@@ -26,12 +26,12 @@ Font.register({
             fontWeight: 'bold'
         },
         {
-            src: RobotoBoldItalic,
+            src: RobotoItalic,
             fontWeight: 'normal',
             fontStyle: 'italic'
         },
         {
-            src: RobotoItalic,
+            src: RobotoBoldItalic,
             fontWeight: 'bold',
             fontStyle: 'italic'
         }

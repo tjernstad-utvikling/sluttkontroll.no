@@ -1,8 +1,9 @@
-import { Image, Text, View } from '@react-pdf/renderer';
+import { Image, View } from '@react-pdf/renderer';
 import { TableHeader, TableRow } from './table';
 
 import { DateText } from './text';
 import { Sertifikat } from '../../../contracts/certificateApi';
+import { Text } from './text';
 
 interface SertifikatBlockProps {
     sertifikater: Sertifikat[];

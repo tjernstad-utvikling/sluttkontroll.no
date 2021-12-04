@@ -1,8 +1,10 @@
 import { Link, Text as PdfRTExt, StyleSheet } from '@react-pdf/renderer';
 
+import { Style } from '@react-pdf/types';
 import { format } from 'date-fns';
 
 interface TextProps {
+    style?: Style;
     children?: React.ReactNode;
 }
 export const Paragraph = ({ children }: TextProps) => {
@@ -25,8 +27,8 @@ export const DateText = ({ children }: DateTextProps) => {
 export const BoldText = ({ children }: TextProps) => {
     return <PdfRTExt style={styles.bold}>{children}</PdfRTExt>;
 };
-export const Text = ({ children }: TextProps) => {
-    return <PdfRTExt style={styles.tekst}>{children}</PdfRTExt>;
+export const Text = ({ children, style }: TextProps) => {
+    return <PdfRTExt style={[styles.tekst, style || {}]}>{children}</PdfRTExt>;
 };
 
 export const ItalicText = ({ children }: TextProps) => {

@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Text as PdfRTExt, StyleSheet, View } from '@react-pdf/renderer';
 
 import { DateText } from './text';
+import { Text } from './text';
 import { format } from 'date-fns';
 
 export const Footer = () => {
@@ -20,8 +21,12 @@ export const Footer = () => {
                 </Text>
                 <Text style={{ fontSize: 12 }}>Sluttkontroll.no</Text>
 
-                <Text
-                    style={{ fontSize: 12, color: 'black' }}
+                <PdfRTExt
+                    style={{
+                        fontSize: 12,
+                        color: 'black',
+                        fontFamily: 'Roboto'
+                    }}
                     render={({ pageNumber, totalPages }) =>
                         `${pageNumber} / ${totalPages}`
                     }

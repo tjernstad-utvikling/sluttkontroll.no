@@ -1,4 +1,4 @@
-import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Page, StyleSheet, View } from '@react-pdf/renderer';
 import {
     RapportEgenskaper,
     RapportUser,
@@ -11,6 +11,7 @@ import { Header } from './components/header';
 import { OutputData } from '@editorjs/editorjs';
 import { SertifikatBlock } from './components/sertifikat';
 import { Spacer } from './components/spacing';
+import { Text } from './components/text';
 import { TextBox } from './components/box';
 
 interface InfoPageProps {

@@ -1,5 +1,6 @@
-import { Image as RPRImage, Text, View } from '@react-pdf/renderer';
+import { Image as RPRImage, View } from '@react-pdf/renderer';
 
+import { Text } from './text';
 import { placeholderImage } from '../../../components/image';
 
 export const PdfImage = ({

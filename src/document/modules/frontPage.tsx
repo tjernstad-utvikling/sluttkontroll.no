@@ -1,9 +1,10 @@
-import { Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Image, Page, StyleSheet, View } from '@react-pdf/renderer';
 
 import { DateText } from './components/text';
 import PdfLogo from '../../assets/pdf-logo.png';
 import { ReportKontroll } from '../../contracts/kontrollApi';
 import { ReportSetting } from '../../contracts/reportApi';
+import { Text } from './components/text';
 
 interface FrontPageProps {
     reportSetting: ReportSetting | undefined;

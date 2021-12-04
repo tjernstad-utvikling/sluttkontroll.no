@@ -1,6 +1,6 @@
 import { Checklist, Skjema } from '../../contracts/kontrollApi';
 import { Measurement, MeasurementType } from '../../contracts/measurementApi';
-import { Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Page, StyleSheet, View } from '@react-pdf/renderer';
 import { TableCell, TableHeader, TableRow } from './components/table';
 import { useEffect, useState } from 'react';
 
@@ -12,6 +12,7 @@ import { MeasurementModule } from './components/measurement';
 import { ReportSetting } from '../../contracts/reportApi';
 import { SjekklisteValueGetter } from '../../tables/sjekkliste';
 import { Spacer } from './components/spacing';
+import { Text } from './components/text';
 
 interface SkjemaPageProps {
     reportSetting: ReportSetting | undefined;

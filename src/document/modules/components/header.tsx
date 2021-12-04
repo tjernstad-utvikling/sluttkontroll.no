@@ -1,6 +1,7 @@
-import { Image, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Image, StyleSheet, View } from '@react-pdf/renderer';
 
 import { DateText } from './text';
+import { Text } from './text';
 import pdfLogo from '../../../assets/pdf-logo.png';
 
 interface HeaderProps {

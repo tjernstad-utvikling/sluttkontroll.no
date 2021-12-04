@@ -39,14 +39,14 @@ export const FrontPageAdjusting = () => {
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass rapportinnstillinger
+                Rapportinnstillinger
             </Button>
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}
                 aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">
-                    Tilpass rapportinnstillinger
+                    Rapportinnstillinger
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -112,7 +112,7 @@ export const KontrollDocAdjusting = ({
                 onClose={() => setOpen(false)}
                 aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">
-                    Tilpass valgte kontrollskjemaer
+                    Utvalgte kontrollskjemaer
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -170,15 +170,13 @@ export const MeasurementAdjusting = () => {
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass måleprotokoll
+                Måleprotokoll
             </Button>
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}
                 aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">
-                    Tilpass måleprotokoll
-                </DialogTitle>
+                <DialogTitle id="form-dialog-title">Måleprotokoll</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Velg plassering av måleprotokoll
@@ -268,7 +266,7 @@ export const ReportProperties = () => {
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass rapportegenskaper
+                Rapportegenskaper
             </Button>
             <Dialog
                 fullScreen
@@ -276,7 +274,7 @@ export const ReportProperties = () => {
                 onClose={() => setOpen(false)}
                 aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">
-                    Tilpass rapportegenskaper
+                    Rapportegenskaper
                 </DialogTitle>
                 <DialogContent>
                     {kontroll !== undefined && klienter !== undefined && (
@@ -395,7 +393,7 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Tilpass generell vurdering
+                Generell vurdering
             </Button>
             <Dialog
                 fullScreen
@@ -403,7 +401,7 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
                 onClose={() => setOpen(false)}
                 aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">
-                    Tilpass generell vurdering
+                    Generell vurdering
                 </DialogTitle>
                 <DialogContent>
                     <div className={classes.propertiesBox}>

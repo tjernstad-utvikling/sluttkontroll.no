@@ -27,7 +27,7 @@ export const SkjemaSchema = ({
                 area: Yup.string().required('Areal navn er påkrevd')
             })}
             onSubmit={async (values, { setSubmitting }) => {
-                await onSubmit(values.area, values.omrade);
+                await onSubmit(values.omrade, values.area);
             }}>
             {({ isSubmitting, setFieldValue, values }) => {
                 return (
@@ -35,18 +35,18 @@ export const SkjemaSchema = ({
                         <TextField
                             variant="outlined"
                             fullWidth
-                            id="omrade"
-                            label="Område"
-                            name="omrade"
+                            id="area"
+                            label="Areal"
+                            name="area"
                             autoFocus
                         />
 
                         <TextField
                             variant="outlined"
                             fullWidth
-                            id="area"
-                            label="Areal"
-                            name="area"
+                            id="omrade"
+                            label="Område"
+                            name="omrade"
                         />
 
                         <LoadingButton

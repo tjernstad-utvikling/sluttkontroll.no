@@ -125,8 +125,7 @@ const SjekklisteEditView = () => {
                                                 <CheckpointTable
                                                     checklists={_checklists}
                                                     templateList={
-                                                        template?.skjemaTemplateCheckpoints ||
-                                                        []
+                                                        template?.skjemaTemplateCheckpoints
                                                     }
                                                     checkpoints={checkpoints}
                                                     onSelected={(ids) =>

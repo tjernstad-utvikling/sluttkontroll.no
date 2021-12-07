@@ -35,18 +35,18 @@ export const SkjemaSchema = ({
                         <TextField
                             variant="outlined"
                             fullWidth
-                            id="omrade"
-                            label="Område"
-                            name="omrade"
+                            id="area"
+                            label="Areal"
+                            name="area"
                             autoFocus
                         />
 
                         <TextField
                             variant="outlined"
                             fullWidth
-                            id="area"
-                            label="Areal"
-                            name="area"
+                            id="omrade"
+                            label="Område"
+                            name="omrade"
                         />
 
                         <LoadingButton

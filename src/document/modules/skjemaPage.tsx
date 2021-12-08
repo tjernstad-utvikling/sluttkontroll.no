@@ -1,91 +1,109 @@
 import { Checklist, Skjema } from '../../contracts/kontrollApi';
 import { Measurement, MeasurementType } from '../../contracts/measurementApi';
-import { Page, StyleSheet, Text } from '@react-pdf/renderer';
+import { Page, StyleSheet, View } from '@react-pdf/renderer';
 import { TableCell, TableHeader, TableRow } from './components/table';
 import { useEffect, useState } from 'react';
 
 import { Avvik } from '../../contracts/avvikApi';
 import { ChecklistRow } from './components/skjema';
-import { Footer } from './utils/footer';
-import { FrontPageData } from '../documentContainer';
-import { Header } from './utils/header';
+import { Footer } from './components/footer';
+import { Header } from './components/header';
 import { MeasurementModule } from './components/measurement';
+import { ReportSetting } from '../../contracts/reportApi';
 import { SjekklisteValueGetter } from '../../tables/sjekkliste';
 import { Spacer } from './components/spacing';
+import { Text } from './components/text';
 
 interface SkjemaPageProps {
-    frontPageData: FrontPageData;
+    reportSetting: ReportSetting | undefined;
     skjema: Skjema;
-    checklists: Checklist[];
-    avvik: Avvik[];
+    checklists: Checklist[] | undefined;
+    avvik: Avvik[] | undefined;
     hasInlineMeasurements: boolean;
-    measurements: Measurement[];
-    measurementTypes: MeasurementType[];
+    measurements: Measurement[] | undefined;
+    measurementTypes: MeasurementType[] | undefined;
 }
 export const SkjemaPage = ({
-    frontPageData,
+    reportSetting,
     skjema,
     checklists,
     avvik,
     hasInlineMeasurements,
     measurements,
     measurementTypes
-}: SkjemaPageProps) => {
+}: SkjemaPageProps): JSX.Element => {
     const [_checklists, setChecklists] = useState<Checklist[]>([]);
 
     useEffect(() => {
-        setChecklists(
-            checklists.sort((a, b) =>
-                String(SjekklisteValueGetter(a).prosedyreNr()).localeCompare(
-                    String(SjekklisteValueGetter(b).prosedyreNr()),
-                    undefined,
-                    { numeric: true, sensitivity: 'base' }
+        if (checklists) {
+            setChecklists(
+                checklists.sort((a, b) =>
+                    String(
+                        SjekklisteValueGetter(a).prosedyreNr()
+                    ).localeCompare(
+                        String(SjekklisteValueGetter(b).prosedyreNr()),
+                        undefined,
+                        { numeric: true, sensitivity: 'base' }
+                    )
                 )
-            )
-        );
+            );
+        }
     }, [checklists]);
-    return (
-        <Page
-            style={[
-                { position: 'relative', top: 0, left: 0 },
-                styles.container
-            ]}>
-            <Header
-                title={frontPageData.title}
-                location={frontPageData.kontrollsted}
-                date={frontPageData.date}
-            />
-            <Text style={{ paddingVertical: 5 }}>
-                {skjema.area}, {skjema.omrade}
-            </Text>
-            <TableHeader title="Kontrollskjema" />
-            {_checklists.map((checklist, index) => (
-                <ChecklistRow
-                    isEvenIndex={index % 2 === 0}
-                    key={checklist.id}
-                    nr={checklist.checkpoint.prosedyreNr}
-                    prosedyre={checklist.checkpoint.prosedyre}
-                    avvik={avvik.filter((a) => a.checklist.id === checklist.id)}
+    if (reportSetting && avvik && measurements && measurementTypes) {
+        return (
+            <Page
+                style={[
+                    { position: 'relative', top: 0, left: 0 },
+                    styles.container
+                ]}>
+                <Header
+                    title={reportSetting.reportTitle}
+                    location={reportSetting.reportSite}
+                    date={reportSetting.reportDate}
                 />
-            ))}
-            {skjema.kommentar !== null && skjema.kommentar !== '' && (
-                <TableRow hasBottomBorder hasTopBorder>
-                    <TableCell>{skjema.kommentar}</TableCell>
-                </TableRow>
-            )}
-
-            <Spacer />
-            {hasInlineMeasurements && (
-                <>
-                    <Text style={{ paddingVertical: 5 }}>Måleprotokoll</Text>
-                    <MeasurementModule
-                        measurementTypes={measurementTypes}
-                        measurements={measurements}
+                <Text style={{ paddingVertical: 5 }}>
+                    {skjema.area}, {skjema.omrade}
+                </Text>
+                <TableHeader title="Kontrollskjema" />
+                {_checklists.map((checklist, index) => (
+                    <ChecklistRow
+                        isEvenIndex={index % 2 === 0}
+                        key={checklist.id}
+                        nr={checklist.checkpoint.prosedyreNr}
+                        prosedyre={checklist.checkpoint.prosedyre}
+                        avvik={avvik.filter(
+                            (a) => a.checklist.id === checklist.id
+                        )}
                     />
-                </>
-            )}
+                ))}
+                {skjema.kommentar !== null && skjema.kommentar !== '' && (
+                    <TableRow hasBottomBorder hasTopBorder>
+                        <TableCell>{skjema.kommentar}</TableCell>
+                    </TableRow>
+                )}
 
-            <Footer />
+                <Spacer />
+                {hasInlineMeasurements && (
+                    <>
+                        <Text style={{ paddingVertical: 5 }}>
+                            Måleprotokoll
+                        </Text>
+                        <MeasurementModule
+                            measurementTypes={measurementTypes}
+                            measurements={measurements}
+                        />
+                    </>
+                )}
+
+                <Footer />
+            </Page>
+        );
+    }
+    return (
+        <Page style={{ position: 'relative', top: 0, left: 0 }}>
+            <View style={styles.container}>
+                <Text>Det mangler data for generering av tekst side</Text>
+            </View>
         </Page>
     );
 };

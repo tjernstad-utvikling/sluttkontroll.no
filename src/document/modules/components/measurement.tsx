@@ -47,10 +47,10 @@ export const MeasurementModule = ({
                             width={
                                 230
                             }>{`${typeName} / ${m.element}`}</TableCell>
-                        <TableCell width={90}>{m.resultat}</TableCell>
+                        <TableCell width={90}>{m.resultat / 100}</TableCell>
                         <TableCell width={50}>{m.enhet}</TableCell>
-                        <TableCell width={90}>{m.maks}</TableCell>
-                        <TableCell width={90}>{m.min}</TableCell>
+                        <TableCell width={90}>{m.maks / 100}</TableCell>
+                        <TableCell width={90}>{m.min / 100}</TableCell>
                     </TableRow>
                 );
             })}

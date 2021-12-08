@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@editorjs/editorjs": "^2.22.2",
+    "@editorjs/header": "^2.6.2",
+    "@editorjs/image": "https://github.com/tjernstad-utvikling/editorjs-image#master",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.0.3",
@@ -14,7 +17,6 @@
     "@react-pdf-viewer/get-file": "^2.7.2",
     "@react-pdf/renderer": "^2.0.20",
     "@sentry/react": "^6.13.2",
-    "@uiw/react-md-editor": "^3.6.0",
     "axios": "^0.21.1",
     "date-fns": "^2.23.0",
     "formik": "^2.2.9",
@@ -56,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "@types/editorjs__header": "^2.6.0",
     "@types/lodash.unionby": "^4.8.6",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",

@@ -30,7 +30,7 @@ export type AvvikActions = addAvvik | deleteAvvik | updateAvvik;
 
 export interface ContextInterface {
     state: AvvikState;
-    loadAvvikByKontroller: (kontroller: Kontroll[]) => Promise<void>;
+    loadAvvikByKontroller: (kontroller: Kontroll[]) => Promise<boolean>;
     deleteAvvik: (avvikId: number) => Promise<boolean>;
     updateAvvik: (avvik: Avvik) => Promise<boolean>;
     moveAvvik: (

@@ -102,12 +102,14 @@ export const KontrollContextProvider = ({
             errorHandler(error);
         }
     };
-    const loadKontrollerByObjekt = async (objektId: number): Promise<void> => {
+    const loadKontrollerByObjekt = async (
+        objektId: number
+    ): Promise<boolean> => {
         try {
             const { status, kontroller, skjemaer, checklists } =
                 await getKontrollerByObjekt(objektId);
 
-            loadAvvikByKontroller(kontroller);
+            await loadAvvikByKontroller(kontroller);
             loadMeasurementByKontroller(kontroller);
 
             if (status === 200) {
@@ -123,9 +125,12 @@ export const KontrollContextProvider = ({
                     type: ActionType.addChecklists,
                     payload: checklists
                 });
+                return true;
             }
+            return false;
         } catch (error: any) {
             errorHandler(error);
+            return false;
         }
     };
 

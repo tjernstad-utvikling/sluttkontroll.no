@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { PasteTableButton } from '../components/clipboard';
 import { RowAction } from '../tables/tableUtils';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import { User } from '../contracts/userApi';
 import { useClipBoard } from '../data/clipboard';
 
@@ -247,6 +248,12 @@ export const kontrollColumns = (
                                     : 'Sett som utført',
                                 action: () => toggleStatus(params.row.id),
                                 icon: <DoneOutlineIcon />
+                            },
+                            {
+                                name: 'Kontrollerklæring',
+                                to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report-statement`,
+                                skip: params.row.done,
+                                icon: <SummarizeIcon />
                             },
                             {
                                 name: 'Kontrollrapport',

@@ -1,28 +1,45 @@
-import { Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Image, Page, StyleSheet, View } from '@react-pdf/renderer';
 
-import { FrontPageData } from '../documentContainer';
+import { DateText } from './components/text';
 import PdfLogo from '../../assets/pdf-logo.png';
+import { ReportKontroll } from '../../contracts/kontrollApi';
+import { ReportSetting } from '../../contracts/reportApi';
+import { Text } from './components/text';
 
 interface FrontPageProps {
-    frontPageData: FrontPageData;
+    reportSetting: ReportSetting | undefined;
+    kontroll: ReportKontroll | undefined;
 }
-export const FrontPage = ({ frontPageData }: FrontPageProps) => {
+export const FrontPage = ({ reportSetting, kontroll }: FrontPageProps) => {
+    if (reportSetting && kontroll) {
+        return (
+            <Page style={{ position: 'relative', top: 0, left: 0 }}>
+                <View style={styles.container}>
+                    <View style={styles.text}>
+                        <Text style={styles.title}>{'Rapport '}</Text>
+                        <Text style={styles.title}>
+                            {reportSetting.reportTitle}
+                        </Text>
+                    </View>
+                    <View>
+                        <Image style={styles.logo} src={PdfLogo} />
+                    </View>
+                    <View style={[styles.text, styles.subText]}>
+                        <Text>{reportSetting.reportSite}</Text>
+                        <DateText>{reportSetting.reportDate}</DateText>
+                        <Text>Den elektriske installasjon er vurdert av:</Text>
+                        <Text>
+                            {kontroll.rapportEgenskaper?.rapportUser?.name}
+                        </Text>
+                    </View>
+                </View>
+            </Page>
+        );
+    }
     return (
         <Page style={{ position: 'relative', top: 0, left: 0 }}>
             <View style={styles.container}>
-                <View style={styles.text}>
-                    <Text style={styles.title}>{'Rapport '}</Text>
-                    <Text style={styles.title}>{frontPageData.title}</Text>
-                </View>
-                <View>
-                    <Image style={styles.logo} src={PdfLogo} />
-                </View>
-                <View style={[styles.text, styles.subText]}>
-                    <Text>{frontPageData.kontrollsted}</Text>
-                    <Text>{frontPageData.date}</Text>
-                    <Text>Den elektriske installasjon er vurdert av:</Text>
-                    <Text>{frontPageData.user}</Text>
-                </View>
+                <Text>Det mangler data for generering av forside</Text>
             </View>
         </Page>
     );

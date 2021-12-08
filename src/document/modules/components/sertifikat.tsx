@@ -1,8 +1,9 @@
-import { Image, Text, View } from '@react-pdf/renderer';
+import { Image, View } from '@react-pdf/renderer';
 import { TableHeader, TableRow } from './table';
 
+import { DateText } from './text';
 import { Sertifikat } from '../../../contracts/certificateApi';
-import { format } from 'date-fns';
+import { Text } from './text';
 
 interface SertifikatBlockProps {
     sertifikater: Sertifikat[];
@@ -29,9 +30,7 @@ export const SertifikatBlock = ({ sertifikater }: SertifikatBlockProps) => {
                                 flexDirection: 'row'
                             }}>
                             <Text style={{ width: 220 }}>Gyldig til</Text>
-                            <Text>
-                                {format(new Date(s.validTo), 'dd.MM.yyyy')}
-                            </Text>
+                            <DateText>{s.validTo}</DateText>
                         </View>
                     </View>
                     <View

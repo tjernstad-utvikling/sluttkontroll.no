@@ -1,4 +1,6 @@
-import { StyleSheet, Text, View } from '@react-pdf/renderer';
+import { StyleSheet, View } from '@react-pdf/renderer';
+
+import { Text } from './text';
 
 interface TableHeaderProps {
     title: string;

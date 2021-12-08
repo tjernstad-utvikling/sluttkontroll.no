@@ -3,11 +3,11 @@ import {
     Klient,
     Kontroll,
     Location,
-    RapportEgenskaper,
     ReportKontroll,
     Skjema
 } from '../contracts/kontrollApi';
 
+import { RapportEgenskaper } from '../contracts/reportApi';
 import { User } from '../contracts/userApi';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
@@ -136,10 +136,7 @@ export const getKontrollReportData = async (
             `/kontroll/${kontrollId}/report-data`
         );
 
-        if (status === 200) {
-            return { status, ...data };
-        }
-        throw new Error('not 200');
+        return { status, ...data };
     } catch (error: any) {
         errorHandler(error);
         throw new Error(error);

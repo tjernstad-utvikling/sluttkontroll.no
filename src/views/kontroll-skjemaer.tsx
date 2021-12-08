@@ -7,7 +7,7 @@ import {
 } from '../components/clipboard';
 import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
@@ -21,6 +21,7 @@ import { useAvvik } from '../data/avvik';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useKontroll } from '../data/kontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -29,8 +30,15 @@ const SkjemaerView = () => {
     const { classes } = usePageStyles();
     const { kontrollId } = useParams<SkjemaerViewParams>();
     const { url } = useRouteMatch();
+    const history = useHistory();
 
     const { confirm } = useConfirm();
+
+    /**
+     * Hotkeys
+     */
+    useHotkeys('n', () => history.push(`${url}/skjema/new`)); // new skjema
+    /***** */
 
     const [_skjemaer, setSkjemaer] = useState<Skjema[]>([]);
 

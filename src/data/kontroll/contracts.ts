@@ -85,7 +85,7 @@ export interface ContextInterface {
     state: kontrollState;
     loadKontroller: () => Promise<void>;
     loadKontrollerByKlient: (klientId: number) => Promise<void>;
-    loadKontrollerByObjekt: (objektId: number) => Promise<void>;
+    loadKontrollerByObjekt: (objektId: number) => Promise<boolean>;
     saveNewKontroll: (
         name: string,
         avvikUtbedrere: Array<User>,

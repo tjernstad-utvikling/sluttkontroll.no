@@ -1,59 +1,86 @@
 import { Card, CardContent } from '../components/card';
-import { getInfoText, setInfoText as setInfoTextApi } from '../api/settingsApi';
+import { getImageFile, uploadImageFile } from '../api/imageApi';
+import { getReportStatement, updateReportStatement } from '../api/reportApi';
+import { useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import { Editor } from '../tools/editor';
 import Grid from '@mui/material/Grid';
+import { KontrollReportStatementViewParams } from '../contracts/navigation';
 import { LoadingButton } from '../components/button';
 import { OutputData } from '@editorjs/editorjs';
+import { useDebounce } from '../hooks/useDebounce';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useParams } from 'react-router';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
-import { getImageFile } from '../api/imageApi';
 
-const InfoTextView = () => {
+const ReportStatement = () => {
     const { classes } = usePageStyles();
-    const [_infoText, setInfoText] = useState<OutputData>();
-    const [hasLoaded, setHasLoaded] = useState<boolean>(false);
+    const [statement, setStatement] = useState<OutputData>();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [hasLoaded, setHasLoaded] = useState<boolean>(false);
+    const { kontrollId } = useParams<KontrollReportStatementViewParams>();
 
     const { enqueueSnackbar } = useSnackbar();
 
+    const debouncedSearchTerm: OutputData | undefined = useDebounce<
+        OutputData | undefined
+    >(statement, 3000);
+    // Effect for API call
+    useEffect(
+        () => {
+            const save = async () => {
+                if (debouncedSearchTerm) {
+                    setIsSubmitting(true);
+                    updateReportStatement(
+                        debouncedSearchTerm,
+                        Number(kontrollId)
+                    ).then((results) => {
+                        setIsSubmitting(false);
+                    });
+                }
+            };
+            save();
+        },
+        [debouncedSearchTerm, kontrollId] // Only call effect if debounced search term changes
+    );
+
     useEffectOnce(async () => {
         setIsSubmitting(true);
-        const { status, infoText } = await getInfoText();
+        const { status, rapportStatement: text } = await getReportStatement(
+            Number(kontrollId)
+        );
         if (status === 200) {
-            setInfoText(infoText);
+            setStatement(text);
             setIsSubmitting(false);
             setHasLoaded(true);
         }
     });
 
-    const handleSaving = async () => {
-        setIsSubmitting(true);
-        if (_infoText !== undefined) {
-            const { status } = await setInfoTextApi(_infoText);
-            if (status === 204) {
-                enqueueSnackbar('informasjonstekst er lagret', {
-                    variant: 'success'
-                });
-            } else {
-                enqueueSnackbar(
-                    'Ukjent problem med lagring av informasjonstekst',
-                    {
-                        variant: 'error'
-                    }
-                );
-            }
-        }
-        setIsSubmitting(false);
-    };
-
     async function handleSaveImage(file: File): Promise<{
         success: boolean;
         file: { url: string; id: number };
     }> {
+        try {
+            const { status, image } = await uploadImageFile(
+                Number(kontrollId),
+                file
+            );
+            if (status === 200 && image) {
+                enqueueSnackbar('Bilde er lastet opp', {
+                    variant: 'success'
+                });
+                return {
+                    success: true,
+                    file: image
+                };
+            }
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av bildet', {
+                variant: 'error'
+            });
+        }
         return { success: false, file: { url: '', id: 0 } };
     }
     async function handleGetImage(name: string): Promise<{
@@ -78,12 +105,12 @@ const InfoTextView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card title="Sluttkontrollrapport informasjonstekst">
+                        <Card title="Kontrollerklæring">
                             <CardContent>
                                 {hasLoaded && (
                                     <Editor
-                                        setContent={setInfoText}
-                                        text={_infoText}
+                                        setContent={setStatement}
+                                        text={statement}
                                         uploadImage={handleSaveImage}
                                         loadImage={handleGetImage}
                                     />
@@ -91,7 +118,7 @@ const InfoTextView = () => {
                                 <LoadingButton
                                     isLoading={isSubmitting}
                                     type="button"
-                                    onClick={handleSaving}
+                                    onClick={() => console.log()}
                                     fullWidth
                                     variant="contained"
                                     color="primary">
@@ -106,4 +133,4 @@ const InfoTextView = () => {
     );
 };
 
-export default InfoTextView;
+export default ReportStatement;

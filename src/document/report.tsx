@@ -1,102 +1,146 @@
-import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
-import { Measurement, MeasurementType } from '../contracts/measurementApi';
+import { Document, Font } from '@react-pdf/renderer';
 
-import { Avvik } from '../contracts/avvikApi';
-import { Document } from '@react-pdf/renderer';
-import { FrontPage } from '../document/modules/frontPage';
-import { FrontPageData } from './documentContainer';
-import { InfoPage } from '../document/modules/infoPage';
+import Button from '@mui/material/Button';
+import { FrontPage } from './modules/frontPage';
+import { InfoPage } from './modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
+import { PDFViewer } from '@react-pdf/renderer';
+import { ReportModules } from '../contracts/reportApi';
+import RobotoBold from '../assets/fonts/Roboto-Bold.ttf';
+import RobotoBoldItalic from '../assets/fonts/Roboto-BoldItalic.ttf';
+import RobotoItalic from '../assets/fonts/Roboto-Italic.ttf';
+import RobotoRegular from '../assets/fonts/Roboto-Regular.ttf';
 import { SkjemaPage } from './modules/skjemaPage';
+import { StatementPage } from './modules/statementPage';
+import { useReport } from './documentContainer';
+import { useWindowSize } from '../hooks/useWindowSize';
 
-interface ReportProps {
-    hasFrontPage: boolean;
-    frontPageData?: FrontPageData;
-    hasInfoPage: boolean;
-    infoText: string | undefined;
-    kontroll: ReportKontroll | undefined;
-    hasSkjemaPage: boolean;
-    skjemaer: Skjema[] | undefined;
-    checklists: Checklist[] | undefined;
-    avvik: Avvik[] | undefined;
-    hasMeasurementPage: boolean;
-    hasInlineMeasurements: boolean;
-    measurements: Measurement[] | undefined;
-    measurementTypes: MeasurementType[] | undefined;
-}
-export const Report = ({
-    hasFrontPage,
-    frontPageData,
-    hasInfoPage,
-    infoText,
-    kontroll,
-    hasSkjemaPage,
-    skjemaer,
-    checklists,
-    avvik,
-    hasMeasurementPage,
-    hasInlineMeasurements,
-    measurements,
-    measurementTypes
-}: ReportProps) => {
+Font.register({
+    family: 'Roboto',
+    fonts: [
+        {
+            src: RobotoRegular
+        },
+        {
+            src: RobotoBold,
+            fontWeight: 'bold'
+        },
+        {
+            src: RobotoItalic,
+            fontWeight: 'normal',
+            fontStyle: 'italic'
+        },
+        {
+            src: RobotoBoldItalic,
+            fontWeight: 'bold',
+            fontStyle: 'italic'
+        }
+    ]
+});
+
+export const SlkReport = () => {
+    const {
+        isModuleActive,
+        previewDocument,
+        setPreviewDocument,
+        statementImages,
+        reportSetting,
+        infoText,
+        kontroll,
+        filteredSkjemaer,
+        checklists,
+        avvik,
+        statementText,
+        measurements,
+        measurementTypes,
+        hasLoaded
+    } = useReport();
+
+    const size = useWindowSize();
+    if (!hasLoaded) {
+        return <div>Laster...</div>;
+    }
+    if (previewDocument) {
+        return (
+            <PDFViewer height={size.height} width={size.width - 400}>
+                <Document>
+                    {isModuleActive(ReportModules.frontPage) && (
+                        <FrontPage
+                            reportSetting={reportSetting}
+                            kontroll={kontroll}
+                        />
+                    )}
+                    {isModuleActive(ReportModules.infoPage) && (
+                        <InfoPage
+                            infoText={infoText}
+                            reportSetting={reportSetting}
+                            rapportEgenskaper={kontroll?.rapportEgenskaper}
+                            rapportUser={
+                                kontroll?.rapportEgenskaper?.rapportUser
+                            }
+                        />
+                    )}
+                    {isModuleActive(ReportModules.statementPage) && (
+                        <StatementPage
+                            reportSetting={reportSetting}
+                            statement={statementText}
+                            statementImages={statementImages}
+                        />
+                    )}
+                    {isModuleActive(ReportModules.skjemaPage) &&
+                        isModuleActive(ReportModules.controlModule) &&
+                        filteredSkjemaer?.map((s) => (
+                            <SkjemaPage
+                                key={s.id}
+                                skjema={s}
+                                checklists={checklists?.filter(
+                                    (ch) => ch.skjema.id === s.id
+                                )}
+                                avvik={avvik}
+                                reportSetting={reportSetting}
+                                hasInlineMeasurements={
+                                    isModuleActive(
+                                        ReportModules.measurementPage
+                                    ) &&
+                                    isModuleActive(
+                                        ReportModules.inlineMeasurementModule
+                                    )
+                                }
+                                measurements={measurements?.filter(
+                                    (m) => m.skjema.id === s.id
+                                )}
+                                measurementTypes={measurementTypes}
+                            />
+                        ))}
+                    {isModuleActive(ReportModules.measurementPage) &&
+                        isModuleActive(ReportModules.controlModule) &&
+                        !isModuleActive(
+                            ReportModules.inlineMeasurementModule
+                        ) &&
+                        filteredSkjemaer?.map((s, i) => (
+                            <MeasurementPage
+                                key={s.id}
+                                skjema={s}
+                                index={i}
+                                measurements={measurements?.filter(
+                                    (m) => m.skjema.id === s.id
+                                )}
+                                reportSetting={reportSetting}
+                                measurementTypes={measurementTypes}
+                            />
+                        ))}
+                </Document>
+            </PDFViewer>
+        );
+    }
     return (
-        <Document>
-            {hasFrontPage && frontPageData !== undefined && (
-                <FrontPage frontPageData={frontPageData} />
-            )}
-            {hasInfoPage &&
-                frontPageData !== undefined &&
-                infoText !== undefined &&
-                kontroll !== undefined &&
-                kontroll.rapportEgenskaper !== null &&
-                kontroll.rapportEgenskaper.rapportUser !== null && (
-                    <InfoPage
-                        infoText={infoText}
-                        frontPageData={frontPageData}
-                        rapportEgenskaper={kontroll.rapportEgenskaper}
-                        rapportUser={kontroll.rapportEgenskaper.rapportUser}
-                    />
-                )}
-            {hasSkjemaPage &&
-                frontPageData !== undefined &&
-                skjemaer !== undefined &&
-                checklists !== undefined &&
-                avvik !== undefined &&
-                measurements !== undefined &&
-                measurementTypes !== undefined &&
-                skjemaer.map((s) => (
-                    <SkjemaPage
-                        key={s.id}
-                        skjema={s}
-                        checklists={checklists.filter(
-                            (ch) => ch.skjema.id === s.id
-                        )}
-                        avvik={avvik}
-                        frontPageData={frontPageData}
-                        hasInlineMeasurements={hasInlineMeasurements}
-                        measurements={measurements.filter(
-                            (m) => m.skjema.id === s.id
-                        )}
-                        measurementTypes={measurementTypes}
-                    />
-                ))}
-            {hasMeasurementPage &&
-                frontPageData !== undefined &&
-                skjemaer !== undefined &&
-                measurements !== undefined &&
-                measurementTypes !== undefined &&
-                skjemaer.map((s, i) => (
-                    <MeasurementPage
-                        key={s.id}
-                        skjema={s}
-                        index={i}
-                        measurements={measurements.filter(
-                            (m) => m.skjema.id === s.id
-                        )}
-                        frontPageData={frontPageData}
-                        measurementTypes={measurementTypes}
-                    />
-                ))}
-        </Document>
+        <div>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setPreviewDocument(true)}>
+                Forhåndsvis rapport
+            </Button>
+        </div>
     );
 };

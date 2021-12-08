@@ -1,4 +1,4 @@
-import { Sertifikat } from './certificateApi';
+import { RapportEgenskaper } from './reportApi';
 
 export interface Klient {
     id: number;
@@ -45,27 +45,6 @@ export interface ReportKontroll {
     };
     avvikUtbedrere: { id: number }[];
     rapportEgenskaper: RapportEgenskaper | null;
-}
-
-export interface RapportEgenskaper {
-    adresse: string;
-    id: number;
-    kontaktEpost: string;
-    kontaktTelefon: string;
-    kontaktperson: string;
-    kontrollsted: string;
-    oppdragsgiver: string;
-    postnr: string;
-    poststed: string;
-    rapportUser: RapportUser | null;
-    sertifikater: Sertifikat[];
-}
-
-export interface RapportUser {
-    email: string;
-    id: number;
-    name: string;
-    phone: string;
 }
 
 export interface Skjema {

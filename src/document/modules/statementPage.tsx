@@ -1,29 +1,23 @@
-import { Measurement, MeasurementType } from '../../contracts/measurementApi';
+import { LocalImage, ReportSetting } from '../../contracts/reportApi';
 import { Page, StyleSheet, View } from '@react-pdf/renderer';
 
 import { Footer } from './components/footer';
 import { Header } from './components/header';
-import { MeasurementModule } from './components/measurement';
-import { ReportSetting } from '../../contracts/reportApi';
-import { Skjema } from '../../contracts/kontrollApi';
-import { Spacer } from './components/spacing';
+import { OutputData } from '@editorjs/editorjs';
 import { Text } from './components/text';
+import { TextBox } from './components/box';
 
-interface MeasurementPageProps {
+interface StatementPageProps {
+    statement: OutputData | undefined;
     reportSetting: ReportSetting | undefined;
-    skjema: Skjema;
-    measurements: Measurement[] | undefined;
-    index: number;
-    measurementTypes: MeasurementType[] | undefined;
+    statementImages: LocalImage[];
 }
-export const MeasurementPage = ({
+export const StatementPage = ({
+    statement,
     reportSetting,
-    skjema,
-    measurements,
-    index,
-    measurementTypes
-}: MeasurementPageProps): JSX.Element => {
-    if (reportSetting && measurements && measurementTypes) {
+    statementImages
+}: StatementPageProps): JSX.Element => {
+    if (statement && reportSetting) {
         return (
             <Page
                 style={[
@@ -35,17 +29,8 @@ export const MeasurementPage = ({
                     location={reportSetting.reportSite}
                     date={reportSetting.reportDate}
                 />
-                {index === 0 && (
-                    <Text style={{ paddingVertical: 5 }}>Måleprotokoll</Text>
-                )}
-                <Text style={{ paddingVertical: 5 }}>
-                    {skjema.area}, {skjema.omrade}
-                </Text>
-                <MeasurementModule
-                    measurementTypes={measurementTypes}
-                    measurements={measurements}
-                />
-                <Spacer />
+
+                <TextBox text={statement} statementImages={statementImages} />
 
                 <Footer />
             </Page>

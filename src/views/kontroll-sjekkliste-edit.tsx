@@ -32,7 +32,7 @@ const SjekklisteEditView = () => {
     const [selectFromTemplate, setSelectFromTemplate] =
         useState<boolean>(false);
 
-    const [_checklists, setChecklists] = useState<Array<Checklist>>([]);
+    const [_checklists, setChecklists] = useState<Checklist[]>([]);
 
     const {
         state: { checklists },
@@ -61,6 +61,10 @@ const SjekklisteEditView = () => {
             );
         }
     }, [checklists, skjemaId]);
+
+    useEffect(() => {
+        setSelected(_checklists.map((c) => c.checkpoint));
+    }, [_checklists]);
 
     useEffectOnce(async () => {
         try {

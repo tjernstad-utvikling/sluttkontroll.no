@@ -8,8 +8,10 @@ import { Checkpoint } from '../contracts/checkpointApi';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
+import { SelectTemplate } from '../components/template';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
+import { Template } from '../contracts/skjemaTemplateApi';
 import { getCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
@@ -24,6 +26,11 @@ const SjekklisteEditView = () => {
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [selected, setSelected] = useState<Checkpoint[]>([]);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+    const [template, setTemplate] = useState<Template>();
+
+    const [selectFromTemplate, setSelectFromTemplate] =
+        useState<boolean>(false);
 
     const [_checklists, setChecklists] = useState<Array<Checklist>>([]);
 
@@ -92,28 +99,52 @@ const SjekklisteEditView = () => {
                                             ? `(Sjekkpunkter: ${selected.length} ) `
                                             : ''}
                                     </LoadingButton>
-                                    {checkpoints !== undefined ? (
-                                        <TableContainer
-                                            columns={columns({})}
-                                            defaultColumns={defaultColumns}
-                                            tableId="checkpoints">
-                                            <CheckpointTable
-                                                checklists={_checklists}
-                                                checkpoints={checkpoints}
-                                                onSelected={(ids) =>
-                                                    setSelected(
-                                                        checkpoints?.filter(
-                                                            (c) =>
-                                                                ids.indexOf(
-                                                                    c.id
-                                                                ) !== -1
+                                    <SelectTemplate
+                                        onSelect={(template) => {
+                                            setSelectFromTemplate(false);
+                                            setTemplate(template);
+                                            setSelected(
+                                                template.skjemaTemplateCheckpoints.map(
+                                                    (stc) => stc.checkpoint
+                                                )
+                                            );
+                                        }}
+                                        onOpen={() => {
+                                            setSelectFromTemplate(
+                                                !selectFromTemplate
+                                            );
+                                        }}
+                                        isOpen={selectFromTemplate}
+                                    />
+                                    {!selectFromTemplate ? (
+                                        checkpoints !== undefined ? (
+                                            <TableContainer
+                                                columns={columns({})}
+                                                defaultColumns={defaultColumns}
+                                                tableId="checkpoints">
+                                                <CheckpointTable
+                                                    checklists={_checklists}
+                                                    templateList={
+                                                        template?.skjemaTemplateCheckpoints
+                                                    }
+                                                    checkpoints={checkpoints}
+                                                    onSelected={(ids) =>
+                                                        setSelected(
+                                                            checkpoints?.filter(
+                                                                (c) =>
+                                                                    ids.indexOf(
+                                                                        c.id
+                                                                    ) !== -1
+                                                            )
                                                         )
-                                                    )
-                                                }
-                                            />
-                                        </TableContainer>
+                                                    }
+                                                />
+                                            </TableContainer>
+                                        ) : (
+                                            <div>Laster sjekkpunkter</div>
+                                        )
                                     ) : (
-                                        <div>Laster sjekkpunkter</div>
+                                        <div />
                                     )}
                                 </form>
                             </CardContent>

@@ -62,7 +62,7 @@ export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 interface CheckpointTableProps {
     checkpoints: Checkpoint[];
     checklists?: Checklist[];
-    templateList?: SkjemaTemplateCheckpoint[];
+    templateList?: SkjemaTemplateCheckpoint[] | undefined;
     onSelected?: (checkpoints: number[]) => void;
 }
 export const CheckpointTable = ({

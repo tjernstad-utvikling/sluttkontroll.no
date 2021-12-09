@@ -83,7 +83,7 @@ export type KontrollActions =
 
 export interface ContextInterface {
     state: kontrollState;
-    loadKontroller: () => Promise<void>;
+    loadKontroller: (queryAll?: boolean) => Promise<void>;
     loadKontrollerByKlient: (klientId: number) => Promise<void>;
     loadKontrollerByObjekt: (objektId: number) => Promise<boolean>;
     saveNewKontroll: (

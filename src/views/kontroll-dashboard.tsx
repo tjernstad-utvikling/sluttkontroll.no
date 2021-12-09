@@ -11,6 +11,7 @@ import {
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 
+import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -34,7 +35,8 @@ const KontrollerView = () => {
     const history = useHistory();
     const { user } = useAuth();
 
-    const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
+    const [_kontroller, setKontroller] = useState<Kontroll[]>([]);
+    const [showAllKontroller, setShowAllKontroller] = useState<boolean>(false);
 
     const {
         state: { kontroller },
@@ -60,6 +62,12 @@ const KontrollerView = () => {
         loadKontroller();
         loadUsers();
     });
+
+    useEffect(() => {
+        loadKontroller(showAllKontroller);
+        console.log('laster');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showAllKontroller]);
 
     /**
      * Clipboard
@@ -125,6 +133,16 @@ const KontrollerView = () => {
                                             label: 'Ny kontroll',
                                             action: () =>
                                                 history.push('/kontroll/new')
+                                        },
+                                        {
+                                            label: showAllKontroller
+                                                ? 'Vis kun åpne kontroller'
+                                                : 'Vis alle kontroller',
+                                            icon: <CallMergeIcon />,
+                                            action: () =>
+                                                setShowAllKontroller(
+                                                    !showAllKontroller
+                                                )
                                         }
                                     ]}
                                 />
@@ -146,7 +164,14 @@ const KontrollerView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
-                                            kontroller={_kontroller}
+                                            kontroller={_kontroller.filter(
+                                                (k) => {
+                                                    if (showAllKontroller) {
+                                                        return true;
+                                                    }
+                                                    return k.done !== true;
+                                                }
+                                            )}
                                             onSelected={onSelectForClipboard}
                                         />
                                     </TableContainer>

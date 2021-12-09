@@ -41,17 +41,19 @@ export const KontrollContextProvider = ({
     const [state, dispatch] = useReducer(kontrollReducer, initialState);
     const [hasLoadedMyKontroller, setHasLoadedMyKontroller] =
         useState<boolean>(false);
+    const [hasLoadedAllMyKontroller, setHasLoadedAllMyKontroller] =
+        useState<boolean>(false);
 
     const { loadAvvikByKontroller } = useAvvik();
     const { loadMeasurementByKontroller } = useMeasurement();
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const loadKontroller = async (): Promise<void> => {
-        if (!hasLoadedMyKontroller) {
+    const loadKontroller = async (queryAll?: boolean): Promise<void> => {
+        if (!hasLoadedMyKontroller || (queryAll && !hasLoadedAllMyKontroller)) {
             try {
                 const { status, kontroller, skjemaer, checklists } =
-                    await getKontroller();
+                    await getKontroller(queryAll);
 
                 loadAvvikByKontroller(kontroller);
                 loadMeasurementByKontroller(kontroller);
@@ -70,6 +72,9 @@ export const KontrollContextProvider = ({
                         payload: checklists
                     });
                     setHasLoadedMyKontroller(true);
+                    if (queryAll) {
+                        setHasLoadedAllMyKontroller(true);
+                    }
                 }
             } catch (error: any) {
                 errorHandler(error);

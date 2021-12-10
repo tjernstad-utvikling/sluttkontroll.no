@@ -13,7 +13,9 @@ import {
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CardContent } from '@mui/material';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
@@ -47,7 +49,9 @@ const KontrollKlientView = () => {
     const {
         state: { kontroller },
         loadKontrollerByKlient,
-        toggleStatusKontroll
+        toggleStatusKontroll,
+        showAllKontroller,
+        setShowAllKontroller
     } = useKontroll();
     const {
         state: { klienter },
@@ -68,11 +72,17 @@ const KontrollKlientView = () => {
 
     useEffect(() => {
         if (loadedKlient !== Number(klientId)) {
-            loadKontrollerByKlient(Number(klientId));
+            loadKontrollerByKlient(Number(klientId), showAllKontroller);
             setLoadedKlient(Number(klientId));
             loadUsers();
         }
-    }, [klientId, loadKontrollerByKlient, loadUsers, loadedKlient]);
+    }, [
+        klientId,
+        loadKontrollerByKlient,
+        loadUsers,
+        loadedKlient,
+        showAllKontroller
+    ]);
 
     useEffect(() => {
         if (kontroller !== undefined) {
@@ -183,8 +193,25 @@ const KontrollKlientView = () => {
                                     items={[
                                         {
                                             label: 'Ny kontroll',
+                                            icon: <AddIcon />,
                                             action: () =>
                                                 history.push('/kontroll/new')
+                                        },
+                                        {
+                                            label: showAllKontroller
+                                                ? 'Vis kun åpne kontroller'
+                                                : 'Vis alle kontroller',
+                                            icon: <CallMergeIcon />,
+                                            action: () => {
+                                                if (!showAllKontroller)
+                                                    loadKontrollerByKlient(
+                                                        Number(klientId),
+                                                        true
+                                                    );
+                                                setShowAllKontroller(
+                                                    !showAllKontroller
+                                                );
+                                            }
                                         }
                                     ]}
                                 />
@@ -206,7 +233,14 @@ const KontrollKlientView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
-                                            kontroller={_kontroller}
+                                            kontroller={_kontroller.filter(
+                                                (k) => {
+                                                    if (showAllKontroller) {
+                                                        return true;
+                                                    }
+                                                    return k.done !== true;
+                                                }
+                                            )}
                                             onSelected={onSelectForClipboard}
                                         />
                                     </TableContainer>

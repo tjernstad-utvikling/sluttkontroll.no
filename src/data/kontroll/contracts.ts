@@ -83,9 +83,17 @@ export type KontrollActions =
 
 export interface ContextInterface {
     state: kontrollState;
-    loadKontroller: () => Promise<void>;
-    loadKontrollerByKlient: (klientId: number) => Promise<void>;
-    loadKontrollerByObjekt: (objektId: number) => Promise<boolean>;
+    loadKontroller: (queryAll?: boolean) => Promise<void>;
+    loadKontrollerByKlient: (
+        klientId: number,
+        queryAll?: boolean
+    ) => Promise<void>;
+    loadKontrollerByObjekt: (
+        objektId: number,
+        queryAll?: boolean
+    ) => Promise<boolean>;
+    showAllKontroller: boolean;
+    setShowAllKontroller: (state: boolean) => void;
     saveNewKontroll: (
         name: string,
         avvikUtbedrere: Array<User>,

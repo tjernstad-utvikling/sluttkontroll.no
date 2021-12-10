@@ -13,23 +13,27 @@ import EditIcon from '@mui/icons-material/Edit';
 import { RowAction } from './tableUtils';
 import { useClipBoard } from '../data/clipboard';
 
-export const MeasurementValueGetter = (data: Measurement | GridRowModel) => {
+export const MeasurementValueGetter = (
+    data: Measurement | GridRowModel | null
+) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
-        return kontroller.find((k) => k.id === data.skjema.kontroll.id);
+        return kontroller.find((k) => k.id === data?.skjema.kontroll.id);
     };
     const skjema = (skjemaer: Skjema[]): string => {
-        const skjema = skjemaer.find((s) => s.id === data.skjema.id);
+        const skjema = skjemaer.find((s) => s.id === data?.skjema.id);
         if (skjema !== undefined) {
             return `${skjema?.area} - ${skjema?.omrade}` || '';
         }
         return '';
     };
     const mType = (measurementTypes: MeasurementType[] | undefined): string => {
-        const type = measurementTypes?.find((mt) => mt.shortName === data.type);
+        const type = measurementTypes?.find(
+            (mt) => mt.shortName === data?.type
+        );
 
         if (type) {
             if (type.hasPol) {
-                return type.longName.replace('#', data.pol);
+                return type.longName.replace('#', data?.pol);
             }
             return type.longName;
         }

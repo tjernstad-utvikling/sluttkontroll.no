@@ -39,19 +39,24 @@ export const KontrollContextProvider = ({
     children: React.ReactNode;
 }): JSX.Element => {
     const [state, dispatch] = useReducer(kontrollReducer, initialState);
+
     const [hasLoadedMyKontroller, setHasLoadedMyKontroller] =
         useState<boolean>(false);
+    const [hasLoadedAllMyKontroller, setHasLoadedAllMyKontroller] =
+        useState<boolean>(false);
+
+    const [showAllKontroller, setShowAllKontroller] = useState<boolean>(false);
 
     const { loadAvvikByKontroller } = useAvvik();
     const { loadMeasurementByKontroller } = useMeasurement();
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const loadKontroller = async (): Promise<void> => {
-        if (!hasLoadedMyKontroller) {
+    const loadKontroller = async (queryAll?: boolean): Promise<void> => {
+        if (!hasLoadedMyKontroller || (queryAll && !hasLoadedAllMyKontroller)) {
             try {
                 const { status, kontroller, skjemaer, checklists } =
-                    await getKontroller();
+                    await getKontroller(queryAll);
 
                 loadAvvikByKontroller(kontroller);
                 loadMeasurementByKontroller(kontroller);
@@ -70,16 +75,22 @@ export const KontrollContextProvider = ({
                         payload: checklists
                     });
                     setHasLoadedMyKontroller(true);
+                    if (queryAll) {
+                        setHasLoadedAllMyKontroller(true);
+                    }
                 }
             } catch (error: any) {
                 errorHandler(error);
             }
         }
     };
-    const loadKontrollerByKlient = async (klientId: number): Promise<void> => {
+    const loadKontrollerByKlient = async (
+        klientId: number,
+        queryAll?: boolean
+    ): Promise<void> => {
         try {
             const { status, kontroller, skjemaer, checklists } =
-                await getKontrollerByKlient(klientId);
+                await getKontrollerByKlient(klientId, queryAll);
 
             loadAvvikByKontroller(kontroller);
             loadMeasurementByKontroller(kontroller);
@@ -103,11 +114,12 @@ export const KontrollContextProvider = ({
         }
     };
     const loadKontrollerByObjekt = async (
-        objektId: number
+        objektId: number,
+        queryAll?: boolean
     ): Promise<boolean> => {
         try {
             const { status, kontroller, skjemaer, checklists } =
-                await getKontrollerByObjekt(objektId);
+                await getKontrollerByObjekt(objektId, queryAll);
 
             await loadAvvikByKontroller(kontroller);
             loadMeasurementByKontroller(kontroller);
@@ -435,6 +447,8 @@ export const KontrollContextProvider = ({
                 loadKontroller,
                 loadKontrollerByKlient,
                 loadKontrollerByObjekt,
+                showAllKontroller,
+                setShowAllKontroller,
 
                 updateKontroll,
                 moveKontroll,

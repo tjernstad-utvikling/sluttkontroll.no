@@ -11,6 +11,8 @@ import {
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 
+import AddIcon from '@mui/icons-material/Add';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -34,12 +36,14 @@ const KontrollerView = () => {
     const history = useHistory();
     const { user } = useAuth();
 
-    const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
+    const [_kontroller, setKontroller] = useState<Kontroll[]>([]);
 
     const {
         state: { kontroller },
         loadKontroller,
-        toggleStatusKontroll
+        toggleStatusKontroll,
+        showAllKontroller,
+        setShowAllKontroller
     } = useKontroll();
     const {
         state: { klienter }
@@ -61,6 +65,11 @@ const KontrollerView = () => {
         loadUsers();
     });
 
+    useEffect(() => {
+        loadKontroller(showAllKontroller);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showAllKontroller]);
+
     /**
      * Clipboard
      */
@@ -74,7 +83,6 @@ const KontrollerView = () => {
     } = useClipBoard();
     useEffect(() => {
         openScissors();
-        console.log('openScissors');
         return () => {
             closeScissors();
         };
@@ -123,8 +131,19 @@ const KontrollerView = () => {
                                     items={[
                                         {
                                             label: 'Ny kontroll',
+                                            icon: <AddIcon />,
                                             action: () =>
                                                 history.push('/kontroll/new')
+                                        },
+                                        {
+                                            label: showAllKontroller
+                                                ? 'Vis kun åpne kontroller'
+                                                : 'Vis alle kontroller',
+                                            icon: <CallMergeIcon />,
+                                            action: () =>
+                                                setShowAllKontroller(
+                                                    !showAllKontroller
+                                                )
                                         }
                                     ]}
                                 />
@@ -146,7 +165,14 @@ const KontrollerView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
-                                            kontroller={_kontroller}
+                                            kontroller={_kontroller.filter(
+                                                (k) => {
+                                                    if (showAllKontroller) {
+                                                        return true;
+                                                    }
+                                                    return k.done !== true;
+                                                }
+                                            )}
                                             onSelected={onSelectForClipboard}
                                         />
                                     </TableContainer>

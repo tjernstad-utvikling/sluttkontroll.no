@@ -20,11 +20,11 @@ import SummarizeIcon from '@mui/icons-material/Summarize';
 import { User } from '../contracts/userApi';
 import { useClipBoard } from '../data/clipboard';
 
-export const KontrollValueGetter = (data: Kontroll | GridRowModel) => {
+export const KontrollValueGetter = (data: Kontroll | GridRowModel | null) => {
     const klient = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
             const klient = klienter.find(
-                (k) => k.id === data.location.klient.id
+                (k) => k.id === data?.location.klient.id
             );
 
             return klient?.name || '';
@@ -34,11 +34,11 @@ export const KontrollValueGetter = (data: Kontroll | GridRowModel) => {
     const objekt = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
             const klient = klienter.find(
-                (k) => k.id === data.location.klient.id
+                (k) => k.id === data?.location.klient.id
             );
             if (klient !== undefined) {
                 const location = klient.locations.find(
-                    (o) => o.id === data.location.id
+                    (o) => o.id === data?.location.id
                 );
                 return location?.name || '';
             }
@@ -49,7 +49,7 @@ export const KontrollValueGetter = (data: Kontroll | GridRowModel) => {
     };
     const user = (users: User[]): string => {
         if (users !== undefined) {
-            const user = users.find((u) => u.id === data.user.id);
+            const user = users.find((u) => u.id === data?.user.id);
 
             return user?.name || '';
         }
@@ -58,7 +58,7 @@ export const KontrollValueGetter = (data: Kontroll | GridRowModel) => {
     const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
         if (avvik !== undefined) {
             const avvikene = avvik.filter(
-                (a) => a.checklist.skjema.kontroll.id === data.id
+                (a) => a.checklist.skjema.kontroll.id === data?.id
             );
 
             return {
@@ -71,7 +71,7 @@ export const KontrollValueGetter = (data: Kontroll | GridRowModel) => {
     const measurement = (measurements: Measurement[]): number => {
         if (measurements !== undefined) {
             const filteredMeasurements = measurements.filter(
-                (m) => m.skjema.kontroll.id === data.id
+                (m) => m.skjema.kontroll.id === data?.id
             );
 
             return filteredMeasurements.length;

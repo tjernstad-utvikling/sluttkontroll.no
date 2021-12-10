@@ -14,7 +14,9 @@ import {
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
@@ -38,6 +40,7 @@ const KontrollObjektView = () => {
     const history = useHistory();
 
     const [loadedObjekt, setLoadedObjekt] = useState<number>();
+
     const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
     const [_location, setLocation] = useState<Location>();
 
@@ -46,7 +49,9 @@ const KontrollObjektView = () => {
     const {
         state: { kontroller },
         loadKontrollerByObjekt,
-        toggleStatusKontroll
+        toggleStatusKontroll,
+        showAllKontroller,
+        setShowAllKontroller
     } = useKontroll();
     const {
         state: { klienter },
@@ -67,11 +72,12 @@ const KontrollObjektView = () => {
 
     useEffect(() => {
         if (loadedObjekt !== Number(objectId)) {
-            loadKontrollerByObjekt(Number(objectId));
+            loadKontrollerByObjekt(Number(objectId), showAllKontroller);
             setLoadedObjekt(Number(objectId));
             loadUsers();
         }
-    }, [loadKontrollerByObjekt, loadUsers, loadedObjekt, objectId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loadUsers, loadedObjekt, objectId]);
 
     useEffect(() => {
         if (kontroller !== undefined) {
@@ -123,7 +129,6 @@ const KontrollObjektView = () => {
     } = useClipBoard();
     useEffect(() => {
         openScissors();
-        console.log('openScissors');
         return () => {
             closeScissors();
         };
@@ -187,8 +192,25 @@ const KontrollObjektView = () => {
                                     items={[
                                         {
                                             label: 'Ny kontroll',
+                                            icon: <AddIcon />,
                                             action: () =>
                                                 history.push('/kontroll/new')
+                                        },
+                                        {
+                                            label: showAllKontroller
+                                                ? 'Vis kun åpne kontroller'
+                                                : 'Vis alle kontroller',
+                                            icon: <CallMergeIcon />,
+                                            action: () => {
+                                                if (!showAllKontroller)
+                                                    loadKontrollerByObjekt(
+                                                        Number(objectId),
+                                                        true
+                                                    );
+                                                setShowAllKontroller(
+                                                    !showAllKontroller
+                                                );
+                                            }
                                         }
                                     ]}
                                 />
@@ -210,7 +232,14 @@ const KontrollObjektView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
-                                            kontroller={_kontroller}
+                                            kontroller={_kontroller.filter(
+                                                (k) => {
+                                                    if (showAllKontroller) {
+                                                        return true;
+                                                    }
+                                                    return k.done !== true;
+                                                }
+                                            )}
                                             onSelected={onSelectForClipboard}
                                             leftAction={
                                                 <PasteButton

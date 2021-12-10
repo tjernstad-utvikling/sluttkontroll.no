@@ -1,7 +1,7 @@
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
@@ -19,22 +19,27 @@ import { Typography } from '@mui/material';
 import { User } from '../contracts/userApi';
 import { format } from 'date-fns';
 
-export const InstrumentValueGetter = (data: Instrument | GridRowData) => {
+export const InstrumentValueGetter = (
+    data: Instrument | GridRowModel | null
+) => {
     const sisteKalibrert = (formatString: string): string => {
-        if (data.sisteKalibrert !== null && data.sisteKalibrert !== undefined) {
-            return format(new Date(data.sisteKalibrert.date), formatString);
+        if (
+            data?.sisteKalibrert !== null &&
+            data?.sisteKalibrert !== undefined
+        ) {
+            return format(new Date(data?.sisteKalibrert.date), formatString);
         }
         return 'Kalibrering ikke registrert';
     };
     const user = (notSelectedString: string): string => {
-        if (data.user !== null) {
-            return data.user.name;
+        if (data?.user !== null) {
+            return data?.user.name;
         }
         return notSelectedString;
     };
     const disponent = (): string => {
-        if (data.disponent !== null) {
-            return data.disponent.name;
+        if (data?.disponent !== null) {
+            return data?.disponent.name;
         }
         return '';
     };
@@ -47,7 +52,7 @@ const RenderDisponentField = ({
     user,
     onClick
 }: {
-    row: Instrument | GridRowData;
+    row: Instrument | GridRowModel;
     user: User | undefined;
     onClick: (id: number) => void;
 }) => {

@@ -106,15 +106,18 @@ export const editLocation = async (
     }
 };
 
-export const getKontroller = async (): Promise<{
+export const getKontroller = async (
+    queryAll?: boolean
+): Promise<{
     status: number;
-    kontroller: Array<Kontroll>;
-    skjemaer: Array<Skjema>;
-    checklists: Array<Checklist>;
+    kontroller: Kontroll[];
+    skjemaer: Skjema[];
+    checklists: Checklist[];
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            '/kontroll/current-user'
+            '/kontroll/current-user',
+            { params: queryAll && { all: true } }
         );
         if (status === 200) {
             return { status, ...data };
@@ -191,7 +194,8 @@ export const toggleKontrollStatus = async (
 };
 
 export const getKontrollerByKlient = async (
-    klientId: number
+    klientId: number,
+    queryAll?: boolean
 ): Promise<{
     status: number;
     kontroller: Array<Kontroll>;
@@ -200,7 +204,8 @@ export const getKontrollerByKlient = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/kontroll/klient/${klientId}`
+            `/kontroll/klient/${klientId}`,
+            { params: queryAll && { all: true } }
         );
         if (status === 200) {
             return { status, ...data };
@@ -212,7 +217,8 @@ export const getKontrollerByKlient = async (
 };
 
 export const getKontrollerByObjekt = async (
-    objektId: number
+    objektId: number,
+    queryAll?: boolean
 ): Promise<{
     status: number;
     kontroller: Array<Kontroll>;
@@ -221,7 +227,8 @@ export const getKontrollerByObjekt = async (
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(
-            `/kontroll/location/${objektId}`
+            `/kontroll/location/${objektId}`,
+            { params: queryAll && { all: true } }
         );
         if (status === 200) {
             return { status, ...data };

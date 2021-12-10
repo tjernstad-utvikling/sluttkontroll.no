@@ -1,7 +1,7 @@
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
@@ -14,9 +14,9 @@ import { RowAction } from './tableUtils';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { Typography } from '@mui/material';
 
-export const TemplateValueGetter = (data: Template | GridRowData) => {
+export const TemplateValueGetter = (data: Template | GridRowModel | null) => {
     const count = (): string => {
-        return data.skjemaTemplateCheckpoints.length;
+        return data?.skjemaTemplateCheckpoints.length;
     };
 
     return { count };

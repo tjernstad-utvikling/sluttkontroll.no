@@ -1,4 +1,4 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/69bd4e03-a5a0-4892-963a-18c0322685ba/deploy-status)](https://app.netlify.com/sites/beta-sluttkontrollno/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0e45a72d-0821-4c74-8359-73d32f3d2168/deploy-status)](https://app.netlify.com/sites/sluttkontroll/deploys)
 [![CI](https://github.com/tjernstad-utvikling/sluttkontroll.no/actions/workflows/sentry.yml/badge.svg)](https://github.com/tjernstad-utvikling/sluttkontroll.no/actions/workflows/sentry.yml)
 
 # Getting Started with Create React App

@@ -210,6 +210,17 @@ export const kontrollColumns = (
             flex: 1
         },
         {
+            field: 'done',
+            headerName: 'Status',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) => {
+                if (params.row.done) {
+                    return 'Utført';
+                }
+                return 'Pågår';
+            }
+        },
+        {
             field: 'action',
             headerName: ' ',
             sortable: false,

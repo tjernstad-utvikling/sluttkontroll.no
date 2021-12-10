@@ -65,7 +65,6 @@ const KontrollerView = () => {
 
     useEffect(() => {
         loadKontroller(showAllKontroller);
-        console.log('laster');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showAllKontroller]);
 
@@ -82,7 +81,6 @@ const KontrollerView = () => {
     } = useClipBoard();
     useEffect(() => {
         openScissors();
-        console.log('openScissors');
         return () => {
             closeScissors();
         };

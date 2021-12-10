@@ -39,7 +39,7 @@ export async function handleReportSettings({
 }: HandleReportSettingsOptions) {
     try {
         const { status, rapportSetting } = await getReportSetting(kontroll.id);
-        console.log({ status, rapportSetting });
+
         if (status === 200) {
             if (!rapportSetting) {
                 const _reportSetting = {} as ReportSetting;

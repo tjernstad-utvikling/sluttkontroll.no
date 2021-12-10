@@ -123,7 +123,6 @@ const KontrollObjektView = () => {
     } = useClipBoard();
     useEffect(() => {
         openScissors();
-        console.log('openScissors');
         return () => {
             closeScissors();
         };

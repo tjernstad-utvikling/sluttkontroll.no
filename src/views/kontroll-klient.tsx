@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CardContent } from '@mui/material';
@@ -192,6 +193,7 @@ const KontrollKlientView = () => {
                                     items={[
                                         {
                                             label: 'Ny kontroll',
+                                            icon: <AddIcon />,
                                             action: () =>
                                                 history.push('/kontroll/new')
                                         },

@@ -11,6 +11,7 @@ import {
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 
+import AddIcon from '@mui/icons-material/Add';
 import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
@@ -130,6 +131,7 @@ const KontrollerView = () => {
                                     items={[
                                         {
                                             label: 'Ny kontroll',
+                                            icon: <AddIcon />,
                                             action: () =>
                                                 history.push('/kontroll/new')
                                         },

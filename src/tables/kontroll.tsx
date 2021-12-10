@@ -290,6 +290,9 @@ export const KontrollTable = ({
         if (kontrollClipboard?.find((kc) => kc.id === row.id)) {
             return RowStylingEnum.cut;
         }
+        if (row.done) {
+            return RowStylingEnum.completed;
+        }
     };
 
     return (

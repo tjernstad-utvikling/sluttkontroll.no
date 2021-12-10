@@ -225,6 +225,7 @@ export const AvvikTable = ({
     const {
         state: { skjemaClipboard }
     } = useClipBoard();
+
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
             return RowStylingEnum.cut;

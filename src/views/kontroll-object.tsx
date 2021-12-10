@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
@@ -38,6 +39,7 @@ const KontrollObjektView = () => {
     const history = useHistory();
 
     const [loadedObjekt, setLoadedObjekt] = useState<number>();
+    const [loadedAllObjekt, setLoadedAllObjekt] = useState<number>();
     const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
     const [_location, setLocation] = useState<Location>();
 
@@ -46,7 +48,9 @@ const KontrollObjektView = () => {
     const {
         state: { kontroller },
         loadKontrollerByObjekt,
-        toggleStatusKontroll
+        toggleStatusKontroll,
+        showAllKontroller,
+        setShowAllKontroller
     } = useKontroll();
     const {
         state: { klienter },
@@ -71,7 +75,18 @@ const KontrollObjektView = () => {
             setLoadedObjekt(Number(objectId));
             loadUsers();
         }
-    }, [loadKontrollerByObjekt, loadUsers, loadedObjekt, objectId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loadUsers, loadedObjekt, objectId]);
+
+    useEffect(() => {
+        if (loadedAllObjekt !== Number(objectId) && showAllKontroller) {
+            loadKontrollerByObjekt(Number(objectId), showAllKontroller);
+            setLoadedAllObjekt(Number(objectId));
+            console.log('load all');
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loadedAllObjekt, objectId, showAllKontroller]);
 
     useEffect(() => {
         if (kontroller !== undefined) {
@@ -188,6 +203,16 @@ const KontrollObjektView = () => {
                                             label: 'Ny kontroll',
                                             action: () =>
                                                 history.push('/kontroll/new')
+                                        },
+                                        {
+                                            label: showAllKontroller
+                                                ? 'Vis kun åpne kontroller'
+                                                : 'Vis alle kontroller',
+                                            icon: <CallMergeIcon />,
+                                            action: () =>
+                                                setShowAllKontroller(
+                                                    !showAllKontroller
+                                                )
                                         }
                                     ]}
                                 />

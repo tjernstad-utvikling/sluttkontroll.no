@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CardContent } from '@mui/material';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
@@ -47,7 +48,9 @@ const KontrollKlientView = () => {
     const {
         state: { kontroller },
         loadKontrollerByKlient,
-        toggleStatusKontroll
+        toggleStatusKontroll,
+        showAllKontroller,
+        setShowAllKontroller
     } = useKontroll();
     const {
         state: { klienter },
@@ -185,6 +188,16 @@ const KontrollKlientView = () => {
                                             label: 'Ny kontroll',
                                             action: () =>
                                                 history.push('/kontroll/new')
+                                        },
+                                        {
+                                            label: showAllKontroller
+                                                ? 'Vis kun åpne kontroller'
+                                                : 'Vis alle kontroller',
+                                            icon: <CallMergeIcon />,
+                                            action: () =>
+                                                setShowAllKontroller(
+                                                    !showAllKontroller
+                                                )
                                         }
                                     ]}
                                 />

@@ -36,12 +36,13 @@ const KontrollerView = () => {
     const { user } = useAuth();
 
     const [_kontroller, setKontroller] = useState<Kontroll[]>([]);
-    const [showAllKontroller, setShowAllKontroller] = useState<boolean>(false);
 
     const {
         state: { kontroller },
         loadKontroller,
-        toggleStatusKontroll
+        toggleStatusKontroll,
+        showAllKontroller,
+        setShowAllKontroller
     } = useKontroll();
     const {
         state: { klienter }

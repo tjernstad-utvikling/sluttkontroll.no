@@ -2,7 +2,7 @@ import { FilledField, Forms } from '../contracts/formsApi';
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
@@ -11,29 +11,29 @@ import IconButton from '@mui/material/IconButton';
 import PrintIcon from '@mui/icons-material/Print';
 import { format } from 'date-fns';
 
-export const ValueGetter = (data: Forms | GridRowData) => {
+export const ValueGetter = (data: Forms | GridRowModel | null) => {
     const skjema = (): string => {
         return (
-            data.sjaFormFields.find(
+            data?.sjaFormFields.find(
                 (f: FilledField) =>
-                    f.field.id === data.template.listIdentificationField?.id
+                    f.field.id === data?.template.listIdentificationField?.id
             )?.text || ''
         );
     };
     const date = (dateFormat: string): string => {
-        const date = data.sjaFormFields.find(
-            (f: FilledField) => f.field.id === data.template.listDateField?.id
+        const date = data?.sjaFormFields.find(
+            (f: FilledField) => f.field.id === data?.template.listDateField?.id
         )?.date;
         return (date && format(new Date(date), dateFormat)) || '';
     };
     const title = (): string => {
-        return data.template.title;
+        return data?.template.title;
     };
     const subTitle = (): string => {
-        return data.template.subTitle;
+        return data?.template.subTitle;
     };
     const user = (): string => {
-        return data.user.name;
+        return data?.user.name;
     };
 
     return { skjema, title, subTitle, user, date };

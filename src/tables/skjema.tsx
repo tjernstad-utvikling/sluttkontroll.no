@@ -18,15 +18,15 @@ import React from 'react';
 import { RowAction } from './tableUtils';
 import { useClipBoard } from '../data/clipboard';
 
-export const SkjemaValueGetter = (data: Skjema | GridRowModel) => {
+export const SkjemaValueGetter = (data: Skjema | GridRowModel | null) => {
     const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
-        return kontroller.find((k) => k.id === data.kontroll.id);
+        return kontroller.find((k) => k.id === data?.kontroll.id);
     };
 
     const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
         if (avvik !== undefined) {
             const avvikene = avvik.filter(
-                (a) => a.checklist.skjema.id === data.id
+                (a) => a.checklist.skjema.id === data?.id
             );
 
             return {
@@ -40,7 +40,7 @@ export const SkjemaValueGetter = (data: Skjema | GridRowModel) => {
     const measurement = (measurements: Measurement[]): number => {
         if (measurements !== undefined) {
             const filteredMeasurements = measurements.filter(
-                (m) => m.skjema.id === data.id
+                (m) => m.skjema.id === data?.id
             );
 
             return filteredMeasurements.length;

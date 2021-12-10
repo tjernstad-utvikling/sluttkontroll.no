@@ -18,16 +18,18 @@ import Typography from '@mui/material/Typography';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-export const SjekklisteValueGetter = (data: Checklist | GridRowModel) => {
+export const SjekklisteValueGetter = (
+    data: Checklist | GridRowModel | null
+) => {
     const prosedyre = (): string => {
-        return data.checkpoint.prosedyre;
+        return data?.checkpoint.prosedyre;
     };
     const prosedyreNr = (): string => {
-        return data.checkpoint.prosedyreNr;
+        return data?.checkpoint.prosedyreNr;
     };
     const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
         if (avvik !== undefined) {
-            const avvikene = avvik.filter((a) => a.checklist.id === data.id);
+            const avvikene = avvik.filter((a) => a.checklist.id === data?.id);
 
             return {
                 open: avvikene.filter((a) => a.status !== 'lukket').length,

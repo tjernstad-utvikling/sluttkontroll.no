@@ -39,7 +39,7 @@ const KontrollObjektView = () => {
     const history = useHistory();
 
     const [loadedObjekt, setLoadedObjekt] = useState<number>();
-    const [loadedAllObjekt, setLoadedAllObjekt] = useState<number>();
+
     const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
     const [_location, setLocation] = useState<Location>();
 
@@ -71,22 +71,12 @@ const KontrollObjektView = () => {
 
     useEffect(() => {
         if (loadedObjekt !== Number(objectId)) {
-            loadKontrollerByObjekt(Number(objectId));
+            loadKontrollerByObjekt(Number(objectId), showAllKontroller);
             setLoadedObjekt(Number(objectId));
             loadUsers();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadUsers, loadedObjekt, objectId]);
-
-    useEffect(() => {
-        if (loadedAllObjekt !== Number(objectId) && showAllKontroller) {
-            loadKontrollerByObjekt(Number(objectId), showAllKontroller);
-            setLoadedAllObjekt(Number(objectId));
-            console.log('load all');
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loadedAllObjekt, objectId, showAllKontroller]);
 
     useEffect(() => {
         if (kontroller !== undefined) {
@@ -209,10 +199,16 @@ const KontrollObjektView = () => {
                                                 ? 'Vis kun åpne kontroller'
                                                 : 'Vis alle kontroller',
                                             icon: <CallMergeIcon />,
-                                            action: () =>
+                                            action: () => {
+                                                if (!showAllKontroller)
+                                                    loadKontrollerByObjekt(
+                                                        Number(objectId),
+                                                        true
+                                                    );
                                                 setShowAllKontroller(
                                                     !showAllKontroller
-                                                )
+                                                );
+                                            }
                                         }
                                     ]}
                                 />
@@ -234,7 +230,14 @@ const KontrollObjektView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
-                                            kontroller={_kontroller}
+                                            kontroller={_kontroller.filter(
+                                                (k) => {
+                                                    if (showAllKontroller) {
+                                                        return true;
+                                                    }
+                                                    return k.done !== true;
+                                                }
+                                            )}
                                             onSelected={onSelectForClipboard}
                                             leftAction={
                                                 <PasteButton

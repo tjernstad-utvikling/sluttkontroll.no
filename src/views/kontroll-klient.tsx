@@ -71,11 +71,17 @@ const KontrollKlientView = () => {
 
     useEffect(() => {
         if (loadedKlient !== Number(klientId)) {
-            loadKontrollerByKlient(Number(klientId));
+            loadKontrollerByKlient(Number(klientId), showAllKontroller);
             setLoadedKlient(Number(klientId));
             loadUsers();
         }
-    }, [klientId, loadKontrollerByKlient, loadUsers, loadedKlient]);
+    }, [
+        klientId,
+        loadKontrollerByKlient,
+        loadUsers,
+        loadedKlient,
+        showAllKontroller
+    ]);
 
     useEffect(() => {
         if (kontroller !== undefined) {
@@ -194,10 +200,16 @@ const KontrollKlientView = () => {
                                                 ? 'Vis kun åpne kontroller'
                                                 : 'Vis alle kontroller',
                                             icon: <CallMergeIcon />,
-                                            action: () =>
+                                            action: () => {
+                                                if (!showAllKontroller)
+                                                    loadKontrollerByKlient(
+                                                        Number(klientId),
+                                                        true
+                                                    );
                                                 setShowAllKontroller(
                                                     !showAllKontroller
-                                                )
+                                                );
+                                            }
                                         }
                                     ]}
                                 />
@@ -219,7 +231,14 @@ const KontrollKlientView = () => {
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
-                                            kontroller={_kontroller}
+                                            kontroller={_kontroller.filter(
+                                                (k) => {
+                                                    if (showAllKontroller) {
+                                                        return true;
+                                                    }
+                                                    return k.done !== true;
+                                                }
+                                            )}
                                             onSelected={onSelectForClipboard}
                                         />
                                     </TableContainer>

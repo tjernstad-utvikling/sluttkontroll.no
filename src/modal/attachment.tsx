@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+
+import { AttachmentSchema } from '../schema/attachment';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -5,7 +8,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { DropZone } from '../components/uploader';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { useState } from 'react';
 
 interface AttachmentModalProps {
     kontrollId: number | undefined;
@@ -14,11 +16,20 @@ interface AttachmentModalProps {
 export function AttachmentModal({ kontrollId, close }: AttachmentModalProps) {
     const [files, setFiles] = useState<File[]>([]);
 
-    const saveNewImages = async () => {
+    const [name, setName] = useState<string>('');
+
+    useEffect(() => {
+        if (files.length > 0) {
+            setName(files[0].name);
+        }
+    }, [files]);
+
+    const saveAttachment = async (name: string, description: string) => {
         // if (await addAvvikImages(avvik, images)) {
         //     setImages([]);
         //     close();
         // }
+        return false;
     };
 
     return (
@@ -42,13 +53,15 @@ export function AttachmentModal({ kontrollId, close }: AttachmentModalProps) {
                         ))}
                     </ul>
                 </DropZone>
+                <AttachmentSchema
+                    onSubmit={saveAttachment}
+                    name={name}
+                    description=""
+                />
             </DialogContent>
             <DialogActions>
                 <Button onClick={close} color="error">
                     Avbryt
-                </Button>
-                <Button onClick={saveNewImages} color="primary">
-                    Lagre
                 </Button>
             </DialogActions>
         </Dialog>

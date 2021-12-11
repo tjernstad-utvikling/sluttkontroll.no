@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import AddIcon from '@mui/icons-material/Add';
+import { AttachmentModal } from '../modal/attachment';
 import Button from '@mui/material/Button';
 import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
@@ -100,6 +101,9 @@ const KontrollObjektView = () => {
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
+    const [kontrollAddAttachmentId, setKontrollAddAttachmentId] = useState<
+        number | undefined
+    >(undefined);
 
     const editKontroll = (id: number) => {
         setEditId(id);
@@ -218,17 +222,19 @@ const KontrollObjektView = () => {
                             <CardContent>
                                 {kontroller !== undefined ? (
                                     <TableContainer
-                                        columns={kontrollColumns(
-                                            users ?? [],
-                                            klienter ?? [],
-                                            avvik ?? [],
-                                            measurements ?? [],
-                                            editKontroll,
-                                            toggleStatusKontroll,
+                                        columns={kontrollColumns({
+                                            users: users ?? [],
+                                            klienter: klienter ?? [],
+                                            avvik: avvik ?? [],
+                                            measurements: measurements ?? [],
+                                            edit: editKontroll,
+                                            toggleStatus: toggleStatusKontroll,
                                             clipboardHasSkjema,
                                             skjemaToPast,
-                                            setCommentId
-                                        )}
+                                            editComment: setCommentId,
+                                            addAttachment:
+                                                setKontrollAddAttachmentId
+                                        })}
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
@@ -283,6 +289,10 @@ const KontrollObjektView = () => {
                 kontrollId={commentId}
                 open={commentId ? true : false}
                 close={() => setCommentId(undefined)}
+            />
+            <AttachmentModal
+                kontrollId={kontrollAddAttachmentId}
+                close={() => setKontrollAddAttachmentId(undefined)}
             />
         </div>
     );

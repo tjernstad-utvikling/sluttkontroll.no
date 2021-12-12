@@ -121,6 +121,21 @@ const KontrollReportView = () => {
                                                 </div>
                                             </div>
                                         </Block>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between'
+                                            }}>
+                                            <ReportSwitch
+                                                id={
+                                                    ReportModules.attachmentModule
+                                                }
+                                                label="Vedlegg (Legges til ved nedlastning)"
+                                            />
+                                            <ReportStatement
+                                                kontrollId={Number(kontrollId)}
+                                            />
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </Grid>

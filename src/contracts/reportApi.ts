@@ -16,7 +16,8 @@ export enum ReportModules {
     controlModule = 'controlModule',
     skjemaPage = 'skjemaPage',
     measurementPage = 'measurementPage',
-    inlineMeasurementModule = 'inlineMeasurementModule'
+    inlineMeasurementModule = 'inlineMeasurementModule',
+    attachmentModule = 'attachmentModule'
 }
 
 export interface RapportEgenskaper {

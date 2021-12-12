@@ -8,6 +8,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { DropZone } from '../components/uploader';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { uploadAttachment } from '../api/attachmentApi';
+import { useSnackbar } from 'notistack';
 
 interface AttachmentModalProps {
     kontrollId: number | undefined;
@@ -18,6 +20,8 @@ export function AttachmentModal({ kontrollId, close }: AttachmentModalProps) {
 
     const [name, setName] = useState<string>('');
 
+    const { enqueueSnackbar } = useSnackbar();
+
     useEffect(() => {
         if (files.length > 0) {
             setName(files[0].name);
@@ -25,10 +29,28 @@ export function AttachmentModal({ kontrollId, close }: AttachmentModalProps) {
     }, [files]);
 
     const saveAttachment = async (name: string, description: string) => {
-        // if (await addAvvikImages(avvik, images)) {
-        //     setImages([]);
-        //     close();
-        // }
+        if (kontrollId) {
+            const res = await uploadAttachment(
+                kontrollId,
+                files[0],
+                name,
+                description
+            );
+            if (res.status === 200) {
+                setFiles([]);
+                setName('');
+                close();
+                enqueueSnackbar('Fil er lastet opp.', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            if (res.status === 400) {
+                enqueueSnackbar('Navn eller fil mangler', {
+                    variant: 'warning'
+                });
+            }
+        }
         return false;
     };
 

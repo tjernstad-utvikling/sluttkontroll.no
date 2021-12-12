@@ -6,7 +6,11 @@ import {
 } from '../contracts/reportApi';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 import { createContext, useContext, useState } from 'react';
-import { handleReportSettings, loadReportStatement } from './utils/loaders';
+import {
+    handleReportSettings,
+    loadAttachments,
+    loadReportStatement
+} from './utils/loaders';
 
 import { Avvik } from '../contracts/avvikApi';
 import { OutputData } from '@editorjs/editorjs';
@@ -140,6 +144,9 @@ export const DocumentContainer = ({
             setStatementText(
                 await loadReportStatement(kontrollId, enqueueSnackbar)
             );
+
+            await loadAttachments(kontrollId, enqueueSnackbar);
+
             setHasLoaded(true);
         }
     });

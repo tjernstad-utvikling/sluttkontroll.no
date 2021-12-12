@@ -33,3 +33,22 @@ export const uploadAttachment = async (
         throw new Error(error);
     }
 };
+
+export const getAttachmentListByKontroll = async (
+    kontrollId: number
+): Promise<{
+    status: number;
+    attachments?: Attachment[];
+    message?: string;
+}> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `/attachment/list/${kontrollId}`
+        );
+
+        return { status, ...data };
+    } catch (error: any) {
+        errorHandler(error);
+        throw new Error(error);
+    }
+};

@@ -423,6 +423,61 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
     );
 };
 
+export const SelectAttachments = () => {
+    const [open, setOpen] = useState<boolean>(false);
+    const { isModuleActive, toggleModuleVisibilityState } = useReport();
+    return (
+        <>
+            <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => setOpen(!open)}>
+                Velg vedlegg
+            </Button>
+            <Dialog
+                open={open}
+                onClose={() => setOpen(false)}
+                aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Måleprotokoll</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Velg plassering av måleprotokoll
+                    </DialogContentText>
+                    <Grid
+                        component="label"
+                        container
+                        alignItems="center"
+                        spacing={1}>
+                        <Grid item>Separat måleprotokoll</Grid>
+                        <Grid item>
+                            <Switch
+                                checked={isModuleActive(
+                                    ReportModules.inlineMeasurementModule
+                                )}
+                                onChange={() =>
+                                    toggleModuleVisibilityState(
+                                        ReportModules.inlineMeasurementModule
+                                    )
+                                }
+                                name={ReportModules.inlineMeasurementModule}
+                                color="primary"
+                            />
+                        </Grid>
+                        <Grid item>
+                            Måleprotokoll ved tilhørende kontrollskjema
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)} color="primary">
+                        Lukk
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+};
+
 const useStyles = makeStyles()((theme: Theme) => ({
     propertiesBox: {
         padding: theme.spacing(2)

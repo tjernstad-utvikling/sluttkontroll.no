@@ -9,7 +9,8 @@ import {
     KontrollDocAdjusting,
     MeasurementAdjusting,
     ReportProperties,
-    ReportStatement
+    ReportStatement,
+    SelectAttachments
 } from '../document/customizeData/kontrollReportData';
 
 import Container from '@mui/material/Container';
@@ -132,9 +133,7 @@ const KontrollReportView = () => {
                                                 }
                                                 label="Vedlegg (Legges til ved nedlastning)"
                                             />
-                                            <ReportStatement
-                                                kontrollId={Number(kontrollId)}
-                                            />
+                                            <SelectAttachments />
                                         </div>
                                     </CardContent>
                                 </Card>

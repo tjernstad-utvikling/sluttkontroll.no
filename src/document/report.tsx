@@ -67,11 +67,6 @@ export const SlkReport = () => {
     } = useReport();
 
     const [downloadReport, setDownloadReport] = useState<boolean>(false);
-    const [reportBlob, setReportBlob] = useState<Blob>();
-
-    useEffect(() => {
-        console.log(reportBlob);
-    }, [reportBlob]);
 
     const size = useWindowSize();
     if (!hasLoaded) {

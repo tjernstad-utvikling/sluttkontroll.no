@@ -12,6 +12,7 @@ import {
     loadReportStatement
 } from './utils/loaders';
 
+import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
 import { OutputData } from '@editorjs/editorjs';
 import { errorHandler } from '../tools/errorHandler';
@@ -70,6 +71,11 @@ export const DocumentContainer = ({
     const [_infoText, setInfoText] = useState<OutputData>();
     const [_statementText, setStatementText] = useState<OutputData>();
     const [_statementImages, setStatementImages] = useState<LocalImage[]>([]);
+
+    const [attachments, setAttachments] = useState<Attachment[] | undefined>();
+    const [selectedAttachments, setSelectedAttachments] = useState<
+        Attachment[]
+    >([]);
 
     useEffect(() => {
         const load = async () => {
@@ -145,7 +151,7 @@ export const DocumentContainer = ({
                 await loadReportStatement(kontrollId, enqueueSnackbar)
             );
 
-            await loadAttachments(kontrollId, enqueueSnackbar);
+            setAttachments(await loadAttachments(kontrollId, enqueueSnackbar));
 
             setHasLoaded(true);
         }
@@ -244,13 +250,20 @@ export const DocumentContainer = ({
 
                 kontroll,
                 updateKontroll,
+
                 skjemaer: _skjemaer,
                 filteredSkjemaer,
                 updateFilteredSkjemaer,
                 checklists,
+
                 avvik: avvik,
+
                 measurements,
-                measurementTypes
+                measurementTypes,
+
+                attachments,
+                selectedAttachments,
+                updateSelectedAttachments: setSelectedAttachments
             }}>
             {children}
         </Context.Provider>
@@ -282,4 +295,8 @@ interface ContextInterface {
 
     measurements: Measurement[] | undefined;
     measurementTypes: MeasurementType[] | undefined;
+
+    attachments: Attachment[] | undefined;
+    selectedAttachments: Attachment[];
+    updateSelectedAttachments: (attachments: Attachment[]) => void;
 }

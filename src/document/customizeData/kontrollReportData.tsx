@@ -1,3 +1,8 @@
+import {
+    AttachmentTable,
+    columns as attachmentColumns,
+    defaultColumns as attachmentDefaultColumns
+} from '../../tables/attachment';
 import { SkjemaTable, columns, defaultColumns } from '../../tables/skjema';
 import { getImageFile, uploadImageFile } from '../../api/imageApi';
 import { useEffect, useState } from 'react';
@@ -425,48 +430,43 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
 
 export const SelectAttachments = () => {
     const [open, setOpen] = useState<boolean>(false);
-    const { isModuleActive, toggleModuleVisibilityState } = useReport();
+    const { attachments, updateSelectedAttachments, selectedAttachments } =
+        useReport();
     return (
         <>
             <Button
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Velg vedlegg
+                Velg vedlegg ({selectedAttachments.length})
             </Button>
             <Dialog
                 open={open}
+                fullWidth
                 onClose={() => setOpen(false)}
                 aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Måleprotokoll</DialogTitle>
+                <DialogTitle id="form-dialog-title">Vedlegg</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Velg plassering av måleprotokoll
-                    </DialogContentText>
-                    <Grid
-                        component="label"
-                        container
-                        alignItems="center"
-                        spacing={1}>
-                        <Grid item>Separat måleprotokoll</Grid>
-                        <Grid item>
-                            <Switch
-                                checked={isModuleActive(
-                                    ReportModules.inlineMeasurementModule
-                                )}
-                                onChange={() =>
-                                    toggleModuleVisibilityState(
-                                        ReportModules.inlineMeasurementModule
+                    {attachments !== undefined ? (
+                        <TableContainer
+                            columns={attachmentColumns()}
+                            defaultColumns={attachmentDefaultColumns}
+                            tableId="attachment">
+                            <AttachmentTable
+                                attachments={attachments}
+                                selectedAttachments={selectedAttachments}
+                                onSelected={(ids) =>
+                                    updateSelectedAttachments(
+                                        attachments?.filter(
+                                            (a) => ids.indexOf(a.id) !== -1
+                                        )
                                     )
                                 }
-                                name={ReportModules.inlineMeasurementModule}
-                                color="primary"
                             />
-                        </Grid>
-                        <Grid item>
-                            Måleprotokoll ved tilhørende kontrollskjema
-                        </Grid>
-                    </Grid>
+                        </TableContainer>
+                    ) : (
+                        <div>Laster vedlegg</div>
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)} color="primary">

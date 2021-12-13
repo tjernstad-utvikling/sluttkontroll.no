@@ -6,6 +6,7 @@ import {
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 import { Kontroll, Skjema } from '../contracts/kontrollApi';
+import React, { useEffect, useState } from 'react';
 
 import { Avvik } from '../contracts/avvikApi';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -14,7 +15,6 @@ import InsertCommentIcon from '@mui/icons-material/InsertComment';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { PasteTableButton } from '../components/clipboard';
-import React from 'react';
 import { RowAction } from './tableUtils';
 import { useClipBoard } from '../data/clipboard';
 
@@ -224,11 +224,13 @@ export const defaultColumns: Array<string> = ['area', 'omrade', 'kontroll'];
 interface SkjemaTableProps {
     skjemaer: Skjema[];
 
+    selectedSkjemaer?: Skjema[];
     onSelected: (ids: number[]) => void;
     leftAction?: React.ReactNode;
 }
 export const SkjemaTable = ({
     skjemaer,
+    selectedSkjemaer,
     onSelected,
     leftAction
 }: SkjemaTableProps) => {
@@ -240,10 +242,24 @@ export const SkjemaTable = ({
             return RowStylingEnum.cut;
         }
     };
+    const [selectionModel, setSelection] = useState<number[]>([]);
+
+    useEffect(() => {
+        if (selectedSkjemaer !== undefined) {
+            setSelection(selectedSkjemaer.map((s) => s.id));
+        }
+    }, [selectedSkjemaer]);
+
+    function onSelection(checkpoints: number[]) {
+        setSelection(checkpoints);
+
+        if (onSelected) onSelected(checkpoints);
+    }
 
     return (
         <BaseTable
-            onSelected={onSelected}
+            selectionModel={selectionModel}
+            onSelected={onSelection}
             getRowStyling={getRowStyling}
             data={skjemaer}>
             {leftAction}

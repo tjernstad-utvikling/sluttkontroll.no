@@ -86,7 +86,7 @@ export const KontrollDocAdjusting = ({
 }: KontrollDocAdjustingProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const [_skjemaer, set_Skjemaer] = useState<Skjema[]>();
-    const { updateFilteredSkjemaer, skjemaer } = useReport();
+    const { updateFilteredSkjemaer, skjemaer, filteredSkjemaer } = useReport();
     const { state } = useKontroll();
     const {
         state: { avvik }
@@ -109,7 +109,8 @@ export const KontrollDocAdjusting = ({
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Velg kontrollskjemaer til rapporten
+                Velg kontrollskjemaer til rapporten (
+                {filteredSkjemaer && filteredSkjemaer.length})
             </Button>
             <Dialog
                 fullScreen
@@ -143,6 +144,7 @@ export const KontrollDocAdjusting = ({
                             tableId="skjemaer">
                             <SkjemaTable
                                 skjemaer={_skjemaer}
+                                selectedSkjemaer={filteredSkjemaer}
                                 onSelected={(ids) => {
                                     updateFilteredSkjemaer(
                                         state?.skjemaer?.filter(

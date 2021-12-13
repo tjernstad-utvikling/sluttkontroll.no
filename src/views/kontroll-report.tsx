@@ -133,7 +133,9 @@ const KontrollReportView = () => {
                                                 }
                                                 label="Vedlegg (Legges til ved nedlastning)"
                                             />
-                                            <SelectAttachments />
+                                            <SelectAttachments
+                                                kontrollId={Number(kontrollId)}
+                                            />
                                         </div>
                                     </CardContent>
                                 </Card>

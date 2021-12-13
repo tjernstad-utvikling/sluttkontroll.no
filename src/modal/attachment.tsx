@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { Attachment } from '../contracts/attachmentApi';
 import { AttachmentSchema } from '../schema/attachment';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -14,8 +15,13 @@ import { useSnackbar } from 'notistack';
 interface AttachmentModalProps {
     kontrollId: number | undefined;
     close: () => void;
+    updateAttachmentList?: (attachment: Attachment) => void;
 }
-export function AttachmentModal({ kontrollId, close }: AttachmentModalProps) {
+export function AttachmentModal({
+    kontrollId,
+    close,
+    updateAttachmentList
+}: AttachmentModalProps) {
     const [files, setFiles] = useState<File[]>([]);
 
     const [name, setName] = useState<string>('');
@@ -37,6 +43,9 @@ export function AttachmentModal({ kontrollId, close }: AttachmentModalProps) {
                 description
             );
             if (res.status === 200) {
+                if (updateAttachmentList) {
+                    if (res.attachment) updateAttachmentList(res.attachment);
+                }
                 setFiles([]);
                 setName('');
                 close();

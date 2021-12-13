@@ -7,6 +7,7 @@ import { SkjemaTable, columns, defaultColumns } from '../../tables/skjema';
 import { getImageFile, uploadImageFile } from '../../api/imageApi';
 import { useEffect, useState } from 'react';
 
+import { AttachmentModal } from '../../modal/attachment';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -430,10 +431,21 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
     );
 };
 
-export const SelectAttachments = () => {
+interface SelectAttachmentsProps {
+    kontrollId: number;
+}
+export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
     const [open, setOpen] = useState<boolean>(false);
-    const { attachments, updateSelectedAttachments, selectedAttachments } =
-        useReport();
+    const [openAddAttachment, setOpenAddAttachment] = useState<
+        number | undefined
+    >(undefined);
+    const {
+        attachments,
+        updateSelectedAttachments,
+        selectedAttachments,
+        setAttachments
+    } = useReport();
+
     return (
         <>
             <Button
@@ -464,6 +476,16 @@ export const SelectAttachments = () => {
                                         )
                                     )
                                 }
+                                leftAction={
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() =>
+                                            setOpenAddAttachment(kontrollId)
+                                        }>
+                                        Last opp flere vedlegg
+                                    </Button>
+                                }
                             />
                         </TableContainer>
                     ) : (
@@ -476,6 +498,18 @@ export const SelectAttachments = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <AttachmentModal
+                updateAttachmentList={(attachment) =>
+                    setAttachments((prev) => {
+                        if (prev) {
+                            return [...prev, attachment];
+                        }
+                        return [];
+                    })
+                }
+                kontrollId={openAddAttachment}
+                close={() => setOpenAddAttachment(undefined)}
+            />
         </>
     );
 };

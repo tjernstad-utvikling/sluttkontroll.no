@@ -275,6 +275,7 @@ export const DocumentContainer = ({
                 measurementTypes,
 
                 attachments,
+                setAttachments,
                 selectedAttachments,
                 updateSelectedAttachments
             }}>
@@ -312,6 +313,9 @@ interface ContextInterface {
     measurementTypes: MeasurementType[] | undefined;
 
     attachments: Attachment[] | undefined;
+    setAttachments: React.Dispatch<
+        React.SetStateAction<Attachment[] | undefined>
+    >;
     selectedAttachments: Attachment[];
     updateSelectedAttachments: (attachments: Attachment[]) => void;
 }

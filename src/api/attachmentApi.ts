@@ -52,3 +52,21 @@ export const getAttachmentListByKontroll = async (
         throw new Error(error);
     }
 };
+
+export const getAttachmentFile = async (
+    name: string
+): Promise<{ status: number; data: Blob }> => {
+    try {
+        const { status, data } = await sluttkontrollApi.get(
+            `/attachment/${name}`,
+            {
+                responseType: 'blob'
+            }
+        );
+
+        return { status, data: data };
+    } catch (error: any) {
+        errorHandler(error);
+        throw new Error(error);
+    }
+};

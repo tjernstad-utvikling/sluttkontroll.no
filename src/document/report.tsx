@@ -8,6 +8,7 @@ import {
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 import { useEffect, useState } from 'react';
 
+import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
 import Button from '@mui/material/Button';
 import { FrontPage } from './modules/frontPage';
@@ -22,6 +23,7 @@ import RobotoItalic from '../assets/fonts/Roboto-Italic.ttf';
 import RobotoRegular from '../assets/fonts/Roboto-Regular.ttf';
 import { SkjemaPage } from './modules/skjemaPage';
 import { StatementPage } from './modules/statementPage';
+import { getAttachmentFile } from '../api/attachmentApi';
 import { useReport } from './documentContainer';
 import { useWindowSize } from '../hooks/useWindowSize';
 
@@ -63,7 +65,8 @@ export const SlkReport = () => {
         statementText,
         measurements,
         measurementTypes,
-        hasLoaded
+        hasLoaded,
+        selectedAttachments
     } = useReport();
 
     const [downloadReport, setDownloadReport] = useState<boolean>(false);
@@ -91,25 +94,25 @@ export const SlkReport = () => {
             </PDFViewer>
         );
     }
-    // if (downloadReport) {
-    //     return (
-    //         <Attachment>
-    //             <SlkDocument
-    //                 isModuleActive={isModuleActive}
-    //                 statementImages={statementImages}
-    //                 reportSetting={reportSetting}
-    //                 infoText={infoText}
-    //                 kontroll={kontroll}
-    //                 filteredSkjemaer={filteredSkjemaer}
-    //                 checklists={checklists}
-    //                 avvik={avvik}
-    //                 statementText={statementText}
-    //                 measurements={measurements}
-    //                 measurementTypes={measurementTypes}
-    //             />
-    //         </Attachment>
-    //     );
-    // }
+    if (downloadReport) {
+        return (
+            <AttachmentMerger attachments={selectedAttachments}>
+                <SlkDocument
+                    isModuleActive={isModuleActive}
+                    statementImages={statementImages}
+                    reportSetting={reportSetting}
+                    infoText={infoText}
+                    kontroll={kontroll}
+                    filteredSkjemaer={filteredSkjemaer}
+                    checklists={checklists}
+                    avvik={avvik}
+                    statementText={statementText}
+                    measurements={measurements}
+                    measurementTypes={measurementTypes}
+                />
+            </AttachmentMerger>
+        );
+    }
     return (
         <div>
             <Button
@@ -130,10 +133,10 @@ export const SlkReport = () => {
 
 interface AttachmentProps {
     children: JSX.Element;
-    attachments: Blob[];
+    attachments: Attachment[];
 }
-const Attachment = ({ children, attachments }: AttachmentProps) => {
-    const [instance, updateInstance] = usePDF({ document: children });
+const AttachmentMerger = ({ children, attachments }: AttachmentProps) => {
+    const [instance] = usePDF({ document: children });
     const [finishedLoading, setFinishedLoading] = useState<boolean>(false);
     const [startedLoading, setStartedLoading] = useState<boolean>(false);
 
@@ -141,11 +144,22 @@ const Attachment = ({ children, attachments }: AttachmentProps) => {
         const render = async () => {
             const merger = new PDFMerger();
 
-            await Promise.all(
-                attachments.map(async (file) => await merger.add(file))
-            );
+            if (instance.blob) await merger.add(instance.blob);
+
+            for (const attachment of attachments) {
+                const res = await getAttachmentFile(attachment.file);
+
+                await merger.add(res.data);
+            }
 
             const mergedPdf = await merger.saveAsBlob();
+            const url = URL.createObjectURL(mergedPdf);
+
+            const fileLink = document.createElement('a');
+            fileLink.href = url;
+            fileLink.setAttribute('download', 'Avviksliste.pdf');
+            document.body.appendChild(fileLink);
+            fileLink.click();
 
             return;
         };
@@ -158,7 +172,7 @@ const Attachment = ({ children, attachments }: AttachmentProps) => {
                 throw err;
             });
         }
-    }, [attachments, finishedLoading, instance.loading, startedLoading]);
+    }, [attachments, finishedLoading, instance, startedLoading]);
 
     if (instance.loading) return <div>Loading ...</div>;
 
@@ -168,7 +182,7 @@ const Attachment = ({ children, attachments }: AttachmentProps) => {
     if (instance.url)
         return (
             <a href={instance.url} download="test.pdf">
-                Download
+                Trykk her om filen ikke blir lastet ned
             </a>
         );
     return <div />;

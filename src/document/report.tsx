@@ -66,10 +66,10 @@ export const SlkReport = () => {
         measurements,
         measurementTypes,
         hasLoaded,
-        selectedAttachments
+        selectedAttachments,
+        downloadReport,
+        setDownloadReport
     } = useReport();
-
-    const [downloadReport, setDownloadReport] = useState<boolean>(false);
 
     const size = useWindowSize();
     if (!hasLoaded) {
@@ -157,7 +157,7 @@ const AttachmentMerger = ({ children, attachments }: AttachmentProps) => {
 
             const fileLink = document.createElement('a');
             fileLink.href = url;
-            fileLink.setAttribute('download', 'Avviksliste.pdf');
+            fileLink.setAttribute('download', 'Kontrollrapport.pdf');
             document.body.appendChild(fileLink);
             fileLink.click();
 

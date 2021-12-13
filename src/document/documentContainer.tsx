@@ -111,6 +111,7 @@ export const DocumentContainer = ({
     }, [_statementText]);
 
     const [previewDocument, setPreviewDocument] = useState<boolean>(false);
+    const [downloadReport, setDownloadReport] = useState<boolean>(false);
 
     const {
         state: { skjemaer, checklists },
@@ -176,6 +177,7 @@ export const DocumentContainer = ({
 
     const toggleModuleVisibilityState = (id: ReportModules) => {
         setPreviewDocument(false);
+        setDownloadReport(false);
         if (reportSetting) {
             if (reportSetting.modules.includes(id)) {
                 setReportSetting((prev) => {
@@ -205,21 +207,30 @@ export const DocumentContainer = ({
 
     const updateKontroll = (reportKontroll: ReportKontroll) => {
         setPreviewDocument(false);
+        setDownloadReport(false);
         setKontroll(reportKontroll);
     };
 
     const updateStatement = (text: OutputData) => {
         setPreviewDocument(false);
+        setDownloadReport(false);
         setStatementText(text);
     };
 
     const updateSetting = (setting: ReportSetting) => {
         setPreviewDocument(false);
+        setDownloadReport(false);
         setReportSetting(setting);
+    };
+    const updateSelectedAttachments = (attachments: Attachment[]) => {
+        setPreviewDocument(false);
+        setDownloadReport(false);
+        setSelectedAttachments(attachments);
     };
 
     const updateFilteredSkjemaer = (skjemaer: Skjema[] | undefined) => {
         setPreviewDocument(false);
+        setDownloadReport(false);
         setFilteredSkjemaer(skjemaer);
 
         setReportSetting((prev) => {
@@ -239,6 +250,8 @@ export const DocumentContainer = ({
                 previewDocument,
                 hasLoaded,
                 setPreviewDocument,
+                downloadReport,
+                setDownloadReport,
                 statementImages: _statementImages,
 
                 isModuleActive,
@@ -263,7 +276,7 @@ export const DocumentContainer = ({
 
                 attachments,
                 selectedAttachments,
-                updateSelectedAttachments: setSelectedAttachments
+                updateSelectedAttachments
             }}>
             {children}
         </Context.Provider>
@@ -275,6 +288,8 @@ interface ContextInterface {
     previewDocument: boolean;
     hasLoaded: boolean;
     setPreviewDocument: React.Dispatch<React.SetStateAction<boolean>>;
+    downloadReport: boolean;
+    setDownloadReport: React.Dispatch<React.SetStateAction<boolean>>;
     statementImages: LocalImage[];
 
     infoText: OutputData | undefined;

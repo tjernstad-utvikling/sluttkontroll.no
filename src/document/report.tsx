@@ -139,6 +139,7 @@ const AttachmentMerger = ({ children, attachments }: AttachmentProps) => {
     const [instance] = usePDF({ document: children });
     const [finishedLoading, setFinishedLoading] = useState<boolean>(false);
     const [startedLoading, setStartedLoading] = useState<boolean>(false);
+    const [mergedPdfUrl, setMergedPdfUrl] = useState<string>();
 
     useEffect(() => {
         const render = async () => {
@@ -154,7 +155,7 @@ const AttachmentMerger = ({ children, attachments }: AttachmentProps) => {
 
             const mergedPdf = await merger.saveAsBlob();
             const url = URL.createObjectURL(mergedPdf);
-
+            setMergedPdfUrl(url);
             const fileLink = document.createElement('a');
             fileLink.href = url;
             fileLink.setAttribute('download', 'Kontrollrapport.pdf');
@@ -174,18 +175,18 @@ const AttachmentMerger = ({ children, attachments }: AttachmentProps) => {
         }
     }, [attachments, finishedLoading, instance, startedLoading]);
 
-    if (instance.loading) return <div>Loading ...</div>;
+    if (instance.loading) return <div>Laster ...</div>;
 
     if (instance.error)
         return <div>Something went wrong: {instance.error}</div>;
 
-    if (instance.url)
+    if (mergedPdfUrl)
         return (
-            <a href={instance.url} download="test.pdf">
+            <a href={mergedPdfUrl} download="Kontrollrapport.pdf">
                 Trykk her om filen ikke blir lastet ned
             </a>
         );
-    return <div />;
+    return <div>Genererer ferdig rapport ...</div>;
 };
 
 interface SlkDocumentProps {

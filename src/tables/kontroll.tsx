@@ -200,6 +200,20 @@ export const kontrollColumns = ({
                 )
         },
         {
+            field: 'attachments',
+            headerName: 'Vedlegg',
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <Link
+                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/attachments`}>
+                    {params.row?.attachments?.length}
+                </Link>
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                param1.api.getRow(param1.id)?.attachments.length -
+                param2.api.getRow(param2.id)?.attachments.length
+        },
+        {
             field: 'user',
             headerName: 'Utførende',
             flex: 1,

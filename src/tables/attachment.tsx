@@ -30,9 +30,9 @@ export const defaultColumns: string[] = ['id', 'name', 'description'];
 
 interface AttachmentTableProps {
     attachments: Attachment[];
-    selectedAttachments: Attachment[] | undefined;
+    selectedAttachments?: Attachment[] | undefined;
 
-    onSelected: (ids: number[]) => void;
+    onSelected?: (ids: number[]) => void;
     leftAction?: React.ReactNode;
 }
 export const AttachmentTable = ({

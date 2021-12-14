@@ -2,6 +2,7 @@ import { AttachmentTable, columns, defaultColumns } from '../tables/attachment';
 import { Card, CardContent, CardMenu } from '../components/card';
 import { useEffect, useState } from 'react';
 
+import { Attachment } from '../contracts/attachmentApi';
 import { AttachmentModal } from '../modal/attachment';
 import { AttachmentsViewParams } from '../contracts/navigation';
 import Container from '@mui/material/Container';
@@ -69,6 +70,15 @@ const AttachmentsView = () => {
         }
     };
 
+    const addAttachments = (attachment: Attachment) => {
+        if (_kontroll) {
+            updateKontroll({
+                ..._kontroll,
+                attachments: [..._kontroll.attachments, attachment]
+            });
+        }
+    };
+
     return (
         <div>
             <div className={classes.appBarSpacer} />
@@ -111,6 +121,7 @@ const AttachmentsView = () => {
                 </Grid>
             </Container>
             <AttachmentModal
+                updateAttachmentList={addAttachments}
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
             />

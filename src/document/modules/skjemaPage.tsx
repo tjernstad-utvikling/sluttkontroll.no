@@ -1,11 +1,10 @@
-import { Checklist, Skjema } from '../../contracts/kontrollApi';
 import { Measurement, MeasurementType } from '../../contracts/measurementApi';
 import { Page, StyleSheet, View } from '@react-pdf/renderer';
 import { TableCell, TableHeader, TableRow } from './components/table';
-import { useEffect, useState } from 'react';
 
 import { Avvik } from '../../contracts/avvikApi';
 import { ChecklistRow } from './components/skjema';
+import { ExtendedSkjema } from '../../contracts/kontrollApi';
 import { Footer } from './components/footer';
 import { Header } from './components/header';
 import { MeasurementModule } from './components/measurement';
@@ -16,8 +15,7 @@ import { Text } from './components/text';
 
 interface SkjemaPageProps {
     reportSetting: ReportSetting | undefined;
-    skjema: Skjema;
-    checklists: Checklist[] | undefined;
+    skjema: ExtendedSkjema;
     avvik: Avvik[] | undefined;
     hasInlineMeasurements: boolean;
     measurements: Measurement[] | undefined;
@@ -26,29 +24,11 @@ interface SkjemaPageProps {
 export const SkjemaPage = ({
     reportSetting,
     skjema,
-    checklists,
     avvik,
     hasInlineMeasurements,
     measurements,
     measurementTypes
 }: SkjemaPageProps): JSX.Element => {
-    const [_checklists, setChecklists] = useState<Checklist[]>([]);
-
-    useEffect(() => {
-        if (checklists) {
-            setChecklists(
-                checklists.sort((a, b) =>
-                    String(
-                        SjekklisteValueGetter(a).prosedyreNr()
-                    ).localeCompare(
-                        String(SjekklisteValueGetter(b).prosedyreNr()),
-                        undefined,
-                        { numeric: true, sensitivity: 'base' }
-                    )
-                )
-            );
-        }
-    }, [checklists]);
     if (reportSetting && avvik && measurements && measurementTypes) {
         return (
             <Page
@@ -65,17 +45,27 @@ export const SkjemaPage = ({
                     {skjema.area}, {skjema.omrade}
                 </Text>
                 <TableHeader title="Kontrollskjema" />
-                {_checklists.map((checklist, index) => (
-                    <ChecklistRow
-                        isEvenIndex={index % 2 === 0}
-                        key={checklist.id}
-                        nr={checklist.checkpoint.prosedyreNr}
-                        prosedyre={checklist.checkpoint.prosedyre}
-                        avvik={avvik.filter(
-                            (a) => a.checklist.id === checklist.id
-                        )}
-                    />
-                ))}
+                {skjema.checklists
+                    .sort((a, b) =>
+                        String(
+                            SjekklisteValueGetter(a).prosedyreNr()
+                        ).localeCompare(
+                            String(SjekklisteValueGetter(b).prosedyreNr()),
+                            undefined,
+                            { numeric: true, sensitivity: 'base' }
+                        )
+                    )
+                    .map((checklist, index) => (
+                        <ChecklistRow
+                            isEvenIndex={index % 2 === 0}
+                            key={checklist.id}
+                            nr={checklist.checkpoint.prosedyreNr}
+                            prosedyre={checklist.checkpoint.prosedyre}
+                            avvik={avvik.filter(
+                                (a) => a.checklist.id === checklist.id
+                            )}
+                        />
+                    ))}
                 {skjema.kommentar !== null && skjema.kommentar !== '' && (
                     <TableRow hasBottomBorder hasTopBorder>
                         <TableCell>{skjema.kommentar}</TableCell>

@@ -1,5 +1,5 @@
-import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
 import { Document, Font, usePDF } from '@react-pdf/renderer';
+import { ExtendedSkjema, ReportKontroll } from '../contracts/kontrollApi';
 import {
     LocalImage,
     ReportModules,
@@ -60,7 +60,6 @@ export const SlkReport = () => {
         infoText,
         kontroll,
         filteredSkjemaer,
-        checklists,
         avvik,
         statementText,
         measurements,
@@ -85,7 +84,6 @@ export const SlkReport = () => {
                     infoText={infoText}
                     kontroll={kontroll}
                     filteredSkjemaer={filteredSkjemaer}
-                    checklists={checklists}
                     avvik={avvik}
                     statementText={statementText}
                     measurements={measurements}
@@ -104,7 +102,6 @@ export const SlkReport = () => {
                     infoText={infoText}
                     kontroll={kontroll}
                     filteredSkjemaer={filteredSkjemaer}
-                    checklists={checklists}
                     avvik={avvik}
                     statementText={statementText}
                     measurements={measurements}
@@ -196,8 +193,7 @@ interface SlkDocumentProps {
     reportSetting: ReportSetting | undefined;
     isModuleActive: (reportModule: ReportModules) => boolean;
     kontroll: ReportKontroll | undefined;
-    filteredSkjemaer: Skjema[] | undefined;
-    checklists: Checklist[] | undefined;
+    filteredSkjemaer: ExtendedSkjema[] | undefined;
     avvik: Avvik[] | undefined;
     measurements: Measurement[] | undefined;
     measurementTypes: MeasurementType[] | undefined;
@@ -209,7 +205,6 @@ const SlkDocument = ({
     infoText,
     kontroll,
     filteredSkjemaer,
-    checklists,
     avvik,
     statementText,
     measurements,
@@ -241,9 +236,6 @@ const SlkDocument = ({
                     <SkjemaPage
                         key={s.id}
                         skjema={s}
-                        checklists={checklists?.filter(
-                            (ch) => ch.skjema.id === s.id
-                        )}
                         avvik={avvik}
                         reportSetting={reportSetting}
                         hasInlineMeasurements={

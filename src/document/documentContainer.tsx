@@ -1,4 +1,4 @@
-import { Checklist, ReportKontroll, Skjema } from '../contracts/kontrollApi';
+import { ExtendedSkjema, ReportKontroll } from '../contracts/kontrollApi';
 import {
     LocalImage,
     ReportModules,
@@ -118,8 +118,9 @@ export const DocumentContainer = ({
         loadKontrollerByObjekt
     } = useKontroll();
 
-    const [_skjemaer, setSkjemaer] = useState<Skjema[]>();
-    const [filteredSkjemaer, setFilteredSkjemaer] = useState<Skjema[]>();
+    const [_skjemaer, setSkjemaer] = useState<ExtendedSkjema[]>();
+    const [filteredSkjemaer, setFilteredSkjemaer] =
+        useState<ExtendedSkjema[]>();
 
     const {
         state: { avvik }
@@ -159,21 +160,30 @@ export const DocumentContainer = ({
     });
 
     useEffect(() => {
-        if (skjemaer !== undefined && hasLoaded) {
-            setSkjemaer(skjemaer.filter((s) => s.kontroll.id === kontrollId));
+        if (skjemaer !== undefined && hasLoaded && checklists) {
+            const kontrollSkjemaer = skjemaer
+                .filter((s) => s.kontroll.id === kontrollId)
+                .map((ks) => {
+                    return {
+                        ...ks,
+                        checklists: checklists?.filter(
+                            (ch) => ch.skjema.id === ks.id
+                        )
+                    };
+                });
+
+            setSkjemaer(kontrollSkjemaer);
             if (reportSetting?.selectedSkjemaer.length === 0) {
-                setFilteredSkjemaer(
-                    skjemaer.filter((s) => s.kontroll.id === kontrollId)
-                );
+                setFilteredSkjemaer(kontrollSkjemaer);
             } else {
                 setFilteredSkjemaer(
-                    skjemaer.filter((s) =>
+                    kontrollSkjemaer.filter((s) =>
                         reportSetting?.selectedSkjemaer.includes(s.id)
                     )
                 );
             }
         }
-    }, [skjemaer, kontrollId, reportSetting, hasLoaded]);
+    }, [skjemaer, kontrollId, reportSetting, hasLoaded, checklists]);
 
     const toggleModuleVisibilityState = (id: ReportModules) => {
         setPreviewDocument(false);
@@ -228,7 +238,7 @@ export const DocumentContainer = ({
         setSelectedAttachments(attachments);
     };
 
-    const updateFilteredSkjemaer = (skjemaer: Skjema[] | undefined) => {
+    const updateFilteredSkjemaer = (skjemaer: ExtendedSkjema[] | undefined) => {
         setPreviewDocument(false);
         setDownloadReport(false);
         setFilteredSkjemaer(skjemaer);
@@ -267,7 +277,6 @@ export const DocumentContainer = ({
                 skjemaer: _skjemaer,
                 filteredSkjemaer,
                 updateFilteredSkjemaer,
-                checklists,
 
                 avvik: avvik,
 
@@ -302,10 +311,9 @@ interface ContextInterface {
 
     kontroll: ReportKontroll | undefined;
     updateKontroll: (reportKontroll: ReportKontroll) => void;
-    skjemaer: Skjema[] | undefined;
-    filteredSkjemaer: Skjema[] | undefined;
-    checklists: Checklist[] | undefined;
-    updateFilteredSkjemaer: (skjemaer: Skjema[] | undefined) => void;
+    skjemaer: ExtendedSkjema[] | undefined;
+    filteredSkjemaer: ExtendedSkjema[] | undefined;
+    updateFilteredSkjemaer: (skjemaer: ExtendedSkjema[] | undefined) => void;
 
     avvik: Avvik[] | undefined;
 

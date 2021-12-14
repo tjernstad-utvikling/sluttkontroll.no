@@ -55,6 +55,15 @@ export interface Skjema {
     kontroll: { id: number };
 }
 
+export interface ExtendedSkjema {
+    id: number;
+    area: string;
+    omrade: string;
+    kommentar: string;
+    kontroll: { id: number };
+    checklists: Checklist[];
+}
+
 export interface Checklist {
     id: number;
     checkpoint: {

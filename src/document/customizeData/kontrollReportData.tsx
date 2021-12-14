@@ -148,7 +148,7 @@ export const KontrollDocAdjusting = ({
                                 selectedSkjemaer={filteredSkjemaer}
                                 onSelected={(ids) => {
                                     updateFilteredSkjemaer(
-                                        state?.skjemaer?.filter(
+                                        skjemaer?.filter(
                                             (s) => ids.indexOf(s.id) !== -1
                                         )
                                     );

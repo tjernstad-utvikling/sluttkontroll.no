@@ -63,9 +63,7 @@ export const KlientSchema = ({
                         <Form>
                             {klienter && (
                                 <div>
-                                    <label htmlFor="klient-select">
-                                        Klient
-                                    </label>
+                                    <label htmlFor="klient-select">Kunde</label>
                                     <CreatableSelect
                                         onCreateOption={(newName) => {
                                             onCreateNew(newName);
@@ -83,8 +81,8 @@ export const KlientSchema = ({
                                         )}
                                     />
                                     <span>
-                                        Velg klient, nye klienter blir
-                                        automatisk lagt til
+                                        Velg kunde, nye kunder blir automatisk
+                                        lagt til
                                     </span>
                                 </div>
                             )}
@@ -131,7 +129,7 @@ export const KlientEditSchema = ({
                             variant="outlined"
                             fullWidth
                             id="name"
-                            label="Klient navn"
+                            label="Kunde navn"
                             name="name"
                             autoFocus
                         />

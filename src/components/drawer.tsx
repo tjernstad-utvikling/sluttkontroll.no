@@ -62,7 +62,7 @@ export const KlientMenu = ({
 
     if (filteredClients !== undefined) {
         return (
-            <List aria-label="Klienter">
+            <List aria-label="Kunder">
                 {filteredClients.map((klient) => (
                     <KlientListItem klient={klient} key={klient.id} />
                 ))}
@@ -102,7 +102,7 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
                 {open ? (
                     <IconButton
                         color="inherit"
-                        aria-label={`åpne lokasjoner for klient ${klient.name}`}
+                        aria-label={`åpne lokasjoner for kunde ${klient.name}`}
                         onClick={handleClick}
                         size="large">
                         <ExpandLess color="secondary" />
@@ -110,7 +110,7 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
                 ) : (
                     <IconButton
                         color="inherit"
-                        aria-label={`åpne lokasjoner for klient ${klient.name}`}
+                        aria-label={`åpne lokasjoner for kunde ${klient.name}`}
                         onClick={handleClick}
                         size="large">
                         <ExpandMore color="secondary" />

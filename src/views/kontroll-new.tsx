@@ -125,7 +125,7 @@ const KontrollNewView = () => {
                                             StepIconComponent={
                                                 ColorlibStepIcon
                                             }>
-                                            Klient
+                                            Kunde
                                             <br /> {selectedKlient?.name}
                                         </StepLabel>
                                     </Step>

@@ -115,7 +115,7 @@ export const kontrollColumns = ({
         },
         {
             field: 'klient',
-            headerName: 'Klient',
+            headerName: 'Kunde',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 KontrollValueGetter(params.row).klient(klienter),

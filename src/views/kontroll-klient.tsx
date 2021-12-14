@@ -164,7 +164,7 @@ const KontrollKlientView = () => {
                                             setEditKlient(!editKlient)
                                         }
                                         startIcon={<EditIcon />}>
-                                        Rediger klient
+                                        Rediger kunde
                                     </Button>
                                 ) : (
                                     <div />
@@ -172,7 +172,7 @@ const KontrollKlientView = () => {
                                 <div style={{ paddingBottom: '10px' }} />
 
                                 <Typography paragraph>
-                                    <strong>Klient:</strong> {_klient?.name}
+                                    <strong>Kunde:</strong> {_klient?.name}
                                 </Typography>
                                 {editKlient && _klient !== undefined ? (
                                     <KlientEditSchema

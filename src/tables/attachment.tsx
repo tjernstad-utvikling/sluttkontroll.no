@@ -1,10 +1,16 @@
+import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
 import React, { useEffect, useState } from 'react';
 
 import { Attachment } from '../contracts/attachmentApi';
 import { BaseTable } from './baseTable';
-import { GridColDef } from '@mui/x-data-grid-pro';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { RowAction } from './tableUtils';
 
-export const columns = () => {
+interface ColumnsOptions {
+    onDelete?: (id: number) => void;
+    skipActions?: boolean;
+}
+export const columns = ({ onDelete, skipActions }: ColumnsOptions) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -20,6 +26,31 @@ export const columns = () => {
             field: 'description',
             headerName: 'Beskrivelse',
             flex: 1
+        },
+        {
+            field: 'action',
+            headerName: ' ',
+            sortable: false,
+            filterable: false,
+            disableColumnMenu: true,
+            renderCell: (params: GridCellParams) => {
+                if (!skipActions) {
+                    return (
+                        <RowAction
+                            actionItems={[
+                                {
+                                    name: 'Slett',
+                                    action: () => {
+                                        if (onDelete) onDelete(params.row.id);
+                                    },
+                                    icon: <DeleteForeverIcon />
+                                }
+                            ]}
+                        />
+                    );
+                }
+                return <div />;
+            }
         }
     ];
 

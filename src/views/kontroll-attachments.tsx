@@ -8,10 +8,13 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { Kontroll } from '../contracts/kontrollApi';
 import { TableContainer } from '../tables/tableContainer';
+import { deleteAttachmentFile } from '../api/attachmentApi';
+import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 const AttachmentsView = () => {
     const { classes } = usePageStyles();
@@ -22,9 +25,14 @@ const AttachmentsView = () => {
 
     const [_kontroll, setKontroll] = useState<Kontroll>();
 
+    const { confirm } = useConfirm();
+
+    const { enqueueSnackbar } = useSnackbar();
+
     const {
         state: { kontroller },
-        loadKontroller
+        loadKontroller,
+        updateKontroll
     } = useKontroll();
 
     useEffectOnce(() => {
@@ -36,6 +44,30 @@ const AttachmentsView = () => {
             setKontroll(kontroller.find((k) => k.id === Number(kontrollId)));
         }
     }, [kontroller, kontrollId]);
+
+    const askToDeleteAttachment = async (attachmentId: number) => {
+        if (_kontroll) {
+            const attachment = _kontroll.attachments.find(
+                (a) => a.id === attachmentId
+            );
+            const isConfirmed = await confirm(
+                `Slette vedlegg ID: ${attachmentId} - ${attachment?.name}?`
+            );
+
+            if (isConfirmed) {
+                const { status } = await deleteAttachmentFile(attachmentId);
+                if (status === 204) {
+                    enqueueSnackbar('Vedlegg er slettet', {
+                        variant: 'success'
+                    });
+                    const attachments = _kontroll.attachments.filter(
+                        (a) => a.id !== attachment?.id
+                    );
+                    updateKontroll({ ..._kontroll, attachments });
+                }
+            }
+        }
+    };
 
     return (
         <div>
@@ -49,7 +81,7 @@ const AttachmentsView = () => {
                                 <CardMenu
                                     items={[
                                         {
-                                            label: 'Ny måling',
+                                            label: 'Nytt vedlegg',
                                             action: () =>
                                                 setKontrollAddAttachmentId(
                                                     Number(kontrollId)
@@ -61,7 +93,9 @@ const AttachmentsView = () => {
                             <CardContent>
                                 {_kontroll !== undefined ? (
                                     <TableContainer
-                                        columns={columns()}
+                                        columns={columns({
+                                            onDelete: askToDeleteAttachment
+                                        })}
                                         defaultColumns={defaultColumns}
                                         tableId="attachment">
                                         <AttachmentTable

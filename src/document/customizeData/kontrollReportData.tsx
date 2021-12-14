@@ -463,7 +463,7 @@ export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
                 <DialogContent>
                     {attachments !== undefined ? (
                         <TableContainer
-                            columns={attachmentColumns()}
+                            columns={attachmentColumns({ skipActions: true })}
                             defaultColumns={attachmentDefaultColumns}
                             tableId="attachment">
                             <AttachmentTable

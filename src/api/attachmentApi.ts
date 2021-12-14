@@ -70,3 +70,18 @@ export const getAttachmentFile = async (
         throw new Error(error);
     }
 };
+
+export const deleteAttachmentFile = async (
+    attachmentId: number
+): Promise<{ status: number }> => {
+    try {
+        const { status } = await sluttkontrollApi.delete(
+            `/attachment/${attachmentId}`
+        );
+
+        return { status };
+    } catch (error: any) {
+        errorHandler(error);
+        throw new Error(error);
+    }
+};

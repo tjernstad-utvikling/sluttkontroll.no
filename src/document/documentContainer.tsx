@@ -160,6 +160,18 @@ export const DocumentContainer = ({
     });
 
     useEffect(() => {
+        if (attachments && hasLoaded && reportSetting?.selectedAttachments) {
+            if (reportSetting?.selectedAttachments.length > 0) {
+                setSelectedAttachments(
+                    attachments.filter((s) =>
+                        reportSetting?.selectedAttachments.includes(s.id)
+                    )
+                );
+            }
+        }
+    }, [attachments, hasLoaded, reportSetting]);
+
+    useEffect(() => {
         if (skjemaer !== undefined && hasLoaded && checklists) {
             const kontrollSkjemaer = skjemaer
                 .filter((s) => s.kontroll.id === kontrollId)
@@ -236,6 +248,15 @@ export const DocumentContainer = ({
         setPreviewDocument(false);
         setDownloadReport(false);
         setSelectedAttachments(attachments);
+
+        setReportSetting((prev) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    selectedAttachments: attachments?.map((s) => s.id) || []
+                };
+            }
+        });
     };
 
     const updateFilteredSkjemaer = (skjemaer: ExtendedSkjema[] | undefined) => {

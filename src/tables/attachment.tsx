@@ -5,6 +5,7 @@ import { Attachment } from '../contracts/attachmentApi';
 import { BaseTable } from './baseTable';
 import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 import { RowAction } from './tableUtils';
 
 interface ColumnsOptions {
@@ -57,6 +58,13 @@ export const columns = ({
                     return (
                         <RowAction
                             actionItems={[
+                                {
+                                    name: 'Åpne fil',
+                                    action: () => {
+                                        if (openFile) openFile(params.row.id);
+                                    },
+                                    icon: <FileOpenIcon />
+                                },
                                 {
                                     name: 'Slett',
                                     action: () => {

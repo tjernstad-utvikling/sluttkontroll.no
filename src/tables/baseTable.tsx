@@ -35,6 +35,8 @@ export const BaseTable = <T extends Data>({
 }: BaseTableProps<T>) => {
     const { columns } = useTable();
 
+    const [pageSize, setPageSize] = useState<number>(25);
+
     const [sortModel, setSortModel] = useState<GridSortModel>([
         {
             field: 'id',
@@ -161,7 +163,12 @@ export const BaseTable = <T extends Data>({
                     booleanCellFalseLabel: 'usant',
 
                     // Actions cell more text
-                    actionsCellMore: 'mer'
+                    actionsCellMore: 'mer',
+
+                    //pin left right
+                    pinToLeft: 'Fest til venstre',
+                    pinToRight: 'Fest til høyre',
+                    unpin: 'Løsne'
                 }}
                 componentsProps={{
                     pagination: {
@@ -183,7 +190,8 @@ export const BaseTable = <T extends Data>({
                 rows={data}
                 columns={columns}
                 selectionModel={selectionModel}
-                pageSize={25}
+                pageSize={pageSize}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 pagination
                 checkboxSelection
                 disableSelectionOnClick

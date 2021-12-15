@@ -3,14 +3,20 @@ import React, { useEffect, useState } from 'react';
 
 import { Attachment } from '../contracts/attachmentApi';
 import { BaseTable } from './baseTable';
+import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { RowAction } from './tableUtils';
 
 interface ColumnsOptions {
     onDelete?: (id: number) => void;
+    openFile?: (id: number) => void;
     skipActions?: boolean;
 }
-export const columns = ({ onDelete, skipActions }: ColumnsOptions) => {
+export const columns = ({
+    onDelete,
+    skipActions,
+    openFile
+}: ColumnsOptions) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -20,7 +26,20 @@ export const columns = ({ onDelete, skipActions }: ColumnsOptions) => {
         {
             field: 'name',
             headerName: 'Filnavn',
-            flex: 1
+            flex: 1,
+            renderCell: (params: GridCellParams) => {
+                if (!skipActions) {
+                    return (
+                        <Button
+                            onClick={() => {
+                                if (openFile) openFile(params.row.id);
+                            }}>
+                            {params.row.name}
+                        </Button>
+                    );
+                }
+                return <span>{params.row.name}</span>;
+            }
         },
         {
             field: 'description',

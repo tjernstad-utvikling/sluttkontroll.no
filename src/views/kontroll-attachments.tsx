@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { Attachment } from '../contracts/attachmentApi';
 import { AttachmentModal } from '../modal/attachment';
+import { AttachmentViewerModal } from '../modal/attachmentViewer';
 import { AttachmentsViewParams } from '../contracts/navigation';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -21,6 +22,9 @@ const AttachmentsView = () => {
     const { classes } = usePageStyles();
     const { kontrollId } = useParams<AttachmentsViewParams>();
     const [kontrollAddAttachmentId, setKontrollAddAttachmentId] = useState<
+        number | undefined
+    >();
+    const [kontrollViewAttachmentId, setKontrollViewAttachmentId] = useState<
         number | undefined
     >();
 
@@ -104,7 +108,9 @@ const AttachmentsView = () => {
                                 {_kontroll !== undefined ? (
                                     <TableContainer
                                         columns={columns({
-                                            onDelete: askToDeleteAttachment
+                                            onDelete: askToDeleteAttachment,
+                                            openFile: (id) =>
+                                                setKontrollViewAttachmentId(id)
                                         })}
                                         defaultColumns={defaultColumns}
                                         tableId="attachment">
@@ -125,6 +131,13 @@ const AttachmentsView = () => {
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
             />
+            {_kontroll?.attachments && (
+                <AttachmentViewerModal
+                    attachmentId={kontrollViewAttachmentId}
+                    close={() => setKontrollViewAttachmentId(undefined)}
+                    attachments={_kontroll.attachments}
+                />
+            )}
         </div>
     );
 };

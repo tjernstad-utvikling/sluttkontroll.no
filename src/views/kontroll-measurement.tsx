@@ -52,7 +52,8 @@ const MeasurementsView = () => {
     });
 
     useEffect(() => {
-        if (measurements !== undefined) {
+        let active = true;
+        if (measurements !== undefined && active) {
             if (skjemaId !== undefined) {
                 setMeasurements(
                     measurements.filter((m) => m.skjema.id === Number(skjemaId))
@@ -65,6 +66,9 @@ const MeasurementsView = () => {
                 );
             }
         }
+        return () => {
+            active = false;
+        };
     }, [skjemaId, measurements, kontrollId]);
 
     const deleteMeasurement = async (measurementId: number) => {

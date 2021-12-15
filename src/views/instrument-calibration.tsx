@@ -18,11 +18,9 @@ import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationViewParams } from '../contracts/navigation';
+import { PdfViewer } from '../components/viewer';
 import { TableContainer } from '../tables/tableContainer';
-import { Viewer } from '@react-pdf-viewer/core';
-import { Worker } from '@react-pdf-viewer/core';
 import { errorHandler } from '../tools/errorHandler';
-import { getFilePlugin } from '@react-pdf-viewer/get-file';
 import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
@@ -38,16 +36,6 @@ const InstrumentsView = () => {
 
     const [objectUrl, setObjectUrl] = useState<string | undefined>(undefined);
     const [openCertificateId, setOpenCertificateId] = useState<number>();
-
-    const getFilePluginInstance = getFilePlugin({
-        fileNameGenerator: (file) => {
-            if (instrument !== undefined) {
-                return `${instrument.name}-${instrument.serienr}.pdf`;
-            }
-            return 'sertifikat.pdf';
-        }
-    });
-    const { DownloadButton } = getFilePluginInstance;
 
     const openCertificate = async (calibrationId: number) => {
         if (objectUrl !== undefined) {
@@ -133,42 +121,15 @@ const InstrumentsView = () => {
                         </Card>
                     </Grid>
 
-                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.6.347/build/pdf.worker.min.js">
-                        {objectUrl !== undefined && (
-                            <Grid item xs={12} style={{ height: 1250 }}>
-                                <div
-                                    className="rpv-core__viewer"
-                                    style={{
-                                        border: '1px solid rgba(0, 0, 0, 0.3)',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        height: '100%'
-                                    }}>
-                                    <div
-                                        style={{
-                                            alignItems: 'right',
-                                            backgroundColor: '#eeeeee',
-                                            borderBottom:
-                                                '1px solid rgba(0, 0, 0, 0.3)',
-                                            display: 'flex',
-                                            padding: '4px'
-                                        }}>
-                                        <DownloadButton />
-                                    </div>
-                                    <div
-                                        style={{
-                                            flex: 1,
-                                            overflow: 'hidden'
-                                        }}>
-                                        <Viewer
-                                            fileUrl={objectUrl}
-                                            plugins={[getFilePluginInstance]}
-                                        />
-                                    </div>
-                                </div>
-                            </Grid>
-                        )}
-                    </Worker>
+                    <PdfViewer
+                        getFileName={() => {
+                            if (instrument !== undefined) {
+                                return `${instrument.name}-${instrument.serienr}.pdf`;
+                            }
+                            return 'sertifikat.pdf';
+                        }}
+                        fileUrl={objectUrl}
+                    />
                 </Grid>
             </Container>
         </>

@@ -37,11 +37,13 @@ import { useReport } from '../documentContainer';
 import { useSnackbar } from 'notistack';
 
 export const FrontPageAdjusting = () => {
+    const { classes } = useStyles();
     const [open, setOpen] = useState<boolean>(false);
     const { reportSetting, updateSetting } = useReport();
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -85,6 +87,7 @@ interface KontrollDocAdjustingProps {
 export const KontrollDocAdjusting = ({
     kontrollId
 }: KontrollDocAdjustingProps) => {
+    const { classes } = useStyles();
     const [open, setOpen] = useState<boolean>(false);
     const [_skjemaer, set_Skjemaer] = useState<Skjema[]>();
     const { updateFilteredSkjemaer, skjemaer, filteredSkjemaer } = useReport();
@@ -107,6 +110,7 @@ export const KontrollDocAdjusting = ({
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -170,11 +174,13 @@ export const KontrollDocAdjusting = ({
 };
 
 export const MeasurementAdjusting = () => {
+    const { classes } = useStyles();
     const [open, setOpen] = useState<boolean>(false);
     const { isModuleActive, toggleModuleVisibilityState } = useReport();
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -225,8 +231,8 @@ export const MeasurementAdjusting = () => {
 };
 
 export const ReportProperties = () => {
-    const [open, setOpen] = useState<boolean>(false);
     const { classes } = useStyles();
+    const [open, setOpen] = useState<boolean>(false);
 
     const { kontroll, updateKontroll } = useReport();
     const { enqueueSnackbar } = useSnackbar();
@@ -271,6 +277,7 @@ export const ReportProperties = () => {
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -398,6 +405,7 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -435,6 +443,7 @@ interface SelectAttachmentsProps {
     kontrollId: number;
 }
 export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
+    const { classes } = useStyles();
     const [open, setOpen] = useState<boolean>(false);
     const [openAddAttachment, setOpenAddAttachment] = useState<
         number | undefined
@@ -449,6 +458,7 @@ export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -517,5 +527,8 @@ export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
 const useStyles = makeStyles()((theme: Theme) => ({
     propertiesBox: {
         padding: theme.spacing(2)
+    },
+    button: {
+        margin: theme.spacing(1)
     }
 }));

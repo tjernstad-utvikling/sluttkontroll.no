@@ -84,7 +84,7 @@ export const SlkReport = () => {
                     className={classes.button}
                     style={{ marginLeft: 0 }}
                     variant="contained"
-                    color="info"
+                    color="error"
                     onClick={() => setPreviewDocument(false)}>
                     Lukk forhåndsvisning
                 </Button>
@@ -139,7 +139,7 @@ export const SlkReport = () => {
                 className={classes.button}
                 style={{ marginLeft: 0 }}
                 variant="contained"
-                color="primary"
+                color="info"
                 onClick={() => setPreviewDocument(true)}>
                 Forhåndsvis rapport
             </Button>
@@ -164,6 +164,7 @@ const AttachmentMerger = ({ children, attachments }: AttachmentProps) => {
     const [finishedLoading, setFinishedLoading] = useState<boolean>(false);
     const [startedLoading, setStartedLoading] = useState<boolean>(false);
     const [mergedPdfUrl, setMergedPdfUrl] = useState<string>();
+    const { setDownloadReport } = useReport();
 
     useEffect(() => {
         const render = async () => {
@@ -206,12 +207,22 @@ const AttachmentMerger = ({ children, attachments }: AttachmentProps) => {
 
     if (mergedPdfUrl)
         return (
-            <a
-                className={classes.button}
-                href={mergedPdfUrl}
-                download="Kontrollrapport.pdf">
-                Trykk her om filen ikke blir lastet ned
-            </a>
+            <>
+                <Button
+                    className={classes.button}
+                    style={{ marginLeft: 0 }}
+                    variant="contained"
+                    color="error"
+                    onClick={() => setDownloadReport(false)}>
+                    Avbryt
+                </Button>
+                <a
+                    className={classes.button}
+                    href={mergedPdfUrl}
+                    download="Kontrollrapport.pdf">
+                    Trykk her om filen ikke blir lastet ned
+                </a>
+            </>
         );
     return <div>Genererer ferdig rapport ...</div>;
 };

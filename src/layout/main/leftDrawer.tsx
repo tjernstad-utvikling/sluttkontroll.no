@@ -41,7 +41,7 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
                 </SearchIconWrapper>
                 <StyledInputBase
                     placeholder="Søk"
-                    inputProps={{ 'aria-label': 'Søk i klienter / Lokasjoner' }}
+                    inputProps={{ 'aria-label': 'Søk i kunder / lokasjoner' }}
                     value={searchString || ''}
                     onChange={(e) => setSearchString(e.target.value)}
                 />

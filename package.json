@@ -22,6 +22,7 @@
     "formik": "^2.2.9",
     "lodash.unionby": "^4.8.0",
     "notistack": "^2.0.2",
+    "pdf-merger-js": "^3.2.1",
     "pdfjs-dist": "2.6.347",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",

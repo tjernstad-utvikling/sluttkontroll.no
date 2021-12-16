@@ -1,7 +1,13 @@
+import {
+    AttachmentTable,
+    columns as attachmentColumns,
+    defaultColumns as attachmentDefaultColumns
+} from '../../tables/attachment';
 import { SkjemaTable, columns, defaultColumns } from '../../tables/skjema';
 import { getImageFile, uploadImageFile } from '../../api/imageApi';
 import { useEffect, useState } from 'react';
 
+import { AttachmentModal } from '../../modal/attachment';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -31,11 +37,13 @@ import { useReport } from '../documentContainer';
 import { useSnackbar } from 'notistack';
 
 export const FrontPageAdjusting = () => {
+    const { classes } = useStyles();
     const [open, setOpen] = useState<boolean>(false);
     const { reportSetting, updateSetting } = useReport();
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -79,9 +87,10 @@ interface KontrollDocAdjustingProps {
 export const KontrollDocAdjusting = ({
     kontrollId
 }: KontrollDocAdjustingProps) => {
+    const { classes } = useStyles();
     const [open, setOpen] = useState<boolean>(false);
     const [_skjemaer, set_Skjemaer] = useState<Skjema[]>();
-    const { updateFilteredSkjemaer, skjemaer } = useReport();
+    const { updateFilteredSkjemaer, skjemaer, filteredSkjemaer } = useReport();
     const { state } = useKontroll();
     const {
         state: { avvik }
@@ -101,10 +110,12 @@ export const KontrollDocAdjusting = ({
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
-                Velg kontrollskjemaer til rapporten
+                Velg kontrollskjemaer til rapporten (
+                {filteredSkjemaer && filteredSkjemaer.length})
             </Button>
             <Dialog
                 fullScreen
@@ -138,9 +149,10 @@ export const KontrollDocAdjusting = ({
                             tableId="skjemaer">
                             <SkjemaTable
                                 skjemaer={_skjemaer}
+                                selectedSkjemaer={filteredSkjemaer}
                                 onSelected={(ids) => {
                                     updateFilteredSkjemaer(
-                                        state?.skjemaer?.filter(
+                                        skjemaer?.filter(
                                             (s) => ids.indexOf(s.id) !== -1
                                         )
                                     );
@@ -162,11 +174,13 @@ export const KontrollDocAdjusting = ({
 };
 
 export const MeasurementAdjusting = () => {
+    const { classes } = useStyles();
     const [open, setOpen] = useState<boolean>(false);
     const { isModuleActive, toggleModuleVisibilityState } = useReport();
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -217,8 +231,8 @@ export const MeasurementAdjusting = () => {
 };
 
 export const ReportProperties = () => {
-    const [open, setOpen] = useState<boolean>(false);
     const { classes } = useStyles();
+    const [open, setOpen] = useState<boolean>(false);
 
     const { kontroll, updateKontroll } = useReport();
     const { enqueueSnackbar } = useSnackbar();
@@ -263,6 +277,7 @@ export const ReportProperties = () => {
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -390,6 +405,7 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
     return (
         <>
             <Button
+                className={classes.button}
                 variant="outlined"
                 color="primary"
                 onClick={() => setOpen(!open)}>
@@ -423,8 +439,96 @@ export const ReportStatement = ({ kontrollId }: ReportStatementProps) => {
     );
 };
 
+interface SelectAttachmentsProps {
+    kontrollId: number;
+}
+export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
+    const { classes } = useStyles();
+    const [open, setOpen] = useState<boolean>(false);
+    const [openAddAttachment, setOpenAddAttachment] = useState<
+        number | undefined
+    >(undefined);
+    const {
+        attachments,
+        updateSelectedAttachments,
+        selectedAttachments,
+        setAttachments
+    } = useReport();
+
+    return (
+        <>
+            <Button
+                className={classes.button}
+                variant="outlined"
+                color="primary"
+                onClick={() => setOpen(!open)}>
+                Velg vedlegg ({selectedAttachments.length})
+            </Button>
+            <Dialog
+                open={open}
+                fullWidth
+                onClose={() => setOpen(false)}
+                aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Vedlegg</DialogTitle>
+                <DialogContent>
+                    {attachments !== undefined ? (
+                        <TableContainer
+                            columns={attachmentColumns({ skipActions: true })}
+                            defaultColumns={attachmentDefaultColumns}
+                            tableId="attachment">
+                            <AttachmentTable
+                                attachments={attachments}
+                                selectedAttachments={selectedAttachments}
+                                onSelected={(ids) =>
+                                    updateSelectedAttachments(
+                                        attachments?.filter(
+                                            (a) => ids.indexOf(a.id) !== -1
+                                        )
+                                    )
+                                }
+                                leftAction={
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() =>
+                                            setOpenAddAttachment(kontrollId)
+                                        }>
+                                        Last opp flere vedlegg
+                                    </Button>
+                                }
+                            />
+                        </TableContainer>
+                    ) : (
+                        <div>Laster vedlegg</div>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)} color="primary">
+                        Lukk
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <AttachmentModal
+                updateAttachmentList={(attachment) =>
+                    setAttachments((prev) => {
+                        if (prev) {
+                            return [...prev, attachment];
+                        }
+                        return [];
+                    })
+                }
+                kontrollId={openAddAttachment}
+                close={() => setOpenAddAttachment(undefined)}
+            />
+        </>
+    );
+};
+
 const useStyles = makeStyles()((theme: Theme) => ({
     propertiesBox: {
         padding: theme.spacing(2)
+    },
+    button: {
+        margin: theme.spacing(1)
     }
 }));

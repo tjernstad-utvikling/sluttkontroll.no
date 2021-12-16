@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import AddIcon from '@mui/icons-material/Add';
+import { AttachmentModal } from '../modal/attachment';
 import Button from '@mui/material/Button';
 import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CardContent } from '@mui/material';
@@ -101,6 +102,9 @@ const KontrollKlientView = () => {
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
+    const [kontrollAddAttachmentId, setKontrollAddAttachmentId] = useState<
+        number | undefined
+    >(undefined);
 
     const editKontroll = (id: number) => {
         setEditId(id);
@@ -160,7 +164,7 @@ const KontrollKlientView = () => {
                                             setEditKlient(!editKlient)
                                         }
                                         startIcon={<EditIcon />}>
-                                        Rediger klient
+                                        Rediger kunde
                                     </Button>
                                 ) : (
                                     <div />
@@ -168,7 +172,7 @@ const KontrollKlientView = () => {
                                 <div style={{ paddingBottom: '10px' }} />
 
                                 <Typography paragraph>
-                                    <strong>Klient:</strong> {_klient?.name}
+                                    <strong>Kunde:</strong> {_klient?.name}
                                 </Typography>
                                 {editKlient && _klient !== undefined ? (
                                     <KlientEditSchema
@@ -219,17 +223,19 @@ const KontrollKlientView = () => {
                             <CardContent>
                                 {kontroller !== undefined ? (
                                     <TableContainer
-                                        columns={kontrollColumns(
-                                            users ?? [],
-                                            klienter ?? [],
-                                            avvik ?? [],
-                                            measurements ?? [],
-                                            editKontroll,
-                                            toggleStatusKontroll,
+                                        columns={kontrollColumns({
+                                            users: users ?? [],
+                                            klienter: klienter ?? [],
+                                            avvik: avvik ?? [],
+                                            measurements: measurements ?? [],
+                                            edit: editKontroll,
+                                            toggleStatus: toggleStatusKontroll,
                                             clipboardHasSkjema,
                                             skjemaToPast,
-                                            setCommentId
-                                        )}
+                                            editComment: setCommentId,
+                                            addAttachment:
+                                                setKontrollAddAttachmentId
+                                        })}
                                         defaultColumns={defaultColumns}
                                         tableId="kontroller">
                                         <KontrollTable
@@ -263,6 +269,10 @@ const KontrollKlientView = () => {
                 kontrollId={commentId}
                 open={commentId ? true : false}
                 close={() => setCommentId(undefined)}
+            />
+            <AttachmentModal
+                kontrollId={kontrollAddAttachmentId}
+                close={() => setKontrollAddAttachmentId(undefined)}
             />
         </div>
     );

@@ -52,12 +52,12 @@ export const ClientContextProvider = ({
                 payload: klient
             });
 
-            enqueueSnackbar('Klient lagret', {
+            enqueueSnackbar('Kunde lagret', {
                 variant: 'success'
             });
             return { status: true, klient };
         } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av klient', {
+            enqueueSnackbar('Problemer med lagring av kunde', {
                 variant: 'error'
             });
         }
@@ -72,12 +72,12 @@ export const ClientContextProvider = ({
                 payload: { ...klient, name }
             });
 
-            enqueueSnackbar('Klient lagret', {
+            enqueueSnackbar('Kunde lagret', {
                 variant: 'success'
             });
             return true;
         } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av klient', {
+            enqueueSnackbar('Problemer med lagring av kunde', {
                 variant: 'error'
             });
         }

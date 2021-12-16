@@ -1,5 +1,5 @@
+import { Attachment } from './attachmentApi';
 import { RapportEgenskaper } from './reportApi';
-
 export interface Klient {
     id: number;
     name: string;
@@ -27,6 +27,7 @@ export interface Kontroll {
         id: number;
     };
     avvikUtbedrere: { id: number }[];
+    attachments: Attachment[];
 }
 export interface ReportKontroll {
     id: number;
@@ -53,6 +54,15 @@ export interface Skjema {
     omrade: string;
     kommentar: string;
     kontroll: { id: number };
+}
+
+export interface ExtendedSkjema {
+    id: number;
+    area: string;
+    omrade: string;
+    kommentar: string;
+    kontroll: { id: number };
+    checklists: Checklist[];
 }
 
 export interface Checklist {

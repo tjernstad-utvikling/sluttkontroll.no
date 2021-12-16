@@ -5,6 +5,9 @@ export interface MeasurementsViewParams {
     kontrollId: string;
     skjemaId?: string;
 }
+export interface AttachmentsViewParams {
+    kontrollId: string;
+}
 export interface AvvikViewParams {
     kontrollId: string;
     skjemaId?: string;

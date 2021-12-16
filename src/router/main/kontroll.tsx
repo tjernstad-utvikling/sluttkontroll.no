@@ -15,6 +15,7 @@ const KontrollKlientView = lazy(() => import('../../views/kontroll-klient'));
 const KontrollNewView = lazy(() => import('../../views/kontroll-new'));
 const KontrollObjektView = lazy(() => import('../../views/kontroll-object'));
 const KontrollReportView = lazy(() => import('../../views/kontroll-report'));
+const AttachmentView = lazy(() => import('../../views/kontroll-attachments'));
 const ReportStatementView = lazy(
     () => import('../../views/kontroll-reportStatement')
 );
@@ -90,6 +91,10 @@ export const Kontroll = () => {
                         <Route
                             path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/report-statement`}>
                             <ReportStatementView />
+                        </Route>
+                        <Route
+                            path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/attachments`}>
+                            <AttachmentView />
                         </Route>
                         <Route
                             path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/report`}>

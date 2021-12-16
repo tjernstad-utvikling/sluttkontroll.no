@@ -7,6 +7,7 @@ import {
 } from '@mui/x-data-grid-pro';
 import { Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
 
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Avvik } from '../contracts/avvikApi';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
@@ -82,17 +83,30 @@ export const KontrollValueGetter = (data: Kontroll | GridRowModel | null) => {
 
     return { klient, objekt, user, avvik, measurement };
 };
-export const kontrollColumns = (
-    users: User[],
-    klienter: Klient[],
-    avvik: Avvik[],
-    measurements: Measurement[],
-    edit: (id: number) => void,
-    toggleStatus: (id: number) => void,
-    clipboardHasSkjema: boolean,
-    skjemaToPast: Skjema[],
-    editComment: (id: number) => void
-) => {
+interface KontrollColumnsConfig {
+    users: User[];
+    klienter: Klient[];
+    avvik: Avvik[];
+    measurements: Measurement[];
+    edit: (id: number) => void;
+    toggleStatus: (id: number) => void;
+    clipboardHasSkjema: boolean;
+    skjemaToPast: Skjema[];
+    editComment: (id: number) => void;
+    addAttachment: (id: number) => void;
+}
+export const kontrollColumns = ({
+    users,
+    klienter,
+    avvik,
+    measurements,
+    edit,
+    toggleStatus,
+    clipboardHasSkjema,
+    skjemaToPast,
+    editComment,
+    addAttachment
+}: KontrollColumnsConfig) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -101,7 +115,7 @@ export const kontrollColumns = (
         },
         {
             field: 'klient',
-            headerName: 'Klient',
+            headerName: 'Kunde',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
                 KontrollValueGetter(params.row).klient(klienter),
@@ -186,6 +200,20 @@ export const kontrollColumns = (
                 )
         },
         {
+            field: 'attachments',
+            headerName: 'Vedlegg',
+            flex: 1,
+            renderCell: (params: GridCellParams) => (
+                <Link
+                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/attachments`}>
+                    {params.row?.attachments?.length}
+                </Link>
+            ),
+            sortComparator: (v1, v2, param1, param2) =>
+                param1.api.getRow(param1.id)?.attachments.length -
+                param2.api.getRow(param2.id)?.attachments.length
+        },
+        {
             field: 'user',
             headerName: 'Utførende',
             flex: 1,
@@ -261,15 +289,20 @@ export const kontrollColumns = (
                                 icon: <DoneOutlineIcon />
                             },
                             {
+                                name: 'Kontrollrapport',
+                                to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
+                                icon: <DescriptionIcon />
+                            },
+                            {
                                 name: 'Kontrollerklæring',
                                 to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report-statement`,
                                 skip: params.row.done,
                                 icon: <SummarizeIcon />
                             },
                             {
-                                name: 'Kontrollrapport',
-                                to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
-                                icon: <DescriptionIcon />
+                                name: 'Vedlegg',
+                                action: () => addAttachment(params.row.id),
+                                icon: <AttachFileIcon />
                             }
                         ]}
                     />

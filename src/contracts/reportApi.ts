@@ -6,6 +6,7 @@ export interface ReportSetting {
     reportSite: string;
     reportDate: string;
     selectedSkjemaer: number[];
+    selectedAttachments: number[];
     modules: ReportModules[];
 }
 
@@ -16,7 +17,8 @@ export enum ReportModules {
     controlModule = 'controlModule',
     skjemaPage = 'skjemaPage',
     measurementPage = 'measurementPage',
-    inlineMeasurementModule = 'inlineMeasurementModule'
+    inlineMeasurementModule = 'inlineMeasurementModule',
+    attachmentModule = 'attachmentModule'
 }
 
 export interface RapportEgenskaper {

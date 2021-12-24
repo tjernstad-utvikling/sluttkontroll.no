@@ -24,6 +24,7 @@ import Grid from '@mui/material/Grid';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
 import { LocationEditSchema } from '../schema/location';
+import { LocationImageCard } from '../components/location';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAvvik } from '../data/avvik';
@@ -151,24 +152,47 @@ const KontrollObjektView = () => {
                     <Grid item xs={12}>
                         <Card title="Lokasjon">
                             <CardContent>
-                                {!editLocation ? (
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() =>
-                                            setEditLocation(!editLocation)
-                                        }
-                                        startIcon={<EditIcon />}>
-                                        Rediger Lokasjon
-                                    </Button>
-                                ) : (
-                                    <div />
-                                )}
-                                <div style={{ paddingBottom: '10px' }} />
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12} sm={6}>
+                                        {!editLocation ? (
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() =>
+                                                    setEditLocation(
+                                                        !editLocation
+                                                    )
+                                                }
+                                                startIcon={<EditIcon />}>
+                                                Rediger Lokasjon
+                                            </Button>
+                                        ) : (
+                                            <div />
+                                        )}
+                                        <div
+                                            style={{ paddingBottom: '10px' }}
+                                        />
 
-                                <Typography paragraph>
-                                    <strong>Lokasjon:</strong> {_location?.name}
-                                </Typography>
+                                        <Typography paragraph>
+                                            <strong>Lokasjon:</strong>{' '}
+                                            {_location?.name}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={6}
+                                        sx={{
+                                            alignSelf: 'end'
+                                        }}>
+                                        {_location && (
+                                            <LocationImageCard
+                                                location={_location}
+                                            />
+                                        )}
+                                    </Grid>
+                                </Grid>
+
                                 {editLocation && _location !== undefined ? (
                                     <LocationEditSchema
                                         location={_location}

@@ -13,12 +13,10 @@ import { useClient } from '../data/klient';
 interface LocationImageCardProps {
     location: Location;
     klientId: number;
-    reloadLocation: () => void;
 }
 export const LocationImageCard = ({
     location,
-    klientId,
-    reloadLocation
+    klientId
 }: LocationImageCardProps) => {
     const { classes } = useStyles();
 
@@ -33,7 +31,6 @@ export const LocationImageCard = ({
                     klientId
                 })
             ) {
-                reloadLocation();
             }
         }
     }

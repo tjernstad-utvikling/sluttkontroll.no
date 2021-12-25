@@ -9,12 +9,15 @@ export interface Klient {
 export interface Location {
     id: number;
     name: string;
-    locationImage?: {
-        id: number;
-        url: string;
-        width: number;
-        height: number;
-    } | null;
+    locationImage?:
+        | {
+              id: number;
+              url: string;
+              width: number;
+              height: number;
+          }
+        | null
+        | undefined;
 }
 
 export interface Kontroll {

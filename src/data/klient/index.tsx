@@ -150,7 +150,7 @@ export const ClientContextProvider = ({
                     dispatch({
                         type: ActionType.updateLocation,
                         payload: {
-                            location: { ...location, locationImage: null },
+                            location: { ...location, locationImage: undefined },
                             klientId
                         }
                     });

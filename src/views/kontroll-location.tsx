@@ -5,7 +5,7 @@ import {
     PasteButton,
     SkjemaClipboard
 } from '../components/clipboard';
-import { Klient, Kontroll, Location } from '../contracts/kontrollApi';
+import { Kontroll, Location } from '../contracts/kontrollApi';
 import {
     KontrollTable,
     defaultColumns,
@@ -89,21 +89,15 @@ const KontrollObjektView = () => {
     }, [kontroller, objectId]);
 
     useEffect(() => {
-        reloadLocation(klienter, Number(klientId), Number(objectId));
-    }, [klientId, klienter, objectId]);
-
-    const reloadLocation = (
-        klienter: Klient[] | undefined,
-        klientId: number,
-        objectId: number
-    ) => {
         if (klienter !== undefined) {
-            const klient = klienter.find((k) => k.id === klientId);
+            const klient = klienter.find((k) => k.id === Number(klientId));
             if (klient !== undefined) {
-                setLocation(klient.locations.find((o) => o.id === objectId));
+                setLocation(
+                    klient.locations.find((o) => o.id === Number(objectId))
+                );
             }
         }
-    };
+    }, [klientId, klienter, objectId]);
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -187,13 +181,6 @@ const KontrollObjektView = () => {
                                     <Grid item xs={12} sm={6}>
                                         {_location && (
                                             <LocationImageCard
-                                                reloadLocation={() =>
-                                                    reloadLocation(
-                                                        klienter,
-                                                        Number(klientId),
-                                                        Number(objectId)
-                                                    )
-                                                }
                                                 klientId={Number(klientId)}
                                                 location={_location}
                                             />

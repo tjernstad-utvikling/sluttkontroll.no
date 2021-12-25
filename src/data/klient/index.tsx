@@ -10,6 +10,7 @@ import {
     newLocation
 } from '../../api/kontrollApi';
 
+import { deleteImageFile } from '../../api/locationApi';
 import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
@@ -128,6 +129,48 @@ export const ClientContextProvider = ({
         }
         return false;
     };
+    const saveDeleteLocationImage = async ({
+        imageId,
+        klientId,
+        locationId
+    }: {
+        imageId: number;
+        klientId: number;
+        locationId: number;
+    }): Promise<boolean> => {
+        try {
+            const { status } = await deleteImageFile(imageId);
+
+            if (status === 204 && state.klienter) {
+                const location = state.klienter
+                    ?.find((k) => k.id === klientId)
+                    ?.locations.find((l) => l.id === locationId);
+
+                if (location)
+                    dispatch({
+                        type: ActionType.updateLocation,
+                        payload: {
+                            location: { ...location, locationImage: null },
+                            klientId
+                        }
+                    });
+
+                enqueueSnackbar('Bilde fjernet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            enqueueSnackbar('Bilde ble ikke fjernet', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av lokasjon', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
 
     return (
         <ClientContext.Provider
@@ -139,7 +182,8 @@ export const ClientContextProvider = ({
                 saveEditKlient,
 
                 saveNewLocation,
-                saveEditLocation
+                saveEditLocation,
+                saveDeleteLocationImage
             }}>
             {children}
         </ClientContext.Provider>

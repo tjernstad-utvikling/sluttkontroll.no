@@ -55,3 +55,17 @@ export const getImageFile = async (
         throw new Error(error);
     }
 };
+export const deleteImageFile = async (
+    imageId: number
+): Promise<{ status: number }> => {
+    try {
+        const { status } = await sluttkontrollApi.delete(
+            `/location/image/${imageId}`
+        );
+
+        return { status };
+    } catch (error: any) {
+        errorHandler(error);
+        return { status: error.response.status };
+    }
+};

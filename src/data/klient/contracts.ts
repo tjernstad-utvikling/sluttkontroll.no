@@ -57,4 +57,9 @@ export interface ContextInterface {
         klientId: number,
         location: Location
     ) => Promise<boolean>;
+    saveDeleteLocationImage: (option: {
+        imageId: number;
+        klientId: number;
+        locationId: number;
+    }) => Promise<boolean>;
 }

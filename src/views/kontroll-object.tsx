@@ -178,13 +178,7 @@ const KontrollObjektView = () => {
                                             {_location?.name}
                                         </Typography>
                                     </Grid>
-                                    <Grid
-                                        item
-                                        xs={12}
-                                        sm={6}
-                                        sx={{
-                                            alignSelf: 'end'
-                                        }}>
+                                    <Grid item xs={12} sm={6}>
                                         {_location && (
                                             <LocationImageCard
                                                 location={_location}

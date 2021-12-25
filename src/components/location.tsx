@@ -8,12 +8,35 @@ import { LocationImage } from './image';
 import { RowAction } from '../tables/tableUtils';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../theme/makeStyles';
+import { useClient } from '../data/klient';
 
 interface LocationImageCardProps {
     location: Location;
+    klientId: number;
+    reloadLocation: () => void;
 }
-export const LocationImageCard = ({ location }: LocationImageCardProps) => {
+export const LocationImageCard = ({
+    location,
+    klientId,
+    reloadLocation
+}: LocationImageCardProps) => {
     const { classes } = useStyles();
+
+    const { saveDeleteLocationImage } = useClient();
+
+    async function deleteImage() {
+        if (location.locationImage) {
+            if (
+                await saveDeleteLocationImage({
+                    imageId: location.locationImage.id,
+                    locationId: location.id,
+                    klientId
+                })
+            ) {
+                reloadLocation();
+            }
+        }
+    }
 
     return (
         <Card className={classes.cardRoot}>
@@ -37,7 +60,7 @@ export const LocationImageCard = ({ location }: LocationImageCardProps) => {
                         actionItems={[
                             {
                                 name: 'Slett',
-                                action: () => console.log(),
+                                action: deleteImage,
                                 icon: <DeleteForeverIcon />
                             }
                         ]}

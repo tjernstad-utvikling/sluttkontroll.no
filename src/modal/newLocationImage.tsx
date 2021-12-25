@@ -1,4 +1,3 @@
-import { Avvik } from '../contracts/avvikApi';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -9,26 +8,30 @@ import { NewImageCard } from '../components/avvik';
 import { Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import { useAvvik } from '../data/avvik';
+import { useClient } from '../data/klient';
 import { useState } from 'react';
 
-interface LocationImageModalProps {
+interface NewImageModalProps {
     open: boolean;
     close: () => void;
-    avvik: Avvik;
+    locationId: number;
+    klientId: number;
 }
-export function LocationImageModal({
+export function NewImageModal({
     open,
     close,
-    avvik
-}: LocationImageModalProps) {
+    locationId,
+    klientId
+}: NewImageModalProps) {
     const classes = useStyles();
     const [images, setImages] = useState<File[]>([]);
 
-    const { addAvvikImages } = useAvvik();
+    const { addLocationImage } = useClient();
 
     const saveNewImages = async () => {
-        if (await addAvvikImages(avvik, images)) {
+        if (
+            await addLocationImage({ image: images[0], klientId, locationId })
+        ) {
             setImages([]);
             close();
         }
@@ -39,10 +42,9 @@ export function LocationImageModal({
             open={open}
             onClose={close}
             aria-labelledby="add-Picture-Dialog">
-            <DialogTitle id="add-Picture-Dialog">Legg til bilder</DialogTitle>
+            <DialogTitle id="add-Picture-Dialog">Legg til bilde</DialogTitle>
             <DialogContent>
                 <DropZone
-                    multiple
                     accept="image/png, image/jpeg"
                     setFiles={setImages}
                     files={images}>

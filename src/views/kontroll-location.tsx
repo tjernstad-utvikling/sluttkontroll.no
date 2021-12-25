@@ -25,6 +25,7 @@ import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
 import { LocationEditSchema } from '../schema/location';
 import { LocationImageCard } from '../components/location';
+import { NewImageModal } from '../modal/newLocationImage';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAvvik } from '../data/avvik';
@@ -46,6 +47,7 @@ const KontrollObjektView = () => {
     const [_location, setLocation] = useState<Location>();
 
     const [editLocation, setEditLocation] = useState<boolean>(false);
+    const [addLocationImage, setAddLocationImage] = useState<boolean>(false);
 
     const {
         state: { kontroller },
@@ -183,6 +185,9 @@ const KontrollObjektView = () => {
                                             <LocationImageCard
                                                 klientId={Number(klientId)}
                                                 location={_location}
+                                                openAddImageModal={() =>
+                                                    setAddLocationImage(true)
+                                                }
                                             />
                                         )}
                                     </Grid>
@@ -302,6 +307,12 @@ const KontrollObjektView = () => {
                 kontrollId={commentId}
                 open={commentId ? true : false}
                 close={() => setCommentId(undefined)}
+            />
+            <NewImageModal
+                klientId={Number(klientId)}
+                locationId={Number(objectId)}
+                open={addLocationImage}
+                close={() => setAddLocationImage(false)}
             />
         </div>
     );

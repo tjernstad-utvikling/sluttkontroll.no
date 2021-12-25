@@ -1,3 +1,4 @@
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
@@ -13,10 +14,12 @@ import { useClient } from '../data/klient';
 interface LocationImageCardProps {
     location: Location;
     klientId: number;
+    openAddImageModal: () => void;
 }
 export const LocationImageCard = ({
     location,
-    klientId
+    klientId,
+    openAddImageModal
 }: LocationImageCardProps) => {
     const { classes } = useStyles();
 
@@ -55,6 +58,11 @@ export const LocationImageCard = ({
                 <div style={{ marginLeft: 'auto' }}>
                     <RowAction
                         actionItems={[
+                            {
+                                name: 'Nytt bilde',
+                                action: openAddImageModal,
+                                icon: <AddAPhotoIcon />
+                            },
                             {
                                 name: 'Slett',
                                 action: deleteImage,

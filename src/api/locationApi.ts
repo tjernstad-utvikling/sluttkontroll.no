@@ -1,43 +1,39 @@
+import { LocationImage } from '../contracts/kontrollApi';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
-// export const uploadImageFile = async (
-//     locationId: number,
-//     locationImage: LocationImage
-// ): Promise<{
-//     status: number;
-//     locationImage?: LocationImageResponse;
-//     message?: string;
-// }> => {
-//     try {
-//         const formData = new FormData();
-//         formData.append('image', {
-//             uri: locationImage.uri,
-//             name: `image_${locationImage.id}.jpeg`,
-//             type: 'image/jpeg'
-//         });
+export const uploadImageFile = async (
+    locationId: number,
+    image: File
+): Promise<{
+    status: number;
+    locationImage?: LocationImage;
+    message?: string;
+}> => {
+    try {
+        const formData = new FormData();
 
-//         const { status, data } =
-//             await sluttkontrollApi.post<UploadImageFileRes>(
-//                 `/location/add-image/${locationId}`,
-//                 formData,
-//                 {
-//                     headers: {
-//                         'Content-Type': 'multipart/form-data'
-//                     }
-//                 }
-//             );
+        formData.append('image', image);
 
-//         return { status, ...data };
-//     } catch (error: any) {
-//         if (error.response.status === 400) {
-//             return { status: 400, message: error.response.data.message };
-//         }
-//         errorHandler(error);
-//         return { status: error.response.status };
-//     }
-// };
+        const { status, data } = await sluttkontrollApi.post(
+            `/location/add-image/${locationId}`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
 
+        return { status, ...data };
+    } catch (error: any) {
+        if (error.response.status === 400) {
+            return { status: 400, message: error.response.data.message };
+        }
+        errorHandler(error);
+        throw new Error(error);
+    }
+};
 export const getImageFile = async (
     name: string
 ): Promise<{ status: number; data: Blob }> => {

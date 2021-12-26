@@ -47,6 +47,7 @@ export interface ReportKontroll {
         klient: {
             id: number;
         };
+        locationImage?: LocationImage | null | undefined;
     };
     user: {
         id: number;

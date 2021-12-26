@@ -2,6 +2,7 @@ import { Document, Font } from '@react-pdf/renderer';
 
 import Button from '@mui/material/Button';
 import { FrontPage } from './modules/frontPage';
+import { FrontPageWImage } from './modules/frontPageWImage';
 import { InfoPage } from './modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
 import { PDFViewer } from '@react-pdf/renderer';
@@ -47,6 +48,7 @@ export const SlkReport = () => {
         reportSetting,
         infoText,
         kontroll,
+        locationImageUrl,
         filteredSkjemaer,
         checklists,
         avvik,
@@ -64,7 +66,15 @@ export const SlkReport = () => {
         return (
             <PDFViewer height={size.height} width={size.width - 400}>
                 <Document>
-                    {isModuleActive(ReportModules.frontPage) && (
+                    {isModuleActive(ReportModules.frontPage) &&
+                    kontroll?.location.locationImage ? (
+                        <FrontPageWImage
+                            locationImage={kontroll.location.locationImage}
+                            reportSetting={reportSetting}
+                            kontroll={kontroll}
+                            locationImageUrl={locationImageUrl}
+                        />
+                    ) : (
                         <FrontPage
                             reportSetting={reportSetting}
                             kontroll={kontroll}

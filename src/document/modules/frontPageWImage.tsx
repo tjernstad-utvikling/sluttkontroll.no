@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 190
     },
     topImage: {
-        marginHorizontal: 0
+        marginHorizontal: 0,
+        marginTop: -30
     },
     title: {
         fontSize: '50px'

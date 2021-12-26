@@ -10,6 +10,7 @@ import { handleReportSettings, loadReportStatement } from './utils/loaders';
 
 import { Avvik } from '../contracts/avvikApi';
 import { OutputData } from '@editorjs/editorjs';
+import { crop } from '../tools/crop';
 import { errorHandler } from '../tools/errorHandler';
 import { getImageFile } from '../api/imageApi';
 import { getInfoText } from '../api/settingsApi';
@@ -113,8 +114,10 @@ export const DocumentContainer = ({
 
                         if (res.status === 200) {
                             const url = URL.createObjectURL(res.data);
+                            const newImageUrl = await crop(url, 16 / 9);
 
-                            setLocationImageUrl(url);
+                            setLocationImageUrl(newImageUrl);
+                            URL.revokeObjectURL(url);
                         }
                     } catch (error: any) {
                         enqueueSnackbar('Problemer med lasting av bildet');

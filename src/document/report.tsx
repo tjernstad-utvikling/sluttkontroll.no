@@ -69,7 +69,6 @@ export const SlkReport = () => {
                     {isModuleActive(ReportModules.frontPage) &&
                     kontroll?.location.locationImage ? (
                         <FrontPageWImage
-                            locationImage={kontroll.location.locationImage}
                             reportSetting={reportSetting}
                             kontroll={kontroll}
                             locationImageUrl={locationImageUrl}

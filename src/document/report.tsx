@@ -12,6 +12,7 @@ import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
 import Button from '@mui/material/Button';
 import { FrontPage } from './modules/frontPage';
+import { FrontPageWImage } from './modules/frontPageWImage';
 import { InfoPage } from './modules/infoPage';
 import { MeasurementPage } from './modules/measurementPage';
 import { OutputData } from '@editorjs/editorjs';
@@ -62,6 +63,7 @@ export const SlkReport = () => {
         reportSetting,
         infoText,
         kontroll,
+        locationImageUrl,
         filteredSkjemaer,
         avvik,
         statementText,
@@ -102,6 +104,7 @@ export const SlkReport = () => {
                     <SlkDocument
                         isModuleActive={isModuleActive}
                         statementImages={statementImages}
+                        locationImageUrl={locationImageUrl}
                         reportSetting={reportSetting}
                         infoText={infoText}
                         kontroll={kontroll}
@@ -121,6 +124,7 @@ export const SlkReport = () => {
                 <SlkDocument
                     isModuleActive={isModuleActive}
                     statementImages={statementImages}
+                    locationImageUrl={locationImageUrl}
                     reportSetting={reportSetting}
                     infoText={infoText}
                     kontroll={kontroll}
@@ -231,6 +235,7 @@ interface SlkDocumentProps {
     statementImages: LocalImage[];
     infoText: OutputData | undefined;
     statementText: OutputData | undefined;
+    locationImageUrl: string | undefined;
     reportSetting: ReportSetting | undefined;
     isModuleActive: (reportModule: ReportModules) => boolean;
     kontroll: ReportKontroll | undefined;
@@ -245,6 +250,7 @@ const SlkDocument = ({
     reportSetting,
     infoText,
     kontroll,
+    locationImageUrl,
     filteredSkjemaer,
     avvik,
     statementText,
@@ -253,7 +259,14 @@ const SlkDocument = ({
 }: SlkDocumentProps) => {
     return (
         <Document>
-            {isModuleActive(ReportModules.frontPage) && (
+            {isModuleActive(ReportModules.frontPage) &&
+            kontroll?.location.locationImage ? (
+                <FrontPageWImage
+                    reportSetting={reportSetting}
+                    kontroll={kontroll}
+                    locationImageUrl={locationImageUrl}
+                />
+            ) : (
                 <FrontPage reportSetting={reportSetting} kontroll={kontroll} />
             )}
             {isModuleActive(ReportModules.infoPage) && (

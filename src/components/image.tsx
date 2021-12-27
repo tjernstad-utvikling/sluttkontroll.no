@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { errorHandler } from '../tools/errorHandler';
 import { getImageFile } from '../api/avvikApi';
+import { getImageFile as getLocationImageFile } from '../api/locationApi';
 
 interface ImageProps {
     src?: string;
@@ -17,6 +18,45 @@ export const Image = ({ src, file, alt, objectFit }: ImageProps) => {
             if (src !== undefined) {
                 try {
                     const response = await getImageFile(src);
+                    if (response.status === 200) {
+                        setObjectUrl(URL.createObjectURL(response.data));
+                    }
+                } catch (error: any) {
+                    errorHandler(error);
+                }
+            } else if (file !== undefined) {
+                setObjectUrl(URL.createObjectURL(file));
+            }
+        };
+
+        loadImage();
+    }, [file, src]);
+
+    return (
+        <img
+            src={
+                src !== undefined || file !== undefined
+                    ? objectUrl
+                    : placeholderImage
+            }
+            alt={alt}
+            style={
+                objectFit
+                    ? { objectFit: 'cover', width: '100%', height: '100%' }
+                    : { objectFit: 'contain', width: '100%', height: '100%' }
+            }
+            onLoad={() => URL.revokeObjectURL(objectUrl)}
+        />
+    );
+};
+export const LocationImage = ({ src, file, alt, objectFit }: ImageProps) => {
+    const [objectUrl, setObjectUrl] = useState<string>('');
+
+    useEffect(() => {
+        const loadImage = async () => {
+            if (src !== undefined) {
+                try {
+                    const response = await getLocationImageFile(src);
                     if (response.status === 200) {
                         setObjectUrl(URL.createObjectURL(response.data));
                     }

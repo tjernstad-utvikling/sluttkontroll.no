@@ -2,6 +2,7 @@ import { ActionType, ContextInterface } from './contracts';
 import { ClientReducer, initialState } from './reducer';
 import { Klient, Location } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
+import { deleteImageFile, uploadImageFile } from '../../api/locationApi';
 import {
     editClient,
     editLocation,
@@ -128,6 +129,96 @@ export const ClientContextProvider = ({
         }
         return false;
     };
+    const addLocationImage = async ({
+        image,
+        klientId,
+        locationId
+    }: {
+        image: File;
+        klientId: number;
+        locationId: number;
+    }): Promise<boolean> => {
+        try {
+            const { status, locationImage } = await uploadImageFile(
+                locationId,
+                image
+            );
+
+            if (status === 200 && state.klienter) {
+                const location = state.klienter
+                    ?.find((k) => k.id === klientId)
+                    ?.locations.find((l) => l.id === locationId);
+
+                if (location && locationImage)
+                    dispatch({
+                        type: ActionType.updateLocation,
+                        payload: {
+                            location: {
+                                ...location,
+                                locationImage: locationImage
+                            },
+                            klientId
+                        }
+                    });
+
+                enqueueSnackbar('Nytt bilde er lagret', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            enqueueSnackbar('Bilde ble ikke lagret', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av lokasjonsbilde', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
+    const saveDeleteLocationImage = async ({
+        imageId,
+        klientId,
+        locationId
+    }: {
+        imageId: number;
+        klientId: number;
+        locationId: number;
+    }): Promise<boolean> => {
+        try {
+            const { status } = await deleteImageFile(imageId);
+
+            if (status === 204 && state.klienter) {
+                const location = state.klienter
+                    ?.find((k) => k.id === klientId)
+                    ?.locations.find((l) => l.id === locationId);
+
+                if (location)
+                    dispatch({
+                        type: ActionType.updateLocation,
+                        payload: {
+                            location: { ...location, locationImage: undefined },
+                            klientId
+                        }
+                    });
+
+                enqueueSnackbar('Bilde fjernet', {
+                    variant: 'success'
+                });
+                return true;
+            }
+            enqueueSnackbar('Bilde ble ikke fjernet', {
+                variant: 'warning'
+            });
+            return false;
+        } catch (error: any) {
+            enqueueSnackbar('Problemer med lagring av lokasjon', {
+                variant: 'error'
+            });
+        }
+        return false;
+    };
 
     return (
         <ClientContext.Provider
@@ -139,7 +230,9 @@ export const ClientContextProvider = ({
                 saveEditKlient,
 
                 saveNewLocation,
-                saveEditLocation
+                saveEditLocation,
+                addLocationImage,
+                saveDeleteLocationImage
             }}>
             {children}
         </ClientContext.Provider>

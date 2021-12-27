@@ -15,10 +15,12 @@ import {
 import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
 import { OutputData } from '@editorjs/editorjs';
+import { crop } from '../tools/crop';
 import { errorHandler } from '../tools/errorHandler';
 import { getImageFile } from '../api/imageApi';
 import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
+import { getImageFile as getLocationImageFile } from '../api/locationApi';
 import { updateReportSetting } from '../api/reportApi';
 import { useAvvik } from '../data/avvik';
 import { useDebounce } from '../hooks/useDebounce';
@@ -47,6 +49,7 @@ export const DocumentContainer = ({
     const { enqueueSnackbar } = useSnackbar();
 
     const [kontroll, setKontroll] = useState<ReportKontroll>();
+    const [locationImageUrl, setLocationImageUrl] = useState<string>();
     const [reportSetting, setReportSetting] = useState<ReportSetting>();
 
     const [hasLoaded, setHasLoaded] = useState<boolean>(false);
@@ -109,6 +112,36 @@ export const DocumentContainer = ({
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [_statementText]);
+
+    useEffect(() => {
+        const load = async () => {
+            if (kontroll) {
+                if (kontroll?.location.locationImage) {
+                    try {
+                        const res = await getLocationImageFile(
+                            kontroll?.location.locationImage.url
+                        );
+
+                        if (res.status === 200) {
+                            const url = URL.createObjectURL(res.data);
+                            const newImageUrl = await crop(url, 16 / 9);
+
+                            setLocationImageUrl(newImageUrl);
+                            URL.revokeObjectURL(url);
+                        }
+                    } catch (error: any) {
+                        enqueueSnackbar('Problemer med lasting av bildet');
+                        errorHandler(error);
+                    }
+                }
+            }
+        };
+        load();
+        return () => {
+            URL.revokeObjectURL(locationImageUrl || '');
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [kontroll]);
 
     const [previewDocument, setPreviewDocument] = useState<boolean>(false);
     const [downloadReport, setDownloadReport] = useState<boolean>(false);
@@ -293,6 +326,7 @@ export const DocumentContainer = ({
                 updateSetting,
 
                 kontroll,
+                locationImageUrl,
                 updateKontroll,
 
                 skjemaer: _skjemaer,
@@ -331,6 +365,7 @@ interface ContextInterface {
     isModuleActive: (reportModule: ReportModules) => boolean;
 
     kontroll: ReportKontroll | undefined;
+    locationImageUrl: string | undefined;
     updateKontroll: (reportKontroll: ReportKontroll) => void;
     skjemaer: ExtendedSkjema[] | undefined;
     filteredSkjemaer: ExtendedSkjema[] | undefined;

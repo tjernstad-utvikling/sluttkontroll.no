@@ -9,6 +9,14 @@ export interface Klient {
 export interface Location {
     id: number;
     name: string;
+    locationImage?: LocationImage | null | undefined;
+}
+
+export interface LocationImage {
+    id: number;
+    url: string;
+    width: number;
+    height: number;
 }
 
 export interface Kontroll {
@@ -40,6 +48,7 @@ export interface ReportKontroll {
         klient: {
             id: number;
         };
+        locationImage?: LocationImage | null | undefined;
     };
     user: {
         id: number;

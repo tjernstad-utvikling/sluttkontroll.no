@@ -25,6 +25,8 @@ import Grid from '@mui/material/Grid';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
 import { LocationEditSchema } from '../schema/location';
+import { LocationImageCard } from '../components/location';
+import { NewImageModal } from '../modal/newLocationImage';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAvvik } from '../data/avvik';
@@ -46,6 +48,7 @@ const KontrollObjektView = () => {
     const [_location, setLocation] = useState<Location>();
 
     const [editLocation, setEditLocation] = useState<boolean>(false);
+    const [addLocationImage, setAddLocationImage] = useState<boolean>(false);
 
     const {
         state: { kontroller },
@@ -97,7 +100,7 @@ const KontrollObjektView = () => {
                 );
             }
         }
-    }, [kontroller, klientId, klienter, objectId]);
+    }, [klientId, klienter, objectId]);
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -155,24 +158,45 @@ const KontrollObjektView = () => {
                     <Grid item xs={12}>
                         <Card title="Lokasjon">
                             <CardContent>
-                                {!editLocation ? (
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() =>
-                                            setEditLocation(!editLocation)
-                                        }
-                                        startIcon={<EditIcon />}>
-                                        Rediger Lokasjon
-                                    </Button>
-                                ) : (
-                                    <div />
-                                )}
-                                <div style={{ paddingBottom: '10px' }} />
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12} sm={6}>
+                                        {!editLocation ? (
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() =>
+                                                    setEditLocation(
+                                                        !editLocation
+                                                    )
+                                                }
+                                                startIcon={<EditIcon />}>
+                                                Rediger Lokasjon
+                                            </Button>
+                                        ) : (
+                                            <div />
+                                        )}
+                                        <div
+                                            style={{ paddingBottom: '10px' }}
+                                        />
 
-                                <Typography paragraph>
-                                    <strong>Lokasjon:</strong> {_location?.name}
-                                </Typography>
+                                        <Typography paragraph>
+                                            <strong>Lokasjon:</strong>{' '}
+                                            {_location?.name}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        {_location && (
+                                            <LocationImageCard
+                                                klientId={Number(klientId)}
+                                                location={_location}
+                                                openAddImageModal={() =>
+                                                    setAddLocationImage(true)
+                                                }
+                                            />
+                                        )}
+                                    </Grid>
+                                </Grid>
+
                                 {editLocation && _location !== undefined ? (
                                     <LocationEditSchema
                                         location={_location}
@@ -293,6 +317,12 @@ const KontrollObjektView = () => {
             <AttachmentModal
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
+            />
+            <NewImageModal
+                klientId={Number(klientId)}
+                locationId={Number(objectId)}
+                open={addLocationImage}
+                close={() => setAddLocationImage(false)}
             />
         </div>
     );

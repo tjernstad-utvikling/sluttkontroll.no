@@ -13,7 +13,7 @@ const AvvikPageView = lazy(() => import('../../views/kontroll-avvikPage'));
 const AvvikView = lazy(() => import('../../views/kontroll-avvik'));
 const KontrollKlientView = lazy(() => import('../../views/kontroll-klient'));
 const KontrollNewView = lazy(() => import('../../views/kontroll-new'));
-const KontrollObjektView = lazy(() => import('../../views/kontroll-object'));
+const KontrollObjektView = lazy(() => import('../../views/kontroll-location'));
 const KontrollReportView = lazy(() => import('../../views/kontroll-report'));
 const AttachmentView = lazy(() => import('../../views/kontroll-attachments'));
 const ReportStatementView = lazy(

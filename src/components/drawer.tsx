@@ -1,3 +1,4 @@
+import { Klient, Location } from '../contracts/kontrollApi';
 import React, { useEffect, useState } from 'react';
 import {
     NavLink as RouterLink,
@@ -11,7 +12,6 @@ import { DistributiveOmit } from '@mui/types';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import IconButton from '@mui/material/IconButton';
-import { Klient } from '../contracts/kontrollApi';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
@@ -64,7 +64,11 @@ export const KlientMenu = ({
         return (
             <List aria-label="Kunder">
                 {filteredClients.map((klient) => (
-                    <KlientListItem klient={klient} key={klient.id} />
+                    <KlientListItem
+                        klient={klient}
+                        key={klient.id}
+                        searchString={searchString}
+                    />
                 ))}
             </List>
         );
@@ -80,13 +84,26 @@ const useStyles = makeStyles()((theme: Theme) => ({
 
 interface KlientListItemProps {
     klient: Klient;
+    searchString: string | undefined;
 }
-const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
+const KlientListItem = ({
+    klient,
+    searchString
+}: KlientListItemProps): JSX.Element => {
     const { classes } = useMainStyles();
     const [open, setOpen] = useState<boolean>(false);
     const handleClick = () => {
         setOpen(!open);
     };
+
+    function filterLocations(locations: Location[]): Location[] {
+        if (searchString) {
+            return locations.filter((location) =>
+                location.name.toLowerCase().includes(searchString.toLowerCase())
+            );
+        }
+        return locations;
+    }
     return (
         <div>
             <ListItem>
@@ -122,7 +139,7 @@ const KlientListItem = ({ klient }: KlientListItemProps): JSX.Element => {
                     className={classes.collapseListLeftDrawer}
                     component="div"
                     disablePadding>
-                    {klient.locations.map((location) => (
+                    {filterLocations(klient.locations).map((location) => (
                         <ObjektListItem
                             klientId={klient.id}
                             id={location.id}

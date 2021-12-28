@@ -115,6 +115,13 @@ export const AvvikSchema = ({
                                         value={values.utbedrer}
                                         name="utbedrer"
                                         options={userOptions}
+                                        styles={{
+                                            menuPortal: (base) => ({
+                                                ...base,
+                                                zIndex: 9999
+                                            })
+                                        }}
+                                        menuPortalTarget={document.body}
                                     />
                                 </>
                             )}

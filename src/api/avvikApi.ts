@@ -51,7 +51,7 @@ export const updateAvvikById = async (
         const { status } = await sluttkontrollApi.put(`/avvik/${avvik.id}`, {
             beskrivelse: avvik.beskrivelse,
             kommentar: avvik.kommentar,
-            utbedrer: avvik.utbedrer
+            utbedrer: avvik.utbedrer.map((u) => u.id)
         });
         if (status === 204) {
             return { status, message: '' };
@@ -98,7 +98,8 @@ export const addAvvikApi = async (newAvvik: {
         const { status, data } = await sluttkontrollApi.post(
             `/avvik/${newAvvik.checklistId}`,
             {
-                ...newAvvik
+                ...newAvvik,
+                utbedrer: newAvvik.utbedrer?.map((u) => u.id)
             }
         );
         if (status === 200) {

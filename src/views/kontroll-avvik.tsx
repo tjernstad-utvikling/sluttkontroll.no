@@ -21,6 +21,7 @@ import CallMergeIcon from '@mui/icons-material/CallMerge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import PersonIcon from '@mui/icons-material/Person';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ReorderIcon from '@mui/icons-material/Reorder';
 import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/tableContainer';
@@ -231,7 +232,7 @@ const AvvikView = () => {
                                         },
                                         {
                                             label: `Hent avviksliste (${selected.length})`,
-                                            icon: <BuildIcon />,
+                                            icon: <PictureAsPdfIcon />,
                                             action: downloadAvvikList
                                         }
                                     ]}

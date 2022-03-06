@@ -110,6 +110,13 @@ export const KontrollSchema = ({
                                         value={values.user}
                                         name="user"
                                         options={userOptions}
+                                        styles={{
+                                            menuPortal: (base) => ({
+                                                ...base,
+                                                zIndex: 9999
+                                            })
+                                        }}
+                                        menuPortalTarget={document.body}
                                     />
                                     <label htmlFor="avvikUtbedrere-select">
                                         Utbedrere av avvik

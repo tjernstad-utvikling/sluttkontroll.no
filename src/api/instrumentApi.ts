@@ -17,6 +17,22 @@ export const getInstruments = async (): Promise<InstrumentResponse> => {
         throw new Error('Error Instrument API Get instruments');
     }
 };
+interface InstrumentStatusResponse {
+    status: number;
+    dispInstruments?: Instrument[];
+    ownedInstruments?: Instrument[];
+}
+export const getInstrumentStatusCurrentUser =
+    async (): Promise<InstrumentStatusResponse> => {
+        try {
+            const { status, data } = await sluttkontrollApi.get(
+                '/instrument/calibration/status'
+            );
+            return { status, ...data };
+        } catch (error: any) {
+            return { status: error.response.status };
+        }
+    };
 
 export const newInstrument = async (instrument: {
     name: string;

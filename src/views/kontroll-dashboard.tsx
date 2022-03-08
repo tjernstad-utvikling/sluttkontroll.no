@@ -17,6 +17,7 @@ import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { InstrumentStatus } from '../components/instrument';
 import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
@@ -153,6 +154,7 @@ const KontrollerView = () => {
                                 />
                             }>
                             <CardContent>
+                                <InstrumentStatus />
                                 {kontroller !== undefined ? (
                                     <TableContainer
                                         columns={kontrollColumns({

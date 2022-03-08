@@ -1,3 +1,4 @@
+import { BaseTable, RowStylingEnum } from './baseTable';
 import {
     GridCellParams,
     GridColDef,
@@ -5,7 +6,6 @@ import {
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
-import { BaseTable } from './baseTable';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import CompassCalibrationIcon from '@mui/icons-material/CompassCalibration';
@@ -244,5 +244,13 @@ interface InstrumentTableProps {
     instruments: Instrument[];
 }
 export const InstrumentTable = ({ instruments }: InstrumentTableProps) => {
-    return <BaseTable data={instruments} />;
+    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
+        if (row.passedCalibrationDate) {
+            return RowStylingEnum.error;
+        } else if (row.needCalibrating) {
+            return RowStylingEnum.warning;
+        }
+    };
+
+    return <BaseTable data={instruments} getRowStyling={getRowStyling} />;
 };

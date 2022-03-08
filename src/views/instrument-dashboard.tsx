@@ -9,6 +9,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
+import { InstrumentStatus } from '../components/instrument';
 import { TableContainer } from '../tables/tableContainer';
 import { useAuth } from '../hooks/useAuth';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -59,6 +60,7 @@ const InstrumentsView = () => {
                                 />
                             }>
                             <CardContent>
+                                <InstrumentStatus />
                                 {instruments !== undefined ? (
                                     <TableContainer
                                         columns={instrumentColumns({

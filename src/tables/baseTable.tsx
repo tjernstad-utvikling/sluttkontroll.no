@@ -16,7 +16,9 @@ interface Data {
 export enum RowStylingEnum {
     completed = 'completed',
     disabled = 'disabled',
-    cut = 'cut'
+    cut = 'cut',
+    error = 'error',
+    warning = 'warning'
 }
 
 interface BaseTableProps<T> {
@@ -232,6 +234,18 @@ const useTableStyles = makeStyles((theme) => ({
             backgroundColor: '#F3A712',
             '&:hover': {
                 backgroundColor: '#F9D388'
+            }
+        },
+        '& .slk-table--warning': {
+            backgroundColor: '#F3A712',
+            '&:hover': {
+                backgroundColor: '#F9D388'
+            }
+        },
+        '& .slk-table--error': {
+            backgroundColor: '#CA3C25',
+            '&:hover': {
+                backgroundColor: '#EA998D'
             }
         }
     },

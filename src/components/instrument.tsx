@@ -29,7 +29,7 @@ export const InstrumentStatus = () => {
                     Disse instrumentene skal kalibreres
                     <ul>
                         {_dispInstruments.map((i) => (
-                            <li>{i.name}</li>
+                            <li key={i.id}>{i.name}</li>
                         ))}
                     </ul>
                 </Alert>
@@ -40,7 +40,7 @@ export const InstrumentStatus = () => {
                     Disse instrumentene skal kalibreres
                     <ul>
                         {_ownedInstruments.map((i) => (
-                            <li>{i.name}</li>
+                            <li key={i.id}>{i.name}</li>
                         ))}
                     </ul>
                 </Alert>

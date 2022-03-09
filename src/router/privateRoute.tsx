@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 export const PrivateRoute: React.FC<{
     path: string;
     exact?: boolean;
-    requiredRole: Roles;
+    requiredRole: Roles[];
 }> = ({ children, path, exact, requiredRole }) => {
     const { user, hasCheckedLocal, userHasRole } = useAuth();
 

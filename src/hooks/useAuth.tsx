@@ -200,6 +200,8 @@ export const AuthProvider = ({
                 user.roles.includes(Roles.ROLE_ADMIN)
             ) {
                 return '/kontroll';
+            } else if (user.roles.includes(Roles.ROLE_LUKKE_AVVIK)) {
+                return '/external';
             }
         }
 

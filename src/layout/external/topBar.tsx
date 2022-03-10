@@ -33,6 +33,7 @@ export const TopBar = ({
                     size="large">
                     <MenuIcon />
                 </IconButton>
+
                 <div className={classes.toolbarContainer}></div>
                 <IconButton
                     color="inherit"

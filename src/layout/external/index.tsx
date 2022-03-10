@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 import CssBaseline from '@mui/material/CssBaseline';
+import { LeftDrawer } from './leftDrawer';
+import { RightDrawer } from './rightDrawer';
 import { TopBar } from './topBar';
 import clsx from 'clsx';
 import { useMainStyles } from '../../styles/layout/main';
@@ -23,7 +25,11 @@ export const ExternalLayout = ({
                 toggleLeftDrawer={() => setOpen(!open)}
                 toggleRightDrawer={() => setIsMenuOpen(!isMenuOpen)}
             />
-
+            <LeftDrawer isOpen={open} />
+            <RightDrawer
+                isOpen={isMenuOpen}
+                toggle={() => setIsMenuOpen(!isMenuOpen)}
+            />
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: open

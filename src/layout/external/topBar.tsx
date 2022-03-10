@@ -1,6 +1,5 @@
 import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
-import { KontrollBreadcrumbs } from './breadcrumb';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import clsx from 'clsx';
@@ -10,13 +9,11 @@ interface TopBarProps {
     isOpenLeftDrawerOpen: boolean;
     toggleLeftDrawer: () => void;
     toggleRightDrawer: () => void;
-    module: 'kontroll' | 'instrument';
 }
 export const TopBar = ({
     isOpenLeftDrawerOpen,
     toggleLeftDrawer,
-    toggleRightDrawer,
-    module
+    toggleRightDrawer
 }: TopBarProps) => {
     const { classes } = useMainStyles();
     return (
@@ -36,7 +33,6 @@ export const TopBar = ({
                     size="large">
                     <MenuIcon />
                 </IconButton>
-                {module === 'kontroll' && <KontrollBreadcrumbs />}
                 <div className={classes.toolbarContainer}></div>
                 <IconButton
                     color="inherit"

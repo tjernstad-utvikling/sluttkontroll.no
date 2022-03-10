@@ -7,11 +7,9 @@ import { useMainStyles } from '../../styles/layout/main';
 
 interface ExternalLayoutProps {
     children: React.ReactNode;
-    module: 'kontroll' | 'instrument';
 }
 export const ExternalLayout = ({
-    children,
-    module
+    children
 }: ExternalLayoutProps): JSX.Element => {
     const { classes } = useMainStyles();
     const [open, setOpen] = useState<boolean>(true);
@@ -24,9 +22,8 @@ export const ExternalLayout = ({
                 isOpenLeftDrawerOpen={open}
                 toggleLeftDrawer={() => setOpen(!open)}
                 toggleRightDrawer={() => setIsMenuOpen(!isMenuOpen)}
-                module={module}
             />
-        
+
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: open

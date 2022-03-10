@@ -1,5 +1,6 @@
 import ExternalDashboardView from '../views/external-dashboard';
 import { PrivateRoute } from './privateRoute';
+import { Roles } from '../contracts/userApi';
 import { Switch } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -12,7 +13,7 @@ export const External = () => {
 
     return (
         <Switch>
-            <PrivateRoute path={`/`}>
+            <PrivateRoute requiredRole={[Roles.ROLE_LUKKE_AVVIK]} path={`/`}>
                 <ExternalDashboardView />
             </PrivateRoute>
         </Switch>

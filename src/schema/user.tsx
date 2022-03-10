@@ -167,7 +167,7 @@ const RoleSelectField = () => {
                         classNamePrefix="select"
                         isSearchable
                         isMulti
-                        isDisabled={!userHasRole(Roles.ROLE_EDIT_ROLES)}
+                        isDisabled={!userHasRole([Roles.ROLE_EDIT_ROLES])}
                         onChange={(selected) => {
                             setFieldValue('roles', selected);
                         }}

@@ -80,7 +80,7 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
                     primary="Brukere"
                     icon={<GroupIcon />}
                 />
-                {userHasRole(Roles.ROLE_ADMIN) && (
+                {userHasRole([Roles.ROLE_ADMIN]) && (
                     <ListItemLink
                         to="/admin/settings"
                         primary="Innstillinger"

@@ -50,15 +50,24 @@ export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {
 
     return { kontroll, area, omrade, avvikBilder };
 };
-export const columns = (
-    kontroller: Kontroll[],
-    skjemaer: Skjema[],
-    url: string,
-    deleteSkjema: (avvikId: number) => void,
-    edit: (avvikId: number) => void,
-    open: (avvikId: number) => void,
-    close: (avvikId: number) => void
-) => {
+interface ColumnsProps {
+    kontroller: Kontroll[];
+    skjemaer: Skjema[];
+    url: string;
+    deleteSkjema?: (avvikId: number) => void;
+    edit?: (avvikId: number) => void;
+    open?: (avvikId: number) => void;
+    close?: (avvikId: number) => void;
+}
+export const columns = ({
+    kontroller,
+    skjemaer,
+    url,
+    deleteSkjema,
+    edit,
+    open,
+    close
+}: ColumnsProps) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -171,26 +180,35 @@ export const columns = (
                         actionItems={[
                             {
                                 name: 'Åpne',
-                                action: () => open(params.row.id),
-                                skip: params.row.status !== 'lukket',
+                                action: () => open && open(params.row.id),
+                                skip:
+                                    params.row.status !== 'lukket' ||
+                                    open === undefined,
                                 icon: <LockOpenIcon />
                             },
                             {
                                 name: 'Lukke',
-                                action: () => close(params.row.id),
-                                skip: params.row.status === 'lukket',
+                                action: () => close && close(params.row.id),
+                                skip:
+                                    params.row.status === 'lukket' ||
+                                    close === undefined,
                                 icon: <BuildIcon />
                             },
                             {
                                 name: 'Rediger',
-                                action: () => edit(params.row.id),
-                                skip: params.row.status === 'lukket',
+                                action: () => edit && edit(params.row.id),
+                                skip:
+                                    params.row.status === 'lukket' ||
+                                    edit === undefined,
                                 icon: <EditIcon />
                             },
                             {
                                 name: 'Slett',
-                                action: () => deleteSkjema(params.row.id),
-                                skip: params.row.status === 'lukket',
+                                action: () =>
+                                    deleteSkjema && deleteSkjema(params.row.id),
+                                skip:
+                                    params.row.status === 'lukket' ||
+                                    deleteSkjema === undefined,
                                 icon: <DeleteForeverIcon />
                             }
                         ]}

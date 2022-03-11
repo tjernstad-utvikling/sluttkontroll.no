@@ -241,15 +241,15 @@ const AvvikView = () => {
                             <CardContent>
                                 {skjemaer !== undefined ? (
                                     <TableContainer
-                                        columns={columns(
-                                            kontroller ?? [],
-                                            skjemaer ?? [],
+                                        columns={columns({
+                                            kontroller: kontroller ?? [],
+                                            skjemaer: skjemaer ?? [],
                                             url,
-                                            askToDeleteAvvik,
-                                            setEditId,
-                                            openAvvik,
+                                            deleteSkjema: askToDeleteAvvik,
+                                            edit: setEditId,
+                                            open: openAvvik,
                                             close
-                                        )}
+                                        })}
                                         defaultColumns={defaultColumns}
                                         tableId="avvik">
                                         {showTable ? (

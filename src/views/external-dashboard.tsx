@@ -23,9 +23,7 @@ const ExternalDashboardView = () => {
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Card
-                            title="Dine kontroller"
-                            menu={<CardMenu items={[]} />}>
+                        <Card title="Dine avvik" menu={<CardMenu items={[]} />}>
                             <CardContent>
                                 <TableContainer
                                     columns={columns({

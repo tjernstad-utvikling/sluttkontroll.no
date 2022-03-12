@@ -6,16 +6,22 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { getAssignedAvvik } from '../api/avvikApi';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useQuery } from 'react-query';
 
 const ExternalDashboardView = () => {
     const { classes } = usePageStyles();
 
-    useEffectOnce(async () => {
-        const { avvik, status } = await getAssignedAvvik();
-        console.log({ avvik, status });
-    });
+    const { isLoading, error, data, isFetching } = useQuery(
+        'assignedAvvik',
+        async () => {
+            const { avvik } = await getAssignedAvvik();
+            return avvik;
+        }
+    );
+
+    if (isLoading) return <p>Loading...</p>;
+    console.table(data);
 
     return (
         <>

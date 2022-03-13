@@ -15,7 +15,6 @@ import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
-import { useClipBoard } from '../data/clipboard';
 
 export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {
     const kontroll = (kontroller: Kontroll[]): string => {
@@ -42,7 +41,7 @@ export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {
         return '';
     };
     const avvikBilder = (): number => {
-        if (data?.avvikBilder.length > 0) {
+        if (data?.avvikBilder && data?.avvikBilder?.length > 0) {
             return data?.avvikBilder.length;
         }
         return 0;
@@ -233,17 +232,15 @@ interface AvvikTableProps {
     onSelected: (ids: number[]) => void;
     selected: number[];
     leftAction?: React.ReactNode;
+    skjemaClipboard?: Skjema[] | undefined;
 }
 export const AvvikTable = ({
     avvik,
     onSelected,
     selected,
-    leftAction
+    leftAction,
+    skjemaClipboard
 }: AvvikTableProps) => {
-    const {
-        state: { skjemaClipboard }
-    } = useClipBoard();
-
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
             return RowStylingEnum.cut;

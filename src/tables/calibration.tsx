@@ -1,7 +1,7 @@
 import {
     GridCellParams,
     GridColDef,
-    GridRowData,
+    GridRowModel,
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
@@ -13,7 +13,7 @@ import { Kalibrering } from '../contracts/instrumentApi';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { format } from 'date-fns';
 
-export const CalibrationValueGetter = (data: Kalibrering | GridRowData) => {
+export const CalibrationValueGetter = (data: Kalibrering | GridRowModel) => {
     const date = (formatString: string): string => {
         return format(new Date(data.date), formatString);
     };

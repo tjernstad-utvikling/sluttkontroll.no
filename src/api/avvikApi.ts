@@ -20,18 +20,6 @@ export const getAvvikByKontrollList = async (
         throw new Error(error);
     }
 };
-export const getAssignedAvvik = async (): Promise<{
-    status: number;
-    avvik: Avvik[];
-}> => {
-    try {
-        const { status, data } = await sluttkontrollApi.get(`/avvik/assigned`);
-
-        return { status, ...data };
-    } catch (error: any) {
-        throw new Error(error);
-    }
-};
 
 export const deleteAvvikById = async (
     avvikId: number

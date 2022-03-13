@@ -5,23 +5,14 @@ import { AvvikGrid } from '../components/avvik';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
-import { getAssignedAvvik } from '../api/avvikApi';
+import Typography from '@mui/material/Typography';
+import { useAssignedAvvik } from '../api/hooks/useAvvik';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useQuery } from 'react-query';
 
 const ExternalDashboardView = () => {
     const { classes } = usePageStyles();
 
-    const { isLoading, error, data, isFetching } = useQuery(
-        'assignedAvvik',
-        async () => {
-            const { avvik } = await getAssignedAvvik();
-            return avvik;
-        }
-    );
-
-    if (isLoading) return <p>Loading...</p>;
-    console.table(data);
+    const assignedAvvik = useAssignedAvvik();
 
     return (
         <>
@@ -31,33 +22,37 @@ const ExternalDashboardView = () => {
                     <Grid item xs={12}>
                         <Card title="Dine avvik" menu={<CardMenu items={[]} />}>
                             <CardContent>
-                                <TableContainer
-                                    columns={columns({
-                                        kontroller: [],
-                                        skjemaer: [],
-                                        url: ''
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="avvik">
-                                    {false ? (
-                                        <AvvikTable
-                                            avvik={[]}
-                                            selected={[]}
-                                            onSelected={(avvik) => {
-                                                console.log(avvik);
-                                            }}
-                                        />
-                                    ) : (
-                                        <AvvikGrid
-                                            close={(a) => console.log(a)}
-                                            avvik={[]}
-                                            selected={[]}
-                                            setSelected={(a) => {}}
-                                            selectedFromGrid={true}
-                                            url={''}
-                                        />
-                                    )}
-                                </TableContainer>
+                                {!assignedAvvik.isLoading ? (
+                                    <TableContainer
+                                        columns={columns({
+                                            kontroller: [],
+                                            skjemaer: [],
+                                            url: ''
+                                        })}
+                                        defaultColumns={defaultColumns}
+                                        tableId="avvik">
+                                        {true ? (
+                                            <AvvikTable
+                                                avvik={assignedAvvik.data ?? []}
+                                                selected={[]}
+                                                onSelected={(avvik) => {
+                                                    console.log(avvik);
+                                                }}
+                                            />
+                                        ) : (
+                                            <AvvikGrid
+                                                close={(a) => console.log(a)}
+                                                avvik={assignedAvvik.data ?? []}
+                                                selected={[]}
+                                                setSelected={(a) => {}}
+                                                selectedFromGrid={true}
+                                                url={''}
+                                            />
+                                        )}
+                                    </TableContainer>
+                                ) : (
+                                    <Typography>Laster avvik</Typography>
+                                )}
                             </CardContent>
                         </Card>
                     </Grid>

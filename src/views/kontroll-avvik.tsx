@@ -157,7 +157,7 @@ const AvvikView = () => {
      * Clipboard
      */
     const {
-        state: { avvikToPast },
+        state: { avvikToPast, skjemaClipboard },
         openScissors,
         closeScissors,
         selectedAvvik,
@@ -261,6 +261,9 @@ const AvvikView = () => {
                                                     onSelectForClipboard(avvik);
                                                     setSelectedFromGrid(false);
                                                 }}
+                                                skjemaClipboard={
+                                                    skjemaClipboard
+                                                }
                                                 leftAction={
                                                     checklistId !==
                                                         undefined && (

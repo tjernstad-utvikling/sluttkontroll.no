@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import ExternalDashboardView from '../views/external-dashboard';
 import { ExternalLayout } from '../layout/external';
 import { PrivateRoute } from './privateRoute';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { Roles } from '../contracts/userApi';
 import { Switch } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -28,6 +29,7 @@ export const External = () => {
                     </ExternalLayout>
                 </PrivateRoute>
             </Switch>
+            <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );
 };

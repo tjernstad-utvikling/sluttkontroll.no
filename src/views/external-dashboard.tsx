@@ -7,12 +7,25 @@ import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAssignedAvvik } from '../api/hooks/useAvvik';
+import { useKontrollerByIds } from '../api/hooks/useKontroll';
+import { useMemo } from 'react';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const ExternalDashboardView = () => {
     const { classes } = usePageStyles();
 
     const assignedAvvik = useAssignedAvvik();
+
+    const kontrollIds = useMemo(() => {
+        const ids = assignedAvvik?.data?.map(
+            (a) => a.checklist.skjema.kontroll.id
+        );
+        return ids?.filter((value, index, self) => {
+            return self.indexOf(value) === index;
+        });
+    }, [assignedAvvik.data]);
+
+    const kontroller = useKontrollerByIds(kontrollIds ?? []);
 
     return (
         <>

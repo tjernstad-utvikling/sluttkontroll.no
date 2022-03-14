@@ -11,3 +11,12 @@ const getAssignedAvvik = async () => {
     );
     return data.avvik;
 };
+export function useAvvikById(avvikId: number) {
+    return useQuery(['assignedAvvik', avvikId], () => getAvvikById(avvikId));
+}
+const getAvvikById = async (avvikId: number) => {
+    const { data } = await sluttkontrollApi.get<{ avvik: Avvik }>(
+        `/avvik/${avvikId}`
+    );
+    return data.avvik;
+};

@@ -1,11 +1,10 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Switch, useRouteMatch } from 'react-router-dom';
 
-import ExternalDashboardView from '../views/external-dashboard';
-import { ExternalLayout } from '../layout/external';
+import { ExternalRoutes } from './external/routes';
 import { PrivateRoute } from './privateRoute';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Roles } from '../contracts/userApi';
-import { Switch } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 
@@ -17,16 +16,14 @@ export const External = () => {
     useEffectOnce(() => {
         loadUserFromStorage();
     });
-
+    let { path } = useRouteMatch();
     return (
         <QueryClientProvider client={queryClient}>
             <Switch>
                 <PrivateRoute
                     requiredRole={[Roles.ROLE_LUKKE_AVVIK]}
-                    path={`/`}>
-                    <ExternalLayout>
-                        <ExternalDashboardView />
-                    </ExternalLayout>
+                    path={`${path}/`}>
+                    <ExternalRoutes />
                 </PrivateRoute>
             </Switch>
             <ReactQueryDevtools initialIsOpen={false} />

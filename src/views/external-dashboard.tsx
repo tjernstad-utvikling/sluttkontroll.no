@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAssignedAvvik } from '../api/hooks/useAvvik';
-import { useKontrollerByIds } from '../api/hooks/useKontroll';
+import { useExternalKontroller } from '../api/hooks/useKontroll';
 import { useMemo } from 'react';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -16,16 +16,7 @@ const ExternalDashboardView = () => {
 
     const assignedAvvik = useAssignedAvvik();
 
-    const kontrollIds = useMemo(() => {
-        const ids = assignedAvvik?.data?.map(
-            (a) => a.checklist.skjema.kontroll.id
-        );
-        return ids?.filter((value, index, self) => {
-            return self.indexOf(value) === index;
-        });
-    }, [assignedAvvik.data]);
-
-    const kontroller = useKontrollerByIds(kontrollIds ?? []);
+    const externalKontrollData = useExternalKontroller();
 
     return (
         <>
@@ -38,8 +29,12 @@ const ExternalDashboardView = () => {
                                 {!assignedAvvik.isLoading ? (
                                     <TableContainer
                                         columns={columns({
-                                            kontroller: [],
-                                            skjemaer: [],
+                                            kontroller:
+                                                externalKontrollData.data
+                                                    ?.kontroller ?? [],
+                                            skjemaer:
+                                                externalKontrollData.data
+                                                    ?.skjemaer ?? [],
                                             url: ''
                                         })}
                                         defaultColumns={defaultColumns}

@@ -12,8 +12,8 @@ import { useEffectOnce } from '../hooks/useEffectOnce';
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            // ✅ globally default to 20 seconds
-            staleTime: 1000 * 20
+            // ✅ globally default to 60 seconds
+            staleTime: 1000 * 60
         }
     }
 });

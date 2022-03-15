@@ -1,7 +1,7 @@
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
-import { Avvik } from './avvik';
+import AvvikPageView from '../../views/external-avvikPage';
 import { ExternalLayout } from '../../layout/external';
 
 const ExternalDashboardView = lazy(
@@ -10,15 +10,14 @@ const ExternalDashboardView = lazy(
 
 export const ExternalRoutes = () => {
     let { path } = useRouteMatch();
-    console.log({ path });
     return (
         <ExternalLayout>
             <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
-                    <Route path={`${path}/avvik`}>
-                        <Avvik />
+                    <Route path={`${path}avvik/:avvikId`}>
+                        <AvvikPageView />
                     </Route>
-                    <Route path={`${path}`}>
+                    <Route exact path={path}>
                         <ExternalDashboardView />
                     </Route>
                 </Switch>

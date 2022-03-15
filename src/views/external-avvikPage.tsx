@@ -1,5 +1,4 @@
 import { Card, CardContent, CardMenu } from '../components/card';
-import { useHistory, useParams } from 'react-router-dom';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { AvvikImageCard } from '../components/avvik';
@@ -18,6 +17,7 @@ import { useAvvikById } from '../api/hooks/useAvvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useExternalKontroller } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 
 const AvvikView = () => {
@@ -27,8 +27,6 @@ const AvvikView = () => {
 
     const avvik = useAvvikById(Number(avvikId));
     const externalKontrollData = useExternalKontroller();
-
-    const history = useHistory();
 
     enum Modals {
         utbedrer,

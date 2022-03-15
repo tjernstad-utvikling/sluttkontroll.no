@@ -9,7 +9,14 @@ import { useAuth } from '../hooks/useAuth';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 
 // Create a client
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            // ✅ globally default to 20 seconds
+            staleTime: 1000 * 20
+        }
+    }
+});
 
 export const External = () => {
     const { loadUserFromStorage } = useAuth();

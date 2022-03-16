@@ -34,6 +34,11 @@ import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
+enum Modals {
+    utbedrer,
+    comment
+}
+
 const AvvikView = () => {
     const { classes } = usePageStyles();
     const { kontrollId, skjemaId, checklistId } = useParams<AvvikViewParams>();
@@ -47,10 +52,6 @@ const AvvikView = () => {
     const [showTable, setShowTable] = useState<boolean>(false);
     const [showAll, setShowAll] = useState<boolean>(false); // Also show closed avvik
 
-    enum Modals {
-        utbedrer,
-        comment
-    }
     const [modalOpen, setModalOpen] = useState<Modals>();
 
     const [editId, setEditId] = useState<number>();
@@ -64,7 +65,8 @@ const AvvikView = () => {
     const {
         state: { avvik },
         deleteAvvik,
-        openAvvik
+        openAvvik,
+        closeAvvik
     } = useAvvik();
 
     useEffectOnce(() => {
@@ -352,6 +354,7 @@ const AvvikView = () => {
                 open={modalOpen === Modals.comment}
                 close={() => setModalOpen(undefined)}
                 selectedAvvik={selected}
+                closeAvvik={closeAvvik}
             />
         </>
     );

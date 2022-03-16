@@ -56,7 +56,8 @@ const AvvikView = () => {
     const {
         state: { avvik },
         deleteAvvik,
-        openAvvik
+        openAvvik,
+        closeAvvik
     } = useAvvik();
 
     useEffectOnce(() => {
@@ -229,6 +230,7 @@ const AvvikView = () => {
                         selectedAvvik={[_avvik.id]}
                     />
                     <AvvikCommentModal
+                        closeAvvik={closeAvvik}
                         open={modalOpen === Modals.comment}
                         close={() => setModalOpen(undefined)}
                         selectedAvvik={[_avvik.id]}

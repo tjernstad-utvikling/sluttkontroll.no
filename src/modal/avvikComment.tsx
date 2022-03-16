@@ -4,21 +4,23 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useAvvik } from '../data/avvik';
 
 interface AvvikCommentModalProps {
     selectedAvvik: number[];
     open: boolean;
     close: () => void;
+    closeAvvik: (
+        selectedAvvik: number[],
+        kommentar: string
+    ) => Promise<boolean>;
 }
 
 export const AvvikCommentModal = ({
     selectedAvvik,
     open,
-    close
+    close,
+    closeAvvik
 }: AvvikCommentModalProps): JSX.Element => {
-    const { closeAvvik } = useAvvik();
-
     const handleUpdate = async (kommentar: string): Promise<boolean> => {
         if (await closeAvvik(selectedAvvik, kommentar)) {
             close();

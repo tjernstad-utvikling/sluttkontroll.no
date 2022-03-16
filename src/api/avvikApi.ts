@@ -155,7 +155,7 @@ export const openAvvikApi = async (
     }
 };
 export const closeAvvikApi = async (
-    avvikList: Array<number>,
+    avvikList: number[],
     kommentar: string
 ): Promise<{
     status: number;
@@ -166,8 +166,8 @@ export const closeAvvikApi = async (
             avvikList,
             kommentar
         });
-        if (status === 204) {
-            return { status, message: '' };
+        if (status === 204 || status === 200) {
+            return { status: 204, message: '' };
         }
         throw new Error('not 200');
     } catch (error: any) {

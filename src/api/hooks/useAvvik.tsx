@@ -4,10 +4,15 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 
-export function useAssignedAvvik() {
-    return useQuery('avvik', async () => {
+export function useAssignedAvvik({
+    includeClosed
+}: {
+    includeClosed: boolean;
+}) {
+    return useQuery(['avvik', includeClosed ? 'all' : 'open'], async () => {
         const { data } = await sluttkontrollApi.get<{ avvik: Avvik[] }>(
-            `/avvik/assigned`
+            `/avvik/assigned`,
+            { params: includeClosed && { all: true } }
         );
         return data.avvik;
     });

@@ -5,6 +5,7 @@ import { useAssignedAvvik, useCloseAvvik } from '../api/hooks/useAvvik';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikGrid } from '../components/avvik';
 import BuildIcon from '@mui/icons-material/Build';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -29,11 +30,20 @@ const ExternalDashboardView = () => {
     const { classes } = usePageStyles();
     const [showTable, setShowTable] = useState<boolean>(false);
 
+    const [showAll, setShowAll] = useState<boolean>(true); // Also show closed avvik
+    const changeViewAll = () => {
+        localStorage.setItem(
+            StorageKeys.avvikViewAll,
+            JSON.stringify(!showAll)
+        );
+        setShowAll(!showAll);
+    };
+
     const [modalOpen, setModalOpen] = useState<Modals>();
 
     const { url } = useRouteMatch();
 
-    const assignedAvvik = useAssignedAvvik();
+    const assignedAvvik = useAssignedAvvik({ includeClosed: showAll });
     const [selected, setSelected] = useState<number[]>([]);
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
@@ -49,6 +59,11 @@ const ExternalDashboardView = () => {
         const jsonShowTable = localStorage.getItem(StorageKeys.avvikViewMode);
         if (jsonShowTable !== null) {
             setShowTable(JSON.parse(jsonShowTable));
+        }
+
+        const jsonShowAll = localStorage.getItem(StorageKeys.avvikViewAll);
+        if (jsonShowAll !== null) {
+            setShowAll(JSON.parse(jsonShowAll));
         }
     });
     const closeMutation = useCloseAvvik({});
@@ -121,6 +136,13 @@ const ExternalDashboardView = () => {
                                                 <ReorderIcon />
                                             ),
                                             action: () => changeViewMode()
+                                        },
+                                        {
+                                            label: showAll
+                                                ? 'Vis kun åpne avvik'
+                                                : 'Vis alle avvik',
+                                            icon: <CallMergeIcon />,
+                                            action: () => changeViewAll()
                                         },
                                         {
                                             label: `Lukk valgte avvik (${selected.length})`,

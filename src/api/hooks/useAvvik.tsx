@@ -33,12 +33,16 @@ export function useAvvikById(avvikId: number) {
     );
 }
 
-export function useCloseAvvik() {
+export function useCloseAvvik({
+    isFromDetailsPage
+}: {
+    isFromDetailsPage?: boolean;
+}) {
     const queryClient = useQueryClient();
     return useMutation<
         Avvik[],
         unknown,
-        { avvikList: number[]; kommentar: string; isFromDetailsPage?: boolean }
+        { avvikList: number[]; kommentar: string }
     >(
         async (body) => {
             const { data } = await sluttkontrollApi.post<{ avvik: Avvik[] }>(
@@ -49,7 +53,13 @@ export function useCloseAvvik() {
         },
         {
             // 💡 response of the mutation is passed to onSuccess
-            onSuccess: (updatedAvvik, bodyVars) => {
+            onSuccess: (updatedAvvik) => {
+                if (isFromDetailsPage) {
+                    queryClient.setQueryData(
+                        ['avvik', updatedAvvik[0].id],
+                        updatedAvvik[0]
+                    );
+                }
                 const oldArray = queryClient.getQueryData<Avvik[]>('avvik');
                 // ✅ update detail view directly
 

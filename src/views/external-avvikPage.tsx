@@ -1,6 +1,8 @@
 import { Card, CardContent, CardMenu } from '../components/card';
+import { useAvvikById, useCloseAvvik } from '../api/hooks/useAvvik';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikImageCard } from '../components/avvik';
 import { AvvikValueGetter } from '../tables/avvik';
 import BuildIcon from '@mui/icons-material/Build';
@@ -13,8 +15,6 @@ import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import { makeStyles } from '../theme/makeStyles';
-import { useAvvikById } from '../api/hooks/useAvvik';
-import { useConfirm } from '../hooks/useConfirm';
 import { useExternalKontroller } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
@@ -35,7 +35,16 @@ const AvvikView = () => {
     }
     const [modalOpen, setModalOpen] = useState<Modals>();
 
-    const { confirm } = useConfirm();
+    const closeMutation = useCloseAvvik({ isFromDetailsPage: true });
+
+    async function closeAvvik(avvikList: number[], kommentar: string) {
+        await closeMutation.mutateAsync({
+            avvikList,
+            kommentar
+        });
+
+        return true;
+    }
 
     return (
         <>
@@ -157,6 +166,14 @@ const AvvikView = () => {
                     </Grid>
                 </Grid>
             </Container>
+            {avvik.data !== undefined && (
+                <AvvikCommentModal
+                    closeAvvik={closeAvvik}
+                    open={modalOpen === Modals.comment}
+                    close={() => setModalOpen(undefined)}
+                    selectedAvvik={[avvik.data.id]}
+                />
+            )}
         </>
     );
 };

@@ -49,16 +49,14 @@ const ExternalDashboardView = () => {
             setShowTable(JSON.parse(jsonShowTable));
         }
     });
-    const closeMutation = useCloseAvvik();
+    const closeMutation = useCloseAvvik({});
 
     async function closeAvvik(avvikList: number[], kommentar: string) {
         await closeMutation.mutateAsync({
             avvikList,
             kommentar
         });
-        if (closeMutation.isSuccess) return true;
-
-        return false;
+        return true;
     }
 
     return (

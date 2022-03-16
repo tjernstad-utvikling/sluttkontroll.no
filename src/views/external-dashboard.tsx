@@ -114,6 +114,14 @@ const ExternalDashboardView = () => {
         }, {});
     }
 
+    const close = async (avvikId: number) => {
+        const avvikToClose = assignedAvvik.data?.find((a) => a.id === avvikId);
+        if (avvikToClose !== undefined) {
+            setSelected([avvikToClose.id]);
+            setModalOpen(Modals.comment);
+        }
+    };
+
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -168,7 +176,8 @@ const ExternalDashboardView = () => {
                                             skjemaer:
                                                 externalKontrollData.data
                                                     ?.skjemaer ?? [],
-                                            url: `${url}/avvik`
+                                            url: `${url}/avvik`,
+                                            close
                                         })}
                                         defaultColumns={defaultColumns}
                                         tableId="avvik">
@@ -183,7 +192,7 @@ const ExternalDashboardView = () => {
                                             />
                                         ) : (
                                             <AvvikGrid
-                                                close={(a) => console.log(a)}
+                                                close={close}
                                                 avvik={assignedAvvik.data ?? []}
                                                 selected={selected}
                                                 setSelected={(a) => {

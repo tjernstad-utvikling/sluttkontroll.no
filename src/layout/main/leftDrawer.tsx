@@ -7,6 +7,8 @@ import { KlientMenu } from '../../components/drawer';
 import SearchIcon from '@mui/icons-material/Search';
 import clsx from 'clsx';
 import logo from '../../assets/logoWhite.png';
+import { useClient } from '../../data/klient';
+import { useEffectOnce } from '../../hooks/useEffectOnce';
 import { useMainStyles } from '../../styles/layout/main';
 import { useState } from 'react';
 
@@ -16,6 +18,15 @@ interface LeftDrawerProps {
 export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
     const { classes } = useMainStyles();
     const [searchString, setSearchString] = useState<string>();
+
+    const {
+        state: { klienter },
+        loadKlienter
+    } = useClient();
+
+    useEffectOnce(() => {
+        loadKlienter();
+    });
 
     return (
         <Drawer
@@ -47,7 +58,11 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
                 />
             </Search>
             <Divider />
-            <KlientMenu searchString={searchString} />
+            <KlientMenu
+                isExternal={false}
+                klienter={klienter}
+                searchString={searchString}
+            />
         </Drawer>
     );
 };

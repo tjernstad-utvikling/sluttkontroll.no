@@ -19,24 +19,18 @@ import ListItemText from '@mui/material/ListItemText';
 import { PasteTableButton } from './clipboard';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../theme/makeStyles';
-import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useMainStyles } from '../styles/layout/main';
 
 export const KlientMenu = ({
-    searchString
+    searchString,
+    klienter,
+    isExternal
 }: {
     searchString: string | undefined;
+    klienter: Klient[] | undefined;
+    isExternal: boolean;
 }): JSX.Element => {
-    const {
-        state: { klienter },
-        loadKlienter
-    } = useClient();
-    useEffectOnce(() => {
-        loadKlienter();
-    });
-
     const [filteredClients, setFilteredClients] = useState<Klient[]>();
 
     useEffect(() => {
@@ -65,6 +59,7 @@ export const KlientMenu = ({
             <List aria-label="Kunder">
                 {filteredClients.map((klient) => (
                     <KlientListItem
+                        isExternal={isExternal}
                         klient={klient}
                         key={klient.id}
                         searchString={searchString}
@@ -85,10 +80,12 @@ const useStyles = makeStyles()((theme: Theme) => ({
 interface KlientListItemProps {
     klient: Klient;
     searchString: string | undefined;
+    isExternal: boolean;
 }
 const KlientListItem = ({
     klient,
-    searchString
+    searchString,
+    isExternal
 }: KlientListItemProps): JSX.Element => {
     const { classes } = useMainStyles();
     const [open, setOpen] = useState<boolean>(false);
@@ -139,14 +136,26 @@ const KlientListItem = ({
                     className={classes.collapseListLeftDrawer}
                     component="div"
                     disablePadding>
-                    {filterLocations(klient.locations).map((location) => (
-                        <ObjektListItem
-                            klientId={klient.id}
-                            id={location.id}
-                            name={location.name}
-                            key={location.id}
-                        />
-                    ))}
+                    {filterLocations(klient.locations).map((location) => {
+                        if (isExternal)
+                            return (
+                                <ObjektListItem
+                                    klientId={klient.id}
+                                    id={location.id}
+                                    name={location.name}
+                                    key={location.id}
+                                />
+                            );
+
+                        return (
+                            <ObjektListItemWithPaste
+                                klientId={klient.id}
+                                id={location.id}
+                                name={location.name}
+                                key={location.id}
+                            />
+                        );
+                    })}
                 </List>
             </Collapse>
         </div>
@@ -154,6 +163,31 @@ const KlientListItem = ({
 };
 
 const ObjektListItem = ({
+    name,
+    id,
+    klientId
+}: {
+    id: number;
+    klientId: number;
+    name: string;
+}): JSX.Element => {
+    const { classes } = useStyles();
+
+    return (
+        <ListItem button className={classes.nested}>
+            <ListItemText
+                primaryTypographyProps={{ color: 'secondary' }}
+                primary={
+                    <ItemLink to={`/kontroll/kl/${klientId}/obj/${id}`}>
+                        {name}
+                    </ItemLink>
+                }
+            />
+        </ListItem>
+    );
+};
+
+const ObjektListItemWithPaste = ({
     name,
     id,
     klientId

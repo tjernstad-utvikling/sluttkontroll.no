@@ -3,9 +3,11 @@ import { alpha, styled } from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import InputBase from '@mui/material/InputBase';
+import { KlientMenu } from '../../components/drawer';
 import SearchIcon from '@mui/icons-material/Search';
 import clsx from 'clsx';
 import logo from '../../assets/logoWhite.png';
+import { useExternalKlienter } from '../../api/hooks/useKlient';
 import { useMainStyles } from '../../styles/layout/main';
 import { useState } from 'react';
 
@@ -15,6 +17,8 @@ interface LeftDrawerProps {
 export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
     const { classes } = useMainStyles();
     const [searchString, setSearchString] = useState<string>();
+
+    const clientData = useExternalKlienter();
 
     return (
         <Drawer
@@ -46,6 +50,11 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
                 />
             </Search>
             <Divider />
+            <KlientMenu
+                isExternal
+                klienter={clientData.data}
+                searchString={searchString}
+            />
         </Drawer>
     );
 };

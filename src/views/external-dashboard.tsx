@@ -7,11 +7,13 @@ import { AvvikGrid } from '../components/avvik';
 import BuildIcon from '@mui/icons-material/Build';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ReorderIcon from '@mui/icons-material/Reorder';
 import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
+import { getAvvikReport } from '../api/avvikApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useExternalKontroller } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -59,6 +61,44 @@ const ExternalDashboardView = () => {
         return true;
     }
 
+    const downloadAvvikList = async () => {
+        const groupedAvvikIds = groupAvvikByKontroller();
+        for (const group of Object.entries(groupedAvvikIds)) {
+            try {
+                const response = await getAvvikReport(
+                    Number(group[0]),
+                    group[1]
+                );
+
+                const fileURL = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
+                const fileLink = document.createElement('a');
+                fileLink.href = fileURL;
+                fileLink.setAttribute('download', 'Avviksliste.pdf');
+                document.body.appendChild(fileLink);
+                fileLink.click();
+            } catch (error) {}
+        }
+    };
+
+    function groupAvvikByKontroller() {
+        return selected.reduce(function (
+            acc: {
+                [key: string]: number[];
+            },
+            obj
+        ) {
+            const avvik = assignedAvvik.data?.find((a) => a.id === obj);
+            let key = avvik?.checklist.skjema.kontroll.id ?? 0;
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+            acc[key].push(obj);
+            return acc;
+        }, {});
+    }
+
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -87,6 +127,11 @@ const ExternalDashboardView = () => {
                                             icon: <BuildIcon />,
                                             action: () =>
                                                 setModalOpen(Modals.comment)
+                                        },
+                                        {
+                                            label: `Hent avviksliste (${selected.length})`,
+                                            icon: <PictureAsPdfIcon />,
+                                            action: downloadAvvikList
                                         }
                                     ]}
                                 />

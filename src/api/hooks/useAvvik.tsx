@@ -1,6 +1,6 @@
+import { Avvik, AvvikBilde } from '../../contracts/avvikApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { Avvik } from '../../contracts/avvikApi';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 
@@ -60,15 +60,71 @@ export function useCloseAvvik({
                         updatedAvvik[0]
                     );
                 }
-                const oldArray = queryClient.getQueryData<Avvik[]>('avvik');
+                const avvikArray = queryClient.getQueryData<Avvik[]>('avvik');
                 // ✅ update detail view directly
 
-                queryClient.setQueryData(
-                    'avvik',
-                    unionBy(updatedAvvik, oldArray, 'id').sort(
-                        (a, b) => a.id - b.id
-                    )
-                );
+                if (avvikArray && avvikArray?.length > 0) {
+                    queryClient.setQueryData(
+                        'avvik',
+                        unionBy(updatedAvvik, avvikArray, 'id').sort(
+                            (a, b) => a.id - b.id
+                        )
+                    );
+                }
+                queryClient.invalidateQueries('avvik');
+            }
+        }
+    );
+}
+
+export function useAddAvvikImages({
+    isFromDetailsPage
+}: {
+    isFromDetailsPage?: boolean;
+}) {
+    const queryClient = useQueryClient();
+    return useMutation<AvvikBilde[], unknown, { avvik: Avvik; images: File[] }>(
+        async ({ avvik, images }) => {
+            const formData = new FormData();
+
+            images.forEach((file) => {
+                formData.append('images', file);
+            });
+
+            const { data } = await sluttkontrollApi.post<{
+                avvikBilder: AvvikBilde[];
+            }>(`/avvik/bilder/add/${avvik.id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            return data.avvikBilder;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (avvikBilder, { avvik }) => {
+                const avvikArray = queryClient.getQueryData<Avvik[]>('avvik');
+                // ✅ update detail view directly
+
+                const updatedAvvik = {
+                    ...avvik,
+                    avvikBilder: [...avvik.avvikBilder, ...avvikBilder]
+                };
+
+                if (isFromDetailsPage) {
+                    queryClient.setQueryData(['avvik', avvik.id], updatedAvvik);
+                }
+                if (avvikArray && avvikArray?.length > 0) {
+                    queryClient.setQueryData(
+                        'avvik',
+                        unionBy([updatedAvvik], avvikArray, 'id').sort(
+                            (a, b) => a.id - b.id
+                        )
+                    );
+                    return;
+                }
+                queryClient.invalidateQueries('avvik');
             }
         }
     );

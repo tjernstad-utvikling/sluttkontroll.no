@@ -1,7 +1,12 @@
 import { Card, CardContent, CardMenu } from '../components/card';
-import { useAvvikById, useCloseAvvik } from '../api/hooks/useAvvik';
+import {
+    useAddAvvikImages,
+    useAvvikById,
+    useCloseAvvik
+} from '../api/hooks/useAvvik';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikImageCard } from '../components/avvik';
 import { AvvikValueGetter } from '../tables/avvik';
@@ -10,6 +15,7 @@ import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import { ExternalAvvikPageViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
+import { NewImageModal } from '../modal/newImage';
 import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
@@ -35,8 +41,17 @@ const AvvikView = () => {
     }
     const [modalOpen, setModalOpen] = useState<Modals>();
 
-    const closeMutation = useCloseAvvik({ isFromDetailsPage: true });
+    const addImageMutation = useAddAvvikImages({ isFromDetailsPage: true });
+    async function addAvvikImages(avvik: Avvik, images: File[]) {
+        await addImageMutation.mutateAsync({
+            avvik,
+            images
+        });
 
+        return true;
+    }
+
+    const closeMutation = useCloseAvvik({ isFromDetailsPage: true });
     async function closeAvvik(avvikList: number[], kommentar: string) {
         await closeMutation.mutateAsync({
             avvikList,
@@ -167,12 +182,20 @@ const AvvikView = () => {
                 </Grid>
             </Container>
             {avvik.data !== undefined && (
-                <AvvikCommentModal
-                    closeAvvik={closeAvvik}
-                    open={modalOpen === Modals.comment}
-                    close={() => setModalOpen(undefined)}
-                    selectedAvvik={[avvik.data.id]}
-                />
+                <>
+                    <NewImageModal
+                        avvik={avvik.data}
+                        open={modalOpen === Modals.addImage}
+                        close={() => setModalOpen(undefined)}
+                        addAvvikImages={addAvvikImages}
+                    />
+                    <AvvikCommentModal
+                        closeAvvik={closeAvvik}
+                        open={modalOpen === Modals.comment}
+                        close={() => setModalOpen(undefined)}
+                        selectedAvvik={[avvik.data.id]}
+                    />
+                </>
             )}
         </>
     );

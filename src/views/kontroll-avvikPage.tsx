@@ -57,7 +57,8 @@ const AvvikView = () => {
         state: { avvik },
         deleteAvvik,
         openAvvik,
-        closeAvvik
+        closeAvvik,
+        addAvvikImages
     } = useAvvik();
 
     useEffectOnce(() => {
@@ -223,6 +224,7 @@ const AvvikView = () => {
                         avvik={_avvik}
                         open={modalOpen === Modals.addImage}
                         close={() => setModalOpen(undefined)}
+                        addAvvikImages={addAvvikImages}
                     />
                     <AvvikUtbedrereModal
                         open={modalOpen === Modals.utbedrer}

@@ -11,7 +11,7 @@ export function useAssignedAvvik({
 }) {
     return useQuery(['avvik', includeClosed ? 'all' : 'open'], async () => {
         const { data } = await sluttkontrollApi.get<{ avvik: Avvik[] }>(
-            `/avvik/assigned`,
+            `/avvik`,
             { params: includeClosed && { all: true } }
         );
         return data.avvik;

@@ -33,7 +33,7 @@ const ExternalDashboardView = () => {
 
     const { clientId, locationId } = useParams<ExternalAvvikListViewParams>();
 
-    const [showAll, setShowAll] = useState<boolean>(true); // Also show closed avvik
+    const [showAll, setShowAll] = useState<boolean>(false); // Also show closed avvik
     const changeViewAll = () => {
         localStorage.setItem(
             StorageKeys.avvikViewAll,

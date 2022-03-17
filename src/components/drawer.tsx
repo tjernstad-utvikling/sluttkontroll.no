@@ -107,7 +107,12 @@ const KlientListItem = ({
                 <ListItemText
                     primaryTypographyProps={{ color: 'secondary' }}
                     primary={
-                        <ItemLink to={`/kontroll/kl/${klient.id}`}>
+                        <ItemLink
+                            to={
+                                isExternal
+                                    ? `/external/client/${klient.id}`
+                                    : `/kontroll/kl/${klient.id}`
+                            }>
                             {klient.name}
                         </ItemLink>
                     }
@@ -178,7 +183,8 @@ const ObjektListItem = ({
             <ListItemText
                 primaryTypographyProps={{ color: 'secondary' }}
                 primary={
-                    <ItemLink to={`/kontroll/kl/${klientId}/obj/${id}`}>
+                    <ItemLink
+                        to={`/external/client/${klientId}/location/${id}`}>
                         {name}
                     </ItemLink>
                 }

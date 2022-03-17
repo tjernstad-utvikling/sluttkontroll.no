@@ -14,6 +14,13 @@ export const ExternalRoutes = () => {
         <ExternalLayout>
             <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
+                    <Route
+                        path={`${path}client/:clientId/location/:locationId`}>
+                        <ExternalDashboardView />
+                    </Route>
+                    <Route path={`${path}client/:clientId`}>
+                        <ExternalDashboardView />
+                    </Route>
                     <Route path={`${path}avvik/:avvikId`}>
                         <AvvikPageView />
                     </Route>

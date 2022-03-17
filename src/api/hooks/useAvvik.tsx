@@ -5,17 +5,41 @@ import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 
 export function useAssignedAvvik({
-    includeClosed
+    includeClosed,
+    clientId,
+    locationId
 }: {
     includeClosed: boolean;
+    clientId?: number;
+    locationId?: number;
 }) {
-    return useQuery(['avvik', includeClosed ? 'all' : 'open'], async () => {
-        const { data } = await sluttkontrollApi.get<{ avvik: Avvik[] }>(
-            `/avvik`,
-            { params: includeClosed && { all: true } }
-        );
-        return data.avvik;
-    });
+    return useQuery(
+        [
+            'avvik',
+            includeClosed ? 'all' : 'open',
+            ...(locationId
+                ? ['location', locationId]
+                : clientId
+                ? ['client', clientId]
+                : [])
+        ],
+        async () => {
+            const { data } = await sluttkontrollApi.get<{ avvik: Avvik[] }>(
+                `/avvik`,
+                {
+                    params: {
+                        ...(includeClosed ? { all: true } : {}),
+                        ...(locationId
+                            ? { locationId }
+                            : clientId
+                            ? { clientId }
+                            : {})
+                    }
+                }
+            );
+            return data.avvik;
+        }
+    );
 }
 
 export function useAvvikById(avvikId: number) {

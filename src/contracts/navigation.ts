@@ -60,3 +60,7 @@ export interface PasswordResetViewParams {
 export interface ExternalAvvikPageViewParams {
     avvikId: string;
 }
+export interface ExternalAvvikListViewParams {
+    clientId?: string;
+    locationId?: string;
+}

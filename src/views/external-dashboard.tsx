@@ -1,12 +1,14 @@
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardContent, CardMenu } from '../components/card';
 import { useAssignedAvvik, useCloseAvvik } from '../api/hooks/useAvvik';
+import { useParams, useRouteMatch } from 'react-router-dom';
 
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikGrid } from '../components/avvik';
 import BuildIcon from '@mui/icons-material/Build';
 import CallMergeIcon from '@mui/icons-material/CallMerge';
 import Container from '@mui/material/Container';
+import { ExternalAvvikListViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ReorderIcon from '@mui/icons-material/Reorder';
@@ -18,7 +20,6 @@ import { getAvvikReport } from '../api/avvikApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useExternalKontroller } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useRouteMatch } from 'react-router-dom';
 import { useState } from 'react';
 
 enum Modals {
@@ -29,6 +30,8 @@ enum Modals {
 const ExternalDashboardView = () => {
     const { classes } = usePageStyles();
     const [showTable, setShowTable] = useState<boolean>(false);
+
+    const { clientId, locationId } = useParams<ExternalAvvikListViewParams>();
 
     const [showAll, setShowAll] = useState<boolean>(true); // Also show closed avvik
     const changeViewAll = () => {
@@ -43,7 +46,12 @@ const ExternalDashboardView = () => {
 
     const { url } = useRouteMatch();
 
-    const assignedAvvik = useAssignedAvvik({ includeClosed: showAll });
+    const assignedAvvik = useAssignedAvvik({
+        includeClosed: showAll,
+        clientId: clientId !== undefined ? Number(clientId) : undefined,
+        locationId: locationId !== undefined ? Number(locationId) : undefined
+    });
+
     const [selected, setSelected] = useState<number[]>([]);
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 

@@ -7,6 +7,7 @@ const ExternalDashboardView = lazy(
     () => import('../../views/external-dashboard')
 );
 const AvvikPageView = lazy(() => import('../../views/external-avvikPage'));
+const ProfileView = lazy(() => import('../../views/user-profile'));
 
 export const ExternalRoutes = () => {
     let { path } = useRouteMatch();
@@ -23,6 +24,12 @@ export const ExternalRoutes = () => {
                     </Route>
                     <Route path={`${path}avvik/:avvikId`}>
                         <AvvikPageView />
+                    </Route>
+                    <Route path={`${path}profile`}>
+                        <ProfileView />
+                    </Route>
+                    <Route path={`${path}avvik`}>
+                        <ExternalDashboardView />
                     </Route>
                     <Route exact path={path}>
                         <ExternalDashboardView />

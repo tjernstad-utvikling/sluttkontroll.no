@@ -201,7 +201,7 @@ export const AuthProvider = ({
             ) {
                 return '/kontroll';
             } else if (user.roles.includes(Roles.ROLE_LUKKE_AVVIK)) {
-                return '/external';
+                return '/external/avvik';
             }
         }
 

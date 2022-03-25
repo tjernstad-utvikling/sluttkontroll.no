@@ -43,6 +43,8 @@ export const UserProfileSchema = ({
     onSubmit,
     user
 }: UserProfileSchemaProps): JSX.Element => {
+    const { userHasRole } = useAuth();
+
     const selectedRoles = useMemo(() => {
         let selectedRoles = [
             { value: Roles.ROLE_LUKKE_AVVIK, label: RolesDesc.ROLE_LUKKE_AVVIK }
@@ -122,9 +124,11 @@ export const UserProfileSchema = ({
                             <Grid item xs={12}>
                                 <PasswordField />
                             </Grid>
-                            <Grid item xs={12}>
-                                <RoleSelectField />
-                            </Grid>
+                            {!userHasRole([Roles.ROLE_LUKKE_AVVIK]) && (
+                                <Grid item xs={12}>
+                                    <RoleSelectField />
+                                </Grid>
+                            )}
 
                             <Grid item xs={12}>
                                 <LoadingButton

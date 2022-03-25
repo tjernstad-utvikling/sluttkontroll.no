@@ -13,7 +13,7 @@ import { useUser } from '../data/user';
 const ProfileView = () => {
     const { classes } = usePageStyles();
 
-    const { user, updateUser, updatePassword } = useAuth();
+    const { user, updateUser, updatePassword, userHasRole } = useAuth();
 
     const handleUpdateUser = async (
         name: string,
@@ -62,12 +62,14 @@ const ProfileView = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={12}>
-                        <CertificateList
-                            addCertificate={handleAddCertificateToUser}
-                            user={user}
-                        />
-                    </Grid>
+                    {userHasRole([Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]) && (
+                        <Grid item xs={12}>
+                            <CertificateList
+                                addCertificate={handleAddCertificateToUser}
+                                user={user}
+                            />
+                        </Grid>
+                    )}
                 </Grid>
             </Container>
         </>

@@ -31,6 +31,7 @@ import { useAvvik } from '../data/avvik';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -46,6 +47,13 @@ const AvvikView = () => {
 
     const [showTable, setShowTable] = useState<boolean>(false);
     const [showAll, setShowAll] = useState<boolean>(false); // Also show closed avvik
+
+    /**
+     * Hotkeys
+     */
+    useHotkeys('t', () => changeViewMode(true)); // change to table
+    useHotkeys('k', () => changeViewMode(false)); // change to card
+    /***** */
 
     enum Modals {
         utbedrer,
@@ -112,12 +120,12 @@ const AvvikView = () => {
         }
     };
 
-    const changeViewMode = () => {
+    const changeViewMode = (newMode: boolean) => {
         localStorage.setItem(
             StorageKeys.avvikViewMode,
-            JSON.stringify(!showTable)
+            JSON.stringify(newMode)
         );
-        setShowTable(!showTable);
+        setShowTable(newMode);
     };
     const changeViewAll = () => {
         localStorage.setItem(
@@ -209,7 +217,8 @@ const AvvikView = () => {
                                             ) : (
                                                 <ReorderIcon />
                                             ),
-                                            action: () => changeViewMode()
+                                            action: () =>
+                                                changeViewMode(!showTable)
                                         },
                                         {
                                             label: showAll

@@ -184,9 +184,9 @@ export const AuthProvider = ({
         return false;
     };
 
-    const userHasRole = (requiredRole: Roles): boolean => {
+    const userHasRole = (requiredRole: Roles[]): boolean => {
         if (user !== undefined) {
-            if (user.roles.includes(requiredRole)) {
+            if (user.roles.some((r) => requiredRole.includes(r))) {
                 return true;
             }
         }
@@ -200,6 +200,8 @@ export const AuthProvider = ({
                 user.roles.includes(Roles.ROLE_ADMIN)
             ) {
                 return '/kontroll';
+            } else if (user.roles.includes(Roles.ROLE_LUKKE_AVVIK)) {
+                return '/external/avvik';
             }
         }
 
@@ -245,7 +247,7 @@ interface ContextInterface {
         phone: string,
         roles: Roles[] | undefined
     ) => Promise<boolean>;
-    userHasRole: (requiredRole: Roles) => boolean;
+    userHasRole: (requiredRole: Roles[]) => boolean;
     updatePassword: (password: string) => Promise<boolean>;
 }
 

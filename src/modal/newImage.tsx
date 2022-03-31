@@ -9,19 +9,22 @@ import { NewImageCard } from '../components/avvik';
 import { Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import { useAvvik } from '../data/avvik';
 import { useState } from 'react';
 
 interface NewImageModalProps {
     open: boolean;
     close: () => void;
     avvik: Avvik;
+    addAvvikImages: (avvik: Avvik, images: File[]) => Promise<boolean>;
 }
-export function NewImageModal({ open, close, avvik }: NewImageModalProps) {
+export function NewImageModal({
+    open,
+    close,
+    avvik,
+    addAvvikImages
+}: NewImageModalProps) {
     const classes = useStyles();
     const [images, setImages] = useState<File[]>([]);
-
-    const { addAvvikImages } = useAvvik();
 
     const saveNewImages = async () => {
         if (await addAvvikImages(avvik, images)) {

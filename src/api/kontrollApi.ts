@@ -14,7 +14,7 @@ import sluttkontrollApi from './sluttkontroll';
 
 export const getClients = async (): Promise<{
     status: number;
-    klienter: Array<Klient>;
+    klienter: Klient[];
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get('/klient');

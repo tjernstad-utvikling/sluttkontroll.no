@@ -1,13 +1,15 @@
 import { Redirect, Route } from 'react-router-dom';
 
 import React from 'react';
+import { Roles } from '../contracts/userApi';
 import { useAuth } from '../hooks/useAuth';
 
 export const PrivateRoute: React.FC<{
     path: string;
     exact?: boolean;
-}> = ({ children, path, exact }) => {
-    const { user, hasCheckedLocal } = useAuth();
+    requiredRole: Roles[];
+}> = ({ children, path, exact, requiredRole }) => {
+    const { user, hasCheckedLocal, userHasRole } = useAuth();
 
     if (hasCheckedLocal) {
         return (
@@ -15,7 +17,7 @@ export const PrivateRoute: React.FC<{
                 path={path}
                 exact={exact}
                 render={({ location }) =>
-                    user ? (
+                    user && userHasRole(requiredRole) ? (
                         children
                     ) : (
                         <Redirect

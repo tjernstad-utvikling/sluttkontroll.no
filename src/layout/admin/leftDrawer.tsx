@@ -44,7 +44,7 @@ export const LeftDrawer = ({ isOpen }: LeftDrawerProps) => {
                     icon={<GroupIcon />}
                     lightText
                 />
-                {userHasRole(Roles.ROLE_ADMIN) && (
+                {userHasRole([Roles.ROLE_ADMIN]) && (
                     <>
                         <ListItemLink
                             to="/admin/settings/info-text"

@@ -23,9 +23,9 @@ import { useAvvik } from '../data/avvik';
 
 interface AvvikCardProps {
     avvik: Avvik;
-    deleteAvvik: (avvikId: number) => void;
-    edit: (avvikId: number) => void;
-    open: (avvikId: number) => void;
+    deleteAvvik?: (avvikId: number) => void;
+    edit?: (avvikId: number) => void;
+    open?: (avvikId: number) => void;
     close: (avvikId: number) => void;
     onSelect: (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -105,8 +105,10 @@ export function AvvikCard({
                         actionItems={[
                             {
                                 name: 'Åpne',
-                                action: () => open(avvik.id),
-                                skip: avvik.status !== 'lukket',
+                                action: () => open && open(avvik.id),
+                                skip:
+                                    avvik.status !== 'lukket' ||
+                                    open === undefined,
                                 icon: <LockOpenIcon />
                             },
                             {
@@ -117,14 +119,19 @@ export function AvvikCard({
                             },
                             {
                                 name: 'Rediger',
-                                action: () => edit(avvik.id),
-                                skip: avvik.status === 'lukket',
+                                action: () => edit && edit(avvik.id),
+                                skip:
+                                    avvik.status === 'lukket' ||
+                                    edit === undefined,
                                 icon: <EditIcon />
                             },
                             {
                                 name: 'Slett',
-                                action: () => deleteAvvik(avvik.id),
-                                skip: avvik.status === 'lukket',
+                                action: () =>
+                                    deleteAvvik && deleteAvvik(avvik.id),
+                                skip:
+                                    avvik.status === 'lukket' ||
+                                    deleteAvvik === undefined,
                                 icon: <DeleteForeverIcon />
                             }
                         ]}
@@ -138,9 +145,9 @@ export function AvvikCard({
 interface AvvikGridProps {
     avvik: Avvik[];
     selected: number[];
-    deleteAvvik: (avvikId: number) => void;
-    edit: (avvikId: number) => void;
-    open: (avvikId: number) => void;
+    deleteAvvik?: (avvikId: number) => void;
+    edit?: (avvikId: number) => void;
+    open?: (avvikId: number) => void;
     close: (avvikId: number) => void;
     setSelected: (selected: number[]) => void;
     selectedFromGrid: boolean;

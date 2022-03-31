@@ -53,3 +53,14 @@ export interface AdminFormsTemplateEditViewParams {
 export interface PasswordResetViewParams {
     token?: string;
 }
+
+/**
+ * External routes
+ */
+export interface ExternalAvvikPageViewParams {
+    avvikId: string;
+}
+export interface ExternalAvvikListViewParams {
+    clientId?: string;
+    locationId?: string;
+}

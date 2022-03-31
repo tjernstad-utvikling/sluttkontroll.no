@@ -1,18 +1,13 @@
 import { ListItemAction, ListItemLink } from '../../components/links';
 
+import AddModeratorIcon from '@mui/icons-material/AddModerator';
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
-import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
-import GroupIcon from '@mui/icons-material/Group';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
-import LocationCityIcon from '@mui/icons-material/LocationCity';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
-import { Roles } from '../../contracts/userApi';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SpeedIcon from '@mui/icons-material/Speed';
 import { useAuth } from '../../hooks/useAuth';
 import { useMainStyles } from '../../styles/layout/main';
 
@@ -23,7 +18,7 @@ interface RightDrawerProps {
 
 export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
     const { classes } = useMainStyles();
-    const { user, userHasRole, signOut } = useAuth();
+    const { user, signOut } = useAuth();
 
     const handleSignOut = () => {
         signOut();
@@ -50,7 +45,7 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
             <Divider />
             <List aria-label="Bruker meny">
                 <ListItemLink
-                    to="/user"
+                    to="/external/profile"
                     primary={user?.name || 'Profil'}
                     icon={<PersonIcon />}
                 />
@@ -58,35 +53,10 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
             <Divider />
             <List aria-label="hoved meny">
                 <ListItemLink
-                    to="/kontroll"
-                    primary="Kontroll"
-                    icon={<LocationCityIcon />}
+                    to="/external/avvik"
+                    primary="Dine avvik"
+                    icon={<AddModeratorIcon />}
                 />
-                <ListItemLink
-                    to="/instrument"
-                    primary="Instrumenter"
-                    icon={<SpeedIcon />}
-                />
-                <ListItemLink
-                    to="/forms"
-                    primary="Risikovurderinger"
-                    icon={<FormatAlignCenterIcon />}
-                />
-            </List>
-            <Divider />
-            <List aria-label="admin meny">
-                <ListItemLink
-                    to="/admin/users"
-                    primary="Brukere"
-                    icon={<GroupIcon />}
-                />
-                {userHasRole([Roles.ROLE_ADMIN]) && (
-                    <ListItemLink
-                        to="/admin/settings"
-                        primary="Innstillinger"
-                        icon={<SettingsIcon />}
-                    />
-                )}
             </List>
             <Divider />
             <List aria-label="Bruker meny">

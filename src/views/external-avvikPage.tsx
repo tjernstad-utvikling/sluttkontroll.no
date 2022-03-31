@@ -1,42 +1,38 @@
 import { Card, CardContent, CardMenu } from '../components/card';
-import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import {
+    useAddAvvikImages,
+    useAvvikById,
+    useCloseAvvik
+} from '../api/hooks/useAvvik';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
-import { AvvikEditModal } from '../modal/avvik';
 import { AvvikImageCard } from '../components/avvik';
-import { AvvikPageViewParams } from '../contracts/navigation';
-import { AvvikUtbedrereModal } from '../modal/avvikUtbedrere';
 import { AvvikValueGetter } from '../tables/avvik';
 import BuildIcon from '@mui/icons-material/Build';
 import Container from '@mui/material/Container';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Divider from '@mui/material/Divider';
+import { ExternalAvvikPageViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { NewImageModal } from '../modal/newImage';
-import PersonIcon from '@mui/icons-material/Person';
 import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import { makeStyles } from '../theme/makeStyles';
-import { useAvvik } from '../data/avvik';
-import { useConfirm } from '../hooks/useConfirm';
-import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
+import { useExternalKontroller } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 
 const AvvikView = () => {
     const { classes } = usePageStyles();
     const { classes: classes2 } = useStyles();
-    const { avvikId } = useParams<AvvikPageViewParams>();
+    const { avvikId } = useParams<ExternalAvvikPageViewParams>();
 
-    const history = useHistory();
-
-    const [_avvik, setAvvik] = useState<Avvik>();
+    const avvik = useAvvikById(Number(avvikId));
+    const externalKontrollData = useExternalKontroller();
 
     enum Modals {
         utbedrer,
@@ -45,43 +41,25 @@ const AvvikView = () => {
     }
     const [modalOpen, setModalOpen] = useState<Modals>();
 
-    const [editId, setEditId] = useState<number>();
+    const addImageMutation = useAddAvvikImages({ isFromDetailsPage: true });
+    async function addAvvikImages(avvik: Avvik, images: File[]) {
+        await addImageMutation.mutateAsync({
+            avvik,
+            images
+        });
 
-    const {
-        state: { skjemaer, kontroller },
-        loadKontroller
-    } = useKontroll();
+        return true;
+    }
 
-    const { confirm } = useConfirm();
-    const {
-        state: { avvik },
-        deleteAvvik,
-        openAvvik,
-        closeAvvik,
-        addAvvikImages
-    } = useAvvik();
+    const closeMutation = useCloseAvvik({ isFromDetailsPage: true });
+    async function closeAvvik(avvikList: number[], kommentar: string) {
+        await closeMutation.mutateAsync({
+            avvikList,
+            kommentar
+        });
 
-    useEffectOnce(() => {
-        loadKontroller();
-    });
-
-    useEffect(() => {
-        if (avvik !== undefined) {
-            setAvvik(avvik.find((a) => a.id === Number(avvikId)));
-        }
-    }, [avvik, avvikId]);
-
-    const askToDeleteAvvik = async () => {
-        if (_avvik !== undefined) {
-            const isConfirmed = await confirm(`Slette avvikID: ${_avvik.id}?`);
-
-            if (isConfirmed) {
-                if (await deleteAvvik(_avvik.id)) {
-                    history.goBack();
-                }
-            }
-        }
-    };
+        return true;
+    }
 
     return (
         <>
@@ -95,12 +73,6 @@ const AvvikView = () => {
                                 <CardMenu
                                     items={[
                                         {
-                                            label: 'Sett utbedrere',
-                                            icon: <PersonIcon />,
-                                            action: () =>
-                                                setModalOpen(Modals.utbedrer)
-                                        },
-                                        {
                                             label: 'Legg til bilde(r)',
                                             icon: <AddPhotoAlternateIcon />,
                                             action: () =>
@@ -109,32 +81,20 @@ const AvvikView = () => {
                                         {
                                             label: 'Lukk avvik',
                                             icon: <BuildIcon />,
-                                            skip: _avvik?.status === 'lukket',
+                                            skip:
+                                                avvik.data?.status === 'lukket',
                                             action: () =>
                                                 setModalOpen(Modals.comment)
-                                        },
-                                        {
-                                            label: 'Slett',
-                                            icon: <DeleteForeverIcon />,
-                                            skip: _avvik?.status === 'lukket',
-                                            action: () => askToDeleteAvvik()
-                                        },
-                                        {
-                                            label: 'Åpne',
-                                            icon: <LockOpenIcon />,
-                                            skip: _avvik?.status !== 'lukket',
-                                            action: () => {
-                                                if (_avvik !== undefined)
-                                                    openAvvik(_avvik.id);
-                                            }
                                         }
                                     ]}
                                 />
                             }>
                             <CardContent>
-                                {_avvik !== undefined &&
-                                kontroller !== undefined &&
-                                skjemaer !== undefined ? (
+                                {avvik.data !== undefined &&
+                                externalKontrollData.data?.kontroller !==
+                                    undefined &&
+                                externalKontrollData.data?.skjemaer !==
+                                    undefined ? (
                                     <Grid container>
                                         <Grid
                                             item
@@ -142,7 +102,7 @@ const AvvikView = () => {
                                                 classes2.topDecoration,
                                                 {
                                                     [classes2.topDecorationClosed]:
-                                                        _avvik.status ===
+                                                        avvik.data.status ===
                                                         'lukket'
                                                 }
                                             )}
@@ -153,7 +113,7 @@ const AvvikView = () => {
                                                 <dd>
                                                     {format(
                                                         new Date(
-                                                            _avvik.registrertDato
+                                                            avvik.data.registrertDato
                                                         ),
                                                         'dd.MM.yyyy'
                                                     )}
@@ -162,27 +122,36 @@ const AvvikView = () => {
                                                 <dt>Kontroll</dt>
                                                 <dd>
                                                     {AvvikValueGetter(
-                                                        _avvik
-                                                    ).kontroll(kontroller)}
+                                                        avvik.data
+                                                    ).kontroll(
+                                                        externalKontrollData
+                                                            .data.kontroller
+                                                    )}
                                                 </dd>
 
                                                 <dt>Areal</dt>
                                                 <dd>
                                                     {AvvikValueGetter(
-                                                        _avvik
-                                                    ).area(skjemaer)}
+                                                        avvik.data
+                                                    ).area(
+                                                        externalKontrollData
+                                                            .data.skjemaer
+                                                    )}
                                                 </dd>
 
                                                 <dt>Området</dt>
                                                 <dd>
                                                     {AvvikValueGetter(
-                                                        _avvik
-                                                    ).omrade(skjemaer)}
+                                                        avvik.data
+                                                    ).omrade(
+                                                        externalKontrollData
+                                                            .data.skjemaer
+                                                    )}
                                                 </dd>
                                                 <Divider />
                                                 <Typography
                                                     style={{ padding: 5 }}>
-                                                    {_avvik.beskrivelse}
+                                                    {avvik.data.beskrivelse}
                                                 </Typography>
                                                 <Divider />
                                             </dl>
@@ -192,12 +161,12 @@ const AvvikView = () => {
                                                 className={
                                                     classes2.imageContainer
                                                 }>
-                                                {_avvik.avvikBilder.map(
+                                                {avvik.data.avvikBilder.map(
                                                     (ab) => (
                                                         <AvvikImageCard
                                                             key={ab.id}
                                                             avvikBilde={ab}
-                                                            avvik={_avvik}
+                                                            avvik={avvik.data}
                                                         />
                                                     )
                                                 )}
@@ -212,30 +181,19 @@ const AvvikView = () => {
                     </Grid>
                 </Grid>
             </Container>
-            <AvvikEditModal
-                close={() => {
-                    setEditId(undefined);
-                }}
-                editId={editId}
-            />
-            {_avvik !== undefined && (
+            {avvik.data !== undefined && (
                 <>
                     <NewImageModal
-                        avvik={_avvik}
+                        avvik={avvik.data}
                         open={modalOpen === Modals.addImage}
                         close={() => setModalOpen(undefined)}
                         addAvvikImages={addAvvikImages}
-                    />
-                    <AvvikUtbedrereModal
-                        open={modalOpen === Modals.utbedrer}
-                        close={() => setModalOpen(undefined)}
-                        selectedAvvik={[_avvik.id]}
                     />
                     <AvvikCommentModal
                         closeAvvik={closeAvvik}
                         open={modalOpen === Modals.comment}
                         close={() => setModalOpen(undefined)}
-                        selectedAvvik={[_avvik.id]}
+                        selectedAvvik={[avvik.data.id]}
                     />
                 </>
             )}

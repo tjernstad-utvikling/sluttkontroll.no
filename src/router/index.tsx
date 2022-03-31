@@ -1,6 +1,7 @@
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
 import { Admin } from './admin';
+import { External } from './external';
 import ForgotPasswordPage from '../views/public-passwordForgot';
 import FrontPage from '../views/public-frontPage';
 import { Main } from './main';
@@ -22,6 +23,9 @@ export const AppRouter = () => {
                     </Route>
                     <Route path="/admin">
                         <Admin />
+                    </Route>
+                    <Route path="/external">
+                        <External />
                     </Route>
                     <Route path="/">
                         <Main />

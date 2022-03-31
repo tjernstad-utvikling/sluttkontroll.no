@@ -15,7 +15,6 @@ import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from './tableUtils';
 import { format } from 'date-fns';
-import { useClipBoard } from '../data/clipboard';
 
 export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {
     const kontroll = (kontroller: Kontroll[]): string => {
@@ -42,7 +41,7 @@ export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {
         return '';
     };
     const avvikBilder = (): number => {
-        if (data?.avvikBilder.length > 0) {
+        if (data?.avvikBilder && data?.avvikBilder?.length > 0) {
             return data?.avvikBilder.length;
         }
         return 0;
@@ -50,15 +49,24 @@ export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {
 
     return { kontroll, area, omrade, avvikBilder };
 };
-export const columns = (
-    kontroller: Kontroll[],
-    skjemaer: Skjema[],
-    url: string,
-    deleteSkjema: (avvikId: number) => void,
-    edit: (avvikId: number) => void,
-    open: (avvikId: number) => void,
-    close: (avvikId: number) => void
-) => {
+interface ColumnsProps {
+    kontroller: Kontroll[];
+    skjemaer: Skjema[];
+    url: string;
+    deleteSkjema?: (avvikId: number) => void;
+    edit?: (avvikId: number) => void;
+    open?: (avvikId: number) => void;
+    close?: (avvikId: number) => void;
+}
+export const columns = ({
+    kontroller,
+    skjemaer,
+    url,
+    deleteSkjema,
+    edit,
+    open,
+    close
+}: ColumnsProps) => {
     const columns: GridColDef[] = [
         {
             field: 'id',
@@ -171,26 +179,35 @@ export const columns = (
                         actionItems={[
                             {
                                 name: 'Åpne',
-                                action: () => open(params.row.id),
-                                skip: params.row.status !== 'lukket',
+                                action: () => open && open(params.row.id),
+                                skip:
+                                    params.row.status !== 'lukket' ||
+                                    open === undefined,
                                 icon: <LockOpenIcon />
                             },
                             {
                                 name: 'Lukke',
-                                action: () => close(params.row.id),
-                                skip: params.row.status === 'lukket',
+                                action: () => close && close(params.row.id),
+                                skip:
+                                    params.row.status === 'lukket' ||
+                                    close === undefined,
                                 icon: <BuildIcon />
                             },
                             {
                                 name: 'Rediger',
-                                action: () => edit(params.row.id),
-                                skip: params.row.status === 'lukket',
+                                action: () => edit && edit(params.row.id),
+                                skip:
+                                    params.row.status === 'lukket' ||
+                                    edit === undefined,
                                 icon: <EditIcon />
                             },
                             {
                                 name: 'Slett',
-                                action: () => deleteSkjema(params.row.id),
-                                skip: params.row.status === 'lukket',
+                                action: () =>
+                                    deleteSkjema && deleteSkjema(params.row.id),
+                                skip:
+                                    params.row.status === 'lukket' ||
+                                    deleteSkjema === undefined,
                                 icon: <DeleteForeverIcon />
                             }
                         ]}
@@ -215,17 +232,15 @@ interface AvvikTableProps {
     onSelected: (ids: number[]) => void;
     selected: number[];
     leftAction?: React.ReactNode;
+    skjemaClipboard?: Skjema[] | undefined;
 }
 export const AvvikTable = ({
     avvik,
     onSelected,
     selected,
-    leftAction
+    leftAction,
+    skjemaClipboard
 }: AvvikTableProps) => {
-    const {
-        state: { skjemaClipboard }
-    } = useClipBoard();
-
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
             return RowStylingEnum.cut;

@@ -35,14 +35,11 @@ const KontrollerView = () => {
     const { classes } = usePageStyles();
 
     const history = useHistory();
-    const {
-        loadKontroller,
-        toggleStatusKontroll,
-        showAllKontroller,
-        setShowAllKontroller
-    } = useKontrollCtx();
+    const { toggleStatusKontroll, showAllKontroller, setShowAllKontroller } =
+        useKontrollCtx();
 
     const kontrollData = useKontroller({ includeDone: showAllKontroller });
+
     const {
         state: { klienter }
     } = useClient();
@@ -59,14 +56,8 @@ const KontrollerView = () => {
     } = useMeasurement();
 
     useEffectOnce(() => {
-        loadKontroller();
         loadUsers();
     });
-
-    useEffect(() => {
-        loadKontroller(showAllKontroller);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showAllKontroller]);
 
     /**
      * Clipboard

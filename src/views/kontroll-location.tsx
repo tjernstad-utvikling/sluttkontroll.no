@@ -5,7 +5,6 @@ import {
     PasteButton,
     SkjemaClipboard
 } from '../components/clipboard';
-import { Kontroll, Location } from '../contracts/kontrollApi';
 import {
     KontrollTable,
     defaultColumns,
@@ -24,6 +23,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
+import { Location } from '../contracts/kontrollApi';
 import { LocationEditSchema } from '../schema/location';
 import { LocationImageCard } from '../components/location';
 import { NewImageModal } from '../modal/newLocationImage';
@@ -32,7 +32,8 @@ import Typography from '@mui/material/Typography';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
-import { useKontroll } from '../data/kontroll';
+import { useKontroll as useKontrollCtx } from '../data/kontroll';
+import { useKontroller } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
@@ -44,19 +45,19 @@ const KontrollObjektView = () => {
 
     const [loadedObjekt, setLoadedObjekt] = useState<number>();
 
-    const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
     const [_location, setLocation] = useState<Location>();
 
     const [editLocation, setEditLocation] = useState<boolean>(false);
     const [addLocationImage, setAddLocationImage] = useState<boolean>(false);
 
-    const {
-        state: { kontroller },
-        loadKontrollerByObjekt,
-        toggleStatusKontroll,
-        showAllKontroller,
-        setShowAllKontroller
-    } = useKontroll();
+    const { toggleStatusKontroll, showAllKontroller, setShowAllKontroller } =
+        useKontrollCtx();
+
+    const kontrollData = useKontroller({
+        includeDone: showAllKontroller,
+        clientId: Number(klientId)
+    });
+
     const {
         state: { klienter },
         saveEditLocation
@@ -76,20 +77,11 @@ const KontrollObjektView = () => {
 
     useEffect(() => {
         if (loadedObjekt !== Number(objectId)) {
-            loadKontrollerByObjekt(Number(objectId), showAllKontroller);
             setLoadedObjekt(Number(objectId));
             loadUsers();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadUsers, loadedObjekt, objectId]);
-
-    useEffect(() => {
-        if (kontroller !== undefined) {
-            setKontroller(
-                kontroller.filter((k) => k.location.id === Number(objectId))
-            );
-        }
-    }, [kontroller, objectId]);
 
     useEffect(() => {
         if (klienter !== undefined) {
@@ -144,9 +136,9 @@ const KontrollObjektView = () => {
 
     const onSelectForClipboard = (ids: number[]) => {
         selectedKontroll(
-            _kontroller.filter((kontroll) => {
+            kontrollData.data?.filter((kontroll) => {
                 return ids.includes(kontroll.id);
-            })
+            }) ?? []
         );
     };
 
@@ -229,74 +221,53 @@ const KontrollObjektView = () => {
                                                 ? 'Vis kun åpne kontroller'
                                                 : 'Vis alle kontroller',
                                             icon: <CallMergeIcon />,
-                                            action: () => {
-                                                if (!showAllKontroller)
-                                                    loadKontrollerByObjekt(
-                                                        Number(objectId),
-                                                        true
-                                                    );
+                                            action: () =>
                                                 setShowAllKontroller(
                                                     !showAllKontroller
-                                                );
-                                            }
+                                                )
                                         }
                                     ]}
                                 />
                             }>
                             <CardContent>
-                                {kontroller !== undefined ? (
-                                    <TableContainer
-                                        columns={kontrollColumns({
-                                            users: users ?? [],
-                                            klienter: klienter ?? [],
-                                            avvik: avvik ?? [],
-                                            measurements: measurements ?? [],
-                                            edit: editKontroll,
-                                            toggleStatus: toggleStatusKontroll,
-                                            clipboardHasSkjema,
-                                            skjemaToPast,
-                                            editComment: setCommentId,
-                                            addAttachment:
-                                                setKontrollAddAttachmentId
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="kontroller">
-                                        <KontrollTable
-                                            kontroller={_kontroller.filter(
-                                                (k) => {
-                                                    if (showAllKontroller) {
-                                                        return true;
-                                                    }
-                                                    return k.done !== true;
+                                <TableContainer
+                                    columns={kontrollColumns({
+                                        users: users ?? [],
+                                        klienter: klienter ?? [],
+                                        avvik: avvik ?? [],
+                                        measurements: measurements ?? [],
+                                        edit: editKontroll,
+                                        toggleStatus: toggleStatusKontroll,
+                                        clipboardHasSkjema,
+                                        skjemaToPast,
+                                        editComment: setCommentId,
+                                        addAttachment:
+                                            setKontrollAddAttachmentId
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="kontroller">
+                                    <KontrollTable
+                                        kontroller={kontrollData.data ?? []}
+                                        onSelected={onSelectForClipboard}
+                                        loading={kontrollData.isLoading}
+                                        leftAction={
+                                            <PasteButton
+                                                clipboardHas={
+                                                    clipboardHasKontroll
                                                 }
-                                            )}
-                                            onSelected={onSelectForClipboard}
-                                            leftAction={
-                                                <PasteButton
-                                                    clipboardHas={
-                                                        clipboardHasKontroll
+                                                options={{
+                                                    kontrollPaste: {
+                                                        locationId:
+                                                            Number(objectId),
+                                                        klientId:
+                                                            Number(klientId),
+                                                        kontroll: kontrollToPast
                                                     }
-                                                    options={{
-                                                        kontrollPaste: {
-                                                            locationId:
-                                                                Number(
-                                                                    objectId
-                                                                ),
-                                                            klientId:
-                                                                Number(
-                                                                    klientId
-                                                                ),
-                                                            kontroll:
-                                                                kontrollToPast
-                                                        }
-                                                    }}
-                                                />
-                                            }
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster kontroller</div>
-                                )}
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

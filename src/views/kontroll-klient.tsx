@@ -4,7 +4,6 @@ import {
     KontrollClipboard,
     SkjemaClipboard
 } from '../components/clipboard';
-import { Klient, Kontroll } from '../contracts/kontrollApi';
 import {
     KontrollTable,
     defaultColumns,
@@ -22,6 +21,7 @@ import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
+import { Klient } from '../contracts/kontrollApi';
 import { KlientEditSchema } from '../schema/klient';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
@@ -30,7 +30,8 @@ import Typography from '@mui/material/Typography';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
-import { useKontroll } from '../data/kontroll';
+import { useKontroll as useKontrollCtx } from '../data/kontroll';
+import { useKontroller } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
@@ -42,18 +43,19 @@ const KontrollKlientView = () => {
     const history = useHistory();
 
     const [loadedKlient, setLoadedKlient] = useState<number>();
-    const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
+
     const [_klient, setKlient] = useState<Klient>();
 
     const [editKlient, setEditKlient] = useState<boolean>(false);
 
-    const {
-        state: { kontroller },
-        loadKontrollerByKlient,
-        toggleStatusKontroll,
-        showAllKontroller,
-        setShowAllKontroller
-    } = useKontroll();
+    const { toggleStatusKontroll, showAllKontroller, setShowAllKontroller } =
+        useKontrollCtx();
+
+    const kontrollData = useKontroller({
+        includeDone: showAllKontroller,
+        clientId: Number(klientId)
+    });
+
     const {
         state: { klienter },
         saveEditKlient
@@ -73,32 +75,16 @@ const KontrollKlientView = () => {
 
     useEffect(() => {
         if (loadedKlient !== Number(klientId)) {
-            loadKontrollerByKlient(Number(klientId), showAllKontroller);
-            setLoadedKlient(Number(klientId));
             loadUsers();
+            setLoadedKlient(Number(klientId));
         }
-    }, [
-        klientId,
-        loadKontrollerByKlient,
-        loadUsers,
-        loadedKlient,
-        showAllKontroller
-    ]);
+    }, [klientId, loadUsers, loadedKlient, showAllKontroller]);
 
-    useEffect(() => {
-        if (kontroller !== undefined) {
-            setKontroller(
-                kontroller.filter(
-                    (k) => k.location.klient.id === Number(klientId)
-                )
-            );
-        }
-    }, [kontroller, klientId]);
     useEffect(() => {
         if (klienter !== undefined) {
             setKlient(klienter.find((k) => k.id === Number(klientId)));
         }
-    }, [kontroller, klientId, klienter]);
+    }, [klientId, klienter]);
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -142,9 +128,9 @@ const KontrollKlientView = () => {
 
     const onSelectForClipboard = (ids: number[]) => {
         selectedKontroll(
-            _kontroller.filter((kontroll) => {
+            kontrollData.data?.filter((kontroll) => {
                 return ids.includes(kontroll.id);
-            })
+            }) ?? []
         );
     };
 
@@ -206,53 +192,37 @@ const KontrollKlientView = () => {
                                                 ? 'Vis kun åpne kontroller'
                                                 : 'Vis alle kontroller',
                                             icon: <CallMergeIcon />,
-                                            action: () => {
-                                                if (!showAllKontroller)
-                                                    loadKontrollerByKlient(
-                                                        Number(klientId),
-                                                        true
-                                                    );
+                                            action: () =>
                                                 setShowAllKontroller(
                                                     !showAllKontroller
-                                                );
-                                            }
+                                                )
                                         }
                                     ]}
                                 />
                             }>
                             <CardContent>
-                                {kontroller !== undefined ? (
-                                    <TableContainer
-                                        columns={kontrollColumns({
-                                            users: users ?? [],
-                                            klienter: klienter ?? [],
-                                            avvik: avvik ?? [],
-                                            measurements: measurements ?? [],
-                                            edit: editKontroll,
-                                            toggleStatus: toggleStatusKontroll,
-                                            clipboardHasSkjema,
-                                            skjemaToPast,
-                                            editComment: setCommentId,
-                                            addAttachment:
-                                                setKontrollAddAttachmentId
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="kontroller">
-                                        <KontrollTable
-                                            kontroller={_kontroller.filter(
-                                                (k) => {
-                                                    if (showAllKontroller) {
-                                                        return true;
-                                                    }
-                                                    return k.done !== true;
-                                                }
-                                            )}
-                                            onSelected={onSelectForClipboard}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster kontroller</div>
-                                )}
+                                <TableContainer
+                                    columns={kontrollColumns({
+                                        users: users ?? [],
+                                        klienter: klienter ?? [],
+                                        avvik: avvik ?? [],
+                                        measurements: measurements ?? [],
+                                        edit: editKontroll,
+                                        toggleStatus: toggleStatusKontroll,
+                                        clipboardHasSkjema,
+                                        skjemaToPast,
+                                        editComment: setCommentId,
+                                        addAttachment:
+                                            setKontrollAddAttachmentId
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="kontroller">
+                                    <KontrollTable
+                                        kontroller={kontrollData.data ?? []}
+                                        onSelected={onSelectForClipboard}
+                                        loading={kontrollData.isLoading}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

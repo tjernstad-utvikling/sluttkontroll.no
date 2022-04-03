@@ -100,7 +100,7 @@ export interface ContextInterface {
         location: Location,
         user: User
     ) => Promise<boolean>;
-    updateKontroll: (kontroll: Kontroll) => Promise<boolean>;
+
     moveKontroll: (
         kontroll: Kontroll,
         klientId: number,

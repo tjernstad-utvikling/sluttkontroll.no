@@ -1,3 +1,5 @@
+import { useKontrollById, useUpdateKontroll } from '../api/hooks/useKontroll';
+
 import Button from '@mui/material/Button';
 import { CommentSchema } from '../schema/comment';
 import Dialog from '@mui/material/Dialog';
@@ -21,28 +23,35 @@ export const CommentModal = ({
     close
 }: CommentModalProps): JSX.Element => {
     const {
-        state: { kontroller, skjemaer },
-        updateKontroll,
+        state: { skjemaer },
+
         updateSkjema
     } = useKontroll();
 
+    const kontrollData = useKontrollById(kontrollId);
+
+    const updateMutation = useUpdateKontroll();
+
     const kommentar = useMemo(() => {
         if (kontrollId) {
-            const kontroll = kontroller?.find((k) => k.id === kontrollId);
-            return kontroll ? kontroll.kommentar : '';
+            return kontrollData.data ? kontrollData.data.kommentar : '';
         }
         if (skjemaId) {
             const skjema = skjemaer?.find((s) => s.id === skjemaId);
             return skjema ? skjema.kommentar : '';
         }
         return '';
-    }, [kontrollId, kontroller, skjemaId, skjemaer]);
+    }, [kontrollId, kontrollData.data, skjemaId, skjemaer]);
 
     async function handleCommentSave(kommentar: string) {
         if (kontrollId) {
-            const kontroll = kontroller?.find((k) => k.id === kontrollId);
-            if (kontroll) {
-                if (await updateKontroll({ ...kontroll, kommentar })) {
+            if (kontrollData.data) {
+                if (
+                    await updateMutation.mutateAsync({
+                        ...kontrollData.data,
+                        kommentar
+                    })
+                ) {
                     close();
                     return true;
                 }

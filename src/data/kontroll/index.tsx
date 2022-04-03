@@ -450,7 +450,6 @@ export const KontrollContextProvider = ({
                 showAllKontroller,
                 setShowAllKontroller,
 
-                updateKontroll,
                 moveKontroll,
                 toggleStatusKontroll,
                 saveNewKontroll,

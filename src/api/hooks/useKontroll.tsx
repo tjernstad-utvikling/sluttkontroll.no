@@ -46,7 +46,7 @@ export function useKontroller({
                         : {})
                 }
             });
-            return data;
+            return data.kontroller;
         }
     );
 }

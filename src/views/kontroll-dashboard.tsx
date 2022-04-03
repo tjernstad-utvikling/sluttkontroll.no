@@ -18,16 +18,15 @@ import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentStatus } from '../components/instrument';
-import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
-import { useAuth } from '../hooks/useAuth';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
-import { useKontroll } from '../data/kontroll';
+import { useKontroll as useKontrollCtx } from '../data/kontroll';
+import { useKontroller } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
@@ -36,17 +35,14 @@ const KontrollerView = () => {
     const { classes } = usePageStyles();
 
     const history = useHistory();
-    const { user } = useAuth();
-
-    const [_kontroller, setKontroller] = useState<Kontroll[]>([]);
-
     const {
-        state: { kontroller },
         loadKontroller,
         toggleStatusKontroll,
         showAllKontroller,
         setShowAllKontroller
-    } = useKontroll();
+    } = useKontrollCtx();
+
+    const kontrollData = useKontroller({ includeDone: showAllKontroller });
     const {
         state: { klienter }
     } = useClient();
@@ -92,18 +88,13 @@ const KontrollerView = () => {
     }, []);
 
     const onSelectForClipboard = (ids: number[]) => {
-        selectedKontroll(
-            _kontroller.filter((kontroll) => {
-                return ids.includes(kontroll.id);
-            })
-        );
+        if (kontrollData.data)
+            selectedKontroll(
+                kontrollData.data.filter((kontroll) => {
+                    return ids.includes(kontroll.id);
+                })
+            );
     };
-
-    useEffect(() => {
-        if (kontroller !== undefined) {
-            setKontroller(kontroller.filter((k) => k.user.id === user?.id));
-        }
-    }, [kontroller, user?.id]);
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -155,38 +146,29 @@ const KontrollerView = () => {
                             }>
                             <CardContent>
                                 <InstrumentStatus />
-                                {kontroller !== undefined ? (
-                                    <TableContainer
-                                        columns={kontrollColumns({
-                                            users: users ?? [],
-                                            klienter: klienter ?? [],
-                                            avvik: avvik ?? [],
-                                            measurements: measurements ?? [],
-                                            edit: editKontroll,
-                                            toggleStatus: toggleStatusKontroll,
-                                            clipboardHasSkjema,
-                                            skjemaToPast,
-                                            editComment: setCommentId,
-                                            addAttachment:
-                                                setKontrollAddAttachmentId
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="kontroller">
-                                        <KontrollTable
-                                            kontroller={_kontroller.filter(
-                                                (k) => {
-                                                    if (showAllKontroller) {
-                                                        return true;
-                                                    }
-                                                    return k.done !== true;
-                                                }
-                                            )}
-                                            onSelected={onSelectForClipboard}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster kontroller</div>
-                                )}
+
+                                <TableContainer
+                                    columns={kontrollColumns({
+                                        users: users ?? [],
+                                        klienter: klienter ?? [],
+                                        avvik: avvik ?? [],
+                                        measurements: measurements ?? [],
+                                        edit: editKontroll,
+                                        toggleStatus: toggleStatusKontroll,
+                                        clipboardHasSkjema,
+                                        skjemaToPast,
+                                        editComment: setCommentId,
+                                        addAttachment:
+                                            setKontrollAddAttachmentId
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="kontroller">
+                                    <KontrollTable
+                                        kontroller={kontrollData.data ?? []}
+                                        loading={kontrollData.isLoading}
+                                        onSelected={onSelectForClipboard}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

@@ -321,11 +321,13 @@ interface KontrollTableProps {
 
     onSelected: (ids: number[]) => void;
     leftAction?: React.ReactNode;
+    loading?: boolean;
 }
 export const KontrollTable = ({
     kontroller,
     onSelected,
-    leftAction
+    leftAction,
+    loading
 }: KontrollTableProps) => {
     const {
         state: { kontrollClipboard }
@@ -343,6 +345,7 @@ export const KontrollTable = ({
         <BaseTable
             onSelected={onSelected}
             getRowStyling={getRowStyling}
+            loading={loading}
             data={kontroller}>
             {leftAction}
         </BaseTable>

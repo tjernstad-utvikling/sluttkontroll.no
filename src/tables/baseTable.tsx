@@ -6,6 +6,7 @@ import {
 } from '@mui/x-data-grid-pro';
 
 import { ColumnSelect } from './tableUtils';
+import LinearProgress from '@mui/material/LinearProgress';
 import makeStyles from '@mui/styles/makeStyles';
 import { useState } from 'react';
 import { useTable } from './tableContainer';
@@ -27,13 +28,15 @@ interface BaseTableProps<T> {
     onSelected?: (ids: number[]) => void;
     getRowStyling?: (row: GridRowModel) => RowStylingEnum | undefined;
     children?: React.ReactNode;
+    loading?: boolean;
 }
 export const BaseTable = <T extends Data>({
     data,
     selectionModel,
     onSelected,
     getRowStyling,
-    children
+    children,
+    loading
 }: BaseTableProps<T>) => {
     const { columns } = useTable();
 
@@ -189,6 +192,9 @@ export const BaseTable = <T extends Data>({
                             }`
                     }
                 }}
+                components={{
+                    LoadingOverlay: LinearProgress
+                }}
                 rows={data}
                 columns={columns}
                 selectionModel={selectionModel}
@@ -200,6 +206,7 @@ export const BaseTable = <T extends Data>({
                 disableColumnSelector
                 autoHeight
                 sortModel={sortModel}
+                loading={loading}
                 onSortModelChange={(model) => setSortModel(model)}
                 onSelectionModelChange={handleSelect}
                 getRowClassName={(params) => {

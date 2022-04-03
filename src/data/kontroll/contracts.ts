@@ -101,11 +101,6 @@ export interface ContextInterface {
         user: User
     ) => Promise<boolean>;
 
-    moveKontroll: (
-        kontroll: Kontroll,
-        klientId: number,
-        locationId: number
-    ) => Promise<boolean>;
     toggleStatusKontroll: (kontrollId: number) => Promise<boolean>;
     saveNewSkjema: (
         area: string,

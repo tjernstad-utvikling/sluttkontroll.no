@@ -146,30 +146,6 @@ export const KontrollContextProvider = ({
         }
     };
 
-    const updateKontroll = async (kontroll: Kontroll): Promise<boolean> => {
-        try {
-            const { status } = await updateKontrollApi(kontroll);
-
-            if (status === 204) {
-                dispatch({
-                    type: ActionType.updateKontroll,
-                    payload: kontroll
-                });
-
-                enqueueSnackbar('Kontroll oppdatert', {
-                    variant: 'success'
-                });
-                return true;
-            }
-            return false;
-        } catch (error: any) {
-            enqueueSnackbar('Problemer med oppdatering av kontrollen', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
-
     const moveKontroll = async (
         kontroll: Kontroll,
         klientId: number,
@@ -450,7 +426,6 @@ export const KontrollContextProvider = ({
                 showAllKontroller,
                 setShowAllKontroller,
 
-                moveKontroll,
                 toggleStatusKontroll,
                 saveNewKontroll,
 

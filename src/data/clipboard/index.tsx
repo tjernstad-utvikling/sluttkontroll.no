@@ -13,6 +13,7 @@ import { makeStyles } from '../../theme/makeStyles';
 import { useAvvik } from '../avvik';
 import { useKontroll } from '../kontroll';
 import { useMeasurement } from '../measurement';
+import { useMoveKontroll } from '../../api/hooks/useKontroll';
 import { useSnackbar } from 'notistack';
 
 export const useClipBoard = () => {
@@ -33,13 +34,14 @@ export const ClipBoardContextProvider = ({
     const [showScissor, setShowScissor] = useState<boolean>(false);
     const [cutoutLength, setCutoutLength] = useState<number>(0);
 
+    const moveMutation = useMoveKontroll();
+
     const { classes } = useStyles();
     const { enqueueSnackbar } = useSnackbar();
 
     const {
         state: { skjemaer, checklists },
-        moveSkjema,
-        moveKontroll
+        moveSkjema
     } = useKontroll();
     const { moveMeasurement } = useMeasurement();
     const { moveAvvik } = useAvvik();
@@ -200,14 +202,15 @@ export const ClipBoardContextProvider = ({
                 payload: []
             });
         }
+
         if (kontrollPaste !== undefined) {
             for (const kontroll of kontrollPaste.kontroll) {
                 if (
-                    await moveKontroll(
+                    await moveMutation.mutateAsync({
                         kontroll,
-                        kontrollPaste.klientId,
-                        kontrollPaste.locationId
-                    )
+                        klientId: kontrollPaste.klientId,
+                        locationId: kontrollPaste.locationId
+                    })
                 ) {
                     dispatch({
                         type: ActionType.removeKontrollClipboard,

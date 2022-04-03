@@ -123,3 +123,57 @@ export function useUpdateKontroll() {
         }
     );
 }
+
+export function useMoveKontroll() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        Kontroll,
+        unknown,
+        {
+            kontroll: Kontroll;
+            locationId: number;
+            klientId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `kontroll/move/${body.kontroll.id}/to/${body.locationId}`
+            );
+
+            return data.kontroll;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (data, vars) => {
+                const kontroller =
+                    queryClient.getQueryData<Kontroll[]>('kontroll');
+                // ✅ update detail view directly
+
+                if (kontroller && kontroller?.length > 0) {
+                    queryClient.setQueryData(
+                        'kontroll',
+                        unionBy(
+                            [
+                                {
+                                    ...vars.kontroll,
+                                    location: {
+                                        id: vars.locationId,
+                                        klient: { id: vars.klientId }
+                                    }
+                                }
+                            ],
+                            kontroller,
+                            'id'
+                        ).sort((a, b) => a.id - b.id)
+                    );
+                }
+                queryClient.invalidateQueries('kontroll');
+
+                enqueueSnackbar('Kontroll flyttet', {
+                    variant: 'success'
+                });
+            }
+        }
+    );
+}

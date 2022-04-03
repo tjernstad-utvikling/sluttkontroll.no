@@ -205,13 +205,15 @@ export const ClipBoardContextProvider = ({
 
         if (kontrollPaste !== undefined) {
             for (const kontroll of kontrollPaste.kontroll) {
-                if (
+                try {
                     await moveMutation.mutateAsync({
                         kontroll,
                         klientId: kontrollPaste.klientId,
                         locationId: kontrollPaste.locationId
-                    })
-                ) {
+                    });
+                } catch (error) {
+                    console.error(error);
+                } finally {
                     dispatch({
                         type: ActionType.removeKontrollClipboard,
                         payload: kontroll

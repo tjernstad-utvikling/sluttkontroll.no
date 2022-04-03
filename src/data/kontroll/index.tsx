@@ -1,5 +1,5 @@
 import { ActionType, ContextInterface } from './contracts';
-import { Kontroll, Location, Skjema } from '../../contracts/kontrollApi';
+import { Location, Skjema } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     deleteSkjemaById,
@@ -8,13 +8,11 @@ import {
     getKontroller,
     getKontrollerByKlient,
     getKontrollerByObjekt,
-    moveKontrollApi,
     moveSkjemaApi,
     newKontroll,
     newSkjema,
     toggleAktuellStatusChecklist,
     toggleKontrollStatus,
-    updateKontroll as updateKontrollApi,
     updateSkjemaApi
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
@@ -144,37 +142,6 @@ export const KontrollContextProvider = ({
             errorHandler(error);
             return false;
         }
-    };
-
-    const moveKontroll = async (
-        kontroll: Kontroll,
-        klientId: number,
-        locationId: number
-    ): Promise<boolean> => {
-        try {
-            const { status } = await moveKontrollApi(kontroll, locationId);
-
-            if (status === 204) {
-                dispatch({
-                    type: ActionType.updateKontroll,
-                    payload: {
-                        ...kontroll,
-                        location: { id: locationId, klient: { id: klientId } }
-                    }
-                });
-
-                enqueueSnackbar('Kontroll er flyttet', {
-                    variant: 'success'
-                });
-                return true;
-            }
-            return false;
-        } catch (error: any) {
-            enqueueSnackbar('Problemer med flytting av kontrollen', {
-                variant: 'error'
-            });
-        }
-        return false;
     };
 
     const toggleStatusKontroll = async (

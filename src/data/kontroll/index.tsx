@@ -14,8 +14,6 @@ import { initialState, kontrollReducer } from './reducer';
 import { Checkpoint } from '../../contracts/checkpointApi';
 import { Skjema } from '../../contracts/kontrollApi';
 import { errorHandler } from '../../tools/errorHandler';
-import { useAvvik } from '../avvik';
-import { useMeasurement } from '../measurement';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 

@@ -33,6 +33,7 @@ import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useKontroll } from '../data/kontroll';
+import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 enum Modals {
@@ -65,9 +66,10 @@ const AvvikView = () => {
     const [editId, setEditId] = useState<number>();
 
     const {
-        state: { skjemaer, kontroller },
-        loadKontroller
+        state: { skjemaer }
     } = useKontroll();
+
+    const kontrollData = useKontrollById(Number(kontrollId));
 
     const { confirm } = useConfirm();
     const {
@@ -76,10 +78,6 @@ const AvvikView = () => {
         openAvvik,
         closeAvvik
     } = useAvvik();
-
-    useEffectOnce(() => {
-        loadKontroller();
-    });
 
     useEffect(() => {
         if (avvik !== undefined) {
@@ -253,7 +251,9 @@ const AvvikView = () => {
                                 {skjemaer !== undefined ? (
                                     <TableContainer
                                         columns={columns({
-                                            kontroller: kontroller ?? [],
+                                            kontroller: kontrollData.data
+                                                ? [kontrollData.data]
+                                                : [],
                                             skjemaer: skjemaer ?? [],
                                             url,
                                             deleteSkjema: askToDeleteAvvik,

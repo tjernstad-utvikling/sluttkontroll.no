@@ -25,14 +25,14 @@ import { format } from 'date-fns';
 import { makeStyles } from '../theme/makeStyles';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
+import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const AvvikView = () => {
     const { classes } = usePageStyles();
     const { classes: classes2 } = useStyles();
-    const { avvikId } = useParams<AvvikPageViewParams>();
+    const { avvikId, kontrollId } = useParams<AvvikPageViewParams>();
 
     const history = useHistory();
 
@@ -48,9 +48,10 @@ const AvvikView = () => {
     const [editId, setEditId] = useState<number>();
 
     const {
-        state: { skjemaer, kontroller },
-        loadKontroller
+        state: { skjemaer }
     } = useKontroll();
+
+    const kontrollData = useKontrollById(Number(kontrollId));
 
     const { confirm } = useConfirm();
     const {
@@ -60,10 +61,6 @@ const AvvikView = () => {
         closeAvvik,
         addAvvikImages
     } = useAvvik();
-
-    useEffectOnce(() => {
-        loadKontroller();
-    });
 
     useEffect(() => {
         if (avvik !== undefined) {
@@ -133,7 +130,6 @@ const AvvikView = () => {
                             }>
                             <CardContent>
                                 {_avvik !== undefined &&
-                                kontroller !== undefined &&
                                 skjemaer !== undefined ? (
                                     <Grid container>
                                         <Grid
@@ -163,7 +159,13 @@ const AvvikView = () => {
                                                 <dd>
                                                     {AvvikValueGetter(
                                                         _avvik
-                                                    ).kontroll(kontroller)}
+                                                    ).kontroll(
+                                                        kontrollData.data
+                                                            ? [
+                                                                  kontrollData.data
+                                                              ]
+                                                            : []
+                                                    )}
                                                 </dd>
 
                                                 <dt>Areal</dt>

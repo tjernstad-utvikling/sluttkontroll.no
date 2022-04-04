@@ -177,3 +177,51 @@ export function useMoveKontroll() {
         }
     );
 }
+export function useToggleKontrollStatus() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        Kontroll,
+        unknown,
+        {
+            kontroll: Kontroll;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `/kontroll/status/${body.kontroll.id}`
+            );
+
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (data, vars) => {
+                const kontroller =
+                    queryClient.getQueryData<Kontroll[]>('kontroll');
+                // ✅ update detail view directly
+
+                if (kontroller && kontroller?.length > 0) {
+                    queryClient.setQueryData(
+                        'kontroll',
+                        unionBy(
+                            [
+                                {
+                                    ...vars.kontroll,
+                                    done: !vars.kontroll.done
+                                }
+                            ],
+                            kontroller,
+                            'id'
+                        ).sort((a, b) => a.id - b.id)
+                    );
+                }
+                queryClient.invalidateQueries('kontroll');
+
+                enqueueSnackbar('Kontroll er oppdatert', {
+                    variant: 'success'
+                });
+            }
+        }
+    );
+}

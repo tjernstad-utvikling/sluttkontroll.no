@@ -393,7 +393,6 @@ export const KontrollContextProvider = ({
                 showAllKontroller,
                 setShowAllKontroller,
 
-                toggleStatusKontroll,
                 saveNewKontroll,
 
                 saveNewSkjema,

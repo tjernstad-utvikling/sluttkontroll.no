@@ -10,6 +10,10 @@ import {
     kontrollColumns
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
+import {
+    useKontroller,
+    useToggleKontrollStatus
+} from '../api/hooks/useKontroll';
 
 import AddIcon from '@mui/icons-material/Add';
 import { AttachmentModal } from '../modal/attachment';
@@ -26,7 +30,6 @@ import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
-import { useKontroller } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
@@ -35,10 +38,11 @@ const KontrollerView = () => {
     const { classes } = usePageStyles();
 
     const history = useHistory();
-    const { toggleStatusKontroll, showAllKontroller, setShowAllKontroller } =
-        useKontrollCtx();
+    const { showAllKontroller, setShowAllKontroller } = useKontrollCtx();
 
     const kontrollData = useKontroller({ includeDone: showAllKontroller });
+
+    const statusMutation = useToggleKontrollStatus();
 
     const {
         state: { klienter }
@@ -100,6 +104,10 @@ const KontrollerView = () => {
     const closeEdit = () => {
         setEditId(undefined);
     };
+    function toggleStatusKontroll(kontrollId: number) {
+        const kontroll = kontrollData.data?.find((k) => k.id === kontrollId);
+        if (kontroll) statusMutation.mutateAsync({ kontroll });
+    }
 
     return (
         <>

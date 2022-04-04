@@ -1,6 +1,5 @@
 import { AttachmentTable, columns, defaultColumns } from '../tables/attachment';
 import { Card, CardContent, CardMenu } from '../components/card';
-import { useKontrollById, useUpdateKontroll } from '../api/hooks/useKontroll';
 
 import { Attachment } from '../contracts/attachmentApi';
 import { AttachmentModal } from '../modal/attachment';
@@ -11,6 +10,7 @@ import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { deleteAttachmentFile } from '../api/attachmentApi';
 import { useConfirm } from '../hooks/useConfirm';
+import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -31,8 +31,6 @@ const AttachmentsView = () => {
     const { enqueueSnackbar } = useSnackbar();
 
     const kontrollData = useKontrollById(Number(kontrollId));
-
-    const updateMutation = useUpdateKontroll();
 
     const askToDeleteAttachment = async (attachmentId: number) => {
         if (kontrollData.data) {

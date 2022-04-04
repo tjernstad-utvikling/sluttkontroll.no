@@ -32,6 +32,7 @@ import { useAvvik } from '../../data/avvik';
 import { useClient } from '../../data/klient';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useKontroll } from '../../data/kontroll';
+import { useKontrollById } from '../../api/hooks/useKontroll';
 import { useMeasurement } from '../../data/measurement';
 import { useReport } from '../documentContainer';
 import { useSnackbar } from 'notistack';
@@ -91,7 +92,7 @@ export const KontrollDocAdjusting = ({
     const [open, setOpen] = useState<boolean>(false);
     const [_skjemaer, set_Skjemaer] = useState<Skjema[]>();
     const { updateFilteredSkjemaer, skjemaer, filteredSkjemaer } = useReport();
-    const { state } = useKontroll();
+    const kontrollData = useKontrollById(kontrollId);
     const {
         state: { avvik }
     } = useAvvik();
@@ -133,7 +134,7 @@ export const KontrollDocAdjusting = ({
                     {_skjemaer !== undefined ? (
                         <TableContainer
                             columns={columns(
-                                state.kontroller ?? [],
+                                kontrollData.data,
                                 avvik ?? [],
                                 measurements ?? [],
                                 '',

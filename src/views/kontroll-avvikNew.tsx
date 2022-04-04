@@ -12,7 +12,6 @@ import { NewImageCard } from '../components/avvik';
 import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
 import { useAvvik } from '../data/avvik';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -25,15 +24,10 @@ const AvvikNewView = () => {
     const history = useHistory();
 
     const {
-        state: { checklists },
-        loadKontroller
+        state: { checklists }
     } = useKontroll();
 
     const { newAvvik, addAvvikImages } = useAvvik();
-
-    useEffectOnce(() => {
-        loadKontroller();
-    });
 
     useEffect(() => {
         if (checklists !== undefined) {

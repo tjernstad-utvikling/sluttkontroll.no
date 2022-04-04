@@ -1,6 +1,12 @@
-import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
+import {
+    Checklist,
+    Kontroll,
+    Location,
+    Skjema
+} from '../../contracts/kontrollApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+import { User } from '../../contracts/userApi';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 import { useSnackbar } from 'notistack';
@@ -117,6 +123,53 @@ export function useUpdateKontroll() {
                 queryClient.invalidateQueries('kontroll');
 
                 enqueueSnackbar('Kontroll oppdatert', {
+                    variant: 'success'
+                });
+            }
+        }
+    );
+}
+
+export function useNewKontroll() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        Kontroll,
+        unknown,
+        {
+            name: string;
+            avvikUtbedrere: User[];
+            location: Location;
+            user: User;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.post<{
+                kontroll: Kontroll;
+            }>(`/kontroll/${body.location.id}/${body.user.id}`, {
+                name: body.name,
+                avvikUtbedrere: body.avvikUtbedrere
+            });
+            return data.kontroll;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (newKontroll) => {
+                const kontroller =
+                    queryClient.getQueryData<Kontroll[]>('kontroll');
+                // ✅ update detail view directly
+
+                if (kontroller && kontroller?.length > 0) {
+                    queryClient.setQueryData(
+                        'kontroll',
+                        unionBy([newKontroll], kontroller, 'id').sort(
+                            (a, b) => a.id - b.id
+                        )
+                    );
+                }
+                queryClient.invalidateQueries('kontroll');
+
+                enqueueSnackbar('Ny kontroll lagret', {
                     variant: 'success'
                 });
             }

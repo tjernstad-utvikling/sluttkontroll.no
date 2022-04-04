@@ -34,17 +34,12 @@ const SjekklisterView = () => {
     const [_checklists, setChecklists] = useState<Array<Checklist>>([]);
     const {
         state: { checklists },
-        loadKontroller,
         toggleAktuellChecklist
     } = useKontroll();
 
     const {
         state: { avvik }
     } = useAvvik();
-
-    useEffectOnce(() => {
-        loadKontroller();
-    });
 
     useEffect(() => {
         if (checklists !== undefined) {

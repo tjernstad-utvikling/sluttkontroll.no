@@ -20,8 +20,8 @@ import { MeasurementsViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
+import { useKontrollById } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
@@ -34,8 +34,7 @@ const MeasurementsView = () => {
     const [measurementModalOpen, setMeasurementModalOpen] =
         useState<boolean>(false);
     const {
-        state: { skjemaer, kontroller },
-        loadKontroller
+        state: { skjemaer }
     } = useKontroll();
 
     const { confirm } = useConfirm();
@@ -47,9 +46,7 @@ const MeasurementsView = () => {
         removeMeasurement
     } = useMeasurement();
 
-    useEffectOnce(() => {
-        loadKontroller();
-    });
+    const kontrollData = useKontrollById(Number(kontrollId));
 
     useEffect(() => {
         let active = true;
@@ -160,7 +157,7 @@ const MeasurementsView = () => {
                                 {skjemaer !== undefined ? (
                                     <TableContainer
                                         columns={columns({
-                                            kontroller: kontroller ?? [],
+                                            kontroll: kontrollData.data,
                                             skjemaer: skjemaer ?? [],
                                             deleteMeasurement,
                                             edit: (id) => {

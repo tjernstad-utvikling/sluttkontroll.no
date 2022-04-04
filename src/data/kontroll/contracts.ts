@@ -1,12 +1,6 @@
-import {
-    Checklist,
-    Kontroll,
-    Location,
-    Skjema
-} from '../../contracts/kontrollApi';
+import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
 
 import { Checkpoint } from '../../contracts/checkpointApi';
-import { User } from '../../contracts/userApi';
 
 export interface kontrollState {
     kontroller: Array<Kontroll> | undefined;
@@ -83,23 +77,9 @@ export type KontrollActions =
 
 export interface ContextInterface {
     state: kontrollState;
-    loadKontroller: (queryAll?: boolean) => Promise<void>;
-    loadKontrollerByKlient: (
-        klientId: number,
-        queryAll?: boolean
-    ) => Promise<void>;
-    loadKontrollerByObjekt: (
-        objektId: number,
-        queryAll?: boolean
-    ) => Promise<boolean>;
+
     showAllKontroller: boolean;
     setShowAllKontroller: (state: boolean) => void;
-    saveNewKontroll: (
-        name: string,
-        avvikUtbedrere: Array<User>,
-        location: Location,
-        user: User
-    ) => Promise<boolean>;
 
     saveNewSkjema: (
         area: string,

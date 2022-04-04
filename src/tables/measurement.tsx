@@ -16,9 +16,6 @@ import { useClipBoard } from '../data/clipboard';
 export const MeasurementValueGetter = (
     data: Measurement | GridRowModel | null
 ) => {
-    const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
-        return kontroller.find((k) => k.id === data?.skjema.kontroll.id);
-    };
     const skjema = (skjemaer: Skjema[]): string => {
         const skjema = skjemaer.find((s) => s.id === data?.skjema.id);
         if (skjema !== undefined) {
@@ -40,17 +37,17 @@ export const MeasurementValueGetter = (
         return '';
     };
 
-    return { kontroll, skjema, mType };
+    return { skjema, mType };
 };
 interface ColumnsProps {
-    kontroller: Kontroll[];
+    kontroll: Kontroll | undefined;
     skjemaer: Skjema[];
     deleteMeasurement: (MeasurementId: number) => void;
     edit: (MeasurementId: number) => void;
     measurementTypes: MeasurementType[] | undefined;
 }
 export const columns = ({
-    kontroller,
+    kontroll,
     skjemaer,
     deleteMeasurement,
     edit,
@@ -111,19 +108,10 @@ export const columns = ({
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                MeasurementValueGetter(params.row).kontroll(kontroller)?.name ||
-                '',
+                kontroll?.name || '',
             sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    MeasurementValueGetter(
-                        param1.api.getRow(param1.id)
-                    ).kontroll(kontroller)?.name || ''
-                ).localeCompare(
-                    String(
-                        MeasurementValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).kontroll(kontroller)?.name || ''
-                    )
+                String(kontroll?.name || '').localeCompare(
+                    String(kontroll?.name || '')
                 )
         },
         {
@@ -152,9 +140,6 @@ export const columns = ({
             filterable: false,
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => {
-                const kontroll = MeasurementValueGetter(params.row).kontroll(
-                    kontroller
-                );
                 return (
                     <RowAction
                         actionItems={[

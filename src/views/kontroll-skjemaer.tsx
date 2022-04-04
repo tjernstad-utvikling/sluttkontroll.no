@@ -20,9 +20,9 @@ import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useKontroll } from '../data/kontroll';
+import { useKontrollById } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -43,10 +43,11 @@ const SkjemaerView = () => {
     const [_skjemaer, setSkjemaer] = useState<Skjema[]>([]);
 
     const {
-        state: { skjemaer, kontroller },
-        loadKontroller,
+        state: { skjemaer },
         removeSkjema
     } = useKontroll();
+
+    const kontrollData = useKontrollById(Number(kontrollId));
 
     const {
         state: { avvik }
@@ -55,10 +56,6 @@ const SkjemaerView = () => {
     const {
         state: { measurements }
     } = useMeasurement();
-
-    useEffectOnce(() => {
-        loadKontroller();
-    });
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -142,7 +139,7 @@ const SkjemaerView = () => {
                                 {skjemaer !== undefined ? (
                                     <TableContainer
                                         columns={columns(
-                                            kontroller ?? [],
+                                            kontrollData.data,
                                             avvik ?? [],
                                             measurements ?? [],
                                             url,

@@ -36,13 +36,8 @@ const SjekklisteEditView = () => {
 
     const {
         state: { checklists },
-        loadKontroller,
         saveEditChecklist
     } = useKontroll();
-
-    useEffectOnce(() => {
-        loadKontroller();
-    });
 
     const onSubmitChecklist = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

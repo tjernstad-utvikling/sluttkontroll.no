@@ -147,8 +147,7 @@ export const DocumentContainer = ({
     const [downloadReport, setDownloadReport] = useState<boolean>(false);
 
     const {
-        state: { skjemaer, checklists },
-        loadKontrollerByObjekt
+        state: { skjemaer, checklists }
     } = useKontroll();
 
     const [_skjemaer, setSkjemaer] = useState<ExtendedSkjema[]>();
@@ -179,8 +178,6 @@ export const DocumentContainer = ({
 
             const { infoText } = await getInfoText();
             setInfoText(infoText);
-
-            await loadKontrollerByObjekt(objectId);
 
             setStatementText(
                 await loadReportStatement(kontrollId, enqueueSnackbar)

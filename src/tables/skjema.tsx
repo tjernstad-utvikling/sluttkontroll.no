@@ -19,10 +19,6 @@ import { RowAction } from './tableUtils';
 import { useClipBoard } from '../data/clipboard';
 
 export const SkjemaValueGetter = (data: Skjema | GridRowModel | null) => {
-    const kontroll = (kontroller: Kontroll[]): Kontroll | undefined => {
-        return kontroller.find((k) => k.id === data?.kontroll.id);
-    };
-
     const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
         if (avvik !== undefined) {
             const avvikene = avvik.filter(
@@ -49,10 +45,10 @@ export const SkjemaValueGetter = (data: Skjema | GridRowModel | null) => {
         return 0;
     };
 
-    return { kontroll, avvik, measurement };
+    return { avvik, measurement };
 };
 export const columns = (
-    kontroller: Kontroll[],
+    kontroll: Kontroll | undefined,
     avvik: Avvik[],
     measurements: Measurement[],
     url: string,
@@ -94,18 +90,10 @@ export const columns = (
             headerName: 'Kontroll',
             flex: 1,
             valueGetter: (params: GridValueGetterParams) =>
-                SkjemaValueGetter(params.row).kontroll(kontroller)?.name || '',
+                kontroll?.name || '',
             sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    SkjemaValueGetter(param1.api.getRow(param1.id)).kontroll(
-                        kontroller
-                    )?.name || ''
-                ).localeCompare(
-                    String(
-                        SkjemaValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).kontroll(kontroller)?.name || ''
-                    )
+                String(kontroll?.name || '').localeCompare(
+                    String(kontroll?.name || '')
                 )
         },
         {
@@ -168,9 +156,6 @@ export const columns = (
             disableColumnMenu: true,
             renderCell: (params: GridCellParams) => {
                 if (!skipAction) {
-                    const kontroll = SkjemaValueGetter(params.row).kontroll(
-                        kontroller
-                    );
                     return (
                         <>
                             {clipboardHasMeasurement && (

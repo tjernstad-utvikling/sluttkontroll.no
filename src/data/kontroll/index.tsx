@@ -1,24 +1,18 @@
 import { ActionType, ContextInterface } from './contracts';
-import { Location, Skjema } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     deleteSkjemaById,
     editChecklist,
     getChecklistsBySkjema,
-    getKontroller,
-    getKontrollerByKlient,
-    getKontrollerByObjekt,
     moveSkjemaApi,
-    newKontroll,
     newSkjema,
     toggleAktuellStatusChecklist,
-    toggleKontrollStatus,
     updateSkjemaApi
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
 
 import { Checkpoint } from '../../contracts/checkpointApi';
-import { User } from '../../contracts/userApi';
+import { Skjema } from '../../contracts/kontrollApi';
 import { errorHandler } from '../../tools/errorHandler';
 import { useAvvik } from '../avvik';
 import { useMeasurement } from '../measurement';
@@ -38,162 +32,10 @@ export const KontrollContextProvider = ({
 }): JSX.Element => {
     const [state, dispatch] = useReducer(kontrollReducer, initialState);
 
-    const [hasLoadedMyKontroller, setHasLoadedMyKontroller] =
-        useState<boolean>(false);
-    const [hasLoadedAllMyKontroller, setHasLoadedAllMyKontroller] =
-        useState<boolean>(false);
-
     const [showAllKontroller, setShowAllKontroller] = useState<boolean>(false);
-
-    const { loadAvvikByKontroller } = useAvvik();
-    const { loadMeasurementByKontroller } = useMeasurement();
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const loadKontroller = async (queryAll?: boolean): Promise<void> => {
-        if (!hasLoadedMyKontroller || (queryAll && !hasLoadedAllMyKontroller)) {
-            try {
-                const { status, kontroller, skjemaer, checklists } =
-                    await getKontroller(queryAll);
-
-                loadAvvikByKontroller(kontroller);
-                loadMeasurementByKontroller(kontroller);
-
-                if (status === 200) {
-                    dispatch({
-                        type: ActionType.addKontroller,
-                        payload: kontroller
-                    });
-                    dispatch({
-                        type: ActionType.addSkjemaer,
-                        payload: skjemaer
-                    });
-                    dispatch({
-                        type: ActionType.addChecklists,
-                        payload: checklists
-                    });
-                    setHasLoadedMyKontroller(true);
-                    if (queryAll) {
-                        setHasLoadedAllMyKontroller(true);
-                    }
-                }
-            } catch (error: any) {
-                errorHandler(error);
-            }
-        }
-    };
-    const loadKontrollerByKlient = async (
-        klientId: number,
-        queryAll?: boolean
-    ): Promise<void> => {
-        try {
-            const { status, kontroller, skjemaer, checklists } =
-                await getKontrollerByKlient(klientId, queryAll);
-
-            loadAvvikByKontroller(kontroller);
-            loadMeasurementByKontroller(kontroller);
-
-            if (status === 200) {
-                dispatch({
-                    type: ActionType.addKontroller,
-                    payload: kontroller
-                });
-                dispatch({
-                    type: ActionType.addSkjemaer,
-                    payload: skjemaer
-                });
-                dispatch({
-                    type: ActionType.addChecklists,
-                    payload: checklists
-                });
-            }
-        } catch (error: any) {
-            errorHandler(error);
-        }
-    };
-    const loadKontrollerByObjekt = async (
-        objektId: number,
-        queryAll?: boolean
-    ): Promise<boolean> => {
-        try {
-            const { status, kontroller, skjemaer, checklists } =
-                await getKontrollerByObjekt(objektId, queryAll);
-
-            await loadAvvikByKontroller(kontroller);
-            loadMeasurementByKontroller(kontroller);
-
-            if (status === 200) {
-                dispatch({
-                    type: ActionType.addKontroller,
-                    payload: kontroller
-                });
-                dispatch({
-                    type: ActionType.addSkjemaer,
-                    payload: skjemaer
-                });
-                dispatch({
-                    type: ActionType.addChecklists,
-                    payload: checklists
-                });
-                return true;
-            }
-            return false;
-        } catch (error: any) {
-            errorHandler(error);
-            return false;
-        }
-    };
-
-    const toggleStatusKontroll = async (
-        kontrollId: number
-    ): Promise<boolean> => {
-        try {
-            const resStatus = await toggleKontrollStatus(kontrollId);
-
-            const kontroll = state.kontroller?.find((k) => k.id === kontrollId);
-            if (resStatus === 204 && kontroll !== undefined) {
-                dispatch({
-                    type: ActionType.updateKontroll,
-                    payload: { ...kontroll, done: !kontroll.done }
-                });
-
-                enqueueSnackbar('Kontroll satt som utført', {
-                    variant: 'success'
-                });
-            }
-            return true;
-        } catch (error: any) {
-            enqueueSnackbar('Problemer med oppdatering av kontrollen', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
-    const saveNewKontroll = async (
-        name: string,
-        avvikUtbedrere: Array<User>,
-        location: Location,
-        user: User
-    ): Promise<boolean> => {
-        try {
-            const res = await newKontroll(name, avvikUtbedrere, location, user);
-
-            dispatch({
-                type: ActionType.updateKontroll,
-                payload: res.kontroll
-            });
-
-            enqueueSnackbar('Kontroll lagret', {
-                variant: 'success'
-            });
-            return true;
-        } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av kontrollen', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
     const saveNewSkjema = async (
         area: string,
         omrade: string,
@@ -387,13 +229,8 @@ export const KontrollContextProvider = ({
             value={{
                 state,
 
-                loadKontroller,
-                loadKontrollerByKlient,
-                loadKontrollerByObjekt,
                 showAllKontroller,
                 setShowAllKontroller,
-
-                saveNewKontroll,
 
                 saveNewSkjema,
                 updateSkjema,

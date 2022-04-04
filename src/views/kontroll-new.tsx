@@ -18,15 +18,17 @@ import Stepper from '@mui/material/Stepper';
 import { User } from '../contracts/userApi';
 import { useClient } from '../data/klient';
 import { useHistory } from 'react-router-dom';
-import { useKontroll } from '../data/kontroll';
+import { useNewKontroll } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useSnackbar } from 'notistack';
 
 const KontrollNewView = () => {
     const { classes } = usePageStyles();
 
     const history = useHistory();
 
-    const { saveNewKontroll } = useKontroll();
+    const { enqueueSnackbar } = useSnackbar();
+
     const { saveNewKlient, saveNewLocation } = useClient();
     const [activeStep, setActiveStep] = useState(0);
     const [selectedKlient, setSelectedKlient] = useState<Klient>();
@@ -51,24 +53,32 @@ const KontrollNewView = () => {
         }
         return false;
     };
+
+    const newMutation = useNewKontroll();
+
     const saveKontroll = async (
         name: string,
         user: User,
         avvikUtbedrere: Array<User> | null
     ): Promise<boolean> => {
         if (selectedLocation !== undefined) {
-            if (
-                await saveNewKontroll(
+            try {
+                await newMutation.mutateAsync({
+                    avvikUtbedrere:
+                        avvikUtbedrere !== null ? avvikUtbedrere : [],
+                    location: selectedLocation,
                     name,
-                    avvikUtbedrere !== null ? avvikUtbedrere : [],
-                    selectedLocation,
                     user
-                )
-            ) {
+                });
+            } catch (error) {
+                enqueueSnackbar('Problemer med lagring av kontrollen', {
+                    variant: 'error'
+                });
+                return false;
+            } finally {
                 history.push('/kontroll');
                 return true;
             }
-            return false;
         }
         return false;
     };

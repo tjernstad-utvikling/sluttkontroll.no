@@ -104,6 +104,7 @@ const KontrollerView = () => {
     const closeEdit = () => {
         setEditId(undefined);
     };
+
     function toggleStatusKontroll(kontrollId: number) {
         const kontroll = kontrollData.data?.find((k) => k.id === kontrollId);
         if (kontroll) statusMutation.mutateAsync({ kontroll });

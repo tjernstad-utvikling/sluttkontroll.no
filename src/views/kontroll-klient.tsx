@@ -11,6 +11,10 @@ import {
 } from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import {
+    useKontroller,
+    useToggleKontrollStatus
+} from '../api/hooks/useKontroll';
 
 import AddIcon from '@mui/icons-material/Add';
 import { AttachmentModal } from '../modal/attachment';
@@ -31,7 +35,6 @@ import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
-import { useKontroller } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
@@ -48,13 +51,19 @@ const KontrollKlientView = () => {
 
     const [editKlient, setEditKlient] = useState<boolean>(false);
 
-    const { toggleStatusKontroll, showAllKontroller, setShowAllKontroller } =
-        useKontrollCtx();
+    const { showAllKontroller, setShowAllKontroller } = useKontrollCtx();
 
     const kontrollData = useKontroller({
         includeDone: showAllKontroller,
         clientId: Number(klientId)
     });
+
+    const statusMutation = useToggleKontrollStatus();
+
+    function toggleStatusKontroll(kontrollId: number) {
+        const kontroll = kontrollData.data?.find((k) => k.id === kontrollId);
+        if (kontroll) statusMutation.mutateAsync({ kontroll });
+    }
 
     const {
         state: { klienter },

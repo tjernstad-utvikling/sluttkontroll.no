@@ -25,6 +25,7 @@ import { useKontroll } from '../data/kontroll';
 import { useKontrollById } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
 
 const SkjemaerView = () => {
     const { classes } = usePageStyles();
@@ -40,14 +41,11 @@ const SkjemaerView = () => {
     useHotkeys('n', () => history.push(`${url}/skjema/new`)); // new skjema
     /***** */
 
-    const [_skjemaer, setSkjemaer] = useState<Skjema[]>([]);
-
-    const {
-        state: { skjemaer },
-        removeSkjema
-    } = useKontroll();
+    const { removeSkjema } = useKontroll();
 
     const kontrollData = useKontrollById(Number(kontrollId));
+
+    const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
 
     const {
         state: { avvik }
@@ -60,16 +58,8 @@ const SkjemaerView = () => {
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
 
-    useEffect(() => {
-        if (skjemaer !== undefined) {
-            setSkjemaer(
-                skjemaer.filter((s) => s.kontroll.id === Number(kontrollId))
-            );
-        }
-    }, [skjemaer, kontrollId]);
-
     const deleteSkjema = async (skjemaId: number) => {
-        const skjema = skjemaer?.find((s) => s.id === skjemaId);
+        const skjema = skjemaData.data?.find((s) => s.id === skjemaId);
         if (skjema !== undefined) {
             const isConfirmed = await confirm(
                 `Slette ${skjema.area} - ${skjema.omrade}?`
@@ -102,11 +92,12 @@ const SkjemaerView = () => {
     }, []);
 
     const onSelectForClipboard = (ids: number[]) => {
-        selectedSkjemaer(
-            _skjemaer.filter((skjema) => {
-                return ids.includes(skjema.id);
-            })
-        );
+        if (skjemaData.data)
+            selectedSkjemaer(
+                skjemaData.data.filter((skjema) => {
+                    return ids.includes(skjema.id);
+                })
+            );
     };
 
     return (
@@ -136,45 +127,40 @@ const SkjemaerView = () => {
                                 />
                             }>
                             <CardContent>
-                                {skjemaer !== undefined ? (
-                                    <TableContainer
-                                        columns={columns(
-                                            kontrollData.data,
-                                            avvik ?? [],
-                                            measurements ?? [],
-                                            url,
-                                            deleteSkjema,
-                                            setEditId,
-                                            clipboardHasMeasurement,
-                                            measurementToPast,
-                                            setCommentId
-                                        )}
-                                        defaultColumns={defaultColumns}
-                                        tableId="skjemaer">
-                                        <SkjemaTable
-                                            skjemaer={_skjemaer}
-                                            onSelected={onSelectForClipboard}
-                                            leftAction={
-                                                <PasteButton
-                                                    clipboardHas={
-                                                        clipboardHasSkjema
+                                <TableContainer
+                                    columns={columns(
+                                        kontrollData.data,
+                                        avvik ?? [],
+                                        measurements ?? [],
+                                        url,
+                                        deleteSkjema,
+                                        setEditId,
+                                        clipboardHasMeasurement,
+                                        measurementToPast,
+                                        setCommentId
+                                    )}
+                                    defaultColumns={defaultColumns}
+                                    tableId="skjemaer">
+                                    <SkjemaTable
+                                        skjemaer={skjemaData.data ?? []}
+                                        isLoading={skjemaData.isLoading}
+                                        onSelected={onSelectForClipboard}
+                                        leftAction={
+                                            <PasteButton
+                                                clipboardHas={
+                                                    clipboardHasSkjema
+                                                }
+                                                options={{
+                                                    skjemaPaste: {
+                                                        kontrollId:
+                                                            Number(kontrollId),
+                                                        skjema: skjemaToPast
                                                     }
-                                                    options={{
-                                                        skjemaPaste: {
-                                                            kontrollId:
-                                                                Number(
-                                                                    kontrollId
-                                                                ),
-                                                            skjema: skjemaToPast
-                                                        }
-                                                    }}
-                                                />
-                                            }
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster skjemaer</div>
-                                )}
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

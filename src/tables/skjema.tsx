@@ -208,7 +208,7 @@ export const defaultColumns: Array<string> = ['area', 'omrade', 'kontroll'];
 
 interface SkjemaTableProps {
     skjemaer: Skjema[];
-
+    isLoading: boolean;
     selectedSkjemaer?: Skjema[];
     onSelected: (ids: number[]) => void;
     leftAction?: React.ReactNode;
@@ -217,6 +217,7 @@ export const SkjemaTable = ({
     skjemaer,
     selectedSkjemaer,
     onSelected,
+    isLoading,
     leftAction
 }: SkjemaTableProps) => {
     const {
@@ -243,6 +244,7 @@ export const SkjemaTable = ({
 
     return (
         <BaseTable
+            loading={isLoading}
             selectionModel={selectionModel}
             onSelected={onSelection}
             getRowStyling={getRowStyling}

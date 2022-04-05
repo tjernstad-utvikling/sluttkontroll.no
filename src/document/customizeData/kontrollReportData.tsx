@@ -31,7 +31,6 @@ import { updateReportStatement } from '../../api/reportApi';
 import { useAvvik } from '../../data/avvik';
 import { useClient } from '../../data/klient';
 import { useDebounce } from '../../hooks/useDebounce';
-import { useKontroll } from '../../data/kontroll';
 import { useKontrollById } from '../../api/hooks/useKontroll';
 import { useMeasurement } from '../../data/measurement';
 import { useReport } from '../documentContainer';
@@ -149,6 +148,7 @@ export const KontrollDocAdjusting = ({
                             defaultColumns={defaultColumns}
                             tableId="skjemaer">
                             <SkjemaTable
+                                isLoading={false}
                                 skjemaer={_skjemaer}
                                 selectedSkjemaer={filteredSkjemaer}
                                 onSelected={(ids) => {

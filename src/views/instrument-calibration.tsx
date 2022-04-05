@@ -44,7 +44,7 @@ const InstrumentsView = () => {
     setObjectUrl(undefined);
     setOpenCertificateId(undefined);
     try {
-      const cal = _calibrations.find((c) => c.id === calibrationId);
+      const cal = _calibrations?.find((c) => c.id === calibrationId);
       if (!cal) return;
       const response = await getCalibrationCertificate(cal);
 

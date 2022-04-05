@@ -8,6 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useKontroll } from '../data/kontroll';
 import { useMemo } from 'react';
+import { useUpdateSkjema } from '../api/hooks/useSkjema';
 
 interface CommentModalProps {
     kontrollId?: number;
@@ -22,15 +23,11 @@ export const CommentModal = ({
     open,
     close
 }: CommentModalProps): JSX.Element => {
-    const {
-        state: { skjemaer },
-
-        updateSkjema
-    } = useKontroll();
-
     const kontrollData = useKontrollById(kontrollId);
 
     const updateMutation = useUpdateKontroll();
+
+    const updateSkjemaMutation = useUpdateSkjema();
 
     const kommentar = useMemo(() => {
         if (kontrollId) {
@@ -60,7 +57,12 @@ export const CommentModal = ({
         if (skjemaId) {
             const skjema = skjemaer?.find((s) => s.id === skjemaId);
             if (skjema) {
-                if (await updateSkjema({ ...skjema, kommentar })) {
+                if (
+                    await updateSkjemaMutation.mutateAsync({
+                        ...skjema,
+                        kommentar
+                    })
+                ) {
                     close();
                     return true;
                 }

@@ -66,3 +66,54 @@ export function useNewSkjema() {
         }
     );
 }
+
+export function useUpdateSkjema() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        Skjema,
+        unknown,
+        {
+            skjema: Skjema;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `skjema/${body.skjema.id}`,
+                {
+                    area: body.skjema.area,
+                    omrade: body.skjema.omrade,
+                    kommentar: body.skjema.kommentar
+                }
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updateSkjema, vars) => {
+                const skjemaer = queryClient.getQueryData<Skjema[]>([
+                    'skjema',
+                    vars.skjema.kontroll.id
+                ]);
+                // ✅ update detail view directly
+
+                if (skjemaer && skjemaer?.length > 0) {
+                    queryClient.setQueryData(
+                        ['skjema', vars.skjema.kontroll.id],
+                        unionBy([vars.skjema], skjemaer, 'id').sort(
+                            (a, b) => a.id - b.id
+                        )
+                    );
+                }
+                queryClient.invalidateQueries([
+                    'skjema',
+                    vars.skjema.kontroll.id
+                ]);
+
+                enqueueSnackbar('Skjema lagret', {
+                    variant: 'success'
+                });
+            }
+        }
+    );
+}

@@ -34,45 +34,6 @@ export const KontrollContextProvider = ({
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const saveNewSkjema = async (
-        area: string,
-        omrade: string,
-        checkpoints: Checkpoint[],
-        kontrollId: number
-    ): Promise<boolean> => {
-        try {
-            const res = await newSkjema(
-                area,
-                omrade,
-                checkpoints.map((c) => c.id),
-                kontrollId
-            );
-            if (res.status === 200) {
-                const clRes = await getChecklistsBySkjema(res.skjema);
-
-                dispatch({
-                    type: ActionType.addChecklists,
-                    payload: clRes.checklists
-                });
-            }
-
-            dispatch({
-                type: ActionType.newSkjema,
-                payload: res.skjema
-            });
-
-            enqueueSnackbar('Skjema lagret', {
-                variant: 'success'
-            });
-            return true;
-        } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av skjema', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
-
     const updateSkjema = async (skjema: Skjema): Promise<boolean> => {
         try {
             const res = await updateSkjemaApi(skjema);
@@ -230,7 +191,6 @@ export const KontrollContextProvider = ({
                 showAllKontroller,
                 setShowAllKontroller,
 
-                updateSkjema,
                 moveSkjema,
                 removeSkjema,
                 saveEditChecklist,

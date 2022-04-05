@@ -13,12 +13,13 @@ import { TableContainer } from '../tables/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { getCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
+import { useNewSkjema } from '../api/hooks/useSkjema';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useSnackbar } from 'notistack';
 
 const SkjemaNewView = () => {
     const { classes } = usePageStyles();
-    const { saveNewSkjema } = useKontroll();
+
     const { kontrollId } = useParams<SkjemaerViewParams>();
     const history = useHistory();
 
@@ -28,6 +29,10 @@ const SkjemaNewView = () => {
 
     const [selectFromTemplate, setSelectFromTemplate] =
         useState<boolean>(false);
+
+    const newSkjemaMutation = useNewSkjema();
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const loadCheckpoints = async () => {
         try {
@@ -61,11 +66,22 @@ const SkjemaNewView = () => {
         omrade: string,
         area: string
     ): Promise<boolean> => {
-        if (await saveNewSkjema(area, omrade, selected, Number(kontrollId))) {
+        try {
+            await newSkjemaMutation.mutateAsync({
+                area,
+                omrade,
+                kontrollId: Number(kontrollId),
+                checkpointIds: selected.map((c) => c.id)
+            });
+        } catch (error) {
+            enqueueSnackbar('Problemer med lagring av skjema', {
+                variant: 'error'
+            });
+            return false;
+        } finally {
             history.goBack();
             return true;
         }
-        return false;
     };
 
     return (

@@ -230,7 +230,6 @@ export const KontrollContextProvider = ({
                 showAllKontroller,
                 setShowAllKontroller,
 
-                saveNewSkjema,
                 updateSkjema,
                 moveSkjema,
                 removeSkjema,

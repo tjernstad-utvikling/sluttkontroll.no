@@ -81,12 +81,6 @@ export interface ContextInterface {
     showAllKontroller: boolean;
     setShowAllKontroller: (state: boolean) => void;
 
-    saveNewSkjema: (
-        area: string,
-        omrade: string,
-        checkpoints: Checkpoint[],
-        kontrollId: number
-    ) => Promise<boolean>;
     updateSkjema: (skjema: Skjema) => Promise<boolean>;
     moveSkjema: (skjema: Skjema, kontrollId: number) => Promise<boolean>;
     removeSkjema: (skjemaId: number) => Promise<boolean>;

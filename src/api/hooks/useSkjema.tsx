@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 
 export function useSkjemaerByKontrollId(kontrollId: number | undefined) {
     return useQuery(
-        ['skjema', kontrollId],
+        ['skjema', 'kontroll', kontrollId],
         async () => {
             const { data } = await sluttkontrollApi.get<{ skjemaer: Skjema[] }>(
                 `/skjema/${kontrollId}`
@@ -17,6 +17,27 @@ export function useSkjemaerByKontrollId(kontrollId: number | undefined) {
         {
             // The query will not execute until the kontrollId exists
             enabled: !!kontrollId
+        }
+    );
+}
+export function useSkjemaById(skjemaId: number | undefined) {
+    const queryClient = useQueryClient();
+    return useQuery(
+        ['skjema', skjemaId],
+        async () => {
+            const { data } = await sluttkontrollApi.get<{ skjema: Skjema }>(
+                `/skjema/id/${skjemaId}`
+            );
+            return data.skjema;
+        },
+        {
+            initialData: () => {
+                return queryClient
+                    .getQueryData<Skjema[]>('skjema')
+                    ?.find((s) => s.id === skjemaId);
+            },
+            // The query will not execute until the kontrollId exists
+            enabled: !!skjemaId
         }
     );
 }
@@ -45,6 +66,7 @@ export function useNewSkjema() {
             onSuccess: (newSkjema, vars) => {
                 const skjemaer = queryClient.getQueryData<Skjema[]>([
                     'skjema',
+                    'kontroll',
                     vars.kontrollId
                 ]);
                 // ✅ update detail view directly
@@ -57,7 +79,7 @@ export function useNewSkjema() {
                         )
                     );
                 }
-                queryClient.invalidateQueries(['skjema', vars.kontrollId]);
+                queryClient.invalidateQueries(['skjema']);
 
                 enqueueSnackbar('Nytt skjema lagret', {
                     variant: 'success'
@@ -93,6 +115,7 @@ export function useUpdateSkjema() {
             onSuccess: (updateSkjema, vars) => {
                 const skjemaer = queryClient.getQueryData<Skjema[]>([
                     'skjema',
+                    'kontroll',
                     vars.skjema.kontroll.id
                 ]);
                 // ✅ update detail view directly
@@ -105,10 +128,7 @@ export function useUpdateSkjema() {
                         )
                     );
                 }
-                queryClient.invalidateQueries([
-                    'skjema',
-                    vars.skjema.kontroll.id
-                ]);
+                queryClient.invalidateQueries(['skjema']);
 
                 enqueueSnackbar('Skjema lagret', {
                     variant: 'success'

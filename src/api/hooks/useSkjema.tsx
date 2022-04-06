@@ -168,7 +168,7 @@ export function useRemoveSkjema() {
                 if (skjemaer && skjemaer?.length > 0) {
                     queryClient.setQueryData(
                         ['skjema', 'kontroll', vars.kontrollId],
-                        skjemaer.map((s) => s.id !== vars.skjemaId)
+                        skjemaer.filter((s) => s.id !== vars.skjemaId)
                     );
                 }
                 queryClient.invalidateQueries(['skjema']);

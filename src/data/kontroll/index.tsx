@@ -3,11 +3,8 @@ import React, { createContext, useContext, useReducer } from 'react';
 import {
     deleteSkjemaById,
     editChecklist,
-    getChecklistsBySkjema,
     moveSkjemaApi,
-    newSkjema,
-    toggleAktuellStatusChecklist,
-    updateSkjemaApi
+    toggleAktuellStatusChecklist
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
 
@@ -34,37 +31,6 @@ export const KontrollContextProvider = ({
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const updateSkjema = async (skjema: Skjema): Promise<boolean> => {
-        try {
-            const res = await updateSkjemaApi(skjema);
-
-            if (res.status === 204) {
-                dispatch({
-                    type: ActionType.updateSkjema,
-                    payload: skjema
-                });
-
-                enqueueSnackbar('Skjema oppdatert', {
-                    variant: 'success'
-                });
-                return true;
-            }
-            if (res.status === 400) {
-                enqueueSnackbar(
-                    'Areal eller området mangler, se at alle felter er fylt ut',
-                    {
-                        variant: 'warning'
-                    }
-                );
-            }
-            return false;
-        } catch (error: any) {
-            enqueueSnackbar('Problemer med oppdatering av skjema', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
     const moveSkjema = async (
         skjema: Skjema,
         kontrollId: number
@@ -191,8 +157,6 @@ export const KontrollContextProvider = ({
                 showAllKontroller,
                 setShowAllKontroller,
 
-                moveSkjema,
-                removeSkjema,
                 saveEditChecklist,
                 toggleAktuellChecklist
             }}>

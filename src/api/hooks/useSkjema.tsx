@@ -122,7 +122,7 @@ export function useUpdateSkjema() {
 
                 if (skjemaer && skjemaer?.length > 0) {
                     queryClient.setQueryData(
-                        ['skjema', vars.skjema.kontroll.id],
+                        ['skjema', 'kontroll', vars.skjema.kontroll.id],
                         unionBy([vars.skjema], skjemaer, 'id').sort(
                             (a, b) => a.id - b.id
                         )
@@ -131,6 +131,105 @@ export function useUpdateSkjema() {
                 queryClient.invalidateQueries(['skjema']);
 
                 enqueueSnackbar('Skjema lagret', {
+                    variant: 'success'
+                });
+            }
+        }
+    );
+}
+
+export function useRemoveSkjema() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        Skjema,
+        unknown,
+        {
+            skjemaId: number;
+            kontrollId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.delete(
+                `skjema/${body.skjemaId}`
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updateSkjema, vars) => {
+                const skjemaer = queryClient.getQueryData<Skjema[]>([
+                    'skjema',
+                    'kontroll',
+                    vars.kontrollId
+                ]);
+                // ✅ update detail view directly
+
+                if (skjemaer && skjemaer?.length > 0) {
+                    queryClient.setQueryData(
+                        ['skjema', 'kontroll', vars.kontrollId],
+                        skjemaer.map((s) => s.id !== vars.skjemaId)
+                    );
+                }
+                queryClient.invalidateQueries(['skjema']);
+
+                enqueueSnackbar('Skjema slettet', {
+                    variant: 'success'
+                });
+            }
+        }
+    );
+}
+
+export function useMoveSkjema() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        Skjema,
+        unknown,
+        {
+            skjema: Skjema;
+            kontrollId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `skjema/move/${body.skjema.id}/to/${body.kontrollId}`
+            );
+
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updateSkjema, vars) => {
+                const skjemaer = queryClient.getQueryData<Skjema[]>([
+                    'skjema',
+                    'kontroll',
+                    vars.skjema.kontroll.id
+                ]);
+                // ✅ update detail view directly
+
+                if (skjemaer && skjemaer?.length > 0) {
+                    queryClient.setQueryData(
+                        ['skjema', 'kontroll', vars.kontrollId],
+                        unionBy(
+                            [
+                                {
+                                    ...vars.skjema,
+                                    kontroll: {
+                                        ...vars.skjema.kontroll,
+                                        id: vars.kontrollId
+                                    }
+                                }
+                            ],
+                            skjemaer,
+                            'id'
+                        ).sort((a, b) => a.id - b.id)
+                    );
+                }
+                queryClient.invalidateQueries(['skjema']);
+
+                enqueueSnackbar('Skjema flyttet', {
                     variant: 'success'
                 });
             }

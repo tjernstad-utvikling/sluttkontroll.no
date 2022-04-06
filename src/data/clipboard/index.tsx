@@ -14,6 +14,7 @@ import { useAvvik } from '../avvik';
 import { useKontroll } from '../kontroll';
 import { useMeasurement } from '../measurement';
 import { useMoveKontroll } from '../../api/hooks/useKontroll';
+import { useMoveSkjema } from '../../api/hooks/useSkjema';
 import { useSnackbar } from 'notistack';
 
 export const useClipBoard = () => {
@@ -35,13 +36,13 @@ export const ClipBoardContextProvider = ({
     const [cutoutLength, setCutoutLength] = useState<number>(0);
 
     const moveMutation = useMoveKontroll();
+    const moveSkjemaMutation = useMoveSkjema();
 
     const { classes } = useStyles();
     const { enqueueSnackbar } = useSnackbar();
 
     const {
-        state: { skjemaer, checklists },
-        moveSkjema
+        state: { checklists, skjemaer }
     } = useKontroll();
     const { moveMeasurement } = useMeasurement();
     const { moveAvvik } = useAvvik();
@@ -149,7 +150,14 @@ export const ClipBoardContextProvider = ({
     }: PasteOptions) {
         if (skjemaPaste !== undefined) {
             for (const skjema of skjemaPaste.skjema) {
-                if (await moveSkjema(skjema, skjemaPaste.kontrollId)) {
+                try {
+                    await moveSkjemaMutation.mutateAsync({
+                        skjema,
+                        kontrollId: skjemaPaste.kontrollId
+                    });
+                } catch (error) {
+                    console.error(error);
+                } finally {
                     dispatch({
                         type: ActionType.removeSkjemaClipboard,
                         payload: skjema

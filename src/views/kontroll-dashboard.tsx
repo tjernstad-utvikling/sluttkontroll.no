@@ -24,7 +24,7 @@ import Grid from '@mui/material/Grid';
 import { InstrumentStatus } from '../components/instrument';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -52,9 +52,11 @@ const KontrollerView = () => {
         state: { users }
     } = useUser();
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const avvikData = useAvvik({
+        includeClosed: true,
+        myControl: true
+    });
+
     const {
         state: { measurements }
     } = useMeasurement();
@@ -151,7 +153,7 @@ const KontrollerView = () => {
                                     columns={kontrollColumns({
                                         users: users ?? [],
                                         klienter: klienter ?? [],
-                                        avvik: avvik ?? [],
+                                        avvik: avvikData.data ?? [],
                                         measurements: measurements ?? [],
                                         edit: editKontroll,
                                         toggleStatus: toggleStatusKontroll,

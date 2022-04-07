@@ -31,7 +31,7 @@ import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
@@ -74,9 +74,10 @@ const KontrollKlientView = () => {
         state: { users }
     } = useUser();
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const avvikData = useAvvik({
+        includeClosed: true,
+        clientId: Number(klientId)
+    });
 
     const {
         state: { measurements }
@@ -214,7 +215,7 @@ const KontrollKlientView = () => {
                                     columns={kontrollColumns({
                                         users: users ?? [],
                                         klienter: klienter ?? [],
-                                        avvik: avvik ?? [],
+                                        avvik: avvikData.data ?? [],
                                         measurements: measurements ?? [],
                                         edit: editKontroll,
                                         toggleStatus: toggleStatusKontroll,

@@ -233,13 +233,15 @@ interface AvvikTableProps {
     selected: number[];
     leftAction?: React.ReactNode;
     skjemaClipboard?: Skjema[] | undefined;
+    isLoading: boolean;
 }
 export const AvvikTable = ({
     avvik,
     onSelected,
     selected,
     leftAction,
-    skjemaClipboard
+    skjemaClipboard,
+    isLoading
 }: AvvikTableProps) => {
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (skjemaClipboard?.find((sc) => sc.id === row.id)) {
@@ -255,6 +257,7 @@ export const AvvikTable = ({
             data={avvik}
             onSelected={onSelected}
             getRowStyling={getRowStyling}
+            loading={isLoading}
             selectionModel={selected}>
             {leftAction}
         </BaseTable>

@@ -1,6 +1,6 @@
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardContent, CardMenu } from '../components/card';
-import { useAssignedAvvik, useCloseAvvik } from '../api/hooks/useAvvik';
+import { useAvvik, useCloseAvvik } from '../api/hooks/useAvvik';
 import { useParams, useRouteMatch } from 'react-router-dom';
 
 import { AvvikCommentModal } from '../modal/avvikComment';
@@ -46,7 +46,7 @@ const ExternalDashboardView = () => {
 
     const { url } = useRouteMatch();
 
-    const assignedAvvik = useAssignedAvvik({
+    const assignedAvvik = useAvvik({
         includeClosed: showAll,
         clientId: clientId !== undefined ? Number(clientId) : undefined,
         locationId: locationId !== undefined ? Number(locationId) : undefined
@@ -191,6 +191,9 @@ const ExternalDashboardView = () => {
                                         tableId="avvik">
                                         {showTable ? (
                                             <AvvikTable
+                                                isLoading={
+                                                    assignedAvvik.isLoading
+                                                }
                                                 avvik={assignedAvvik.data ?? []}
                                                 selected={selected}
                                                 onSelected={(avvik) => {
@@ -200,6 +203,9 @@ const ExternalDashboardView = () => {
                                             />
                                         ) : (
                                             <AvvikGrid
+                                                isLoading={
+                                                    assignedAvvik.isLoading
+                                                }
                                                 close={close}
                                                 avvik={assignedAvvik.data ?? []}
                                                 selected={selected}

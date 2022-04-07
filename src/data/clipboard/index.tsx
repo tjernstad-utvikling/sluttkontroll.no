@@ -1,5 +1,5 @@
 import { ActionType, ContextInterface, PasteOptions } from './contracts';
-import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
+import { Kontroll, Skjema } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { initialState, reducer } from './reducer';
 
@@ -10,8 +10,8 @@ import { Measurement } from '../../contracts/measurementApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '../../theme/makeStyles';
-import { useAvvik } from '../avvik';
 import { useMeasurement } from '../measurement';
+import { useMoveAvvik } from '../../api/hooks/useAvvik';
 import { useMoveKontroll } from '../../api/hooks/useKontroll';
 import { useMoveSkjema } from '../../api/hooks/useSkjema';
 import { useSnackbar } from 'notistack';
@@ -36,12 +36,12 @@ export const ClipBoardContextProvider = ({
 
     const moveMutation = useMoveKontroll();
     const moveSkjemaMutation = useMoveSkjema();
+    const moveAvvikMutation = useMoveAvvik();
 
     const { classes } = useStyles();
     const { enqueueSnackbar } = useSnackbar();
 
     const { moveMeasurement } = useMeasurement();
-    const { moveAvvik } = useAvvik();
 
     function selectedSkjemaer(skjemaer: Skjema[]) {
         setCutoutLength(skjemaer.length);
@@ -185,17 +185,18 @@ export const ClipBoardContextProvider = ({
         }
         if (avvikPaste !== undefined) {
             for (const avvik of avvikPaste.avvik) {
-                const checklist = {} as Checklist;
-                const skjema = {} as Skjema;
-                // TODO
-
-                if (checklist && skjema) {
-                    if (await moveAvvik(avvik, checklist, skjema)) {
-                        dispatch({
-                            type: ActionType.removeAvvikClipboard,
-                            payload: avvik
-                        });
-                    }
+                try {
+                    await moveAvvikMutation.mutateAsync({
+                        avvik,
+                        checklistId: avvikPaste.checklistId
+                    });
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    dispatch({
+                        type: ActionType.removeAvvikClipboard,
+                        payload: avvik
+                    });
                 }
             }
             dispatch({

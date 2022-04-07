@@ -22,7 +22,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClipBoard } from '../data/clipboard';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -39,9 +39,10 @@ const SjekklisterView = () => {
         skjemaId: Number(skjemaId)
     });
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const avvikData = useAvvik({
+        includeClosed: true,
+        skjemaId: Number(skjemaId)
+    });
 
     useEffect(() => {
         if (checklistData.data !== undefined) {
@@ -106,7 +107,7 @@ const SjekklisterView = () => {
                             <CardContent>
                                 <TableContainer
                                     columns={columns(
-                                        avvik ?? [],
+                                        avvikData.data ?? [],
                                         url,
                                         toggleAktuellChecklist,
                                         clipboardHasAvvik,
@@ -116,7 +117,10 @@ const SjekklisterView = () => {
                                     tableId="checklists">
                                     <SjekklisteTable
                                         checklists={_checklists}
-                                        isLoading={checklistData.isLoading}
+                                        isLoading={
+                                            checklistData.isLoading ||
+                                            avvikData.isLoading
+                                        }
                                     />
                                 </TableContainer>
                             </CardContent>

@@ -27,7 +27,7 @@ import { getInfoText } from '../api/settingsApi';
 import { getKontrollReportData } from '../api/kontrollApi';
 import { getImageFile as getLocationImageFile } from '../api/locationApi';
 import { updateReportSetting } from '../api/reportApi';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -156,9 +156,10 @@ export const DocumentContainer = ({
     const [filteredSkjemaer, setFilteredSkjemaer] =
         useState<ExtendedSkjema[]>();
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const avvikData = useAvvik({
+        includeClosed: true,
+        kontrollId: kontrollId
+    });
 
     const {
         state: { measurements, measurementTypes }
@@ -332,7 +333,7 @@ export const DocumentContainer = ({
                 filteredSkjemaer,
                 updateFilteredSkjemaer,
 
-                avvik: avvik,
+                avvik: avvikData.data,
 
                 measurements,
                 measurementTypes,

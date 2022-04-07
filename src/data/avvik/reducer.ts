@@ -1,6 +1,4 @@
-import { ActionType, AvvikActions, AvvikState } from './contracts';
-
-import unionBy from 'lodash.unionby';
+import { AvvikActions, AvvikState } from './contracts';
 
 export const initialState: AvvikState = {
     avvik: undefined
@@ -11,30 +9,6 @@ export const userReducer = (
     action: AvvikActions
 ): AvvikState => {
     switch (action.type) {
-        case ActionType.addAvvik:
-            return {
-                ...state,
-                avvik: unionBy(action.payload, state.avvik, 'id')
-            };
-        case ActionType.deleteAvvik:
-            return {
-                ...state,
-                avvik: state.avvik?.filter(
-                    (a) => a.id !== action.payload.avvikId
-                )
-            };
-        case ActionType.updateAvvik:
-            return {
-                ...state,
-                avvik: state.avvik?.map((a) => {
-                    if (a.id === action.payload.id) {
-                        return action.payload;
-                    } else {
-                        return a;
-                    }
-                })
-            };
-
         default:
             throw new Error('unknown action');
     }

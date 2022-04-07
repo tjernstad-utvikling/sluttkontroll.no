@@ -20,7 +20,7 @@ import { PasteButton } from '../components/clipboard';
 import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -48,9 +48,10 @@ const SkjemaerView = () => {
 
     const removeSkjemaMutation = useRemoveSkjema();
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const avvikData = useAvvik({
+        includeClosed: true,
+        kontrollId: Number(kontrollId)
+    });
 
     const {
         state: { measurements }
@@ -134,7 +135,7 @@ const SkjemaerView = () => {
                                 <TableContainer
                                     columns={columns(
                                         kontrollData.data,
-                                        avvik ?? [],
+                                        avvikData.data ?? [],
                                         measurements ?? [],
                                         url,
                                         deleteSkjema,
@@ -147,7 +148,10 @@ const SkjemaerView = () => {
                                     tableId="skjemaer">
                                     <SkjemaTable
                                         skjemaer={skjemaData.data ?? []}
-                                        isLoading={skjemaData.isLoading}
+                                        isLoading={
+                                            skjemaData.isLoading ||
+                                            avvikData.isLoading
+                                        }
                                         onSelected={onSelectForClipboard}
                                         leftAction={
                                             <PasteButton

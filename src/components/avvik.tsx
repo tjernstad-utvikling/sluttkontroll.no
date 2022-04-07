@@ -12,6 +12,7 @@ import Checkbox from '@mui/material/Checkbox';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Image } from './image';
+import LinearProgress from '@mui/material/LinearProgress';
 import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from '../tables/tableUtils';
@@ -153,6 +154,7 @@ interface AvvikGridProps {
     selectedFromGrid: boolean;
     url: string;
     leftAction?: React.ReactNode;
+    isLoading: boolean;
 }
 export function AvvikGrid(props: AvvikGridProps) {
     const { classes } = useStyles();
@@ -219,6 +221,7 @@ export function AvvikGrid(props: AvvikGridProps) {
         <>
             <div className={classes.pasteTool}>{props.leftAction}</div>
             <div className={classes.container}>
+                {props.isLoading && <LinearProgress />}
                 {props.avvik.map((a) => (
                     <AvvikCard
                         key={a.id}

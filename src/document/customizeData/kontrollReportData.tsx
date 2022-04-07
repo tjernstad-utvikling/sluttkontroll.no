@@ -28,7 +28,7 @@ import { Theme } from '@mui/material';
 import { makeStyles } from '../../theme/makeStyles';
 import { saveKontrollReportData } from '../../api/kontrollApi';
 import { updateReportStatement } from '../../api/reportApi';
-import { useAvvik } from '../../data/avvik';
+import { useAvvik } from '../../api/hooks/useAvvik';
 import { useClient } from '../../data/klient';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useKontrollById } from '../../api/hooks/useKontroll';
@@ -92,9 +92,12 @@ export const KontrollDocAdjusting = ({
     const [_skjemaer, set_Skjemaer] = useState<Skjema[]>();
     const { updateFilteredSkjemaer, skjemaer, filteredSkjemaer } = useReport();
     const kontrollData = useKontrollById(kontrollId);
-    const {
-        state: { avvik }
-    } = useAvvik();
+
+    const avvikData = useAvvik({
+        includeClosed: true,
+        kontrollId: kontrollId
+    });
+
     const {
         state: { measurements }
     } = useMeasurement();
@@ -134,7 +137,7 @@ export const KontrollDocAdjusting = ({
                         <TableContainer
                             columns={columns(
                                 kontrollData.data,
-                                avvik ?? [],
+                                avvikData.data ?? [],
                                 measurements ?? [],
                                 '',
                                 (a) => console.log(a),

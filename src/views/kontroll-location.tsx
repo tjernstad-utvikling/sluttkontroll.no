@@ -33,7 +33,7 @@ import { LocationImageCard } from '../components/location';
 import { NewImageModal } from '../modal/newLocationImage';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
@@ -76,9 +76,10 @@ const KontrollObjektView = () => {
         state: { users }
     } = useUser();
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const avvikData = useAvvik({
+        includeClosed: true,
+        locationId: Number(objectId)
+    });
 
     const {
         state: { measurements }
@@ -243,7 +244,7 @@ const KontrollObjektView = () => {
                                     columns={kontrollColumns({
                                         users: users ?? [],
                                         klienter: klienter ?? [],
-                                        avvik: avvik ?? [],
+                                        avvik: avvikData.data ?? [],
                                         measurements: measurements ?? [],
                                         edit: editKontroll,
                                         toggleStatus: toggleStatusKontroll,

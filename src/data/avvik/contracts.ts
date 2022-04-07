@@ -1,11 +1,7 @@
-import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
-
 import { Avvik } from '../../contracts/avvikApi';
 import { User } from '../../contracts/userApi';
 
-export interface AvvikState {
-    avvik: Array<Avvik> | undefined;
-}
+export interface AvvikState {}
 
 export enum ActionType {
     addAvvik,
@@ -30,17 +26,7 @@ export type AvvikActions = addAvvik | deleteAvvik | updateAvvik;
 
 export interface ContextInterface {
     state: AvvikState;
-    loadAvvikByKontroller: (kontroller: Kontroll[]) => Promise<boolean>;
-    deleteAvvik: (avvikId: number) => Promise<boolean>;
-    updateAvvik: (avvik: Avvik) => Promise<boolean>;
-    moveAvvik: (
-        avvik: Avvik,
-        checklist: Checklist,
-        skjema: Skjema
-    ) => Promise<boolean>;
-    setUtbedrere: (avvikIds: number[], utbedrere: User[]) => Promise<boolean>;
-    closeAvvik: (avvikIds: number[], kommentar: string) => Promise<boolean>;
-    openAvvik: (avvikId: number) => Promise<boolean>;
+
     newAvvik: (
         beskrivelse: string,
         kommentar: string,

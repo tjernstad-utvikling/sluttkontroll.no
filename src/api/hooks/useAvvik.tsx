@@ -1,17 +1,25 @@
 import { Avvik, AvvikBilde } from '../../contracts/avvikApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+import { User } from '../../contracts/userApi';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
+import { useSnackbar } from 'notistack';
 
-export function useAssignedAvvik({
+export function useAvvik({
     includeClosed,
     clientId,
-    locationId
+    locationId,
+    skjemaId,
+    kontrollId,
+    myControl
 }: {
     includeClosed: boolean;
     clientId?: number;
     locationId?: number;
+    skjemaId?: number;
+    kontrollId?: number;
+    myControl?: boolean;
 }) {
     return useQuery(
         [
@@ -21,6 +29,12 @@ export function useAssignedAvvik({
                 ? ['location', locationId]
                 : clientId
                 ? ['client', clientId]
+                : skjemaId
+                ? ['skjema', skjemaId]
+                : kontrollId
+                ? ['kontroll', kontrollId]
+                : myControl
+                ? ['myControl', myControl]
                 : [])
         ],
         async () => {
@@ -33,6 +47,12 @@ export function useAssignedAvvik({
                             ? { locationId }
                             : clientId
                             ? { clientId }
+                            : skjemaId
+                            ? { skjemaId }
+                            : kontrollId
+                            ? { kontrollId }
+                            : myControl
+                            ? { myControl }
                             : {})
                     }
                 }
@@ -42,7 +62,7 @@ export function useAssignedAvvik({
     );
 }
 
-export function useAvvikById(avvikId: number) {
+export function useAvvikById(avvikId: number | undefined) {
     const queryClient = useQueryClient();
     return useQuery(
         ['avvik', avvikId],
@@ -106,6 +126,142 @@ export function useCloseAvvik({
     );
 }
 
+export function useOpenAvvik({
+    isFromDetailsPage
+}: {
+    isFromDetailsPage?: boolean;
+}) {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            avvikId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `/avvik/open/${body.avvikId}`
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updateSkjema, vars) => {
+                const avvik = queryClient.getQueryData<Avvik[]>(['avvik']);
+                // ✅ update detail view directly
+
+                const _avvik = avvik?.find((a) => a.id === vars.avvikId);
+
+                if (_avvik) {
+                    queryClient.setQueryData(
+                        ['avvik'],
+                        unionBy([{ ..._avvik, status: '' }], avvik, 'id').sort(
+                            (a, b) => a.id - b.id
+                        )
+                    );
+                }
+                if (isFromDetailsPage) {
+                    queryClient.setQueryData(['avvik', vars.avvikId], {
+                        ..._avvik,
+                        status: ''
+                    });
+                }
+                queryClient.invalidateQueries(['avvik']);
+
+                enqueueSnackbar('Avvik åpnet', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    if (error.response.message === 'avvik closed') {
+                        enqueueSnackbar('Avvik er lukket og kan ikke slettes', {
+                            variant: 'warning'
+                        });
+                    } else if (
+                        error.response.message === 'beskrivelse missing'
+                    ) {
+                        enqueueSnackbar(
+                            'Kan ikke lagre avviket uten beskrivelse',
+                            {
+                                variant: 'warning'
+                            }
+                        );
+                    } else {
+                        enqueueSnackbar('Kan ikke oppdatere avviket', {
+                            variant: 'warning'
+                        });
+                    }
+                }
+            }
+        }
+    );
+}
+export function useDeleteAvvik() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            avvikId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.delete(
+                `/avvik/${body.avvikId}`
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updateSkjema, vars) => {
+                const avvik = queryClient.getQueryData<Avvik[]>(['avvik']);
+                // ✅ update detail view directly
+
+                const _avvik = avvik?.find((a) => a.id === vars.avvikId);
+
+                if (_avvik) {
+                    queryClient.setQueryData(
+                        ['avvik'],
+                        avvik?.filter((a) => a.id !== vars.avvikId)
+                    );
+                }
+
+                queryClient.invalidateQueries(['avvik']);
+
+                enqueueSnackbar('Avvik åpnet', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    if (error.response.message === 'avvik closed') {
+                        enqueueSnackbar('Avvik er lukket og kan ikke slettes', {
+                            variant: 'warning'
+                        });
+                    } else if (
+                        error.response.message === 'beskrivelse missing'
+                    ) {
+                        enqueueSnackbar(
+                            'Kan ikke lagre avviket uten beskrivelse',
+                            {
+                                variant: 'warning'
+                            }
+                        );
+                    } else {
+                        enqueueSnackbar('Kan ikke oppdatere avviket', {
+                            variant: 'warning'
+                        });
+                    }
+                }
+            }
+        }
+    );
+}
+
 export function useAddAvvikImages({
     isFromDetailsPage
 }: {
@@ -154,6 +310,176 @@ export function useAddAvvikImages({
                     return;
                 }
                 queryClient.invalidateQueries('avvik');
+            }
+        }
+    );
+}
+
+export function useUpdateAvvik() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            avvik: Avvik;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `/avvik/${body.avvik.id}`,
+                {
+                    beskrivelse: body.avvik.beskrivelse,
+                    kommentar: body.avvik.kommentar,
+                    utbedrer: body.avvik.utbedrer.map((u) => u.id)
+                }
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updateSkjema, vars) => {
+                const avvik = queryClient.getQueryData<Avvik[]>(['avvik']);
+                // ✅ update detail view directly
+
+                if (avvik && avvik?.length > 0) {
+                    queryClient.setQueryData(
+                        ['avvik'],
+                        unionBy([vars.avvik], avvik, 'id').sort(
+                            (a, b) => a.id - b.id
+                        )
+                    );
+                }
+                queryClient.invalidateQueries(['avvik']);
+
+                enqueueSnackbar('Avvik lagret', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    if (error.response.message === 'avvik closed') {
+                        enqueueSnackbar('Avvik er lukket og kan ikke slettes', {
+                            variant: 'warning'
+                        });
+                    } else if (
+                        error.response.message === 'beskrivelse missing'
+                    ) {
+                        enqueueSnackbar(
+                            'Kan ikke lagre avviket uten beskrivelse',
+                            {
+                                variant: 'warning'
+                            }
+                        );
+                    } else {
+                        enqueueSnackbar('Kan ikke oppdatere avviket', {
+                            variant: 'warning'
+                        });
+                    }
+                }
+            }
+        }
+    );
+}
+
+export function useMoveAvvik() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            avvik: Avvik;
+            checklistId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `/avvik/move/${body.avvik.id}/to/${body.checklistId}`
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updated, vars) => {
+                const avvik = queryClient.getQueryData<Avvik[]>(['avvik']);
+                // ✅ update detail view directly
+
+                if (avvik && avvik?.length > 0) {
+                    queryClient.setQueryData(
+                        ['avvik'],
+                        unionBy(
+                            [
+                                {
+                                    ...vars.avvik,
+                                    checklist: {
+                                        ...vars.avvik.checklist,
+                                        id: vars.checklistId
+                                    }
+                                }
+                            ],
+                            avvik,
+                            'id'
+                        ).sort((a, b) => a.id - b.id)
+                    );
+                }
+                queryClient.invalidateQueries(['avvik']);
+
+                enqueueSnackbar('Avvik lagret', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    if (error.response.message === 'avvik closed') {
+                        enqueueSnackbar('Avvik er lukket og kan ikke flyttes', {
+                            variant: 'warning'
+                        });
+                    } else {
+                        enqueueSnackbar('Kan ikke oppdatere avviket', {
+                            variant: 'warning'
+                        });
+                    }
+                }
+            }
+        }
+    );
+}
+
+export function useSetRectifier() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            avvikIds: number[];
+            utbedrer: User[];
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.post(
+                '/avvik/set-utbedrere',
+                {
+                    avvikIds: body.avvikIds,
+                    utbedrer: body.utbedrer
+                }
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updateSkjema, vars) => {
+                queryClient.invalidateQueries(['avvik']);
+
+                enqueueSnackbar('Utbedrere er satt', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                enqueueSnackbar('Kan ikke sette utbedrere', {
+                    variant: 'warning'
+                });
             }
         }
     );

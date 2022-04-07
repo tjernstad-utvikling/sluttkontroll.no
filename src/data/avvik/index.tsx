@@ -1,17 +1,11 @@
 import { ActionType, ContextInterface } from './contracts';
-import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
     addAvvikApi,
     addImage,
-    closeAvvikApi,
     deleteAvvikById,
     deleteImage,
-    getAvvikByKontrollList,
-    moveAvvikApi,
-    openAvvikApi,
-    setUtbedrereApi,
-    updateAvvikById
+    openAvvikApi
 } from '../../api/avvikApi';
 import { initialState, userReducer } from './reducer';
 
@@ -34,102 +28,6 @@ export const AvvikContextProvider = ({
     const [state, dispatch] = useReducer(userReducer, initialState);
 
     const { enqueueSnackbar } = useSnackbar();
-
-    const loadAvvikByKontroller = async (
-        kontroller: Kontroll[]
-    ): Promise<boolean> => {
-        try {
-            if (kontroller.length > 0) {
-                const { status, avvik } = await getAvvikByKontrollList(
-                    kontroller.map((k) => k.id)
-                );
-
-                if (status === 200) {
-                    dispatch({
-                        type: ActionType.addAvvik,
-                        payload: avvik
-                    });
-                    return true;
-                }
-            }
-            return false;
-        } catch (error: any) {
-            errorHandler(error);
-            return true;
-        }
-    };
-
-    const updateAvvik = async (avvik: Avvik): Promise<boolean> => {
-        try {
-            const { status, message } = await updateAvvikById(avvik);
-
-            if (status === 204) {
-                dispatch({
-                    type: ActionType.updateAvvik,
-                    payload: avvik
-                });
-            }
-            if (status === 400) {
-                if (message === 'avvik closed') {
-                    enqueueSnackbar('Avvik er lukket og kan ikke slettes', {
-                        variant: 'warning'
-                    });
-                } else if (message === 'beskrivelse missing') {
-                    enqueueSnackbar('Kan ikke lagre avviket uten beskrivelse', {
-                        variant: 'warning'
-                    });
-                } else {
-                    enqueueSnackbar('Kan ikke oppdatere avviket', {
-                        variant: 'warning'
-                    });
-                }
-                return false;
-            }
-            return true;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med oppdatering av avvik', {
-                variant: 'error'
-            });
-            return false;
-        }
-    };
-
-    const moveAvvik = async (
-        avvik: Avvik,
-        checklist: Checklist,
-        skjema: Skjema
-    ): Promise<boolean> => {
-        try {
-            const { status, message } = await moveAvvikApi(avvik, checklist.id);
-
-            if (status === 204) {
-                dispatch({
-                    type: ActionType.updateAvvik,
-                    payload: { ...avvik, checklist: { ...checklist, skjema } }
-                });
-            }
-            if (status === 400) {
-                if (message === 'avvik closed') {
-                    enqueueSnackbar('Avvik er lukket og kan ikke flyttes', {
-                        variant: 'warning'
-                    });
-                } else {
-                    enqueueSnackbar('Kan ikke oppdatere avviket', {
-                        variant: 'warning'
-                    });
-                }
-                return false;
-            }
-            return true;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med flytting av avvik', {
-                variant: 'error'
-            });
-            return false;
-        }
-    };
 
     const newAvvik = async (
         beskrivelse: string,
@@ -159,134 +57,6 @@ export const AvvikContextProvider = ({
         } catch (error: any) {
             errorHandler(error);
             enqueueSnackbar('Problemer med lagring av avvik', {
-                variant: 'error'
-            });
-            return false;
-        }
-    };
-    const setUtbedrere = async (
-        avvikIds: number[],
-        utbedrere: User[]
-    ): Promise<boolean> => {
-        try {
-            const { status } = await setUtbedrereApi(avvikIds, utbedrere);
-
-            if (status === 204) {
-                avvikIds.forEach((id) => {
-                    const avvik = state?.avvik?.find((a) => a.id === id);
-                    if (avvik !== undefined) {
-                        dispatch({
-                            type: ActionType.updateAvvik,
-                            payload: { ...avvik, utbedrer: utbedrere }
-                        });
-                    }
-                });
-                enqueueSnackbar('Utbedrere er satt', {
-                    variant: 'success'
-                });
-            }
-            return true;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med oppdatering av avvik', {
-                variant: 'error'
-            });
-            return false;
-        }
-    };
-
-    const closeAvvik = async (
-        avvikIds: number[],
-        kommentar: string
-    ): Promise<boolean> => {
-        try {
-            const { status } = await closeAvvikApi(avvikIds, kommentar);
-
-            if (status === 204) {
-                avvikIds.forEach((id) => {
-                    const avvik = state?.avvik?.find((a) => a.id === id);
-                    if (avvik !== undefined) {
-                        dispatch({
-                            type: ActionType.updateAvvik,
-                            payload: {
-                                ...avvik,
-                                status: 'lukket',
-                                kommentar: `${avvik.kommentar} ${kommentar}`
-                            }
-                        });
-                    }
-                });
-                enqueueSnackbar('Avvik er lukket', {
-                    variant: 'success'
-                });
-            }
-            return true;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med oppdatering av avvik', {
-                variant: 'error'
-            });
-            return false;
-        }
-    };
-    const openAvvik = async (avvikId: number): Promise<boolean> => {
-        try {
-            const { status } = await openAvvikApi(avvikId);
-
-            const avvik = state.avvik?.find((a) => a.id === avvikId);
-            if (status === 204 && avvik !== undefined) {
-                dispatch({
-                    type: ActionType.updateAvvik,
-                    payload: {
-                        ...avvik,
-                        status: null
-                    }
-                });
-                enqueueSnackbar('Avvik er åpnet', {
-                    variant: 'success'
-                });
-            }
-            return true;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med oppdatering av avvik', {
-                variant: 'error'
-            });
-            return false;
-        }
-    };
-
-    const deleteAvvik = async (avvikId: number): Promise<boolean> => {
-        try {
-            const { status, message } = await deleteAvvikById(avvikId);
-
-            if (status === 204) {
-                dispatch({
-                    type: ActionType.deleteAvvik,
-                    payload: { avvikId }
-                });
-            }
-
-            if (status === 400) {
-                if (message === 'avvik closed') {
-                    enqueueSnackbar('Avvik er lukket og kan ikke slettes', {
-                        variant: 'warning'
-                    });
-                } else if (message === 'avvik has images') {
-                    enqueueSnackbar('Bilder må slettes før avviket', {
-                        variant: 'warning'
-                    });
-                } else {
-                    enqueueSnackbar('Kan ikke slette avviket', {
-                        variant: 'warning'
-                    });
-                }
-                return false;
-            }
-            return true;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med sletting av avvik', {
                 variant: 'error'
             });
             return false;
@@ -373,14 +143,7 @@ export const AvvikContextProvider = ({
             value={{
                 state,
 
-                loadAvvikByKontroller,
-                deleteAvvik,
-                moveAvvik,
-                updateAvvik,
                 newAvvik,
-                setUtbedrere,
-                closeAvvik,
-                openAvvik,
                 deleteAvvikImage,
                 addAvvikImages
             }}>

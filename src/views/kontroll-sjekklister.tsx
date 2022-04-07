@@ -19,8 +19,8 @@ import Grid from '@mui/material/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
+import { useChecklistsBySkjemaId } from '../api/hooks/useChecklist';
 import { useClipBoard } from '../data/clipboard';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -31,33 +31,30 @@ const SjekklisterView = () => {
     const history = useHistory();
     let { url } = useRouteMatch();
 
-    const [_checklists, setChecklists] = useState<Array<Checklist>>([]);
-    const {
-        state: { checklists },
-        toggleAktuellChecklist
-    } = useKontroll();
+    const [_checklists, setChecklists] = useState<Checklist[]>([]);
+    const { toggleAktuellChecklist } = useKontroll();
+
+    const checklistData = useChecklistsBySkjemaId(Number(skjemaId));
 
     const {
         state: { avvik }
     } = useAvvik();
 
     useEffect(() => {
-        if (checklists !== undefined) {
+        if (checklistData.data !== undefined) {
             setChecklists(
-                checklists
-                    .filter((c) => c.skjema.id === Number(skjemaId))
-                    .sort((a, b) =>
-                        String(
-                            SjekklisteValueGetter(a).prosedyreNr()
-                        ).localeCompare(
-                            String(SjekklisteValueGetter(b).prosedyreNr()),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
+                checklistData.data.sort((a, b) =>
+                    String(
+                        SjekklisteValueGetter(a).prosedyreNr()
+                    ).localeCompare(
+                        String(SjekklisteValueGetter(b).prosedyreNr()),
+                        undefined,
+                        { numeric: true, sensitivity: 'base' }
                     )
+                )
             );
         }
-    }, [checklists, skjemaId]);
+    }, [checklistData.data]);
 
     /**
      * Clipboard
@@ -92,24 +89,21 @@ const SjekklisterView = () => {
                                 />
                             }>
                             <CardContent>
-                                {checklists !== undefined ? (
-                                    <TableContainer
-                                        columns={columns(
-                                            avvik ?? [],
-                                            url,
-                                            toggleAktuellChecklist,
-                                            clipboardHasAvvik,
-                                            avvikToPast
-                                        )}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checklists">
-                                        <SjekklisteTable
-                                            checklists={_checklists}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster skjemaer</div>
-                                )}
+                                <TableContainer
+                                    columns={columns(
+                                        avvik ?? [],
+                                        url,
+                                        toggleAktuellChecklist,
+                                        clipboardHasAvvik,
+                                        avvikToPast
+                                    )}
+                                    defaultColumns={defaultColumns}
+                                    tableId="checklists">
+                                    <SjekklisteTable
+                                        checklists={_checklists}
+                                        isLoading={checklistData.isLoading}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

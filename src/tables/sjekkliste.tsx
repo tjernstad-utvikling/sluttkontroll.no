@@ -191,14 +191,24 @@ export const columns = (
 export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 
 interface SjekklisteTableProps {
-    checklists: Array<Checklist>;
+    checklists: Checklist[];
+    isLoading: boolean;
 }
-export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
+export const SjekklisteTable = ({
+    checklists,
+    isLoading
+}: SjekklisteTableProps) => {
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (!row.aktuell) {
             return RowStylingEnum.disabled;
         }
     };
 
-    return <BaseTable data={checklists} getRowStyling={getRowStyling} />;
+    return (
+        <BaseTable
+            data={checklists}
+            getRowStyling={getRowStyling}
+            loading={isLoading}
+        />
+    );
 };

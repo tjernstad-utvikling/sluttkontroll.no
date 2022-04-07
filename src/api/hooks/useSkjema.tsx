@@ -10,7 +10,7 @@ export function useSkjemaerByKontrollId(kontrollId: number | undefined) {
         ['skjema', 'kontroll', kontrollId],
         async () => {
             const { data } = await sluttkontrollApi.get<{ skjemaer: Skjema[] }>(
-                `/skjema/${kontrollId}`
+                `/skjema/kontroll/${kontrollId}`
             );
             return data.skjemaer;
         },
@@ -26,7 +26,7 @@ export function useSkjemaById(skjemaId: number | undefined) {
         ['skjema', skjemaId],
         async () => {
             const { data } = await sluttkontrollApi.get<{ skjema: Skjema }>(
-                `/skjema/id/${skjemaId}`
+                `/skjema/${skjemaId}`
             );
             return data.skjema;
         },
@@ -176,6 +176,16 @@ export function useRemoveSkjema() {
                 enqueueSnackbar('Skjema slettet', {
                     variant: 'success'
                 });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    enqueueSnackbar(
+                        'Avvik og måleresultater må slettes først',
+                        {
+                            variant: 'warning'
+                        }
+                    );
+                }
             }
         }
     );

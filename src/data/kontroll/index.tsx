@@ -1,16 +1,12 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
 import {
-    deleteSkjemaById,
     editChecklist,
-    moveSkjemaApi,
     toggleAktuellStatusChecklist
 } from '../../api/kontrollApi';
 import { initialState, kontrollReducer } from './reducer';
 
 import { Checkpoint } from '../../contracts/checkpointApi';
-import { Skjema } from '../../contracts/kontrollApi';
-import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
@@ -30,66 +26,6 @@ export const KontrollContextProvider = ({
     const [showAllKontroller, setShowAllKontroller] = useState<boolean>(false);
 
     const { enqueueSnackbar } = useSnackbar();
-
-    const moveSkjema = async (
-        skjema: Skjema,
-        kontrollId: number
-    ): Promise<boolean> => {
-        try {
-            const res = await moveSkjemaApi(skjema, kontrollId);
-
-            if (res.status === 204) {
-                dispatch({
-                    type: ActionType.updateSkjema,
-                    payload: { ...skjema, kontroll: { id: kontrollId } }
-                });
-
-                enqueueSnackbar('Skjema er flyttet', {
-                    variant: 'success'
-                });
-                return true;
-            }
-            if (res.status === 400) {
-                enqueueSnackbar('Kontroll eller skjema mangler, prøv igjen', {
-                    variant: 'warning'
-                });
-            }
-            return false;
-        } catch (error: any) {
-            enqueueSnackbar('Problemer med flytting av skjema', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
-
-    const removeSkjema = async (skjemaId: number): Promise<boolean> => {
-        try {
-            const res = await deleteSkjemaById(skjemaId);
-            if (res.status === 204) {
-                dispatch({
-                    type: ActionType.removeSkjema,
-                    payload: { skjemaId }
-                });
-                enqueueSnackbar('Skjema slettet', {
-                    variant: 'success'
-                });
-            }
-            if (res.status === 400) {
-                enqueueSnackbar('Avvik og måleresultater må slettes først', {
-                    variant: 'warning'
-                });
-            }
-
-            return true;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med sletting av skjema', {
-                variant: 'error'
-            });
-        }
-        return false;
-    };
 
     const saveEditChecklist = async (
         skjemaId: number,

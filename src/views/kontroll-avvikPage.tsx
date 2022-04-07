@@ -25,9 +25,9 @@ import { format } from 'date-fns';
 import { makeStyles } from '../theme/makeStyles';
 import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
-import { useKontroll } from '../data/kontroll';
 import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
 
 const AvvikView = () => {
     const { classes } = usePageStyles();
@@ -47,11 +47,9 @@ const AvvikView = () => {
 
     const [editId, setEditId] = useState<number>();
 
-    const {
-        state: { skjemaer }
-    } = useKontroll();
-
     const kontrollData = useKontrollById(Number(kontrollId));
+
+    const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
 
     const { confirm } = useConfirm();
     const {
@@ -129,8 +127,7 @@ const AvvikView = () => {
                                 />
                             }>
                             <CardContent>
-                                {_avvik !== undefined &&
-                                skjemaer !== undefined ? (
+                                {_avvik !== undefined ? (
                                     <Grid container>
                                         <Grid
                                             item
@@ -172,14 +169,18 @@ const AvvikView = () => {
                                                 <dd>
                                                     {AvvikValueGetter(
                                                         _avvik
-                                                    ).area(skjemaer)}
+                                                    ).area(
+                                                        skjemaData.data ?? []
+                                                    )}
                                                 </dd>
 
                                                 <dt>Området</dt>
                                                 <dd>
                                                     {AvvikValueGetter(
                                                         _avvik
-                                                    ).omrade(skjemaer)}
+                                                    ).omrade(
+                                                        skjemaData.data ?? []
+                                                    )}
                                                 </dd>
                                                 <Divider />
                                                 <Typography

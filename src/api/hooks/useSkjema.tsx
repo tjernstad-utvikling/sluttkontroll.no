@@ -10,7 +10,12 @@ export function useSkjemaerByKontrollId(kontrollId: number | undefined) {
         ['skjema', 'kontroll', kontrollId],
         async () => {
             const { data } = await sluttkontrollApi.get<{ skjemaer: Skjema[] }>(
-                `/skjema/kontroll/${kontrollId}`
+                `/skjema`,
+                {
+                    params: {
+                        kontrollId
+                    }
+                }
             );
             return data.skjemaer;
         },

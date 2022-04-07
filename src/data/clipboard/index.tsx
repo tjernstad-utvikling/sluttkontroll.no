@@ -1,5 +1,5 @@
 import { ActionType, ContextInterface, PasteOptions } from './contracts';
-import { Kontroll, Skjema } from '../../contracts/kontrollApi';
+import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer, useState } from 'react';
 import { initialState, reducer } from './reducer';
 
@@ -11,7 +11,6 @@ import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '../../theme/makeStyles';
 import { useAvvik } from '../avvik';
-import { useKontroll } from '../kontroll';
 import { useMeasurement } from '../measurement';
 import { useMoveKontroll } from '../../api/hooks/useKontroll';
 import { useMoveSkjema } from '../../api/hooks/useSkjema';
@@ -41,9 +40,6 @@ export const ClipBoardContextProvider = ({
     const { classes } = useStyles();
     const { enqueueSnackbar } = useSnackbar();
 
-    const {
-        state: { checklists, skjemaer }
-    } = useKontroll();
     const { moveMeasurement } = useMeasurement();
     const { moveAvvik } = useAvvik();
 
@@ -171,9 +167,8 @@ export const ClipBoardContextProvider = ({
         }
         if (measurementPaste !== undefined) {
             for (const measurement of measurementPaste.measurement) {
-                const skjema = skjemaer?.find(
-                    (skjema) => skjema.id === measurementPaste.skjemaId
-                );
+                const skjema = {} as Skjema;
+                // TODO:
                 if (skjema) {
                     if (await moveMeasurement(measurement, skjema)) {
                         dispatch({
@@ -190,12 +185,10 @@ export const ClipBoardContextProvider = ({
         }
         if (avvikPaste !== undefined) {
             for (const avvik of avvikPaste.avvik) {
-                const checklist = checklists?.find(
-                    (checklist) => checklist.id === avvikPaste.checklistId
-                );
-                const skjema = skjemaer?.find(
-                    (skjema) => skjema.id === checklist?.skjema.id
-                );
+                const checklist = {} as Checklist;
+                const skjema = {} as Skjema;
+                // TODO
+
                 if (checklist && skjema) {
                     if (await moveAvvik(avvik, checklist, skjema)) {
                         dispatch({

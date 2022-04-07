@@ -1,7 +1,8 @@
 import {
     Checklist,
     ExtendedSkjema,
-    ReportKontroll
+    ReportKontroll,
+    Skjema
 } from '../contracts/kontrollApi';
 import {
     LocalImage,
@@ -30,7 +31,6 @@ import { useAvvik } from '../data/avvik';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
 import { useMeasurement } from '../data/measurement';
 import { useSnackbar } from 'notistack';
 import { useUser } from '../data/user';
@@ -42,6 +42,7 @@ export const useReport = () => {
     return useContext(Context);
 };
 
+const skjemaer: Skjema[] = [];
 export const DocumentContainer = ({
     children,
     kontrollId,
@@ -151,10 +152,6 @@ export const DocumentContainer = ({
     const [previewDocument, setPreviewDocument] = useState<boolean>(false);
     const [downloadReport, setDownloadReport] = useState<boolean>(false);
 
-    const {
-        state: { skjemaer }
-    } = useKontroll();
-
     const [_skjemaer, setSkjemaer] = useState<ExtendedSkjema[]>();
     const [filteredSkjemaer, setFilteredSkjemaer] =
         useState<ExtendedSkjema[]>();
@@ -230,7 +227,7 @@ export const DocumentContainer = ({
                 );
             }
         }
-    }, [skjemaer, kontrollId, reportSetting, hasLoaded]);
+    }, [kontrollId, reportSetting, hasLoaded]);
 
     const toggleModuleVisibilityState = (id: ReportModules) => {
         setPreviewDocument(false);

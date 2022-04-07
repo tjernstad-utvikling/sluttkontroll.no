@@ -20,11 +20,11 @@ import { MeasurementsViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
-import { useKontroll } from '../data/kontroll';
 import { useKontrollById } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
+import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
 
 const MeasurementsView = () => {
     const { classes } = usePageStyles();
@@ -33,9 +33,6 @@ const MeasurementsView = () => {
     const [_measurements, setMeasurements] = useState<Array<Measurement>>([]);
     const [measurementModalOpen, setMeasurementModalOpen] =
         useState<boolean>(false);
-    const {
-        state: { skjemaer }
-    } = useKontroll();
 
     const { confirm } = useConfirm();
 
@@ -47,6 +44,7 @@ const MeasurementsView = () => {
     } = useMeasurement();
 
     const kontrollData = useKontrollById(Number(kontrollId));
+    const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
 
     useEffect(() => {
         let active = true;
@@ -154,47 +152,47 @@ const MeasurementsView = () => {
                                 )
                             }>
                             <CardContent>
-                                {skjemaer !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({
-                                            kontroll: kontrollData.data,
-                                            skjemaer: skjemaer ?? [],
-                                            deleteMeasurement,
-                                            edit: (id) => {
-                                                setEditId(id);
-                                                setMeasurementModalOpen(true);
-                                            },
-                                            measurementTypes
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="measurements">
-                                        <MeasurementTable
-                                            measurements={_measurements ?? []}
-                                            onSelected={onSelectForClipboard}
-                                            leftAction={
-                                                skjemaId !== undefined && (
-                                                    <PasteButton
-                                                        clipboardHas={
-                                                            clipboardHasMeasurement
+                                <TableContainer
+                                    columns={columns({
+                                        kontroll: kontrollData.data,
+                                        skjemaer: skjemaData.data ?? [],
+                                        deleteMeasurement,
+                                        edit: (id) => {
+                                            setEditId(id);
+                                            setMeasurementModalOpen(true);
+                                        },
+                                        measurementTypes
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="measurements">
+                                    <MeasurementTable
+                                        measurements={_measurements ?? []}
+                                        isLoading={
+                                            skjemaData.isLoading ||
+                                            kontrollData.isLoading
+                                        }
+                                        onSelected={onSelectForClipboard}
+                                        leftAction={
+                                            skjemaId !== undefined && (
+                                                <PasteButton
+                                                    clipboardHas={
+                                                        clipboardHasMeasurement
+                                                    }
+                                                    options={{
+                                                        measurementPaste: {
+                                                            skjemaId:
+                                                                Number(
+                                                                    skjemaId
+                                                                ),
+                                                            measurement:
+                                                                measurementToPast
                                                         }
-                                                        options={{
-                                                            measurementPaste: {
-                                                                skjemaId:
-                                                                    Number(
-                                                                        skjemaId
-                                                                    ),
-                                                                measurement:
-                                                                    measurementToPast
-                                                            }
-                                                        }}
-                                                    />
-                                                )
-                                            }
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster målinger</div>
-                                )}
+                                                    }}
+                                                />
+                                            )
+                                        }
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

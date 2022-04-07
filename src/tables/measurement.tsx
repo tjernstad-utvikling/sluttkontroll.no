@@ -176,11 +176,13 @@ interface MeasurementTableProps {
     measurements: Measurement[];
     onSelected: (ids: number[]) => void;
     leftAction?: React.ReactNode;
+    isLoading: boolean;
 }
 export const MeasurementTable = ({
     measurements,
     onSelected,
-    leftAction
+    leftAction,
+    isLoading
 }: MeasurementTableProps) => {
     const {
         state: { measurementClipboard }
@@ -194,6 +196,7 @@ export const MeasurementTable = ({
         <BaseTable
             onSelected={onSelected}
             getRowStyling={getRowStyling}
+            loading={isLoading}
             data={measurements}>
             {leftAction}
         </BaseTable>

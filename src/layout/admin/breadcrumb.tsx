@@ -16,9 +16,11 @@ import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import { Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { makeStyles } from '../../theme/makeStyles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { useClient } from '../../data/klient';
-import { useKontroll } from '../../data/kontroll';
+import { useKontrollById } from '../../api/hooks/useKontroll';
+import { useSkjemaById } from '../../api/hooks/useSkjema';
 
 export function KontrollBreadcrumbs() {
     const pages = [
@@ -44,7 +46,7 @@ export function KontrollBreadcrumbs() {
 }
 
 const YourControl = () => {
-    const { classes } = useStyles();
+    const classes = useStyles();
 
     const match = useRouteMatch('/kontroll');
     if (match !== null && match.isExact) {
@@ -59,7 +61,7 @@ const YourControl = () => {
 };
 
 const Client = () => {
-    const { classes } = useStyles();
+    const classes = useStyles();
     const {
         state: { klienter }
     } = useClient();
@@ -82,7 +84,7 @@ const Client = () => {
     return undefined;
 };
 const Location = () => {
-    const { classes } = useStyles();
+    const classes = useStyles();
     const {
         state: { klienter }
     } = useClient();
@@ -110,25 +112,21 @@ const Location = () => {
 };
 
 const Control = () => {
-    const { classes } = useStyles();
-    const {
-        state: { kontroller }
-    } = useKontroll();
+    const classes = useStyles();
+
     const match = useRouteMatch<SkjemaerViewParams>(
         '/kontroll/kl/:klientId/obj/:objectId/:kontrollId'
     );
 
-    const kontroll = useMemo(() => {
-        return kontroller?.find(
-            (k) => k.id === Number(match?.params.kontrollId)
-        );
-    }, [kontroller, match?.params.kontrollId]);
+    const kontrollData = useKontrollById(
+        match?.params.kontrollId ? Number(match?.params.kontrollId) : undefined
+    );
 
-    if (match !== null && kontroll !== undefined) {
+    if (match !== null && kontrollData.data !== undefined) {
         return (
             <Breadcrumb key={match.path} to={match.url} isExact={match.isExact}>
                 <PlaylistAddCheckIcon className={classes.icon} />
-                {kontroll.name}
+                {kontrollData.data.name}
             </Breadcrumb>
         );
     }
@@ -136,23 +134,21 @@ const Control = () => {
 };
 
 const Skjema = () => {
-    const { classes } = useStyles();
-    const {
-        state: { skjemaer }
-    } = useKontroll();
+    const classes = useStyles();
+
     const match = useRouteMatch<SjekklisterViewParams>(
         '/kontroll/kl/:klientId/obj/:objectId/:kontrollId/skjema/:skjemaId'
     );
 
-    const skjema = useMemo(() => {
-        return skjemaer?.find((s) => s.id === Number(match?.params.skjemaId));
-    }, [skjemaer, match?.params.skjemaId]);
+    const skjemaData = useSkjemaById(
+        match?.params.skjemaId ? Number(match?.params.skjemaId) : undefined
+    );
 
-    if (match !== null && skjema !== undefined) {
+    if (match !== null && skjemaData.data !== undefined) {
         return (
             <Breadcrumb key={match.path} to={match.url} isExact={match.isExact}>
                 <ListIcon className={classes.icon} />
-                {skjema.area} - {skjema.omrade}
+                {skjemaData.data.area} - {skjemaData.data.omrade}
             </Breadcrumb>
         );
     }
@@ -169,7 +165,7 @@ const Breadcrumb = ({
     children,
     to
 }: BreadcrumbProps): JSX.Element => {
-    const { classes } = useStyles();
+    const classes = useStyles();
     if (isExact) {
         return (
             <Typography color="textPrimary" className={classes.link}>
@@ -188,13 +184,15 @@ const Breadcrumb = ({
     );
 };
 
-const useStyles = makeStyles()((theme: Theme) => ({
-    link: {
-        display: 'flex'
-    },
-    icon: {
-        marginRight: theme.spacing(0.5),
-        width: 20,
-        height: 20
-    }
-}));
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        link: {
+            display: 'flex'
+        },
+        icon: {
+            marginRight: theme.spacing(0.5),
+            width: 20,
+            height: 20
+        }
+    })
+);

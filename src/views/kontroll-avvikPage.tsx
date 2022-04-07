@@ -1,5 +1,6 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import {
+    useAddAvvikImage,
     useAvvikById,
     useCloseAvvik,
     useDeleteAvvik,
@@ -8,6 +9,7 @@ import {
 import { useHistory, useParams } from 'react-router-dom';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikImageCard } from '../components/avvik';
@@ -27,7 +29,6 @@ import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import { makeStyles } from '../theme/makeStyles';
-import { useAvvik } from '../data/avvik';
 import { useConfirm } from '../hooks/useConfirm';
 import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -57,7 +58,6 @@ const AvvikView = () => {
     const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
 
     const { confirm } = useConfirm();
-    const { addAvvikImages } = useAvvik();
 
     const closeAvvikMutation = useCloseAvvik({ isFromDetailsPage: true });
 
@@ -86,6 +86,19 @@ const AvvikView = () => {
         }
     }
     const deleteMutation = useDeleteAvvik();
+
+    const newImageMutation = useAddAvvikImage();
+    async function addAvvikImages(avvik: Avvik, images: File[]) {
+        try {
+            newImageMutation.mutateAsync({
+                avvik,
+                images
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
 
     const askToDeleteAvvik = async () => {
         if (avvikData.data !== undefined) {

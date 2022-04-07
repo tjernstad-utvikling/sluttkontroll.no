@@ -20,7 +20,7 @@ import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import { makeStyles } from '../theme/makeStyles';
-import { useAvvik } from '../data/avvik';
+import { useDeleteAvvikImage } from '../api/hooks/useAvvik';
 
 interface AvvikCardProps {
     avvik: Avvik;
@@ -243,7 +243,19 @@ interface AvvikImageCardProps {
 }
 export const AvvikImageCard = ({ avvikBilde, avvik }: AvvikImageCardProps) => {
     const { classes } = useStyles();
-    const { deleteAvvikImage } = useAvvik();
+
+    const deleteImageMutation = useDeleteAvvikImage();
+
+    async function deleteAvvikImage(avvik: Avvik, avvikBildeId: number) {
+        try {
+            await deleteImageMutation.mutateAsync({
+                avvik,
+                imageId: avvikBildeId
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <Card className={classes.cardRoot}>
             <CardActionArea>

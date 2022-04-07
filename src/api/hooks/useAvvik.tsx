@@ -156,7 +156,6 @@ export function useOpenAvvik({
                 // ✅ update detail view directly
 
                 const _avvik = avvik?.find((a) => a.id === vars.avvikId);
-                console.log({ avvik, _avvik });
 
                 if (_avvik) {
                     queryClient.setQueryData(
@@ -204,6 +203,189 @@ export function useOpenAvvik({
         }
     );
 }
+
+export function useNewAvvik() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const newImageMutation = useAddAvvikImage();
+
+    return useMutation<
+        Avvik,
+        unknown,
+        {
+            beskrivelse: string;
+            kommentar: string;
+            utbedrer: User[] | null;
+            checklistId: number;
+            images: File[];
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.post<{ avvik: Avvik }>(
+                `/avvik/${body.checklistId}`,
+                {
+                    ...body,
+                    utbedrer: body.utbedrer?.map((u) => u.id)
+                }
+            );
+            return data.avvik;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: async (newAvvik, vars) => {
+                const avvik = queryClient.getQueryData<Avvik[]>(['avvik']);
+                // ✅ update detail view directly
+
+                if (avvik) {
+                    queryClient.setQueryData(
+                        ['avvik'],
+                        unionBy([newAvvik], avvik, 'id').sort(
+                            (a, b) => a.id - b.id
+                        )
+                    );
+                }
+                if (vars.images.length > 0) {
+                    await newImageMutation.mutateAsync({
+                        images: vars.images,
+                        avvik: newAvvik
+                    });
+                }
+
+                queryClient.invalidateQueries(['avvik']);
+
+                enqueueSnackbar('Avvik lagret', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    enqueueSnackbar('Kan ikke lagre avviket', {
+                        variant: 'warning'
+                    });
+                }
+            }
+        }
+    );
+}
+export function useAddAvvikImage() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        AvvikBilde[],
+        unknown,
+        {
+            images: File[];
+            avvik: Avvik;
+        }
+    >(
+        async (body) => {
+            const formData = new FormData();
+
+            body.images.forEach((file) => {
+                formData.append('images', file);
+            });
+
+            const { data } = await sluttkontrollApi.post<{
+                avvikBilder: AvvikBilde[];
+            }>(`/avvik/bilder/add/${body.avvik.id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            return data.avvikBilder;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (newAvvikBilder, vars) => {
+                const avvik = queryClient.getQueryData<Avvik[]>(['avvik']);
+                // ✅ update detail view directly
+
+                if (avvik) {
+                    queryClient.setQueryData(
+                        ['avvik'],
+                        unionBy(
+                            [{ ...vars.avvik, avvikBilder: newAvvikBilder }],
+                            avvik,
+                            'id'
+                        ).sort((a, b) => a.id - b.id)
+                    );
+                }
+
+                queryClient.invalidateQueries(['avvik']);
+            },
+            onError: (error: any) => {
+                if (
+                    error.response.status === 400 &&
+                    error.response.message === 'missing file'
+                ) {
+                    enqueueSnackbar(
+                        'Bildet mangler ved opplastning, prøv igjen eller kontakt support',
+                        {
+                            variant: 'warning'
+                        }
+                    );
+                } else {
+                    enqueueSnackbar('Ukjent feil ved opplastning', {
+                        variant: 'warning'
+                    });
+                }
+            }
+        }
+    );
+}
+export function useDeleteAvvikImage() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            imageId: number;
+            avvik: Avvik;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.delete(
+                `/avvik/bilder/${body.imageId}`
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (_, vars) => {
+                const avvik = queryClient.getQueryData<Avvik[]>(['avvik']);
+                // ✅ update detail view directly
+
+                if (avvik) {
+                    queryClient.setQueryData(
+                        ['avvik'],
+                        unionBy(
+                            [
+                                {
+                                    ...vars.avvik,
+                                    avvikBilder: vars.avvik.avvikBilder.filter(
+                                        (b) => b.id !== vars.imageId
+                                    )
+                                }
+                            ],
+                            avvik,
+                            'id'
+                        ).sort((a, b) => a.id - b.id)
+                    );
+                }
+
+                queryClient.invalidateQueries(['avvik']);
+            },
+            onError: (error: any) => {
+                enqueueSnackbar('Ukjent feil ved sletting', {
+                    variant: 'warning'
+                });
+            }
+        }
+    );
+}
+
 export function useDeleteAvvik() {
     const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();

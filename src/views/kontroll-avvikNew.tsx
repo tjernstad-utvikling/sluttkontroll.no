@@ -10,8 +10,8 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { NewImageCard } from '../components/avvik';
 import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
-import { useAvvik } from '../data/avvik';
 import { useChecklistById } from '../api/hooks/useChecklist';
+import { useNewAvvik } from '../api/hooks/useAvvik';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
 
@@ -21,35 +21,31 @@ const AvvikNewView = () => {
 
     const history = useHistory();
 
-    const { newAvvik, addAvvikImages } = useAvvik();
-
     const [images, setImages] = useState<File[]>([]);
 
     const checklistData = useChecklistById(Number(checklistId));
+
+    const newAvvikMutation = useNewAvvik();
 
     const saveNewAvvik = async (
         beskrivelse: string,
         kommentar: string,
         utbedrer: User[] | null
     ) => {
-        const avvik = await newAvvik(
-            beskrivelse,
-            kommentar,
-            utbedrer,
-            Number(checklistId)
-        );
-        if (avvik !== false) {
-            if (images.length > 0) {
-                if (await addAvvikImages(avvik, images)) {
-                    history.goBack();
-                    return true;
-                }
-            } else {
-                history.goBack();
-                return true;
-            }
+        try {
+            await newAvvikMutation.mutateAsync({
+                beskrivelse,
+                kommentar,
+                utbedrer,
+                checklistId: Number(checklistId),
+                images
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            history.goBack();
+            return true;
         }
-        return false;
     };
 
     return (

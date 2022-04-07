@@ -19,7 +19,7 @@ import { format } from 'date-fns';
 export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {
     const kontroll = (kontroller: Kontroll[]): string => {
         const kontroll = kontroller.find(
-            (k) => k.id === data?.checklist.skjema.kontroll.id
+            (k) => k.id === data?.checklist?.skjema?.kontroll?.id
         );
         if (kontroll !== undefined) {
             return kontroll?.name || '';
@@ -27,14 +27,18 @@ export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {
         return '';
     };
     const area = (skjemaer: Skjema[]): string => {
-        const skjema = skjemaer.find((s) => s.id === data?.checklist.skjema.id);
+        const skjema = skjemaer.find(
+            (s) => s.id === data?.checklist?.skjema?.id
+        );
         if (skjema !== undefined) {
             return skjema.area;
         }
         return '';
     };
     const omrade = (skjemaer: Skjema[]): string => {
-        const skjema = skjemaer.find((s) => s.id === data?.checklist.skjema.id);
+        const skjema = skjemaer.find(
+            (s) => s.id === data?.checklist?.skjema?.id
+        );
         if (skjema !== undefined) {
             return skjema.omrade;
         }

@@ -182,14 +182,14 @@ const AvvikView = () => {
                                         <dl className={classes2.list}>
                                             <dt>Oppdaget</dt>
                                             <dd>
-                                                {format(
-                                                    new Date(
-                                                        avvikData.data
-                                                            ?.registrertDato ??
-                                                            ''
-                                                    ),
-                                                    'dd.MM.yyyy'
-                                                )}
+                                                {avvikData.data
+                                                    ?.registrertDato &&
+                                                    format(
+                                                        new Date(
+                                                            avvikData.data?.registrertDato
+                                                        ),
+                                                        'dd.MM.yyyy'
+                                                    )}
                                             </dd>
 
                                             <dt>Kontroll</dt>
@@ -235,7 +235,7 @@ const AvvikView = () => {
                                     <Grid item xs={12} sm={7}>
                                         <div
                                             className={classes2.imageContainer}>
-                                            {avvikData.data?.avvikBilder.map(
+                                            {avvikData.data?.avvikBilder?.map(
                                                 (ab) => (
                                                     <AvvikImageCard
                                                         key={ab.id}

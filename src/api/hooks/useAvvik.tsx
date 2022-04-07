@@ -77,7 +77,10 @@ export function useAvvikById(avvikId: number | undefined) {
                 return queryClient
                     .getQueryData<Avvik[]>('avvik')
                     ?.find((a) => a.id === avvikId);
-            }
+            },
+
+            // The query will not execute until the avvikId exists
+            enabled: !!avvikId
         }
     );
 }
@@ -153,6 +156,7 @@ export function useOpenAvvik({
                 // ✅ update detail view directly
 
                 const _avvik = avvik?.find((a) => a.id === vars.avvikId);
+                console.log({ avvik, _avvik });
 
                 if (_avvik) {
                     queryClient.setQueryData(
@@ -161,13 +165,14 @@ export function useOpenAvvik({
                             (a, b) => a.id - b.id
                         )
                     );
+                    if (isFromDetailsPage) {
+                        queryClient.setQueryData(['avvik', vars.avvikId], {
+                            ..._avvik,
+                            status: ''
+                        });
+                    }
                 }
-                if (isFromDetailsPage) {
-                    queryClient.setQueryData(['avvik', vars.avvikId], {
-                        ..._avvik,
-                        status: ''
-                    });
-                }
+
                 queryClient.invalidateQueries(['avvik']);
 
                 enqueueSnackbar('Avvik åpnet', {

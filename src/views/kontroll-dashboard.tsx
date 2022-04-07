@@ -30,7 +30,7 @@ import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
-import { useMeasurement } from '../data/measurement';
+import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
@@ -57,9 +57,7 @@ const KontrollerView = () => {
         myControl: true
     });
 
-    const {
-        state: { measurements }
-    } = useMeasurement();
+    const measurementData = useMeasurements({ myControl: true });
 
     useEffectOnce(() => {
         loadUsers();
@@ -154,7 +152,8 @@ const KontrollerView = () => {
                                         users: users ?? [],
                                         klienter: klienter ?? [],
                                         avvik: avvikData.data ?? [],
-                                        measurements: measurements ?? [],
+                                        measurements:
+                                            measurementData.data ?? [],
                                         edit: editKontroll,
                                         toggleStatus: toggleStatusKontroll,
                                         clipboardHasSkjema,

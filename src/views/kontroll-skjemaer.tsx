@@ -25,7 +25,7 @@ import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useKontrollById } from '../api/hooks/useKontroll';
-import { useMeasurement } from '../data/measurement';
+import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SkjemaerView = () => {
@@ -46,16 +46,14 @@ const SkjemaerView = () => {
 
     const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
 
+    const measurementData = useMeasurements({ kontrollId: Number(kontrollId) });
+
     const removeSkjemaMutation = useRemoveSkjema();
 
     const avvikData = useAvvik({
         includeClosed: true,
         kontrollId: Number(kontrollId)
     });
-
-    const {
-        state: { measurements }
-    } = useMeasurement();
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -136,7 +134,7 @@ const SkjemaerView = () => {
                                     columns={columns(
                                         kontrollData.data,
                                         avvikData.data ?? [],
-                                        measurements ?? [],
+                                        measurementData.data ?? [],
                                         url,
                                         deleteSkjema,
                                         setEditId,
@@ -150,7 +148,8 @@ const SkjemaerView = () => {
                                         skjemaer={skjemaData.data ?? []}
                                         isLoading={
                                             skjemaData.isLoading ||
-                                            avvikData.isLoading
+                                            avvikData.isLoading ||
+                                            measurementData.isLoading
                                         }
                                         onSelected={onSelectForClipboard}
                                         leftAction={

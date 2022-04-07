@@ -6,7 +6,6 @@ import {
 } from '../../contracts/measurementApi';
 
 export interface MeasurementState {
-    measurements: Array<Measurement> | undefined;
     measurementTypes: MeasurementType[] | undefined;
 }
 

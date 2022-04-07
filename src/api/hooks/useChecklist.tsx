@@ -17,9 +17,9 @@ export function useChecklistsBySkjemaId({
         [
             'checklist',
             ...(kontrollId
-                ? ['location', kontrollId]
+                ? ['kontrollId', kontrollId]
                 : skjemaId
-                ? ['client', skjemaId]
+                ? ['skjemaId', skjemaId]
                 : [])
         ],
         async () => {

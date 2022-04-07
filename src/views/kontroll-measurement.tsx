@@ -14,7 +14,6 @@ import { useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { Measurement } from '../contracts/measurementApi';
 import { MeasurementModal } from '../modal/measurement';
 import { MeasurementsViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
@@ -22,6 +21,7 @@ import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useKontrollById } from '../api/hooks/useKontroll';
 import { useMeasurement } from '../data/measurement';
+import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
@@ -30,7 +30,6 @@ const MeasurementsView = () => {
     const { classes } = usePageStyles();
     const { kontrollId, skjemaId } = useParams<MeasurementsViewParams>();
 
-    const [_measurements, setMeasurements] = useState<Array<Measurement>>([]);
     const [measurementModalOpen, setMeasurementModalOpen] =
         useState<boolean>(false);
 
@@ -38,36 +37,25 @@ const MeasurementsView = () => {
 
     const [editId, setEditId] = useState<number>();
 
+    const measurementData = useMeasurements({
+        ...(skjemaId
+            ? { skjemaId: Number(skjemaId) }
+            : kontrollId
+            ? { kontrollId: Number(kontrollId) }
+            : {})
+    });
     const {
-        state: { measurements, measurementTypes },
+        state: { measurementTypes },
         removeMeasurement
     } = useMeasurement();
 
     const kontrollData = useKontrollById(Number(kontrollId));
     const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
 
-    useEffect(() => {
-        let active = true;
-        if (measurements !== undefined && active) {
-            if (skjemaId !== undefined) {
-                setMeasurements(
-                    measurements.filter((m) => m.skjema.id === Number(skjemaId))
-                );
-            } else {
-                setMeasurements(
-                    measurements.filter(
-                        (m) => m.skjema.kontroll.id === Number(kontrollId)
-                    )
-                );
-            }
-        }
-        return () => {
-            active = false;
-        };
-    }, [skjemaId, measurements, kontrollId]);
-
     const deleteMeasurement = async (measurementId: number) => {
-        const measurement = measurements?.find((m) => m.id === measurementId);
+        const measurement = measurementData.data?.find(
+            (m) => m.id === measurementId
+        );
         if (measurement !== undefined && measurementTypes !== undefined) {
             let mType = measurement.type;
 
@@ -115,11 +103,12 @@ const MeasurementsView = () => {
     }, []);
 
     const onSelectForClipboard = (ids: number[]) => {
-        selectedMeasurements(
-            _measurements.filter((measurement) => {
-                return ids.includes(measurement.id);
-            })
-        );
+        if (measurementData.data)
+            selectedMeasurements(
+                measurementData.data.filter((measurement) => {
+                    return ids.includes(measurement.id);
+                })
+            );
     };
 
     return (
@@ -166,10 +155,13 @@ const MeasurementsView = () => {
                                     defaultColumns={defaultColumns}
                                     tableId="measurements">
                                     <MeasurementTable
-                                        measurements={_measurements ?? []}
+                                        measurements={
+                                            measurementData.data ?? []
+                                        }
                                         isLoading={
                                             skjemaData.isLoading ||
-                                            kontrollData.isLoading
+                                            kontrollData.isLoading ||
+                                            measurementData.isLoading
                                         }
                                         onSelected={onSelectForClipboard}
                                         leftAction={

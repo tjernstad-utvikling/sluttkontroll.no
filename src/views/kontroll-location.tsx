@@ -37,7 +37,7 @@ import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
-import { useMeasurement } from '../data/measurement';
+import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
 
@@ -81,9 +81,7 @@ const KontrollObjektView = () => {
         locationId: Number(objectId)
     });
 
-    const {
-        state: { measurements }
-    } = useMeasurement();
+    const measurementData = useMeasurements({ locationId: Number(objectId) });
 
     useEffect(() => {
         if (loadedObjekt !== Number(objectId)) {
@@ -245,7 +243,8 @@ const KontrollObjektView = () => {
                                         users: users ?? [],
                                         klienter: klienter ?? [],
                                         avvik: avvikData.data ?? [],
-                                        measurements: measurements ?? [],
+                                        measurements:
+                                            measurementData.data ?? [],
                                         edit: editKontroll,
                                         toggleStatus: toggleStatusKontroll,
                                         clipboardHasSkjema,

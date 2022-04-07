@@ -4,8 +4,7 @@ import unionBy from 'lodash.unionby';
 
 export const initialState: kontrollState = {
     kontroller: undefined,
-    skjemaer: undefined,
-    checklists: undefined
+    skjemaer: undefined
 };
 
 export const kontrollReducer = (
@@ -67,36 +66,6 @@ export const kontrollReducer = (
                 skjemaer: state.skjemaer?.filter(
                     (s) => s.id !== action.payload.skjemaId
                 )
-            };
-        case ActionType.addChecklists:
-            return {
-                ...state,
-                checklists: unionBy(action.payload, state.checklists, 'id')
-            };
-        case ActionType.editChecklists:
-            return {
-                ...state,
-                checklists:
-                    state.checklists !== undefined
-                        ? [
-                              ...state.checklists.filter(
-                                  (cl) =>
-                                      cl.skjema.id !== action.payload.skjemaId
-                              ),
-                              ...action.payload.checklists
-                          ]
-                        : [...action.payload.checklists]
-            };
-        case ActionType.updateChecklist:
-            return {
-                ...state,
-                checklists: state.checklists?.map((c) => {
-                    if (c.id === action.payload.id) {
-                        return action.payload;
-                    } else {
-                        return c;
-                    }
-                })
             };
         default:
             throw new Error('unknown action');

@@ -10,6 +10,10 @@ import {
     columns,
     defaultColumns
 } from '../tables/sjekkliste';
+import {
+    useChecklistsBySkjemaId,
+    useToggleApplicable
+} from '../api/hooks/useChecklist';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
@@ -19,9 +23,7 @@ import Grid from '@mui/material/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
-import { useChecklistsBySkjemaId } from '../api/hooks/useChecklist';
 import { useClipBoard } from '../data/clipboard';
-import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SjekklisterView = () => {
@@ -32,9 +34,10 @@ const SjekklisterView = () => {
     let { url } = useRouteMatch();
 
     const [_checklists, setChecklists] = useState<Checklist[]>([]);
-    const { toggleAktuellChecklist } = useKontroll();
 
-    const checklistData = useChecklistsBySkjemaId(Number(skjemaId));
+    const checklistData = useChecklistsBySkjemaId({
+        skjemaId: Number(skjemaId)
+    });
 
     const {
         state: { avvik }
@@ -55,6 +58,18 @@ const SjekklisterView = () => {
             );
         }
     }, [checklistData.data]);
+
+    const toggleMutation = useToggleApplicable();
+
+    async function toggleAktuellChecklist(checklistId: number) {
+        const checklist = checklistData.data?.find((c) => c.id === checklistId);
+        if (!checklist) return;
+
+        await toggleMutation.mutateAsync({
+            applicable: !checklist.aktuell,
+            checklist
+        });
+    }
 
     /**
      * Clipboard

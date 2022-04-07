@@ -1,11 +1,8 @@
 import { Checklist, Kontroll, Skjema } from '../../contracts/kontrollApi';
 
-import { Checkpoint } from '../../contracts/checkpointApi';
-
 export interface kontrollState {
     kontroller: Array<Kontroll> | undefined;
     skjemaer: Array<Skjema> | undefined;
-    checklists: Array<Checklist> | undefined;
 }
 
 export enum ActionType {
@@ -76,14 +73,6 @@ export type KontrollActions =
     | updateChecklist;
 
 export interface ContextInterface {
-    state: kontrollState;
-
     showAllKontroller: boolean;
     setShowAllKontroller: (state: boolean) => void;
-
-    saveEditChecklist: (
-        skjemaId: number,
-        checkpoints: Checkpoint[]
-    ) => Promise<boolean>;
-    toggleAktuellChecklist: (checklistId: number) => Promise<boolean>;
 }

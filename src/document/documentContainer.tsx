@@ -1,4 +1,8 @@
-import { ExtendedSkjema, ReportKontroll } from '../contracts/kontrollApi';
+import {
+    Checklist,
+    ExtendedSkjema,
+    ReportKontroll
+} from '../contracts/kontrollApi';
 import {
     LocalImage,
     ReportModules,
@@ -32,6 +36,7 @@ import { useSnackbar } from 'notistack';
 import { useUser } from '../data/user';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
+const checklists: Checklist[] = [];
 
 export const useReport = () => {
     return useContext(Context);
@@ -147,7 +152,7 @@ export const DocumentContainer = ({
     const [downloadReport, setDownloadReport] = useState<boolean>(false);
 
     const {
-        state: { skjemaer, checklists }
+        state: { skjemaer }
     } = useKontroll();
 
     const [_skjemaer, setSkjemaer] = useState<ExtendedSkjema[]>();
@@ -225,7 +230,7 @@ export const DocumentContainer = ({
                 );
             }
         }
-    }, [skjemaer, kontrollId, reportSetting, hasLoaded, checklists]);
+    }, [skjemaer, kontrollId, reportSetting, hasLoaded]);
 
     const toggleModuleVisibilityState = (id: ReportModules) => {
         setPreviewDocument(false);

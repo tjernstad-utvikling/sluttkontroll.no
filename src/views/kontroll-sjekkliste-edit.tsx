@@ -1,9 +1,12 @@
 import { Card, CardContent } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
+import {
+    useChecklistsBySkjemaId,
+    useUpdateChecklist
+} from '../api/hooks/useChecklist';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -14,7 +17,6 @@ import { TableContainer } from '../tables/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { getCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SjekklisteEditView = () => {
@@ -32,34 +34,33 @@ const SjekklisteEditView = () => {
     const [selectFromTemplate, setSelectFromTemplate] =
         useState<boolean>(false);
 
-    const [_checklists, setChecklists] = useState<Checklist[]>([]);
+    const checklistData = useChecklistsBySkjemaId({
+        skjemaId: Number(skjemaId)
+    });
 
-    const {
-        state: { checklists },
-        saveEditChecklist
-    } = useKontroll();
+    const checklistMutations = useUpdateChecklist();
 
     const onSubmitChecklist = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         setIsSubmitting(true);
-        if (await saveEditChecklist(Number(skjemaId), selected)) {
+        try {
+            await checklistMutations.mutateAsync({
+                checkpoints: selected,
+                skjemaId: Number(skjemaId)
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
             history.goBack();
         }
+
         setIsSubmitting(false);
     };
 
     useEffect(() => {
-        if (checklists !== undefined) {
-            setChecklists(
-                checklists.filter((c) => c.skjema.id === Number(skjemaId))
-            );
-        }
-    }, [checklists, skjemaId]);
-
-    useEffect(() => {
-        setSelected(_checklists.map((c) => c.checkpoint));
-    }, [_checklists]);
+        setSelected(checklistData.data?.map((c) => c.checkpoint) ?? []);
+    }, [checklistData.data]);
 
     useEffectOnce(async () => {
         try {
@@ -122,7 +123,9 @@ const SjekklisteEditView = () => {
                                                 defaultColumns={defaultColumns}
                                                 tableId="checkpoints">
                                                 <CheckpointTable
-                                                    checklists={_checklists}
+                                                    checklists={
+                                                        checklistData.data
+                                                    }
                                                     templateList={
                                                         template?.skjemaTemplateCheckpoints
                                                     }

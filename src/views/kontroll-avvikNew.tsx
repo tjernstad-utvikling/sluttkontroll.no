@@ -1,46 +1,36 @@
 import { Card, CardContent } from '../components/card';
-import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { AvvikNewViewParams } from '../contracts/navigation';
 import { AvvikSchema } from '../schema/avvik';
-import { Checklist } from '../contracts/kontrollApi';
 import Container from '@mui/material/Container';
 import { DropZone } from '../components/uploader';
 import Grid from '@mui/material/Grid';
+import LinearProgress from '@mui/material/LinearProgress';
 import { NewImageCard } from '../components/avvik';
 import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
 import { useAvvik } from '../data/avvik';
-import { useKontroll } from '../data/kontroll';
+import { useChecklistById } from '../api/hooks/useChecklist';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useState } from 'react';
 
 const AvvikNewView = () => {
     const { classes } = usePageStyles();
     const { checklistId } = useParams<AvvikNewViewParams>();
 
-    const [checklist, setChecklist] = useState<Checklist>();
-
     const history = useHistory();
-
-    const {
-        state: { checklists }
-    } = useKontroll();
 
     const { newAvvik, addAvvikImages } = useAvvik();
 
-    useEffect(() => {
-        if (checklists !== undefined) {
-            setChecklist(checklists.find((c) => c.id === Number(checklistId)));
-        }
-    }, [checklistId, checklists]);
-
     const [images, setImages] = useState<File[]>([]);
+
+    const checklistData = useChecklistById(Number(checklistId));
 
     const saveNewAvvik = async (
         beskrivelse: string,
         kommentar: string,
-        utbedrer: Array<User> | null
+        utbedrer: User[] | null
     ) => {
         const avvik = await newAvvik(
             beskrivelse,
@@ -70,12 +60,14 @@ const AvvikNewView = () => {
                     <Grid item xs={12}>
                         <Card title="Nytt Avvik">
                             <CardContent>
-                                {checklist !== undefined ? (
+                                {checklistData.isLoading && <LinearProgress />}
+                                {checklistData.isFetched && (
                                     <Grid container>
                                         <Grid item xs={12}>
                                             <AvvikSchema
                                                 beskrivelse={
-                                                    checklist.checkpoint.tekst
+                                                    checklistData.data
+                                                        ?.checkpoint.tekst
                                                 }
                                                 onSubmit={saveNewAvvik}
                                             />
@@ -108,8 +100,6 @@ const AvvikNewView = () => {
                                             </DropZone>
                                         </Grid>
                                     </Grid>
-                                ) : (
-                                    <div>Laster sjekklister</div>
                                 )}
                             </CardContent>
                         </Card>

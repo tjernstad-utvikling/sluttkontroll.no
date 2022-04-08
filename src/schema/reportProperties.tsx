@@ -17,6 +17,7 @@ import { makeStyles } from '../theme/makeStyles';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
 import { useUser } from '../data/user';
+import { useZipCode } from '../api/hooks/useUtils';
 
 interface Option {
     value: User;
@@ -227,10 +228,7 @@ export const ReportPropertiesSchema = ({
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        id="postnr"
+                                    <ZipCodeField
                                         label="Postnr"
                                         name="postnr"
                                     />
@@ -409,6 +407,39 @@ const KontrollerContactField = ({
     return (
         <TextField
             readonly
+            variant="outlined"
+            fullWidth
+            id={name}
+            label={label}
+            name={name}
+        />
+    );
+};
+interface ZipCodeFieldProps {
+    name: string;
+    label: string;
+}
+const ZipCodeField = ({ name, label }: ZipCodeFieldProps) => {
+    const {
+        values: { postnr },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    const zipCodeData = useZipCode({
+        code: postnr
+    });
+
+    useEffect(() => {
+        console.log(zipCodeData.data);
+        if (zipCodeData.data) {
+            setFieldValue('poststed', zipCodeData.data.poststed);
+        }
+        console.log('save ZipCode');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [zipCodeData.data]);
+
+    return (
+        <TextField
             variant="outlined"
             fullWidth
             id={name}

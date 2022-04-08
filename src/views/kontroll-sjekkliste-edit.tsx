@@ -1,9 +1,6 @@
 import { Card, CardContent } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
-import {
-    useChecklistsBySkjemaId,
-    useUpdateChecklist
-} from '../api/hooks/useChecklist';
+import { useChecklists, useUpdateChecklist } from '../api/hooks/useChecklist';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -34,7 +31,7 @@ const SjekklisteEditView = () => {
     const [selectFromTemplate, setSelectFromTemplate] =
         useState<boolean>(false);
 
-    const checklistData = useChecklistsBySkjemaId({
+    const checklistData = useChecklists({
         skjemaId: Number(skjemaId)
     });
 

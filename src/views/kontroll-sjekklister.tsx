@@ -10,10 +10,7 @@ import {
     columns,
     defaultColumns
 } from '../tables/sjekkliste';
-import {
-    useChecklistsBySkjemaId,
-    useToggleApplicable
-} from '../api/hooks/useChecklist';
+import { useChecklists, useToggleApplicable } from '../api/hooks/useChecklist';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
@@ -35,7 +32,7 @@ const SjekklisterView = () => {
 
     const [_checklists, setChecklists] = useState<Checklist[]>([]);
 
-    const checklistData = useChecklistsBySkjemaId({
+    const checklistData = useChecklists({
         skjemaId: Number(skjemaId)
     });
 

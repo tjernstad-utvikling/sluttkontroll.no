@@ -6,7 +6,7 @@ import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 import { useSnackbar } from 'notistack';
 
-export function useChecklistsBySkjemaId({
+export function useChecklists({
     skjemaId,
     kontrollId
 }: {

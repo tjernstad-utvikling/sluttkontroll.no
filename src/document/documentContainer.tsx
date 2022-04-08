@@ -1,9 +1,4 @@
-import {
-    Checklist,
-    ExtendedSkjema,
-    ReportKontroll,
-    Skjema
-} from '../contracts/kontrollApi';
+import { ExtendedSkjema, ReportKontroll } from '../contracts/kontrollApi';
 import {
     LocalImage,
     ReportModules,
@@ -32,20 +27,20 @@ import { getKontrollReportData } from '../api/kontrollApi';
 import { getImageFile as getLocationImageFile } from '../api/locationApi';
 import { updateReportSetting } from '../api/reportApi';
 import { useAvvik } from '../api/hooks/useAvvik';
+import { useChecklists } from '../api/hooks/useChecklist';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
 import { useSnackbar } from 'notistack';
 import { useUser } from '../data/user';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
-const checklists: Checklist[] = [];
 
 export const useReport = () => {
     return useContext(Context);
 };
 
-const skjemaer: Skjema[] = [];
 export const DocumentContainer = ({
     children,
     kontrollId,
@@ -60,6 +55,9 @@ export const DocumentContainer = ({
     const [kontroll, setKontroll] = useState<ReportKontroll>();
     const [locationImageUrl, setLocationImageUrl] = useState<string>();
     const [reportSetting, setReportSetting] = useState<ReportSetting>();
+
+    const skjemaData = useSkjemaerByKontrollId(kontrollId);
+    const checklistData = useChecklists({ kontrollId });
 
     const [hasLoaded, setHasLoaded] = useState<boolean>(false);
 
@@ -208,13 +206,13 @@ export const DocumentContainer = ({
     }, [attachments, hasLoaded, reportSetting]);
 
     useEffect(() => {
-        if (skjemaer !== undefined && hasLoaded && checklists) {
-            const kontrollSkjemaer = skjemaer
+        if (skjemaData.data !== undefined && hasLoaded && checklistData.data) {
+            const kontrollSkjemaer = skjemaData.data
                 .filter((s) => s.kontroll.id === kontrollId)
                 .map((ks) => {
                     return {
                         ...ks,
-                        checklists: checklists?.filter(
+                        checklists: checklistData.data?.filter(
                             (ch) => ch.skjema.id === ks.id
                         )
                     };
@@ -231,7 +229,13 @@ export const DocumentContainer = ({
                 );
             }
         }
-    }, [kontrollId, reportSetting, hasLoaded]);
+    }, [
+        kontrollId,
+        reportSetting,
+        hasLoaded,
+        skjemaData.data,
+        checklistData.data
+    ]);
 
     const toggleModuleVisibilityState = (id: ReportModules) => {
         setPreviewDocument(false);

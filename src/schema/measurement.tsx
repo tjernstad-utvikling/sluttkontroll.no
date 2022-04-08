@@ -45,7 +45,7 @@ export const MeasurementSchema = ({
 }: MeasurementSchemaProps): JSX.Element => {
     const mTypeData = useMeasurementTypes();
 
-    const [options, setOptions] = useState<Array<Option>>();
+    const [options, setOptions] = useState<Option[]>();
     const [type, setType] = useState<MeasurementType>();
 
     useEffect(() => {

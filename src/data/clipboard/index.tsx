@@ -10,9 +10,9 @@ import { Measurement } from '../../contracts/measurementApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '../../theme/makeStyles';
-import { useMeasurement } from '../measurement';
 import { useMoveAvvik } from '../../api/hooks/useAvvik';
 import { useMoveKontroll } from '../../api/hooks/useKontroll';
+import { useMoveMeasurement } from '../../api/hooks/useMeasurement';
 import { useMoveSkjema } from '../../api/hooks/useSkjema';
 import { useSnackbar } from 'notistack';
 
@@ -37,11 +37,10 @@ export const ClipBoardContextProvider = ({
     const moveMutation = useMoveKontroll();
     const moveSkjemaMutation = useMoveSkjema();
     const moveAvvikMutation = useMoveAvvik();
+    const moveMeasurementMutation = useMoveMeasurement();
 
     const { classes } = useStyles();
     const { enqueueSnackbar } = useSnackbar();
-
-    const { moveMeasurement } = useMeasurement();
 
     function selectedSkjemaer(skjemaer: Skjema[]) {
         setCutoutLength(skjemaer.length);
@@ -167,15 +166,18 @@ export const ClipBoardContextProvider = ({
         }
         if (measurementPaste !== undefined) {
             for (const measurement of measurementPaste.measurement) {
-                const skjema = {} as Skjema;
-                // TODO:
-                if (skjema) {
-                    if (await moveMeasurement(measurement, skjema)) {
-                        dispatch({
-                            type: ActionType.removeMeasurementClipboard,
-                            payload: measurement
-                        });
-                    }
+                try {
+                    await moveMeasurementMutation.mutateAsync({
+                        measurement,
+                        skjemaId: measurementPaste.skjemaId
+                    });
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    dispatch({
+                        type: ActionType.removeMeasurementClipboard,
+                        payload: measurement
+                    });
                 }
             }
             dispatch({

@@ -4,7 +4,6 @@ import { Suspense, lazy } from 'react';
 import { ClipBoardContextProvider } from '../../data/clipboard';
 import { KontrollContextProvider } from '../../data/kontroll';
 import { MainLayout } from '../../layout/main';
-import { MeasurementContextProvider } from '../../data/measurement';
 import { TemplateContextProvider } from '../../data/skjemaTemplate';
 
 const AvvikNewView = lazy(() => import('../../views/kontroll-avvikNew'));
@@ -118,14 +117,10 @@ export const Kontroll = () => {
 
 const KontrollProvider = ({ children }: { children: React.ReactNode }) => {
     return (
-        <MeasurementContextProvider>
-            <KontrollContextProvider>
-                <TemplateContextProvider>
-                    <ClipBoardContextProvider>
-                        {children}
-                    </ClipBoardContextProvider>
-                </TemplateContextProvider>
-            </KontrollContextProvider>
-        </MeasurementContextProvider>
+        <KontrollContextProvider>
+            <TemplateContextProvider>
+                <ClipBoardContextProvider>{children}</ClipBoardContextProvider>
+            </TemplateContextProvider>
+        </KontrollContextProvider>
     );
 };

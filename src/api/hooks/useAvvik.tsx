@@ -268,6 +268,7 @@ export function useNewAvvik() {
         }
     );
 }
+
 export function useAddAvvikImage() {
     const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
@@ -334,6 +335,7 @@ export function useAddAvvikImage() {
         }
     );
 }
+
 export function useDeleteAvvikImage() {
     const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();

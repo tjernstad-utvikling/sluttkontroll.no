@@ -16,6 +16,10 @@ import {
     loadAttachments,
     loadReportStatement
 } from './utils/loaders';
+import {
+    useMeasurementTypes,
+    useMeasurements
+} from '../api/hooks/useMeasurement';
 
 import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
@@ -31,7 +35,6 @@ import { useAvvik } from '../api/hooks/useAvvik';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useMeasurement } from '../data/measurement';
 import { useSnackbar } from 'notistack';
 import { useUser } from '../data/user';
 
@@ -161,9 +164,9 @@ export const DocumentContainer = ({
         kontrollId: kontrollId
     });
 
-    const {
-        state: { measurements, measurementTypes }
-    } = useMeasurement();
+    const measurementData = useMeasurements({ kontrollId });
+
+    const mTypeData = useMeasurementTypes();
 
     const { loadUsers } = useUser();
 
@@ -335,8 +338,8 @@ export const DocumentContainer = ({
 
                 avvik: avvikData.data,
 
-                measurements,
-                measurementTypes,
+                measurements: measurementData.data,
+                measurementTypes: mTypeData.data,
 
                 attachments,
                 setAttachments,

@@ -17,7 +17,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Select from 'react-select';
 import { TextField } from '../components/input';
-import { useMeasurement } from '../data/measurement';
+import { useMeasurementTypes } from '../api/hooks/useMeasurement';
 import { useState } from 'react';
 
 interface Option {
@@ -43,17 +43,15 @@ export const MeasurementSchema = ({
     onSubmit,
     measurement
 }: MeasurementSchemaProps): JSX.Element => {
-    const {
-        state: { measurementTypes }
-    } = useMeasurement();
+    const mTypeData = useMeasurementTypes();
 
     const [options, setOptions] = useState<Array<Option>>();
     const [type, setType] = useState<MeasurementType>();
 
     useEffect(() => {
-        if (measurementTypes !== undefined) {
+        if (mTypeData.data !== undefined) {
             setOptions(
-                measurementTypes.map((mt) => {
+                mTypeData.data.map((mt) => {
                     let label = mt.longName;
                     if (mt.hasPol) {
                         label = mt.longName.replace('#', '');
@@ -62,7 +60,7 @@ export const MeasurementSchema = ({
                 })
             );
         }
-    }, [measurementTypes]);
+    }, [mTypeData.data]);
 
     const selectedType = useMemo(() => {
         let preSelectedType = 'kont';
@@ -159,7 +157,7 @@ export const MeasurementSchema = ({
                         <Form>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} sm={6}>
-                                    {measurementTypes && (
+                                    {mTypeData.data && (
                                         <div>
                                             <label htmlFor="type-select">
                                                 Type

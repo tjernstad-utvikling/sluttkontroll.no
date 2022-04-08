@@ -1,3 +1,9 @@
+import {
+    useAddMeasurement,
+    useMeasurementById,
+    useUpdateMeasurement
+} from '../api/hooks/useMeasurement';
+
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -6,8 +12,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import LinearProgress from '@mui/material/LinearProgress';
 import { MeasurementSchema } from '../schema/measurement';
 import { NewFormMeasurement } from '../contracts/measurementApi';
-import { useMeasurement } from '../data/measurement';
-import { useMeasurementById } from '../api/hooks/useMeasurement';
 
 interface MeasurementModalProps {
     open: boolean;
@@ -22,31 +26,41 @@ export const MeasurementModal = ({
     skjemaId,
     editId
 }: MeasurementModalProps): JSX.Element => {
-    const { saveNewMeasurement, updateMeasurement } = useMeasurement();
-
     const measurementData = useMeasurementById(editId);
+
+    const newMeasurementMutation = useAddMeasurement();
+    const updateMeasurementMutation = useUpdateMeasurement();
 
     const handleSave = async (
         measurementToSave: NewFormMeasurement
     ): Promise<boolean> => {
         if (editId !== undefined && measurementData.data !== undefined) {
-            if (
-                await updateMeasurement({
-                    ...measurementData.data,
-                    ...measurementToSave
-                })
-            ) {
+            try {
+                await updateMeasurementMutation.mutateAsync({
+                    measurement: {
+                        ...measurementData.data,
+                        ...measurementToSave
+                    }
+                });
+            } catch (error) {
+            } finally {
                 close();
                 return true;
             }
-            return false;
         }
         if (
             measurementToSave !== undefined &&
             skjemaId !== undefined &&
             !isNaN(skjemaId)
         ) {
-            if (await saveNewMeasurement(measurementToSave, skjemaId)) {
+            try {
+                await newMeasurementMutation.mutateAsync({
+                    measurement: measurementToSave,
+                    skjemaId
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 close();
             }
         }

@@ -32,7 +32,7 @@ import { useAvvik } from '../../api/hooks/useAvvik';
 import { useClient } from '../../data/klient';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useKontrollById } from '../../api/hooks/useKontroll';
-import { useMeasurement } from '../../data/measurement';
+import { useMeasurements } from '../../api/hooks/useMeasurement';
 import { useReport } from '../documentContainer';
 import { useSnackbar } from 'notistack';
 
@@ -98,9 +98,7 @@ export const KontrollDocAdjusting = ({
         kontrollId: kontrollId
     });
 
-    const {
-        state: { measurements }
-    } = useMeasurement();
+    const measurementData = useMeasurements({ kontrollId });
 
     useEffect(() => {
         if (skjemaer !== undefined) {
@@ -138,7 +136,7 @@ export const KontrollDocAdjusting = ({
                             columns={columns(
                                 kontrollData.data,
                                 avvikData.data ?? [],
-                                measurements ?? [],
+                                measurementData.data ?? [],
                                 '',
                                 (a) => console.log(a),
                                 (a) => console.log(a),

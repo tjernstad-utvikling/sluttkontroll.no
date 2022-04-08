@@ -10,6 +10,11 @@ import {
     columns,
     defaultColumns
 } from '../tables/measurement';
+import {
+    useDeleteMeasurement,
+    useMeasurementTypes,
+    useMeasurements
+} from '../api/hooks/useMeasurement';
 import { useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
@@ -20,8 +25,6 @@ import { TableContainer } from '../tables/tableContainer';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useKontrollById } from '../api/hooks/useKontroll';
-import { useMeasurement } from '../data/measurement';
-import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
@@ -44,10 +47,10 @@ const MeasurementsView = () => {
             ? { kontrollId: Number(kontrollId) }
             : {})
     });
-    const {
-        state: { measurementTypes },
-        removeMeasurement
-    } = useMeasurement();
+
+    const deleteMeasurementMutation = useDeleteMeasurement();
+
+    const mTypeData = useMeasurementTypes();
 
     const kontrollData = useKontrollById(Number(kontrollId));
     const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
@@ -56,10 +59,10 @@ const MeasurementsView = () => {
         const measurement = measurementData.data?.find(
             (m) => m.id === measurementId
         );
-        if (measurement !== undefined && measurementTypes !== undefined) {
+        if (measurement !== undefined && mTypeData.data !== undefined) {
             let mType = measurement.type;
 
-            let type = measurementTypes.find(
+            let type = mTypeData.data.find(
                 (type) => type.shortName === measurement.type
             );
             if (type) {
@@ -78,7 +81,10 @@ const MeasurementsView = () => {
             );
 
             if (isConfirmed) {
-                removeMeasurement(measurementId);
+                await deleteMeasurementMutation.mutateAsync({
+                    measurementId,
+                    skjemaId: measurement.skjema.id
+                });
             }
         }
     };
@@ -150,7 +156,7 @@ const MeasurementsView = () => {
                                             setEditId(id);
                                             setMeasurementModalOpen(true);
                                         },
-                                        measurementTypes
+                                        measurementTypes: mTypeData.data
                                     })}
                                     defaultColumns={defaultColumns}
                                     tableId="measurements">

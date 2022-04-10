@@ -18,7 +18,7 @@ import { Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import { useClient } from '../../data/klient';
+import { useClients } from '../../api/hooks/useKlient';
 import { useKontrollById } from '../../api/hooks/useKontroll';
 import { useSkjemaById } from '../../api/hooks/useSkjema';
 
@@ -62,16 +62,18 @@ const YourControl = () => {
 
 const Client = () => {
     const classes = useStyles();
-    const {
-        state: { klienter }
-    } = useClient();
+
+    const clientData = useClients();
+
     const match = useRouteMatch<KontrollKlientViewParams>(
         '/kontroll/kl/:klientId'
     );
 
     const klient = useMemo(() => {
-        return klienter?.find((k) => k.id === Number(match?.params.klientId));
-    }, [klienter, match?.params.klientId]);
+        return clientData.data?.find(
+            (k) => k.id === Number(match?.params.klientId)
+        );
+    }, [clientData.data, match?.params.klientId]);
 
     if (match !== null && klient !== undefined) {
         return (
@@ -85,20 +87,20 @@ const Client = () => {
 };
 const Location = () => {
     const classes = useStyles();
-    const {
-        state: { klienter }
-    } = useClient();
+
+    const clientData = useClients();
+
     const match = useRouteMatch<KontrollObjectViewParams>(
         '/kontroll/kl/:klientId/obj/:objectId'
     );
     const location = useMemo(() => {
-        const klient = klienter?.find(
+        const klient = clientData.data?.find(
             (k) => k.id === Number(match?.params.klientId)
         );
         return klient?.locations.find(
             (l) => l.id === Number(match?.params.objectId)
         );
-    }, [klienter, match?.params.klientId, match?.params.objectId]);
+    }, [clientData.data, match?.params.klientId, match?.params.objectId]);
 
     if (match !== null && location !== undefined) {
         return (

@@ -3,7 +3,7 @@ import { RapportEgenskaper, ReportModules } from '../contracts/reportApi';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@mui/material/Switch';
-import { useClient } from '../data/klient';
+import { useClients } from '../api/hooks/useKlient';
 import { useEffect } from 'react';
 import { useReport } from '../document/documentContainer';
 import { useState } from 'react';
@@ -37,13 +37,12 @@ export const ReportPropertiesViewer = ({
     children
 }: ReportPropertiesViewerProps) => {
     const { kontroll, updateKontroll } = useReport();
-    const {
-        state: { klienter }
-    } = useClient();
 
     const [showPropertiesForm, setShowPropertiesForm] = useState<boolean>(true);
 
     const reportPropertiesMutation = useUpdateReportKontroll();
+
+    const clientData = useClients();
 
     const saveReportProperties = async (
         reportProperties: RapportEgenskaper
@@ -74,13 +73,13 @@ export const ReportPropertiesViewer = ({
         }
     }, [kontroll]);
 
-    if (kontroll !== undefined && klienter !== undefined) {
+    if (kontroll !== undefined && clientData.data !== undefined) {
         if (showPropertiesForm) {
             return (
                 <ReportPropertiesSchema
                     onSubmit={saveReportProperties}
                     kontroll={kontroll}
-                    klienter={klienter}
+                    klienter={clientData.data}
                 />
             );
         } else {

@@ -29,21 +29,6 @@ export const ClientContextProvider = ({
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const loadKlienter = async (): Promise<void> => {
-        try {
-            const { status, klienter } = await getClients();
-
-            if (status === 200) {
-                dispatch({
-                    type: ActionType.setKlienter,
-                    payload: klienter
-                });
-            }
-        } catch (error: any) {
-            errorHandler(error);
-        }
-    };
-
     const saveNewKlient = async (name: string) => {
         try {
             const { klient } = await newClient(name);
@@ -225,7 +210,6 @@ export const ClientContextProvider = ({
             value={{
                 state,
 
-                loadKlienter,
                 saveNewKlient,
                 saveEditKlient,
 

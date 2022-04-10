@@ -10,3 +10,12 @@ export function useExternalKlienter() {
         return data.klienter;
     });
 }
+
+export function useClients() {
+    return useQuery(['klient'], async () => {
+        const { data } = await sluttkontrollApi.get<{
+            klienter: Klient[];
+        }>(`/klient`);
+        return data.klienter;
+    });
+}

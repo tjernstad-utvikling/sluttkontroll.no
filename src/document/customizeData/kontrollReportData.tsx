@@ -32,7 +32,7 @@ import { Theme } from '@mui/material';
 import { makeStyles } from '../../theme/makeStyles';
 import { updateReportStatement } from '../../api/reportApi';
 import { useAvvik } from '../../api/hooks/useAvvik';
-import { useClient } from '../../data/klient';
+import { useClients } from '../../api/hooks/useKlient';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useMeasurements } from '../../api/hooks/useMeasurement';
 import { useReport } from '../documentContainer';
@@ -240,9 +240,7 @@ export const ReportProperties = () => {
 
     const { kontroll, updateKontroll } = useReport();
 
-    const {
-        state: { klienter }
-    } = useClient();
+    const clientData = useClients();
 
     const reportPropertiesMutation = useUpdateReportKontroll();
 
@@ -282,12 +280,12 @@ export const ReportProperties = () => {
                     Rapportegenskaper
                 </DialogTitle>
                 <DialogContent>
-                    {kontroll !== undefined && klienter !== undefined && (
+                    {kontroll !== undefined && clientData.data !== undefined && (
                         <div className={classes.propertiesBox}>
                             <ReportPropertiesSchema
                                 onSubmit={saveReportProperties}
                                 kontroll={kontroll}
-                                klienter={klienter}
+                                klienter={clientData.data}
                             />
                         </div>
                     )}

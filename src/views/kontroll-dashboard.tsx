@@ -26,7 +26,7 @@ import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
-import { useClient } from '../data/klient';
+import { useClients } from '../api/hooks/useKlient';
 import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
@@ -49,9 +49,8 @@ const KontrollerView = () => {
 
     const statusMutation = useToggleKontrollStatus();
 
-    const {
-        state: { klienter }
-    } = useClient();
+    const clientData = useClients();
+
     const {
         loadUsers,
         state: { users }
@@ -155,7 +154,7 @@ const KontrollerView = () => {
                                 <TableContainer
                                     columns={kontrollColumns({
                                         users: users ?? [],
-                                        klienter: klienter ?? [],
+                                        klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
                                         measurements:
                                             measurementData.data ?? [],

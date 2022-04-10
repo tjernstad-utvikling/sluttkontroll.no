@@ -36,6 +36,7 @@ import Typography from '@mui/material/Typography';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
+import { useClients } from '../api/hooks/useKlient';
 import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
 import { useMeasurements } from '../api/hooks/useMeasurement';
@@ -71,11 +72,9 @@ const KontrollObjektView = () => {
         const kontroll = kontrollData.data?.find((k) => k.id === kontrollId);
         if (kontroll) statusMutation.mutateAsync({ kontroll });
     }
+    const clientData = useClients();
 
-    const {
-        state: { klienter },
-        saveEditLocation
-    } = useClient();
+    const { saveEditLocation } = useClient();
     const {
         loadUsers,
         state: { users }
@@ -97,15 +96,17 @@ const KontrollObjektView = () => {
     }, [loadUsers, loadedObjekt, objectId]);
 
     useEffect(() => {
-        if (klienter !== undefined) {
-            const klient = klienter.find((k) => k.id === Number(klientId));
+        if (clientData.data !== undefined) {
+            const klient = clientData.data.find(
+                (k) => k.id === Number(klientId)
+            );
             if (klient !== undefined) {
                 setLocation(
                     klient.locations.find((o) => o.id === Number(objectId))
                 );
             }
         }
-    }, [klientId, klienter, objectId]);
+    }, [clientData.data, klientId, objectId]);
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -246,7 +247,7 @@ const KontrollObjektView = () => {
                                 <TableContainer
                                     columns={kontrollColumns({
                                         users: users ?? [],
-                                        klienter: klienter ?? [],
+                                        klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
                                         measurements:
                                             measurementData.data ?? [],

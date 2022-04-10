@@ -6,7 +6,7 @@ import CreatableSelect from 'react-select/creatable';
 import { Klient } from '../contracts/kontrollApi';
 import { LoadingButton } from '../components/button';
 import { TextField } from '../components/input';
-import { useClient } from '../data/klient';
+import { useClients } from '../api/hooks/useKlient';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
@@ -20,9 +20,8 @@ export const KlientSchema = ({
     onSubmit,
     onCreateNew
 }: KlientSchemaProps): JSX.Element => {
-    const {
-        state: { klienter }
-    } = useClient();
+    const clientData = useClients();
+
     interface Option {
         value: Klient;
         label: string;
@@ -30,12 +29,12 @@ export const KlientSchema = ({
     const [klientOptions, setKlientOptions] = useState<Array<Option>>();
 
     useEffect(() => {
-        if (klienter !== undefined) {
+        if (clientData.data !== undefined) {
             setKlientOptions(
-                klienter.map((k) => ({ value: k, label: k.name }))
+                clientData.data.map((k) => ({ value: k, label: k.name }))
             );
         }
-    }, [klienter]);
+    }, [clientData.data]);
 
     if (klientOptions !== undefined) {
         return (
@@ -61,7 +60,7 @@ export const KlientSchema = ({
                 {({ isSubmitting, setFieldValue, values }) => {
                     return (
                         <Form>
-                            {klienter && (
+                            {clientData.data && (
                                 <div>
                                     <label htmlFor="klient-select">Kunde</label>
                                     <CreatableSelect

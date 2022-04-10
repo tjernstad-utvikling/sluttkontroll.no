@@ -34,6 +34,7 @@ import Typography from '@mui/material/Typography';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
+import { useClients } from '../api/hooks/useKlient';
 import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
 import { useMeasurements } from '../api/hooks/useMeasurement';
@@ -70,10 +71,9 @@ const KontrollKlientView = () => {
         if (kontroll) statusMutation.mutateAsync({ kontroll });
     }
 
-    const {
-        state: { klienter },
-        saveEditKlient
-    } = useClient();
+    const { saveEditKlient } = useClient();
+    const clientData = useClients();
+
     const {
         loadUsers,
         state: { users }
@@ -94,10 +94,10 @@ const KontrollKlientView = () => {
     }, [klientId, loadUsers, loadedKlient, showAllKontroller]);
 
     useEffect(() => {
-        if (klienter !== undefined) {
-            setKlient(klienter.find((k) => k.id === Number(klientId)));
+        if (clientData.data !== undefined) {
+            setKlient(clientData.data.find((k) => k.id === Number(klientId)));
         }
-    }, [klientId, klienter]);
+    }, [clientData.data, klientId]);
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -217,7 +217,7 @@ const KontrollKlientView = () => {
                                 <TableContainer
                                     columns={kontrollColumns({
                                         users: users ?? [],
-                                        klienter: klienter ?? [],
+                                        klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
                                         measurements:
                                             measurementData.data ?? [],

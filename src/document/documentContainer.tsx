@@ -169,7 +169,7 @@ export const DocumentContainer = ({
         loadUsers();
 
         await handleReportSettings({
-            kontroll: _kontroll,
+            kontrollId,
             setReportSetting
         });
 

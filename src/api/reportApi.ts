@@ -54,7 +54,7 @@ export const getReportSetting = async (
     kontrollId: number
 ): Promise<{
     status: number;
-    rapportSetting?: ReportSetting | null;
+    rapportSetting?: ReportSetting;
 }> => {
     try {
         const { status, data } = await sluttkontrollApi.get(

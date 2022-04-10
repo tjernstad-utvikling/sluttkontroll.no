@@ -8,10 +8,7 @@ import {
 import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
-import {
-    useRemoveSkjema,
-    useSkjemaerByKontrollId
-} from '../api/hooks/useSkjema';
+import { useRemoveSkjema, useSkjemaer } from '../api/hooks/useSkjema';
 
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
@@ -44,7 +41,7 @@ const SkjemaerView = () => {
 
     const kontrollData = useKontrollById(Number(kontrollId));
 
-    const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
+    const skjemaData = useSkjemaer({ kontrollId: Number(kontrollId) });
 
     const measurementData = useMeasurements({ kontrollId: Number(kontrollId) });
 

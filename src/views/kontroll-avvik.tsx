@@ -38,7 +38,7 @@ import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
+import { useSkjemaer } from '../api/hooks/useSkjema';
 
 enum Modals {
     utbedrer,
@@ -70,7 +70,7 @@ const AvvikView = () => {
 
     const kontrollData = useKontrollById(Number(kontrollId));
 
-    const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
+    const skjemaData = useSkjemaer({ kontrollId: Number(kontrollId) });
 
     const { confirm } = useConfirm();
 

@@ -1,22 +1,49 @@
+import { ExtendedSkjema, Skjema } from '../../contracts/kontrollApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { Skjema } from '../../contracts/kontrollApi';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 import { useSnackbar } from 'notistack';
 
-export function useSkjemaerByKontrollId(kontrollId: number | undefined) {
+export function useSkjemaer({
+    kontrollId
+}: {
+    kontrollId: number | undefined;
+}) {
     return useQuery(
         ['skjema', 'kontroll', kontrollId],
         async () => {
-            const { data } = await sluttkontrollApi.get<{ skjemaer: Skjema[] }>(
-                `/skjema`,
-                {
-                    params: {
-                        kontrollId
-                    }
+            const { data } = await sluttkontrollApi.get<{
+                skjemaer: Skjema[];
+            }>(`/skjema`, {
+                params: {
+                    kontrollId
                 }
-            );
+            });
+            return data.skjemaer;
+        },
+        {
+            // The query will not execute until the kontrollId exists
+            enabled: !!kontrollId
+        }
+    );
+}
+export function useSkjemaerReport({
+    kontrollId
+}: {
+    kontrollId: number | undefined;
+}) {
+    return useQuery(
+        ['skjema', 'kontroll', kontrollId, 'isReport'],
+        async () => {
+            const { data } = await sluttkontrollApi.get<{
+                skjemaer: ExtendedSkjema[];
+            }>(`/skjema`, {
+                params: {
+                    kontrollId,
+                    isReport: true
+                }
+            });
             return data.skjemaer;
         },
         {

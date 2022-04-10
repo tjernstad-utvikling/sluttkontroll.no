@@ -2,6 +2,7 @@ import {
     Checklist,
     Kontroll,
     Location,
+    ReportKontroll,
     Skjema
 } from '../../contracts/kontrollApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -76,6 +77,21 @@ export function useKontrollById(kontrollId: number | undefined) {
                     ?.find((k) => k.id === kontrollId);
             },
 
+            // The query will not execute until the userId exists
+            enabled: !!kontrollId
+        }
+    );
+}
+export function useReportKontrollById(kontrollId: number | undefined) {
+    return useQuery(
+        ['kontroll', kontrollId, 'isReport'],
+        async () => {
+            const { data } = await sluttkontrollApi.get<{
+                kontroll: ReportKontroll;
+            }>(`/kontroll/${kontrollId}/report-data`);
+            return data.kontroll;
+        },
+        {
             // The query will not execute until the userId exists
             enabled: !!kontrollId
         }

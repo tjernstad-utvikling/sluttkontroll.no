@@ -27,7 +27,7 @@ import { useConfirm } from '../hooks/useConfirm';
 import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
-import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
+import { useSkjemaer } from '../api/hooks/useSkjema';
 
 const MeasurementsView = () => {
     const { classes } = usePageStyles();
@@ -53,7 +53,7 @@ const MeasurementsView = () => {
     const mTypeData = useMeasurementTypes();
 
     const kontrollData = useKontrollById(Number(kontrollId));
-    const skjemaData = useSkjemaerByKontrollId(Number(kontrollId));
+    const skjemaData = useSkjemaer({ kontrollId: Number(kontrollId) });
 
     const deleteMeasurement = async (measurementId: number) => {
         const measurement = measurementData.data?.find(

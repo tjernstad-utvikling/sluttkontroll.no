@@ -23,15 +23,14 @@ import { crop } from '../tools/crop';
 import { errorHandler } from '../tools/errorHandler';
 import { getImageFile } from '../api/imageApi';
 import { getInfoText } from '../api/settingsApi';
-import { getKontrollReportData } from '../api/kontrollApi';
 import { getImageFile as getLocationImageFile } from '../api/locationApi';
 import { updateReportSetting } from '../api/reportApi';
 import { useAvvik } from '../api/hooks/useAvvik';
-import { useChecklists } from '../api/hooks/useChecklist';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffect } from 'react';
 import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useSkjemaerByKontrollId } from '../api/hooks/useSkjema';
+import { useReportKontrollById } from '../api/hooks/useKontroll';
+import { useSkjemaerReport } from '../api/hooks/useSkjema';
 import { useSnackbar } from 'notistack';
 import { useUser } from '../data/user';
 
@@ -52,12 +51,11 @@ export const DocumentContainer = ({
 }): JSX.Element => {
     const { enqueueSnackbar } = useSnackbar();
 
-    const [kontroll, setKontroll] = useState<ReportKontroll>();
     const [locationImageUrl, setLocationImageUrl] = useState<string>();
     const [reportSetting, setReportSetting] = useState<ReportSetting>();
 
-    const skjemaData = useSkjemaerByKontrollId(kontrollId);
-    const checklistData = useChecklists({ kontrollId });
+    const skjemaData = useSkjemaerReport({ kontrollId });
+    const kontrollData = useReportKontrollById(kontrollId);
 
     const [hasLoaded, setHasLoaded] = useState<boolean>(false);
 
@@ -122,11 +120,11 @@ export const DocumentContainer = ({
 
     useEffect(() => {
         const load = async () => {
-            if (kontroll) {
-                if (kontroll?.location.locationImage) {
+            if (kontrollData.data) {
+                if (kontrollData.data?.location.locationImage) {
                     try {
                         const res = await getLocationImageFile(
-                            kontroll?.location.locationImage.url
+                            kontrollData.data?.location.locationImage.url
                         );
 
                         if (res.status === 200) {
@@ -148,12 +146,11 @@ export const DocumentContainer = ({
             URL.revokeObjectURL(locationImageUrl || '');
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [kontroll]);
+    }, [kontrollData.data]);
 
     const [previewDocument, setPreviewDocument] = useState<boolean>(false);
     const [downloadReport, setDownloadReport] = useState<boolean>(false);
 
-    const [_skjemaer, setSkjemaer] = useState<ExtendedSkjema[]>();
     const [filteredSkjemaer, setFilteredSkjemaer] =
         useState<ExtendedSkjema[]>();
 
@@ -170,27 +167,22 @@ export const DocumentContainer = ({
 
     useEffectOnce(async () => {
         loadUsers();
-        const { status, kontroll: _kontroll } = await getKontrollReportData(
-            kontrollId
+
+        await handleReportSettings({
+            kontroll: _kontroll,
+            setReportSetting
+        });
+
+        const { infoText } = await getInfoText();
+        setInfoText(infoText);
+
+        setStatementText(
+            await loadReportStatement(kontrollId, enqueueSnackbar)
         );
-        if (status === 200) {
-            setKontroll(_kontroll);
-            await handleReportSettings({
-                kontroll: _kontroll,
-                setReportSetting
-            });
 
-            const { infoText } = await getInfoText();
-            setInfoText(infoText);
+        setAttachments(await loadAttachments(kontrollId, enqueueSnackbar));
 
-            setStatementText(
-                await loadReportStatement(kontrollId, enqueueSnackbar)
-            );
-
-            setAttachments(await loadAttachments(kontrollId, enqueueSnackbar));
-
-            setHasLoaded(true);
-        }
+        setHasLoaded(true);
     });
 
     useEffect(() => {
@@ -206,36 +198,19 @@ export const DocumentContainer = ({
     }, [attachments, hasLoaded, reportSetting]);
 
     useEffect(() => {
-        if (skjemaData.data !== undefined && hasLoaded && checklistData.data) {
-            const kontrollSkjemaer = skjemaData.data
-                .filter((s) => s.kontroll.id === kontrollId)
-                .map((ks) => {
-                    return {
-                        ...ks,
-                        checklists: checklistData.data?.filter(
-                            (ch) => ch.skjema.id === ks.id
-                        )
-                    };
-                });
-
-            setSkjemaer(kontrollSkjemaer);
+        if (skjemaData.data !== undefined && hasLoaded) {
             if (reportSetting?.selectedSkjemaer.length === 0) {
-                setFilteredSkjemaer(kontrollSkjemaer);
+                setFilteredSkjemaer(skjemaData.data);
             } else {
-                setFilteredSkjemaer(
-                    kontrollSkjemaer.filter((s) =>
-                        reportSetting?.selectedSkjemaer.includes(s.id)
-                    )
-                );
+                if (skjemaData.data)
+                    setFilteredSkjemaer(
+                        skjemaData.data?.filter((s) =>
+                            reportSetting?.selectedSkjemaer.includes(s.id)
+                        )
+                    );
             }
         }
-    }, [
-        kontrollId,
-        reportSetting,
-        hasLoaded,
-        skjemaData.data,
-        checklistData.data
-    ]);
+    }, [kontrollId, reportSetting, hasLoaded, skjemaData.data]);
 
     const toggleModuleVisibilityState = (id: ReportModules) => {
         setPreviewDocument(false);
@@ -270,7 +245,6 @@ export const DocumentContainer = ({
     const updateKontroll = (reportKontroll: ReportKontroll) => {
         setPreviewDocument(false);
         setDownloadReport(false);
-        setKontroll(reportKontroll);
     };
 
     const updateStatement = (text: OutputData) => {
@@ -332,11 +306,11 @@ export const DocumentContainer = ({
                 reportSetting,
                 updateSetting,
 
-                kontroll,
+                kontroll: kontrollData.data,
                 locationImageUrl,
                 updateKontroll,
 
-                skjemaer: _skjemaer,
+                skjemaer: skjemaData.data,
                 filteredSkjemaer,
                 updateFilteredSkjemaer,
 

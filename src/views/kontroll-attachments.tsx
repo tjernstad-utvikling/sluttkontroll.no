@@ -1,19 +1,19 @@
 import { AttachmentTable, columns, defaultColumns } from '../tables/attachment';
 import { Card, CardContent, CardMenu } from '../components/card';
+import {
+    useAttachments,
+    useDeleteAttachment
+} from '../api/hooks/useAttachments';
 
-import { Attachment } from '../contracts/attachmentApi';
 import { AttachmentModal } from '../modal/attachment';
 import { AttachmentViewerModal } from '../modal/attachmentViewer';
 import { AttachmentsViewParams } from '../contracts/navigation';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
-import { deleteAttachmentFile } from '../api/attachmentApi';
 import { useConfirm } from '../hooks/useConfirm';
-import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 const AttachmentsView = () => {
@@ -28,13 +28,13 @@ const AttachmentsView = () => {
 
     const { confirm } = useConfirm();
 
-    const { enqueueSnackbar } = useSnackbar();
+    const attachmentsData = useAttachments({ kontrollId: Number(kontrollId) });
 
-    const kontrollData = useKontrollById(Number(kontrollId));
+    const deleteAttachmentMutation = useDeleteAttachment();
 
     const askToDeleteAttachment = async (attachmentId: number) => {
-        if (kontrollData.data) {
-            const attachment = kontrollData.data.attachments.find(
+        if (attachmentsData.data) {
+            const attachment = attachmentsData.data.find(
                 (a) => a.id === attachmentId
             );
             const isConfirmed = await confirm(
@@ -42,27 +42,15 @@ const AttachmentsView = () => {
             );
 
             if (isConfirmed) {
-                const { status } = await deleteAttachmentFile(attachmentId);
-                if (status === 204) {
-                    enqueueSnackbar('Vedlegg er slettet', {
-                        variant: 'success'
+                try {
+                    await deleteAttachmentMutation.mutateAsync({
+                        attachmentId,
+                        kontrollId: Number(kontrollId)
                     });
-                    const attachments = kontrollData.data.attachments.filter(
-                        (a) => a.id !== attachment?.id
-                    );
-                    throw new Error('Update not made');
+                } catch (error) {
+                    console.log(error);
                 }
             }
-        }
-    };
-
-    const addAttachments = (attachment: Attachment) => {
-        if (kontrollData.data) {
-            // updateKontroll({
-            //     ...kontrollData.data,
-            //     attachments: [...kontrollData.data.attachments, attachment]
-            // });
-            throw new Error('Update not made');
         }
     };
 
@@ -97,9 +85,7 @@ const AttachmentsView = () => {
                                     defaultColumns={defaultColumns}
                                     tableId="attachment">
                                     <AttachmentTable
-                                        attachments={
-                                            kontrollData.data?.attachments ?? []
-                                        }
+                                        attachments={attachmentsData.data ?? []}
                                     />
                                 </TableContainer>
                             </CardContent>
@@ -108,15 +94,14 @@ const AttachmentsView = () => {
                 </Grid>
             </Container>
             <AttachmentModal
-                updateAttachmentList={addAttachments}
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
             />
-            {kontrollData.data?.attachments && (
+            {attachmentsData.data && (
                 <AttachmentViewerModal
                     attachmentId={kontrollViewAttachmentId}
                     close={() => setKontrollViewAttachmentId(undefined)}
-                    attachments={kontrollData.data.attachments}
+                    attachments={attachmentsData.data}
                 />
             )}
         </div>

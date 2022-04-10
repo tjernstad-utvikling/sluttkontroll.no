@@ -6,11 +6,7 @@ import {
 } from '../contracts/reportApi';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 import { createContext, useContext, useState } from 'react';
-import {
-    handleReportSettings,
-    loadAttachments,
-    loadReportStatement
-} from './utils/loaders';
+import { handleReportSettings, loadReportStatement } from './utils/loaders';
 import {
     useMeasurementTypes,
     useMeasurements
@@ -25,6 +21,7 @@ import { getImageFile } from '../api/imageApi';
 import { getInfoText } from '../api/settingsApi';
 import { getImageFile as getLocationImageFile } from '../api/locationApi';
 import { updateReportSetting } from '../api/reportApi';
+import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useDebounce } from '../hooks/useDebounce';
 import { useEffect } from 'react';
@@ -42,12 +39,10 @@ export const useReport = () => {
 
 export const DocumentContainer = ({
     children,
-    kontrollId,
-    objectId
+    kontrollId
 }: {
     children: React.ReactNode;
     kontrollId: number;
-    objectId: number;
 }): JSX.Element => {
     const { enqueueSnackbar } = useSnackbar();
 
@@ -80,7 +75,7 @@ export const DocumentContainer = ({
     const [_statementText, setStatementText] = useState<OutputData>();
     const [_statementImages, setStatementImages] = useState<LocalImage[]>([]);
 
-    const [attachments, setAttachments] = useState<Attachment[] | undefined>();
+    const attachmentsData = useAttachments({ kontrollId });
     const [selectedAttachments, setSelectedAttachments] = useState<
         Attachment[]
     >([]);
@@ -180,22 +175,24 @@ export const DocumentContainer = ({
             await loadReportStatement(kontrollId, enqueueSnackbar)
         );
 
-        setAttachments(await loadAttachments(kontrollId, enqueueSnackbar));
-
         setHasLoaded(true);
     });
 
     useEffect(() => {
-        if (attachments && hasLoaded && reportSetting?.selectedAttachments) {
+        if (
+            attachmentsData.data &&
+            hasLoaded &&
+            reportSetting?.selectedAttachments
+        ) {
             if (reportSetting?.selectedAttachments.length > 0) {
                 setSelectedAttachments(
-                    attachments.filter((s) =>
+                    attachmentsData.data.filter((s) =>
                         reportSetting?.selectedAttachments.includes(s.id)
                     )
                 );
             }
         }
-    }, [attachments, hasLoaded, reportSetting]);
+    }, [attachmentsData.data, hasLoaded, reportSetting]);
 
     useEffect(() => {
         if (skjemaData.data !== undefined && hasLoaded) {
@@ -319,8 +316,7 @@ export const DocumentContainer = ({
                 measurements: measurementData.data,
                 measurementTypes: mTypeData.data,
 
-                attachments,
-                setAttachments,
+                attachments: attachmentsData.data,
                 selectedAttachments,
                 updateSelectedAttachments
             }}>
@@ -358,9 +354,7 @@ interface ContextInterface {
     measurementTypes: MeasurementType[] | undefined;
 
     attachments: Attachment[] | undefined;
-    setAttachments: React.Dispatch<
-        React.SetStateAction<Attachment[] | undefined>
-    >;
+
     selectedAttachments: Attachment[];
     updateSelectedAttachments: (attachments: Attachment[]) => void;
 }

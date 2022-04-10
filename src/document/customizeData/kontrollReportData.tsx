@@ -450,12 +450,8 @@ export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
     const [openAddAttachment, setOpenAddAttachment] = useState<
         number | undefined
     >(undefined);
-    const {
-        attachments,
-        updateSelectedAttachments,
-        selectedAttachments,
-        setAttachments
-    } = useReport();
+    const { attachments, updateSelectedAttachments, selectedAttachments } =
+        useReport();
 
     return (
         <>
@@ -511,14 +507,6 @@ export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
                 </DialogActions>
             </Dialog>
             <AttachmentModal
-                updateAttachmentList={(attachment) =>
-                    setAttachments((prev) => {
-                        if (prev) {
-                            return [...prev, attachment];
-                        }
-                        return [];
-                    })
-                }
                 kontrollId={openAddAttachment}
                 close={() => setOpenAddAttachment(undefined)}
             />

@@ -239,7 +239,7 @@ export const DocumentContainer = ({
         return reportSetting?.modules.includes(reportModule) || false;
     };
 
-    const updateKontroll = (reportKontroll: ReportKontroll) => {
+    const updateKontroll = () => {
         setPreviewDocument(false);
         setDownloadReport(false);
     };
@@ -343,7 +343,7 @@ interface ContextInterface {
 
     kontroll: ReportKontroll | undefined;
     locationImageUrl: string | undefined;
-    updateKontroll: (reportKontroll: ReportKontroll) => void;
+    updateKontroll: () => void;
     skjemaer: ExtendedSkjema[] | undefined;
     filteredSkjemaer: ExtendedSkjema[] | undefined;
     updateFilteredSkjemaer: (skjemaer: ExtendedSkjema[] | undefined) => void;

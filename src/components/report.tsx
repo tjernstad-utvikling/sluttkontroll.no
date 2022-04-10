@@ -3,12 +3,11 @@ import { RapportEgenskaper, ReportModules } from '../contracts/reportApi';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@mui/material/Switch';
-import { saveKontrollReportData } from '../api/kontrollApi';
 import { useClient } from '../data/klient';
 import { useEffect } from 'react';
 import { useReport } from '../document/documentContainer';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
+import { useUpdateReportKontroll } from '../api/hooks/useKontroll';
 
 interface ReportSwitchProps {
     id: ReportModules;
@@ -38,45 +37,32 @@ export const ReportPropertiesViewer = ({
     children
 }: ReportPropertiesViewerProps) => {
     const { kontroll, updateKontroll } = useReport();
-    const { enqueueSnackbar } = useSnackbar();
     const {
         state: { klienter }
     } = useClient();
 
     const [showPropertiesForm, setShowPropertiesForm] = useState<boolean>(true);
 
+    const reportPropertiesMutation = useUpdateReportKontroll();
+
     const saveReportProperties = async (
         reportProperties: RapportEgenskaper
     ) => {
         try {
             if (kontroll !== undefined) {
-                const response = await saveKontrollReportData(
-                    kontroll.id,
+                await reportPropertiesMutation.mutateAsync({
+                    kontrollId: kontroll.id,
                     reportProperties
-                );
-                if (response.status === 400) {
-                    enqueueSnackbar('Et eller flere felter mangler data', {
-                        variant: 'warning'
-                    });
-                }
-                if (
-                    response.status === 200 &&
-                    response.kontroll !== undefined
-                ) {
-                    updateKontroll(response.kontroll);
-                    setShowPropertiesForm(false);
-                    enqueueSnackbar('Rapportegenskaper er lagret', {
-                        variant: 'success'
-                    });
-                    return true;
-                }
+                });
             }
-            return false;
         } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av kontrollegenskaper', {
-                variant: 'error'
-            });
+            console.log(error);
             return false;
+        } finally {
+            updateKontroll();
+            setShowPropertiesForm(false);
+
+            return true;
         }
     };
 

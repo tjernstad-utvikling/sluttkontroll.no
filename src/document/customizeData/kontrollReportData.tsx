@@ -6,6 +6,10 @@ import {
 import { SkjemaTable, columns, defaultColumns } from '../../tables/skjema';
 import { getImageFile, uploadImageFile } from '../../api/imageApi';
 import { useEffect, useState } from 'react';
+import {
+    useKontrollById,
+    useUpdateReportKontroll
+} from '../../api/hooks/useKontroll';
 
 import { AttachmentModal } from '../../modal/attachment';
 import Button from '@mui/material/Button';
@@ -26,12 +30,10 @@ import Switch from '@mui/material/Switch';
 import { TableContainer } from '../../tables/tableContainer';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../../theme/makeStyles';
-import { saveKontrollReportData } from '../../api/kontrollApi';
 import { updateReportStatement } from '../../api/reportApi';
 import { useAvvik } from '../../api/hooks/useAvvik';
 import { useClient } from '../../data/klient';
 import { useDebounce } from '../../hooks/useDebounce';
-import { useKontrollById } from '../../api/hooks/useKontroll';
 import { useMeasurements } from '../../api/hooks/useMeasurement';
 import { useReport } from '../documentContainer';
 import { useSnackbar } from 'notistack';
@@ -237,43 +239,29 @@ export const ReportProperties = () => {
     const [open, setOpen] = useState<boolean>(false);
 
     const { kontroll, updateKontroll } = useReport();
-    const { enqueueSnackbar } = useSnackbar();
+
     const {
         state: { klienter }
     } = useClient();
+
+    const reportPropertiesMutation = useUpdateReportKontroll();
 
     const saveReportProperties = async (
         reportProperties: RapportEgenskaper
     ) => {
         try {
             if (kontroll !== undefined) {
-                const response = await saveKontrollReportData(
-                    kontroll.id,
+                await reportPropertiesMutation.mutateAsync({
+                    kontrollId: kontroll.id,
                     reportProperties
-                );
-                if (response.status === 400) {
-                    enqueueSnackbar('Et eller flere felter mangler data', {
-                        variant: 'warning'
-                    });
-                }
-                if (
-                    response.status === 200 &&
-                    response.kontroll !== undefined
-                ) {
-                    updateKontroll(response.kontroll);
-                    setOpen(false);
-                    enqueueSnackbar('Rapportegenskaper er lagret', {
-                        variant: 'success'
-                    });
-                    return true;
-                }
+                });
             }
-            return false;
         } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av kontrollegenskaper', {
-                variant: 'error'
-            });
             return false;
+        } finally {
+            updateKontroll();
+            setOpen(false);
+            return true;
         }
     };
     return (

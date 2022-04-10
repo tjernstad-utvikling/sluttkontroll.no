@@ -7,6 +7,7 @@ import {
 } from '../../contracts/kontrollApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+import { RapportEgenskaper } from '../../contracts/reportApi';
 import { User } from '../../contracts/userApi';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
@@ -98,6 +99,76 @@ export function useReportKontrollById(kontrollId: number | undefined) {
     );
 }
 
+export function useUpdateReportKontroll() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        ReportKontroll,
+        unknown,
+        {
+            kontrollId: number;
+            reportProperties: RapportEgenskaper;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.post<{
+                kontroll: ReportKontroll;
+            }>(`/report/properties/${body.kontrollId}`, {
+                ...body.reportProperties,
+                rapportUser: body.reportProperties.rapportUser?.id,
+                sertifikater: body.reportProperties.sertifikater.map((s) => {
+                    return {
+                        id: s.id
+                    };
+                })
+            });
+            return data.kontroll;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (updatedKontroll, vars) => {
+                const kontroller = queryClient.getQueryData<Kontroll[]>([
+                    'kontroll',
+                    vars.kontrollId,
+                    'isReport'
+                ]);
+                // ✅ update detail view directly
+
+                if (kontroller && kontroller?.length > 0) {
+                    queryClient.setQueryData(
+                        ['kontroll', vars.kontrollId, 'isReport'],
+                        unionBy([updatedKontroll], kontroller, 'id').sort(
+                            (a, b) => a.id - b.id
+                        )
+                    );
+                }
+                queryClient.invalidateQueries([
+                    'kontroll',
+                    vars.kontrollId,
+                    'isReport'
+                ]);
+
+                enqueueSnackbar('Rapportegenskaper er oppdatert', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    enqueueSnackbar('Et eller flere felter mangler data', {
+                        variant: 'warning'
+                    });
+                } else {
+                    enqueueSnackbar(
+                        'Problemer med lagring av kontrollegenskaper',
+                        {
+                            variant: 'error'
+                        }
+                    );
+                }
+            }
+        }
+    );
+}
 export function useUpdateKontroll() {
     const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();

@@ -24,6 +24,7 @@ import Grid from '@mui/material/Grid';
 import { InstrumentStatus } from '../components/instrument';
 import { KontrollEditModal } from '../modal/kontroll';
 import { TableContainer } from '../tables/tableContainer';
+import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
@@ -41,6 +42,10 @@ const KontrollerView = () => {
     const { showAllKontroller, setShowAllKontroller } = useKontrollCtx();
 
     const kontrollData = useKontroller({ includeDone: showAllKontroller });
+
+    const attachmentsData = useAttachments({
+        myControl: true
+    });
 
     const statusMutation = useToggleKontrollStatus();
 
@@ -160,7 +165,8 @@ const KontrollerView = () => {
                                         skjemaToPast,
                                         editComment: setCommentId,
                                         addAttachment:
-                                            setKontrollAddAttachmentId
+                                            setKontrollAddAttachmentId,
+                                        attachments: attachmentsData.data ?? []
                                     })}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">

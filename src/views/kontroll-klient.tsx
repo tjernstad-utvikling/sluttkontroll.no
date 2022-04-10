@@ -31,6 +31,7 @@ import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
+import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
@@ -55,6 +56,10 @@ const KontrollKlientView = () => {
 
     const kontrollData = useKontroller({
         includeDone: showAllKontroller,
+        clientId: Number(klientId)
+    });
+
+    const attachmentsData = useAttachments({
         clientId: Number(klientId)
     });
 
@@ -222,7 +227,8 @@ const KontrollKlientView = () => {
                                         skjemaToPast,
                                         editComment: setCommentId,
                                         addAttachment:
-                                            setKontrollAddAttachmentId
+                                            setKontrollAddAttachmentId,
+                                        attachments: attachmentsData.data ?? []
                                     })}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">

@@ -33,6 +33,7 @@ import { LocationImageCard } from '../components/location';
 import { NewImageModal } from '../modal/newLocationImage';
 import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
+import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClient } from '../data/klient';
 import { useClipBoard } from '../data/clipboard';
@@ -57,7 +58,11 @@ const KontrollObjektView = () => {
 
     const kontrollData = useKontroller({
         includeDone: showAllKontroller,
-        clientId: Number(klientId)
+        locationId: Number(objectId)
+    });
+
+    const attachmentsData = useAttachments({
+        locationId: Number(objectId)
     });
 
     const statusMutation = useToggleKontrollStatus();
@@ -251,7 +256,8 @@ const KontrollObjektView = () => {
                                         skjemaToPast,
                                         editComment: setCommentId,
                                         addAttachment:
-                                            setKontrollAddAttachmentId
+                                            setKontrollAddAttachmentId,
+                                        attachments: attachmentsData.data ?? []
                                     })}
                                     defaultColumns={defaultColumns}
                                     tableId="kontroller">

@@ -5,15 +5,44 @@ import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 import { useSnackbar } from 'notistack';
 
-export function useAttachments({ kontrollId }: { kontrollId?: number }) {
+export function useAttachments({
+    clientId,
+    locationId,
+    kontrollId,
+    myControl
+}: {
+    clientId?: number;
+    locationId?: number;
+    kontrollId?: number;
+    myControl?: boolean;
+}) {
     return useQuery(
-        ['attachments', ...(kontrollId ? ['kontroll', kontrollId] : [])],
+        [
+            'attachments',
+            ...(locationId
+                ? ['location', locationId]
+                : clientId
+                ? ['client', clientId]
+                : kontrollId
+                ? ['kontroll', kontrollId]
+                : myControl
+                ? ['myControl', myControl]
+                : [])
+        ],
         async () => {
             const { data } = await sluttkontrollApi.get<{
                 attachments: Attachment[];
             }>(`/attachment`, {
                 params: {
-                    ...(kontrollId ? { kontrollId } : {})
+                    ...(locationId
+                        ? { locationId }
+                        : clientId
+                        ? { clientId }
+                        : kontrollId
+                        ? { kontrollId }
+                        : myControl
+                        ? { myControl }
+                        : {})
                 }
             });
             return data.attachments;

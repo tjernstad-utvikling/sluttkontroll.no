@@ -8,6 +8,7 @@ import {
 import { Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
@@ -81,7 +82,19 @@ export const KontrollValueGetter = (data: Kontroll | GridRowModel | null) => {
         return 0;
     };
 
-    return { klient, objekt, user, avvik, measurement };
+    const attachment = (attachments: Attachment[]): number => {
+        if (attachments !== undefined) {
+            const filteredAttachments = attachments.filter(
+                (m) => m.kontroll.id === data?.id
+            );
+
+            return filteredAttachments.length;
+        }
+
+        return 0;
+    };
+
+    return { klient, objekt, user, avvik, measurement, attachment };
 };
 interface KontrollColumnsConfig {
     users: User[];
@@ -94,6 +107,7 @@ interface KontrollColumnsConfig {
     skjemaToPast: Skjema[];
     editComment: (id: number) => void;
     addAttachment: (id: number) => void;
+    attachments: Attachment[];
 }
 export const kontrollColumns = ({
     users,
@@ -105,7 +119,8 @@ export const kontrollColumns = ({
     clipboardHasSkjema,
     skjemaToPast,
     editComment,
-    addAttachment
+    addAttachment,
+    attachments
 }: KontrollColumnsConfig) => {
     const columns: GridColDef[] = [
         {
@@ -206,12 +221,16 @@ export const kontrollColumns = ({
             renderCell: (params: GridCellParams) => (
                 <Link
                     to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/attachments`}>
-                    {params.row?.attachments?.length}
+                    {KontrollValueGetter(params.row).attachment(attachments)}
                 </Link>
             ),
             sortComparator: (v1, v2, param1, param2) =>
-                param1.api.getRow(param1.id)?.attachments.length -
-                param2.api.getRow(param2.id)?.attachments.length
+                KontrollValueGetter(param1.api.getRow(param1.id)).attachment(
+                    attachments
+                ) -
+                KontrollValueGetter(param2.api.getRow(param2.id)).attachment(
+                    attachments
+                )
         },
         {
             field: 'user',

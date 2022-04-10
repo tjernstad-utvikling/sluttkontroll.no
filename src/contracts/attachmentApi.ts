@@ -3,4 +3,7 @@ export interface Attachment {
     file: string;
     name: string;
     description?: string;
+    kontroll: {
+        id: number;
+    };
 }

@@ -34,10 +34,10 @@ const ProfileView = () => {
 
     const handleAddCertificateToUser = (certificate: Sertifikat) => {
         if (user) {
-            updateUserInState({
-                ...user,
-                sertifikater: [...user.sertifikater, certificate]
-            });
+            // updateUserInState({
+            //     ...user,
+            //     sertifikater: [...user.sertifikater, certificate]
+            // });
         }
     };
     return (

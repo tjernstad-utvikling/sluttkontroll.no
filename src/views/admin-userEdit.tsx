@@ -51,10 +51,10 @@ const NewUserView = () => {
 
     const handleAddCertificateToUser = (certificate: Sertifikat) => {
         if (userData.data) {
-            updateUserInState({
-                ...userData.data,
-                sertifikater: [...userData.data.sertifikater, certificate]
-            });
+            // updateUserInState({
+            //     ...userData.data,
+            //     sertifikater: [...userData.data.sertifikater, certificate]
+            // });
         }
     };
 

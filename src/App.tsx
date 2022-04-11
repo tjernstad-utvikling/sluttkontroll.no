@@ -9,7 +9,6 @@ import { ConfirmationDialogProvider } from './hooks/useConfirm';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider } from '@mui/material/styles';
-import { UserContextProvider } from './data/user';
 import createCache from '@emotion/cache';
 import { theme } from './theme/light';
 
@@ -40,11 +39,10 @@ function App() {
                         }}
                         maxSnack={3}>
                         <QueryClientProvider client={queryClient}>
-                            <UserContextProvider>
-                                <AuthProvider>
-                                    <AppRouter />
-                                </AuthProvider>
-                            </UserContextProvider>
+                            <AuthProvider>
+                                <AppRouter />
+                            </AuthProvider>
+
                             <ReactQueryDevtools initialIsOpen={false} />
                         </QueryClientProvider>
                     </SnackbarProvider>

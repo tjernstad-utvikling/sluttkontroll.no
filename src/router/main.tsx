@@ -1,4 +1,3 @@
-import { ClientContextProvider } from '../data/klient';
 import { Forms } from './main/forms';
 import { Instrument } from './main/instrument';
 import { Kontroll } from './main/kontroll';
@@ -15,29 +14,27 @@ export const Main = () => {
         loadUserFromStorage();
     });
     return (
-        <ClientContextProvider>
-            <Switch>
-                <PrivateRoute
-                    requiredRole={[Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]}
-                    path="/instrument">
-                    <Instrument />
-                </PrivateRoute>
-                <PrivateRoute
-                    requiredRole={[Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]}
-                    path="/forms">
-                    <Forms />
-                </PrivateRoute>
-                <PrivateRoute
-                    requiredRole={[Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]}
-                    path="/user">
-                    <User />
-                </PrivateRoute>
-                <PrivateRoute
-                    path="/"
-                    requiredRole={[Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]}>
-                    <Kontroll />
-                </PrivateRoute>
-            </Switch>
-        </ClientContextProvider>
+        <Switch>
+            <PrivateRoute
+                requiredRole={[Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]}
+                path="/instrument">
+                <Instrument />
+            </PrivateRoute>
+            <PrivateRoute
+                requiredRole={[Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]}
+                path="/forms">
+                <Forms />
+            </PrivateRoute>
+            <PrivateRoute
+                requiredRole={[Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]}
+                path="/user">
+                <User />
+            </PrivateRoute>
+            <PrivateRoute
+                path="/"
+                requiredRole={[Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]}>
+                <Kontroll />
+            </PrivateRoute>
+        </Switch>
     );
 };

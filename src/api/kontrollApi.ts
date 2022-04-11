@@ -2,40 +2,6 @@ import { Klient, Location } from '../contracts/kontrollApi';
 
 import sluttkontrollApi from './sluttkontroll';
 
-export const getClients = async (): Promise<{
-    status: number;
-    klienter: Klient[];
-}> => {
-    try {
-        const { status, data } = await sluttkontrollApi.get('/klient');
-        if (status === 200) {
-            return { status, ...data };
-        }
-        throw new Error('not 200');
-    } catch (error: any) {
-        throw new Error(error);
-    }
-};
-
-export const newClient = async (
-    name: string
-): Promise<{
-    status: number;
-    klient: Klient;
-}> => {
-    try {
-        const { status, data } = await sluttkontrollApi.post('/klient/', {
-            name
-        });
-        if (status === 200) {
-            return { status, ...data };
-        }
-        throw new Error('not 200');
-    } catch (error: any) {
-        throw new Error(error);
-    }
-};
-
 export const editClient = async (
     id: number,
     name: string

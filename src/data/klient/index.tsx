@@ -3,13 +3,7 @@ import { ClientReducer, initialState } from './reducer';
 import { Klient, Location } from '../../contracts/kontrollApi';
 import React, { createContext, useContext, useReducer } from 'react';
 import { deleteImageFile, uploadImageFile } from '../../api/locationApi';
-import {
-    editClient,
-    editLocation,
-    getClients,
-    newClient,
-    newLocation
-} from '../../api/kontrollApi';
+import { editClient, editLocation, newLocation } from '../../api/kontrollApi';
 
 import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
@@ -29,26 +23,6 @@ export const ClientContextProvider = ({
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const saveNewKlient = async (name: string) => {
-        try {
-            const { klient } = await newClient(name);
-
-            dispatch({
-                type: ActionType.newKlient,
-                payload: klient
-            });
-
-            enqueueSnackbar('Kunde lagret', {
-                variant: 'success'
-            });
-            return { status: true, klient };
-        } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av kunde', {
-                variant: 'error'
-            });
-        }
-        return { status: false };
-    };
     const saveEditKlient = async (name: string, klient: Klient) => {
         try {
             await editClient(klient.id, name);
@@ -209,9 +183,6 @@ export const ClientContextProvider = ({
         <ClientContext.Provider
             value={{
                 state,
-
-                saveNewKlient,
-                saveEditKlient,
 
                 saveNewLocation,
                 saveEditLocation,

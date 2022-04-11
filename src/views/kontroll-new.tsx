@@ -16,6 +16,7 @@ import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { User } from '../contracts/userApi';
+import { useAddNewClient } from '../api/hooks/useKlient';
 import { useClient } from '../data/klient';
 import { useHistory } from 'react-router-dom';
 import { useNewKontroll } from '../api/hooks/useKontroll';
@@ -29,19 +30,29 @@ const KontrollNewView = () => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const { saveNewKlient, saveNewLocation } = useClient();
+    const { saveNewLocation } = useClient();
     const [activeStep, setActiveStep] = useState(0);
     const [selectedKlient, setSelectedKlient] = useState<Klient>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
 
+    const newClientMutation = useAddNewClient();
+
     const createNew = async (name: string) => {
-        const res = await saveNewKlient(name);
-        if (res.status && res.klient !== undefined) {
-            setSelectedKlient(res.klient);
-            setActiveStep(1);
+        try {
+            await newClientMutation.mutateAsync({
+                name,
+                setClient: (client: Klient) => {
+                    setSelectedKlient(client);
+                    setActiveStep(1);
+                }
+            });
+        } catch (error) {
+            return false;
+        } finally {
+            return true;
         }
-        return res.status;
     };
+
     const createNewLocation = async (name: string) => {
         if (selectedKlient !== undefined) {
             const res = await saveNewLocation(name, selectedKlient);

@@ -9,6 +9,7 @@ import {
     defaultColumns,
     kontrollColumns
 } from '../tables/kontroll';
+import { useClientById, useUpdateClient } from '../api/hooks/useKlient';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
@@ -25,7 +26,6 @@ import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
-import { Klient } from '../contracts/kontrollApi';
 import { KlientEditSchema } from '../schema/klient';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
@@ -33,8 +33,6 @@ import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
-import { useClient } from '../data/klient';
-import { useClients } from '../api/hooks/useKlient';
 import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
 import { useMeasurements } from '../api/hooks/useMeasurement';
@@ -48,8 +46,6 @@ const KontrollKlientView = () => {
     const history = useHistory();
 
     const [loadedKlient, setLoadedKlient] = useState<number>();
-
-    const [_klient, setKlient] = useState<Klient>();
 
     const [editKlient, setEditKlient] = useState<boolean>(false);
 
@@ -71,8 +67,8 @@ const KontrollKlientView = () => {
         if (kontroll) statusMutation.mutateAsync({ kontroll });
     }
 
-    const { saveEditKlient } = useClient();
-    const clientData = useClients();
+    const updateClientMutation = useUpdateClient();
+    const clientData = useClientById({ clientId: Number(klientId) });
 
     const {
         loadUsers,
@@ -93,12 +89,6 @@ const KontrollKlientView = () => {
         }
     }, [klientId, loadUsers, loadedKlient, showAllKontroller]);
 
-    useEffect(() => {
-        if (clientData.data !== undefined) {
-            setKlient(clientData.data.find((k) => k.id === Number(klientId)));
-        }
-    }, [clientData.data, klientId]);
-
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
     const [kontrollAddAttachmentId, setKontrollAddAttachmentId] = useState<
@@ -113,10 +103,15 @@ const KontrollKlientView = () => {
     };
 
     const handleEditKlient = async (name: string): Promise<void> => {
-        if (_klient !== undefined) {
-            if (await saveEditKlient(name, _klient)) {
-                setEditKlient(false);
-            }
+        try {
+            await updateClientMutation.mutateAsync({
+                name,
+                clientId: Number(klientId)
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setEditKlient(false);
         }
     };
 
@@ -171,11 +166,12 @@ const KontrollKlientView = () => {
                                 <div style={{ paddingBottom: '10px' }} />
 
                                 <Typography paragraph>
-                                    <strong>Kunde:</strong> {_klient?.name}
+                                    <strong>Kunde:</strong>{' '}
+                                    {clientData.data?.name}
                                 </Typography>
-                                {editKlient && _klient !== undefined ? (
+                                {editKlient && clientData.data !== undefined ? (
                                     <KlientEditSchema
-                                        klient={_klient}
+                                        klient={clientData.data}
                                         onSubmit={handleEditKlient}
                                     />
                                 ) : (
@@ -217,7 +213,9 @@ const KontrollKlientView = () => {
                                 <TableContainer
                                     columns={kontrollColumns({
                                         users: users ?? [],
-                                        klienter: clientData.data ?? [],
+                                        klienter: clientData.data
+                                            ? [clientData.data]
+                                            : [],
                                         avvik: avvikData.data ?? [],
                                         measurements:
                                             measurementData.data ?? [],

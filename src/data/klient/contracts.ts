@@ -44,10 +44,6 @@ export type KontrollActions =
 export interface ContextInterface {
     state: kontrollState;
 
-    saveNewKlient: (
-        name: string
-    ) => Promise<{ status: boolean; klient?: Klient }>;
-    saveEditKlient: (name: string, klient: Klient) => Promise<boolean>;
     saveNewLocation: (
         name: string,
         klient: Klient

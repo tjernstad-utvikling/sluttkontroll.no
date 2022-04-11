@@ -23,13 +23,4 @@ export type UserActions = addUsers | UpdateUser;
 
 export interface ContextInterface {
     state: UserState;
-
-    updateUserInState: (user: User) => void;
-    updateUser: (user: User) => Promise<boolean>;
-    newUser: (
-        name: string,
-        email: string,
-        phone: string,
-        roles: Roles[] | undefined
-    ) => Promise<boolean>;
 }

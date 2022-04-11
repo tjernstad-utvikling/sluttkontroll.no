@@ -20,8 +20,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import { StorageKeys } from '../contracts/keys';
 import { refreshLoginToken } from '../api/sluttkontroll';
+import { useQueryClient } from 'react-query';
 import { useSnackbar } from 'notistack';
-import { useUser } from '../data/user';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
 
@@ -38,7 +38,8 @@ export const AuthProvider = ({
     const [hasCheckedLocal, setHasCheckedLocal] = useState(false);
 
     const { enqueueSnackbar } = useSnackbar();
-    const { updateUserInState } = useUser();
+
+    const queryClient = useQueryClient();
 
     const [show, setShow] = useState<boolean>(false);
 
@@ -107,13 +108,7 @@ export const AuthProvider = ({
                         roles !== undefined ? roles : [Roles.ROLE_USER];
 
                     setUser({ ...user, name, email, phone, roles: newRoles });
-                    updateUserInState({
-                        ...user,
-                        name,
-                        email,
-                        phone,
-                        roles: newRoles
-                    });
+                    queryClient.invalidateQueries(['users']);
                     localStorage.setItem(
                         StorageKeys.currentUser,
                         JSON.stringify({

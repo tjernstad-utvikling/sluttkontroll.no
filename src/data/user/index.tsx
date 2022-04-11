@@ -106,24 +106,6 @@ export const UserContextProvider = ({
         }
     };
 
-    const loadUsers = async (): Promise<void> => {
-        if (!hasLoadedUsers) {
-            try {
-                const { status, users } = await getUsers();
-
-                if (status === 200) {
-                    dispatch({
-                        type: ActionType.addUsers,
-                        payload: users
-                    });
-                }
-            } catch (error: any) {
-                errorHandler(error);
-            }
-            setHasLoadedUsers(true);
-        }
-    };
-
     const updateUserInState = (user: User): void => {
         dispatch({
             type: ActionType.UpdateUser,
@@ -134,11 +116,7 @@ export const UserContextProvider = ({
     return (
         <UserContext.Provider
             value={{
-                state,
-
-                updateUserInState,
-                newUser,
-                updateUser
+                state
             }}>
             {children}
         </UserContext.Provider>

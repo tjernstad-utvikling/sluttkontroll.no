@@ -1,5 +1,6 @@
 import { Card, CardContent } from '../components/card';
 import { useHistory, useParams } from 'react-router-dom';
+import { useUpdateUser, useUserById } from '../api/hooks/useUsers';
 
 import { CertificateList } from '../components/certificate';
 import Container from '@mui/material/Container';
@@ -9,15 +10,13 @@ import { Roles } from '../contracts/userApi';
 import { Sertifikat } from '../contracts/certificateApi';
 import { UserSchema } from '../schema/user';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
-import { useUserById } from '../api/hooks/useUsers';
 
 const NewUserView = () => {
     const { classes } = usePageStyles();
     const { userId } = useParams<EditUserViewParams>();
     const history = useHistory();
 
-    const { updateUser, updateUserInState } = useUser();
+    const updateUserMutation = useUpdateUser();
 
     const userData = useUserById({ userId: Number(userId) });
 
@@ -30,15 +29,19 @@ const NewUserView = () => {
         if (userData.data !== undefined) {
             const _roles = roles !== undefined ? roles : userData.data.roles;
 
-            if (
-                await updateUser({
-                    ...userData.data,
-                    name,
-                    phone,
-                    email,
-                    roles: _roles
-                })
-            ) {
+            try {
+                await updateUserMutation.mutateAsync({
+                    user: {
+                        ...userData.data,
+                        name,
+                        phone,
+                        email,
+                        roles: _roles
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 history.goBack();
                 return true;
             }

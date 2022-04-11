@@ -1,4 +1,8 @@
-import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
+import {
+    GridCellParams,
+    GridColDef,
+    GridValueGetterParams
+} from '@mui/x-data-grid-pro';
 import { Roles, RolesDesc, User } from '../contracts/userApi';
 
 import { BaseTable } from './baseTable';
@@ -31,6 +35,9 @@ export const columns = ({ currentUser }: columnsOptions) => {
             field: 'roles',
             headerName: 'Roller',
             flex: 1,
+            valueGetter: (params: GridValueGetterParams) => {
+                if (params.value.roles) return params.value.roles[0];
+            },
             renderCell: (params: GridCellParams) => (
                 <>
                     {params.row.roles

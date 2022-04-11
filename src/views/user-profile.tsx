@@ -8,7 +8,6 @@ import { Sertifikat } from '../contracts/certificateApi';
 import { UserProfileSchema } from '../schema/userProfile';
 import { useAuth } from '../hooks/useAuth';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
 
 const ProfileView = () => {
     const { classes } = usePageStyles();
@@ -32,8 +31,6 @@ const ProfileView = () => {
         }
         return false;
     };
-
-    const { updateUserInState } = useUser();
 
     const handleAddCertificateToUser = (certificate: Sertifikat) => {
         if (user) {

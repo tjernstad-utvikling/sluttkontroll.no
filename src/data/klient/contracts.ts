@@ -43,24 +43,4 @@ export type KontrollActions =
 
 export interface ContextInterface {
     state: kontrollState;
-
-    saveNewLocation: (
-        name: string,
-        klient: Klient
-    ) => Promise<{ status: boolean; location?: Location }>;
-    saveEditLocation: (
-        name: string,
-        klientId: number,
-        location: Location
-    ) => Promise<boolean>;
-    addLocationImage: (option: {
-        image: File;
-        klientId: number;
-        locationId: number;
-    }) => Promise<boolean>;
-    saveDeleteLocationImage: (option: {
-        imageId: number;
-        klientId: number;
-        locationId: number;
-    }) => Promise<boolean>;
 }

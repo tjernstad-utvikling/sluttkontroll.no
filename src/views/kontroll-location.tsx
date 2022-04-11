@@ -10,6 +10,11 @@ import {
     defaultColumns,
     kontrollColumns
 } from '../tables/kontroll';
+import {
+    useClients,
+    useLocationById,
+    useUpdateLocation
+} from '../api/hooks/useKlient';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
@@ -27,7 +32,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
-import { Location } from '../contracts/kontrollApi';
 import { LocationEditSchema } from '../schema/location';
 import { LocationImageCard } from '../components/location';
 import { NewImageModal } from '../modal/newLocationImage';
@@ -35,8 +39,6 @@ import { TableContainer } from '../tables/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
-import { useClient } from '../data/klient';
-import { useClients } from '../api/hooks/useKlient';
 import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
 import { useMeasurements } from '../api/hooks/useMeasurement';
@@ -49,8 +51,6 @@ const KontrollObjektView = () => {
     const history = useHistory();
 
     const [loadedObjekt, setLoadedObjekt] = useState<number>();
-
-    const [_location, setLocation] = useState<Location>();
 
     const [editLocation, setEditLocation] = useState<boolean>(false);
     const [addLocationImage, setAddLocationImage] = useState<boolean>(false);
@@ -74,7 +74,11 @@ const KontrollObjektView = () => {
     }
     const clientData = useClients();
 
-    const { saveEditLocation } = useClient();
+    const locationData = useLocationById({
+        clientId: Number(klientId),
+        locationId: Number(objectId)
+    });
+
     const {
         loadUsers,
         state: { users }
@@ -95,19 +99,6 @@ const KontrollObjektView = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadUsers, loadedObjekt, objectId]);
 
-    useEffect(() => {
-        if (clientData.data !== undefined) {
-            const klient = clientData.data.find(
-                (k) => k.id === Number(klientId)
-            );
-            if (klient !== undefined) {
-                setLocation(
-                    klient.locations.find((o) => o.id === Number(objectId))
-                );
-            }
-        }
-    }, [clientData.data, klientId, objectId]);
-
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
     const [kontrollAddAttachmentId, setKontrollAddAttachmentId] = useState<
@@ -121,9 +112,18 @@ const KontrollObjektView = () => {
         setEditId(undefined);
     };
 
+    const locationMutation = useUpdateLocation();
     const handleEditLocation = async (name: string): Promise<void> => {
-        if (_location !== undefined) {
-            if (await saveEditLocation(name, Number(klientId), _location)) {
+        if (locationData.data !== undefined) {
+            try {
+                await locationMutation.mutateAsync({
+                    clientId: Number(klientId),
+                    locationId: Number(objectId),
+                    name
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 setEditLocation(false);
             }
         }
@@ -187,14 +187,14 @@ const KontrollObjektView = () => {
 
                                         <Typography paragraph>
                                             <strong>Lokasjon:</strong>{' '}
-                                            {_location?.name}
+                                            {locationData.data?.name}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        {_location && (
+                                        {locationData.data && (
                                             <LocationImageCard
                                                 klientId={Number(klientId)}
-                                                location={_location}
+                                                location={locationData.data}
                                                 openAddImageModal={() =>
                                                     setAddLocationImage(true)
                                                 }
@@ -203,9 +203,10 @@ const KontrollObjektView = () => {
                                     </Grid>
                                 </Grid>
 
-                                {editLocation && _location !== undefined ? (
+                                {editLocation &&
+                                locationData.data !== undefined ? (
                                     <LocationEditSchema
-                                        location={_location}
+                                        location={locationData.data}
                                         onSubmit={handleEditLocation}
                                     />
                                 ) : (

@@ -182,12 +182,7 @@ export const ClientContextProvider = ({
     return (
         <ClientContext.Provider
             value={{
-                state,
-
-                saveNewLocation,
-                saveEditLocation,
-                addLocationImage,
-                saveDeleteLocationImage
+                state
             }}>
             {children}
         </ClientContext.Provider>

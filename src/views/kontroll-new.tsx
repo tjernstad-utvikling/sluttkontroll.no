@@ -2,6 +2,7 @@ import { Card, CardContent } from '../components/card';
 import { ColorlibConnector, ColorlibStepIconRoot } from '../components/stepper';
 import { Klient, Location } from '../contracts/kontrollApi';
 import React, { useState } from 'react';
+import { useAddNewClient, useAddNewLocation } from '../api/hooks/useKlient';
 
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import Container from '@mui/material/Container';
@@ -16,8 +17,6 @@ import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { User } from '../contracts/userApi';
-import { useAddNewClient } from '../api/hooks/useKlient';
-import { useClient } from '../data/klient';
 import { useHistory } from 'react-router-dom';
 import { useNewKontroll } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -30,7 +29,6 @@ const KontrollNewView = () => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const { saveNewLocation } = useClient();
     const [activeStep, setActiveStep] = useState(0);
     const [selectedKlient, setSelectedKlient] = useState<Klient>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
@@ -53,14 +51,23 @@ const KontrollNewView = () => {
         }
     };
 
+    const newLocationMutation = useAddNewLocation();
     const createNewLocation = async (name: string) => {
         if (selectedKlient !== undefined) {
-            const res = await saveNewLocation(name, selectedKlient);
-            if (res.status && res.location !== undefined) {
-                setSelectedLocation(res.location);
-                setActiveStep(2);
+            try {
+                await newLocationMutation.mutateAsync({
+                    clientId: selectedKlient.id,
+                    name,
+                    setLocation: (location: Location) => {
+                        setSelectedLocation(location);
+                        setActiveStep(2);
+                    }
+                });
+            } catch (error) {
+                return false;
+            } finally {
+                return true;
             }
-            return res.status;
         }
         return false;
     };

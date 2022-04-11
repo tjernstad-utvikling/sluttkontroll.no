@@ -14,9 +14,8 @@ import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
 import { makeStyles } from '../theme/makeStyles';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 import { useZipCode } from '../api/hooks/useUtils';
 
 interface Option {
@@ -52,25 +51,22 @@ export const ReportPropertiesSchema = ({
     klienter
 }: ReportPropertiesSchemaProps): JSX.Element => {
     const { classes } = useStyles();
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
 
-    const [userOptions, setUserOptions] = useState<Array<Option>>();
+    const usersData = useUsers();
+
+    const [userOptions, setUserOptions] = useState<Option[]>();
     const [sertifikatOptions, setSertifikatOptions] = useState<
         Array<SertifikatOption>
     >([]);
 
     useEffect(() => {
-        if (users !== undefined) {
-            setUserOptions(users.map((u) => ({ value: u, label: u.name })));
+        if (usersData.data !== undefined) {
+            setUserOptions(
+                usersData.data.map((u) => ({ value: u, label: u.name }))
+            );
         }
-    }, [users]);
+    }, [usersData.data]);
 
-    useEffectOnce(() => {
-        loadUsers();
-    });
     const initialData = useMemo(() => {
         let user =
             kontroll !== undefined
@@ -282,7 +278,7 @@ export const ReportPropertiesSchema = ({
                                     Kontrollert av
                                 </Typography>
                                 <Grid item xs={12}>
-                                    {users && (
+                                    {usersData.data && (
                                         <div>
                                             <label htmlFor="rapportUser-select">
                                                 Kontrollør

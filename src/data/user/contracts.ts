@@ -23,7 +23,7 @@ export type UserActions = addUsers | UpdateUser;
 
 export interface ContextInterface {
     state: UserState;
-    loadUsers: () => Promise<void>;
+
     updateUserInState: (user: User) => void;
     updateUser: (user: User) => Promise<boolean>;
     newUser: (

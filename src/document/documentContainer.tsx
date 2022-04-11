@@ -29,7 +29,6 @@ import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useReportKontrollById } from '../api/hooks/useKontroll';
 import { useSkjemaerReport } from '../api/hooks/useSkjema';
 import { useSnackbar } from 'notistack';
-import { useUser } from '../data/user';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
 
@@ -158,11 +157,7 @@ export const DocumentContainer = ({
 
     const mTypeData = useMeasurementTypes();
 
-    const { loadUsers } = useUser();
-
     useEffectOnce(async () => {
-        loadUsers();
-
         await handleReportSettings({
             kontrollId,
             setReportSetting

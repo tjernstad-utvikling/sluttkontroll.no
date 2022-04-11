@@ -43,14 +43,12 @@ import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
 import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollObjektView = () => {
     const { classes } = usePageStyles();
     const { objectId, klientId } = useParams<KontrollObjectViewParams>();
     const history = useHistory();
-
-    const [loadedObjekt, setLoadedObjekt] = useState<number>();
 
     const [editLocation, setEditLocation] = useState<boolean>(false);
     const [addLocationImage, setAddLocationImage] = useState<boolean>(false);
@@ -79,10 +77,7 @@ const KontrollObjektView = () => {
         locationId: Number(objectId)
     });
 
-    const {
-        loadUsers,
-        state: { users }
-    } = useUser();
+    const userData = useUsers();
 
     const avvikData = useAvvik({
         includeClosed: true,
@@ -90,14 +85,6 @@ const KontrollObjektView = () => {
     });
 
     const measurementData = useMeasurements({ locationId: Number(objectId) });
-
-    useEffect(() => {
-        if (loadedObjekt !== Number(objectId)) {
-            setLoadedObjekt(Number(objectId));
-            loadUsers();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loadUsers, loadedObjekt, objectId]);
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -247,7 +234,7 @@ const KontrollObjektView = () => {
                             <CardContent>
                                 <TableContainer
                                     columns={kontrollColumns({
-                                        users: users ?? [],
+                                        users: userData.data ?? [],
                                         klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
                                         measurements:

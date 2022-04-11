@@ -28,12 +28,11 @@ import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClients } from '../api/hooks/useKlient';
 import { useClipBoard } from '../data/clipboard';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHistory } from 'react-router-dom';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
 import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollerView = () => {
     const { classes } = usePageStyles();
@@ -51,10 +50,7 @@ const KontrollerView = () => {
 
     const clientData = useClients();
 
-    const {
-        loadUsers,
-        state: { users }
-    } = useUser();
+    const userData = useUsers();
 
     const avvikData = useAvvik({
         includeClosed: true,
@@ -62,10 +58,6 @@ const KontrollerView = () => {
     });
 
     const measurementData = useMeasurements({ myControl: true });
-
-    useEffectOnce(() => {
-        loadUsers();
-    });
 
     /**
      * Clipboard
@@ -153,7 +145,7 @@ const KontrollerView = () => {
 
                                 <TableContainer
                                     columns={kontrollColumns({
-                                        users: users ?? [],
+                                        users: userData.data ?? [],
                                         klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
                                         measurements:

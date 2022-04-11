@@ -5,23 +5,14 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { useAuth } from '../hooks/useAuth';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 const UsersView = () => {
     const { classes } = usePageStyles();
 
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
-
     const { user } = useAuth();
-
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    const userData = useUsers();
 
     return (
         <>
@@ -42,15 +33,18 @@ const UsersView = () => {
                                 />
                             }>
                             <CardContent>
-                                {users !== undefined && user !== undefined ? (
+                                {user !== undefined ? (
                                     <TableContainer
                                         columns={columns({ currentUser: user })}
                                         defaultColumns={defaultColumns}
                                         tableId="users">
-                                        <UserTable users={users ?? []} />
+                                        <UserTable
+                                            isLoading={userData.isLoading}
+                                            users={userData.data ?? []}
+                                        />
                                     </TableContainer>
                                 ) : (
-                                    <div>Laster brukere</div>
+                                    <div>Bruker mangler</div>
                                 )}
                             </CardContent>
                         </Card>

@@ -6,9 +6,8 @@ import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useEffect } from 'react';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 interface AvvikUtbedrereSchemaProps {
     selectedAvvik: number[];
@@ -20,10 +19,7 @@ export const AvvikUtbedrereSchema = ({
     onSubmit,
     kontrollId
 }: AvvikUtbedrereSchemaProps): JSX.Element => {
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
+    const usersData = useUsers();
 
     const avvikData = useAvvik({
         includeClosed: true,
@@ -36,14 +32,12 @@ export const AvvikUtbedrereSchema = ({
     const [userOptions, setUserOptions] = useState<Option[]>();
 
     useEffect(() => {
-        if (users !== undefined) {
-            setUserOptions(users.map((u) => ({ value: u, label: u.name })));
+        if (usersData.data !== undefined) {
+            setUserOptions(
+                usersData.data.map((u) => ({ value: u, label: u.name }))
+            );
         }
-    }, [users]);
-
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    }, [usersData.data]);
 
     if (userOptions !== undefined) {
         return (
@@ -75,7 +69,7 @@ export const AvvikUtbedrereSchema = ({
                 {({ isSubmitting, setFieldValue, values }) => {
                     return (
                         <Form>
-                            {users && (
+                            {usersData.data && (
                                 <>
                                     <Typography>
                                         Alle valgte avvik vil få de samme

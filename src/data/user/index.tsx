@@ -136,7 +136,6 @@ export const UserContextProvider = ({
             value={{
                 state,
 
-                loadUsers,
                 updateUserInState,
                 newUser,
                 updateUser

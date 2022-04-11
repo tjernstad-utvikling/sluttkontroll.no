@@ -37,15 +37,13 @@ import { useClipBoard } from '../data/clipboard';
 import { useKontroll as useKontrollCtx } from '../data/kontroll';
 import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollKlientView = () => {
     const { classes } = usePageStyles();
 
     const { klientId } = useParams<KontrollKlientViewParams>();
     const history = useHistory();
-
-    const [loadedKlient, setLoadedKlient] = useState<number>();
 
     const [editKlient, setEditKlient] = useState<boolean>(false);
 
@@ -70,10 +68,7 @@ const KontrollKlientView = () => {
     const updateClientMutation = useUpdateClient();
     const clientData = useClientById({ clientId: Number(klientId) });
 
-    const {
-        loadUsers,
-        state: { users }
-    } = useUser();
+    const userData = useUsers();
 
     const avvikData = useAvvik({
         includeClosed: true,
@@ -81,13 +76,6 @@ const KontrollKlientView = () => {
     });
 
     const measurementData = useMeasurements({ clientId: Number(klientId) });
-
-    useEffect(() => {
-        if (loadedKlient !== Number(klientId)) {
-            loadUsers();
-            setLoadedKlient(Number(klientId));
-        }
-    }, [klientId, loadUsers, loadedKlient, showAllKontroller]);
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -212,7 +200,7 @@ const KontrollKlientView = () => {
                             <CardContent>
                                 <TableContainer
                                     columns={kontrollColumns({
-                                        users: users ?? [],
+                                        users: userData.data ?? [],
                                         klienter: clientData.data
                                             ? [clientData.data]
                                             : [],

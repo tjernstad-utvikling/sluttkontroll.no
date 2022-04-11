@@ -1,40 +1,25 @@
 import { Card, CardContent } from '../components/card';
-import { Roles, User } from '../contracts/userApi';
-import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { CertificateList } from '../components/certificate';
 import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
+import { Roles } from '../contracts/userApi';
 import { Sertifikat } from '../contracts/certificateApi';
 import { UserSchema } from '../schema/user';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useUser } from '../data/user';
+import { useUserById } from '../api/hooks/useUsers';
 
 const NewUserView = () => {
     const { classes } = usePageStyles();
     const { userId } = useParams<EditUserViewParams>();
     const history = useHistory();
-    const [user, setUser] = useState<User>();
 
-    const {
-        state: { users },
-        updateUser,
-        loadUsers,
-        updateUserInState
-    } = useUser();
-    useEffect(() => {
-        const _user = users?.find((u) => u.id === Number(userId));
-        if (_user !== undefined) {
-            setUser(_user);
-        }
-    }, [userId, users]);
+    const { updateUser, updateUserInState } = useUser();
 
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    const userData = useUserById({ userId: Number(userId) });
 
     const handleEditUser = async (
         name: string,
@@ -42,11 +27,17 @@ const NewUserView = () => {
         email: string,
         roles: Roles[] | undefined
     ) => {
-        if (user !== undefined) {
-            const _roles = roles !== undefined ? roles : user.roles;
+        if (userData.data !== undefined) {
+            const _roles = roles !== undefined ? roles : userData.data.roles;
 
             if (
-                await updateUser({ ...user, name, phone, email, roles: _roles })
+                await updateUser({
+                    ...userData.data,
+                    name,
+                    phone,
+                    email,
+                    roles: _roles
+                })
             ) {
                 history.goBack();
                 return true;
@@ -56,10 +47,10 @@ const NewUserView = () => {
     };
 
     const handleAddCertificateToUser = (certificate: Sertifikat) => {
-        if (user) {
+        if (userData.data) {
             updateUserInState({
-                ...user,
-                sertifikater: [...user.sertifikater, certificate]
+                ...userData.data,
+                sertifikater: [...userData.data.sertifikater, certificate]
             });
         }
     };
@@ -72,10 +63,10 @@ const NewUserView = () => {
                     <Grid item xs={12}>
                         <Card title="Rediger bruker">
                             <CardContent>
-                                {user !== undefined && (
+                                {userData.data !== undefined && (
                                     <UserSchema
                                         onSubmit={handleEditUser}
-                                        user={user}
+                                        user={userData.data}
                                     />
                                 )}
                             </CardContent>
@@ -84,7 +75,7 @@ const NewUserView = () => {
                     <Grid item xs={12}>
                         <CertificateList
                             addCertificate={handleAddCertificateToUser}
-                            user={user}
+                            user={userData.data}
                         />
                     </Grid>
                 </Grid>

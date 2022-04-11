@@ -95,7 +95,8 @@ export const defaultColumns: string[] = ['name', 'email'];
 
 interface UserTableProps {
     users: User[];
+    isLoading: boolean;
 }
-export const UserTable = ({ users }: UserTableProps) => {
-    return <BaseTable data={users} />;
+export const UserTable = ({ users, isLoading }: UserTableProps) => {
+    return <BaseTable data={users} loading={isLoading} />;
 };

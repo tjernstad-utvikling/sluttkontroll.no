@@ -14,6 +14,7 @@ import { Roles } from '../../contracts/userApi';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SpeedIcon from '@mui/icons-material/Speed';
 import { useAuth } from '../../hooks/useAuth';
+import { useCurrentUser } from '../../api/hooks/useUsers';
 import { useMainStyles } from '../../styles/layout/main';
 
 interface RightDrawerProps {
@@ -23,7 +24,9 @@ interface RightDrawerProps {
 
 export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
     const { classes } = useMainStyles();
-    const { user, userHasRole, signOut } = useAuth();
+    const { userHasRole, signOut } = useAuth();
+
+    const currentUserData = useCurrentUser();
 
     const handleSignOut = () => {
         signOut();
@@ -51,7 +54,7 @@ export const RightDrawer = ({ isOpen, toggle }: RightDrawerProps) => {
             <List aria-label="Bruker meny">
                 <ListItemLink
                     to="/user"
-                    primary={user?.name || 'Profil'}
+                    primary={currentUserData.data?.name || 'Profil'}
                     icon={<PersonIcon />}
                 />
             </List>

@@ -1,6 +1,7 @@
 import { Roles, User } from '../../contracts/userApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+import { StorageKeys } from '../../contracts/keys';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 import { useSnackbar } from 'notistack';
@@ -12,6 +13,29 @@ export function useUsers() {
         }>('/user/users');
         return data.users;
     });
+}
+export function useCurrentUser() {
+    return useQuery(
+        ['users', 'current'],
+        async () => {
+            const { data } = await sluttkontrollApi.get<{
+                user: User;
+            }>('/user/me');
+            localStorage.setItem(
+                StorageKeys.currentUser,
+                JSON.stringify(data.user)
+            );
+            return data.user;
+        },
+        {
+            initialData: () => {
+                const jsonValue = localStorage.getItem(StorageKeys.currentUser);
+                const currentUser: User =
+                    jsonValue != null ? JSON.parse(jsonValue) : undefined;
+                return currentUser;
+            }
+        }
+    );
 }
 
 export function useUserById({ userId }: { userId: number }) {
@@ -94,6 +118,7 @@ export function useNewUser() {
         }
     );
 }
+
 export function useUpdateUser() {
     const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
@@ -129,6 +154,70 @@ export function useUpdateUser() {
                 queryClient.invalidateQueries(['users']);
 
                 enqueueSnackbar('Bruker lagret', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    if (error.response.message === 'user_exists') {
+                        enqueueSnackbar(
+                            'Epostadressen er allerede registrert',
+                            {
+                                variant: 'warning'
+                            }
+                        );
+                    } else if (error.response.message === 'user_data_missing') {
+                        enqueueSnackbar('Epost eller navn mangler', {
+                            variant: 'warning'
+                        });
+                    }
+                } else {
+                    enqueueSnackbar('Problemer med lagring av bruker', {
+                        variant: 'warning'
+                    });
+                }
+            }
+        }
+    );
+}
+
+export function useUpdateCurrentUser() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            name: string;
+            email: string;
+            phone: string;
+            roles: Roles[];
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put('/user/', {
+                ...body
+            });
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (_, vars) => {
+                const user = queryClient.getQueryData<User>([
+                    'users',
+                    'current'
+                ]);
+                // ✅ update detail view directly
+
+                if (user) {
+                    queryClient.setQueryData(['users', 'current'], {
+                        ...user,
+                        ...vars
+                    });
+                }
+                queryClient.invalidateQueries(['users']);
+
+                enqueueSnackbar('Profil oppdatert', {
                     variant: 'success'
                 });
             },

@@ -11,7 +11,7 @@ import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
 import { InstrumentStatus } from '../components/instrument';
 import { TableContainer } from '../tables/tableContainer';
-import { useAuth } from '../hooks/useAuth';
+import { useCurrentUser } from '../api/hooks/useUsers';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useInstrument } from '../data/instrument';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -23,7 +23,8 @@ const InstrumentsView = () => {
     const [calibrationModalId, setCalibrationModalId] = useState<number>();
     const [editId, setEditId] = useState<number>();
 
-    const { user } = useAuth();
+    const currentUserData = useCurrentUser();
+
     const {
         state: { instruments },
         loadInstruments,
@@ -36,8 +37,8 @@ const InstrumentsView = () => {
 
     const handleInstrumentBooking = (instrumentId: number) => {
         const instrument = instruments?.find((i) => i.id === instrumentId);
-        if (user !== undefined && instrument !== undefined) {
-            updateInstrumentDisponent(instrument, user);
+        if (currentUserData.data !== undefined && instrument !== undefined) {
+            updateInstrumentDisponent(instrument, currentUserData.data);
         }
     };
 
@@ -71,7 +72,7 @@ const InstrumentsView = () => {
                                             regCalibration: (id: number) => {
                                                 setCalibrationModalId(id);
                                             },
-                                            currentUser: user,
+                                            currentUser: currentUserData.data,
                                             changeDisponent:
                                                 handleInstrumentBooking
                                         })}

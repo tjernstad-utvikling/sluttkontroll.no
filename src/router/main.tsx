@@ -5,14 +5,8 @@ import { PrivateRoute } from './privateRoute';
 import { Roles } from '../contracts/userApi';
 import { Switch } from 'react-router-dom';
 import { User } from './main/user';
-import { useAuth } from '../hooks/useAuth';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 
 export const Main = () => {
-    const { loadUserFromStorage } = useAuth();
-    useEffectOnce(() => {
-        loadUserFromStorage();
-    });
     return (
         <Switch>
             <PrivateRoute

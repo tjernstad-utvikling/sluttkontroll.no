@@ -5,10 +5,6 @@ import {
     getLogin,
     logoutAll as logoutAllApi
 } from '../api/authApi';
-import {
-    updatePassword as updatePasswordApi,
-    updateUser as updateUserApi
-} from '../api/userApi';
 
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -19,8 +15,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import { StorageKeys } from '../contracts/keys';
-import { refreshLoginToken } from '../api/sluttkontroll';
-import { useQueryClient } from 'react-query';
+import { updatePassword as updatePasswordApi } from '../api/userApi';
+import { useCurrentUser } from '../api/hooks/useUsers';
 import { useSnackbar } from 'notistack';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
@@ -34,12 +30,9 @@ export const AuthProvider = ({
 }: {
     children: React.ReactNode;
 }): JSX.Element => {
-    const [user, setUser] = useState<User>();
-    const [hasCheckedLocal, setHasCheckedLocal] = useState(false);
+    const currentUserData = useCurrentUser();
 
     const { enqueueSnackbar } = useSnackbar();
-
-    const queryClient = useQueryClient();
 
     const [show, setShow] = useState<boolean>(false);
 
@@ -62,7 +55,6 @@ export const AuthProvider = ({
         localStorage.removeItem(StorageKeys.token);
         localStorage.removeItem(StorageKeys.refreshToken);
         localStorage.removeItem(StorageKeys.currentUser);
-        setUser(undefined);
         setShow(false);
     };
 
@@ -78,7 +70,6 @@ export const AuthProvider = ({
                 userResponse.user !== undefined &&
                 loginResponse.token !== undefined
             ) {
-                setUser(userResponse.user);
                 return {
                     redirect: redirectRole(userResponse.user),
                     status: true
@@ -86,57 +77,6 @@ export const AuthProvider = ({
             }
         }
         return { redirect: '/', status: false };
-    };
-
-    const updateUser = async (
-        name: string,
-        email: string,
-        phone: string,
-        roles: Roles[] | undefined
-    ) => {
-        try {
-            const { status } = await updateUserApi(
-                name,
-                email,
-                phone,
-                roles !== undefined ? roles : [Roles.ROLE_USER]
-            );
-
-            if (status === 204) {
-                if (user !== undefined) {
-                    const newRoles =
-                        roles !== undefined ? roles : [Roles.ROLE_USER];
-
-                    setUser({ ...user, name, email, phone, roles: newRoles });
-                    queryClient.invalidateQueries(['users']);
-                    localStorage.setItem(
-                        StorageKeys.currentUser,
-                        JSON.stringify({
-                            ...user,
-                            name,
-                            email,
-                            phone,
-                            roles: newRoles
-                        })
-                    );
-                    enqueueSnackbar('Profil er oppdatert', {
-                        variant: 'success'
-                    });
-                    return true;
-                }
-            } else if (status === 400) {
-                enqueueSnackbar('Mangler ett eller flere felter', {
-                    variant: 'warning'
-                });
-            }
-            return false;
-        } catch (error: any) {
-            enqueueSnackbar('Ukjent feil ved lagring av profil', {
-                variant: 'error'
-            });
-            console.error(error);
-            return false;
-        }
     };
 
     const updatePassword = async (password: string) => {
@@ -163,25 +103,11 @@ export const AuthProvider = ({
         setShow(true);
     };
 
-    const loadUserFromStorage = async () => {
-        const token = localStorage.getItem(StorageKeys.token);
-
-        if (token !== null) {
-            await refreshLoginToken();
-            const jsonValue = localStorage.getItem(StorageKeys.currentUser);
-            const currentUser: User =
-                jsonValue != null ? JSON.parse(jsonValue) : undefined;
-            setUser(currentUser);
-            setHasCheckedLocal(true);
-            return true;
-        }
-        setHasCheckedLocal(true);
-        return false;
-    };
-
     const userHasRole = (requiredRole: Roles[]): boolean => {
-        if (user !== undefined) {
-            if (user.roles.some((r) => requiredRole.includes(r))) {
+        if (currentUserData.data !== undefined) {
+            if (
+                currentUserData.data.roles.some((r) => requiredRole.includes(r))
+            ) {
                 return true;
             }
         }
@@ -206,12 +132,8 @@ export const AuthProvider = ({
     return (
         <Context.Provider
             value={{
-                user,
-                hasCheckedLocal,
                 signIn,
                 signOut,
-                loadUserFromStorage,
-                updateUser,
                 userHasRole,
                 updatePassword
             }}>
@@ -228,20 +150,11 @@ export const AuthProvider = ({
 };
 
 interface ContextInterface {
-    user: User | undefined;
-    hasCheckedLocal: boolean;
     signIn: (
         email: string,
         password: string
     ) => Promise<{ redirect: string; status: boolean }>;
     signOut: () => void;
-    loadUserFromStorage: () => Promise<boolean>;
-    updateUser: (
-        name: string,
-        email: string,
-        phone: string,
-        roles: Roles[] | undefined
-    ) => Promise<boolean>;
     userHasRole: (requiredRole: Roles[]) => boolean;
     updatePassword: (password: string) => Promise<boolean>;
 }

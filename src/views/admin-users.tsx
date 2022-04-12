@@ -1,17 +1,17 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import { UserTable, columns, defaultColumns } from '../tables/user';
+import { useCurrentUser, useUsers } from '../api/hooks/useUsers';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
-import { useAuth } from '../hooks/useAuth';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUsers } from '../api/hooks/useUsers';
 
 const UsersView = () => {
     const { classes } = usePageStyles();
 
-    const { user } = useAuth();
+    const currentUserData = useCurrentUser();
+
     const userData = useUsers();
 
     return (
@@ -33,9 +33,11 @@ const UsersView = () => {
                                 />
                             }>
                             <CardContent>
-                                {user !== undefined ? (
+                                {currentUserData.data !== undefined ? (
                                     <TableContainer
-                                        columns={columns({ currentUser: user })}
+                                        columns={columns({
+                                            currentUser: currentUserData.data
+                                        })}
                                         defaultColumns={defaultColumns}
                                         tableId="users">
                                         <UserTable

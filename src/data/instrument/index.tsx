@@ -4,7 +4,6 @@ import {
     addCalibration as addCalibrationApi,
     addCalibrationFile,
     editInstrument,
-    newInstrument,
     removeDisponent,
     setDisponent
 } from '../../api/instrumentApi';
@@ -31,47 +30,6 @@ export const InstrumentContextProvider = ({
     const [state, dispatch] = useReducer(instrumentReducer, initialState);
 
     const { enqueueSnackbar } = useSnackbar();
-
-    const addNewInstrument = async (
-        name: string,
-        serienr: string,
-        user: User | null,
-        toCalibrate: boolean,
-        calibrationInterval: number
-    ): Promise<boolean> => {
-        try {
-            const { status, instrument, message } = await newInstrument({
-                name,
-                serienr,
-                user,
-                toCalibrate,
-                calibrationInterval
-            });
-            if (status === 400 && message !== undefined) {
-                enqueueSnackbar('Ikke alle nødvendige felter er fylt ut', {
-                    variant: 'warning'
-                });
-            }
-
-            if (status === 200 && instrument !== undefined) {
-                dispatch({
-                    type: ActionType.addInstruments,
-                    payload: [instrument]
-                });
-                enqueueSnackbar('Nytt instrument lagret', {
-                    variant: 'success'
-                });
-                return true;
-            }
-            return false;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med lagring av instrument', {
-                variant: 'error'
-            });
-            return false;
-        }
-    };
 
     const addCalibration = async (
         instrumentId: number,
@@ -199,9 +157,6 @@ export const InstrumentContextProvider = ({
     return (
         <InstrumentContext.Provider
             value={{
-                addNewInstrument,
-                addCalibration,
-                updateInstruments,
                 updateInstrumentDisponent
             }}>
             {children}

@@ -21,28 +21,6 @@ export const getInstrumentStatusCurrentUser =
         }
     };
 
-export const newInstrument = async (instrument: {
-    name: string;
-    serienr: string;
-    user: User | null;
-    toCalibrate: boolean;
-    calibrationInterval: number;
-}): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
-    try {
-        const user = instrument.user ? { id: instrument.user.id } : null;
-        const { status, data } = await sluttkontrollApi.post('/instrument/', {
-            ...instrument,
-            user
-        });
-        return { status, ...data };
-    } catch (error: any) {
-        if (error.response.status === 400) {
-            return { status: 400, message: error.response.data.message };
-        }
-        throw new Error(error);
-    }
-};
-
 export const editInstrument = async (
     instrument: Instrument
 ): Promise<{ status: number; message: string }> => {

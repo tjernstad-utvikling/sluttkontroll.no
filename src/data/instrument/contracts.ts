@@ -22,21 +22,8 @@ export interface updateInstrument {
 export type UserActions = addInstruments | updateInstrument;
 
 export interface ContextInterface {
-    updateInstruments: (instrument: Instrument) => Promise<boolean>;
     updateInstrumentDisponent: (
         instrument: Instrument,
         user: User
-    ) => Promise<boolean>;
-    addCalibration: (
-        instrumentId: number,
-        kalibrertDate: string,
-        sertifikatFile: File
-    ) => Promise<boolean>;
-    addNewInstrument: (
-        name: string,
-        serienr: string,
-        user: User | null,
-        toCalibrate: boolean,
-        calibrationInterval: number
     ) => Promise<boolean>;
 }

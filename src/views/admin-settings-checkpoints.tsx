@@ -99,8 +99,11 @@ const CheckpointView = () => {
             <CheckpointModal
                 onSubmit={handleCheckpointSubmit}
                 editId={editId}
-                isOpen={addNew}
-                close={() => setEditId(undefined)}
+                isOpen={addNew || !!editId}
+                close={() => {
+                    setEditId(undefined);
+                    setAddNew(false);
+                }}
                 checkpoints={checkpointData.data}
             />
         </>

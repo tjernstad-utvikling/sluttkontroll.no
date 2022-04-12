@@ -12,8 +12,7 @@ import { SelectTemplate } from '../components/template';
 import { SjekklisterViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
-import { getCheckpoints } from '../api/checkpointApi';
-import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SjekklisteEditView = () => {
@@ -22,7 +21,6 @@ const SjekklisteEditView = () => {
     const { skjemaId } = useParams<SjekklisterViewParams>();
     const history = useHistory();
 
-    const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [selected, setSelected] = useState<Checkpoint[]>([]);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -36,6 +34,8 @@ const SjekklisteEditView = () => {
     });
 
     const checklistMutations = useUpdateChecklist();
+
+    const checkpointData = useCheckpoints();
 
     const onSubmitChecklist = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -58,23 +58,6 @@ const SjekklisteEditView = () => {
     useEffect(() => {
         setSelected(checklistData.data?.map((c) => c.checkpoint) ?? []);
     }, [checklistData.data]);
-
-    useEffectOnce(async () => {
-        try {
-            const res = await getCheckpoints();
-            if (res.status === 200) {
-                setCheckpoints(
-                    res.checkpoints.sort((a, b) =>
-                        String(a.prosedyreNr).localeCompare(
-                            String(b.prosedyreNr),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    )
-                );
-            }
-        } catch (error: any) {}
-    });
 
     return (
         <div>
@@ -114,34 +97,35 @@ const SjekklisteEditView = () => {
                                         isOpen={selectFromTemplate}
                                     />
                                     {!selectFromTemplate ? (
-                                        checkpoints !== undefined ? (
-                                            <TableContainer
-                                                columns={columns({})}
-                                                defaultColumns={defaultColumns}
-                                                tableId="checkpoints">
-                                                <CheckpointTable
-                                                    checklists={
-                                                        checklistData.data
-                                                    }
-                                                    templateList={
-                                                        template?.skjemaTemplateCheckpoints
-                                                    }
-                                                    checkpoints={checkpoints}
-                                                    onSelected={(ids) =>
-                                                        setSelected(
-                                                            checkpoints?.filter(
-                                                                (c) =>
-                                                                    ids.indexOf(
-                                                                        c.id
-                                                                    ) !== -1
-                                                            )
-                                                        )
-                                                    }
-                                                />
-                                            </TableContainer>
-                                        ) : (
-                                            <div>Laster sjekkpunkter</div>
-                                        )
+                                        <TableContainer
+                                            columns={columns({})}
+                                            defaultColumns={defaultColumns}
+                                            tableId="checkpoints">
+                                            <CheckpointTable
+                                                isLoading={
+                                                    checkpointData.isLoading
+                                                }
+                                                checklists={checklistData.data}
+                                                templateList={
+                                                    template?.skjemaTemplateCheckpoints
+                                                }
+                                                checkpoints={
+                                                    checkpointData.data ?? []
+                                                }
+                                                onSelected={(ids) =>
+                                                    setSelected(
+                                                        checkpointData.data
+                                                            ? checkpointData.data?.filter(
+                                                                  (c) =>
+                                                                      ids.indexOf(
+                                                                          c.id
+                                                                      ) !== -1
+                                                              )
+                                                            : []
+                                                    )
+                                                }
+                                            />
+                                        </TableContainer>
                                     ) : (
                                         <div />
                                     )}

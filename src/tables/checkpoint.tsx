@@ -64,12 +64,14 @@ interface CheckpointTableProps {
     checklists?: Checklist[];
     templateList?: SkjemaTemplateCheckpoint[] | undefined;
     onSelected?: (checkpoints: number[]) => void;
+    isLoading: boolean;
 }
 export const CheckpointTable = ({
     checkpoints,
     checklists,
     templateList,
-    onSelected
+    onSelected,
+    isLoading
 }: CheckpointTableProps) => {
     const [selectionModel, setSelection] = useState<number[]>([]);
 
@@ -93,6 +95,7 @@ export const CheckpointTable = ({
             selectionModel={selectionModel}
             onSelected={onSelection}
             data={checkpoints}
+            loading={isLoading}
         />
     );
 };

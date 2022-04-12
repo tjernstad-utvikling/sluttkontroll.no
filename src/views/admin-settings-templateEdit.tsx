@@ -10,8 +10,7 @@ import Grid from '@mui/material/Grid';
 import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
 import { TableContainer } from '../tables/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
-import { getCheckpoints } from '../api/checkpointApi';
-import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useTemplate } from '../data/skjemaTemplate';
 
@@ -21,6 +20,8 @@ const SkjemaTemplateNewView = () => {
     const { templateId } = useParams<AdminTemplateEditViewParams>();
     const history = useHistory();
     const [template, setTemplate] = useState<Template>();
+
+    const checkpointData = useCheckpoints();
 
     const {
         state: { templates },
@@ -38,27 +39,7 @@ const SkjemaTemplateNewView = () => {
         }
     }, [templateId, templates]);
 
-    const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [selected, setSelected] = useState<Checkpoint[]>([]);
-
-    useEffectOnce(async () => {
-        try {
-            const res = await getCheckpoints();
-            if (res.status === 200) {
-                setCheckpoints(
-                    res.checkpoints.sort((a, b) =>
-                        String(a.prosedyreNr).localeCompare(
-                            String(b.prosedyreNr),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    )
-                );
-            }
-        } catch (error: any) {
-            console.error(error);
-        }
-    });
 
     const onSaveTemplate = async (name: string): Promise<boolean> => {
         if (template !== undefined) {
@@ -86,31 +67,34 @@ const SkjemaTemplateNewView = () => {
                                             template={template}
                                         />
 
-                                        {checkpoints !== undefined ? (
-                                            <TableContainer
-                                                columns={columns({})}
-                                                defaultColumns={defaultColumns}
-                                                tableId="checkpoints">
-                                                <CheckpointTable
-                                                    templateList={
-                                                        template.skjemaTemplateCheckpoints
-                                                    }
-                                                    checkpoints={checkpoints}
-                                                    onSelected={(ids) =>
-                                                        setSelected(
-                                                            checkpoints?.filter(
-                                                                (c) =>
-                                                                    ids.indexOf(
-                                                                        c.id
-                                                                    ) !== -1
-                                                            )
-                                                        )
-                                                    }
-                                                />
-                                            </TableContainer>
-                                        ) : (
-                                            <div>Laster sjekkpunkter</div>
-                                        )}
+                                        <TableContainer
+                                            columns={columns({})}
+                                            defaultColumns={defaultColumns}
+                                            tableId="checkpoints">
+                                            <CheckpointTable
+                                                isLoading={
+                                                    checkpointData.isLoading
+                                                }
+                                                templateList={
+                                                    template.skjemaTemplateCheckpoints
+                                                }
+                                                checkpoints={
+                                                    checkpointData.data ?? []
+                                                }
+                                                onSelected={(ids) =>
+                                                    setSelected(
+                                                        checkpointData.data
+                                                            ? checkpointData.data?.filter(
+                                                                  (c) =>
+                                                                      ids.indexOf(
+                                                                          c.id
+                                                                      ) !== -1
+                                                              )
+                                                            : []
+                                                    )
+                                                }
+                                            />
+                                        </TableContainer>
                                     </>
                                 )}
                             </CardContent>

@@ -1,6 +1,5 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
-import { getCheckpoints, newCheckpoints } from '../api/checkpointApi';
 
 import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointModal } from '../modal/checkpoint';
@@ -8,8 +7,9 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
+import { newCheckpoints } from '../api/checkpointApi';
 import { updateCheckpoints } from '../api/checkpointApi';
-import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
@@ -17,30 +17,12 @@ import { useState } from 'react';
 const CheckpointView = () => {
     const { classes } = usePageStyles();
 
-    const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
+    const checkpointData = useCheckpoints();
+
     const [editId, setEditId] = useState<number | undefined>(undefined);
     const [addNew, setAddNew] = useState<boolean>(false);
 
     const { enqueueSnackbar } = useSnackbar();
-
-    useEffectOnce(async () => {
-        try {
-            const res = await getCheckpoints();
-            if (res.status === 200) {
-                setCheckpoints(
-                    res.checkpoints.sort((a, b) =>
-                        String(a.prosedyreNr).localeCompare(
-                            String(b.prosedyreNr),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    )
-                );
-            }
-        } catch (error: any) {
-            console.error(error);
-        }
-    });
 
     const handleCheckpointSubmit = async (
         prosedyre: string,
@@ -57,7 +39,7 @@ const CheckpointView = () => {
                     tekst,
                     gruppe
                 );
-                const c = checkpoints.find((c) => c.id === editId);
+                const c = checkpointData.data?.find((c) => c.id === editId);
                 if (c !== undefined) {
                     handleSaveResponse(status, {
                         ...c,
@@ -155,22 +137,19 @@ const CheckpointView = () => {
                                 />
                             }>
                             <CardContent>
-                                {checkpoints !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({
-                                            onEditCheckpoint: (checkpointId) =>
-                                                setEditId(checkpointId),
-                                            editCheckpoint: true
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checkpoints">
-                                        <CheckpointTable
-                                            checkpoints={checkpoints}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster sjekkpunkter</div>
-                                )}
+                                <TableContainer
+                                    columns={columns({
+                                        onEditCheckpoint: (checkpointId) =>
+                                            setEditId(checkpointId),
+                                        editCheckpoint: true
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="checkpoints">
+                                    <CheckpointTable
+                                        isLoading={checkpointData.isLoading}
+                                        checkpoints={checkpointData.data ?? []}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -181,7 +160,7 @@ const CheckpointView = () => {
                 editId={editId}
                 isOpen={addNew}
                 close={() => setEditId(undefined)}
-                checkpoints={checkpoints}
+                checkpoints={checkpointData.data}
             />
         </>
     );

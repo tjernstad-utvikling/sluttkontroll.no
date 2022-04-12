@@ -1,6 +1,5 @@
 import { Card, CardContent } from '../components/card';
 import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
-import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { Checkpoint } from '../contracts/checkpointApi';
@@ -11,11 +10,11 @@ import { SkjemaSchema } from '../schema/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
-import { getCheckpoints } from '../api/checkpointApi';
-import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { useNewSkjema } from '../api/hooks/useSkjema';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 
 const SkjemaNewView = () => {
     const { classes } = usePageStyles();
@@ -23,7 +22,6 @@ const SkjemaNewView = () => {
     const { kontrollId } = useParams<SkjemaerViewParams>();
     const history = useHistory();
 
-    const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [selected, setSelected] = useState<Checkpoint[]>([]);
     const [template, setTemplate] = useState<Template>();
 
@@ -34,33 +32,7 @@ const SkjemaNewView = () => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const loadCheckpoints = async () => {
-        try {
-            const res = await getCheckpoints();
-            if (res.status === 200) {
-                setCheckpoints(
-                    res.checkpoints.sort((a, b) =>
-                        String(a.prosedyreNr).localeCompare(
-                            String(b.prosedyreNr),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    )
-                );
-            }
-        } catch (error: any) {
-            console.error(error);
-        }
-    };
-
-    useEffect(() => {
-        if (!selectFromTemplate && checkpoints === undefined) {
-            loadCheckpoints();
-        }
-    }, [checkpoints, selectFromTemplate]);
-    useEffectOnce(() => {
-        loadCheckpoints();
-    });
+    const checkpointData = useCheckpoints();
 
     const onSaveSkjema = async (
         omrade: string,
@@ -116,32 +88,33 @@ const SkjemaNewView = () => {
                                 />
 
                                 {!selectFromTemplate ? (
-                                    checkpoints !== undefined ? (
-                                        <TableContainer
-                                            columns={columns({})}
-                                            defaultColumns={defaultColumns}
-                                            tableId="checkpoints">
-                                            <CheckpointTable
-                                                templateList={
-                                                    template?.skjemaTemplateCheckpoints ||
-                                                    []
-                                                }
-                                                checkpoints={checkpoints}
-                                                onSelected={(ids) =>
-                                                    setSelected(
-                                                        checkpoints?.filter(
-                                                            (c) =>
-                                                                ids.indexOf(
-                                                                    c.id
-                                                                ) !== -1
-                                                        )
-                                                    )
-                                                }
-                                            />
-                                        </TableContainer>
-                                    ) : (
-                                        <div>Laster sjekkpunkter</div>
-                                    )
+                                    <TableContainer
+                                        columns={columns({})}
+                                        defaultColumns={defaultColumns}
+                                        tableId="checkpoints">
+                                        <CheckpointTable
+                                            isLoading={checkpointData.isLoading}
+                                            templateList={
+                                                template?.skjemaTemplateCheckpoints ||
+                                                []
+                                            }
+                                            checkpoints={
+                                                checkpointData.data ?? []
+                                            }
+                                            onSelected={(ids) =>
+                                                setSelected(
+                                                    checkpointData.data
+                                                        ? checkpointData.data?.filter(
+                                                              (c) =>
+                                                                  ids.indexOf(
+                                                                      c.id
+                                                                  ) !== -1
+                                                          )
+                                                        : []
+                                                )
+                                            }
+                                        />
+                                    </TableContainer>
                                 ) : (
                                     <div />
                                 )}

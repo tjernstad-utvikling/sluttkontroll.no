@@ -1,10 +1,9 @@
 import { ActionType, ContextInterface } from './contracts';
-import React, { createContext, useContext, useReducer, useState } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 import {
     addCalibration as addCalibrationApi,
     addCalibrationFile,
     editInstrument,
-    getInstruments,
     newInstrument,
     removeDisponent,
     setDisponent
@@ -30,28 +29,8 @@ export const InstrumentContextProvider = ({
     children: React.ReactNode;
 }): JSX.Element => {
     const [state, dispatch] = useReducer(instrumentReducer, initialState);
-    const [hasLoadedInstruments, setHasLoadedInstruments] =
-        useState<boolean>(false);
 
     const { enqueueSnackbar } = useSnackbar();
-
-    const loadInstruments = async (): Promise<void> => {
-        if (!hasLoadedInstruments) {
-            try {
-                const { status, instruments } = await getInstruments();
-
-                if (status === 200) {
-                    dispatch({
-                        type: ActionType.addInstruments,
-                        payload: instruments
-                    });
-                }
-            } catch (error: any) {
-                errorHandler(error);
-            }
-            setHasLoadedInstruments(true);
-        }
-    };
 
     const addNewInstrument = async (
         name: string,
@@ -220,9 +199,6 @@ export const InstrumentContextProvider = ({
     return (
         <InstrumentContext.Provider
             value={{
-                state,
-
-                loadInstruments,
                 addNewInstrument,
                 addCalibration,
                 updateInstruments,

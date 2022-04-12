@@ -1,14 +1,11 @@
-import { useEffect, useState } from 'react';
-
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Instrument } from '../contracts/instrumentApi';
 import { InstrumentSchema } from '../schema/instrument';
 import { User } from '../contracts/userApi';
-import { useInstrument } from '../data/instrument';
+import { useInstrument } from '../api/hooks/useInstrument';
 
 interface InstrumentModalProps {
     editId: number | undefined;
@@ -16,19 +13,7 @@ interface InstrumentModalProps {
     close: () => void;
 }
 export function InstrumentModal({ open, close, editId }: InstrumentModalProps) {
-    const {
-        state: { instruments },
-        addNewInstrument,
-        updateInstruments
-    } = useInstrument();
-
-    const [editInstrument, setEditInstrument] = useState<Instrument>();
-
-    useEffect(() => {
-        if (editId !== undefined) {
-            setEditInstrument(instruments?.find((i) => i.id === editId));
-        }
-    }, [editId, instruments]);
+    const instrumentData = useInstrument({ instrumentId: editId });
 
     const handleInstrumentSubmit = async (
         name: string,
@@ -50,10 +35,10 @@ export function InstrumentModal({ open, close, editId }: InstrumentModalProps) {
                 close();
                 return true;
             }
-        } else if (editInstrument !== undefined) {
+        } else if (instrumentData.data !== undefined) {
             if (
                 await updateInstruments({
-                    ...editInstrument,
+                    ...instrumentData.data,
                     name,
                     serienr,
                     user,
@@ -78,10 +63,12 @@ export function InstrumentModal({ open, close, editId }: InstrumentModalProps) {
                 {editId === undefined ? 'Nytt' : 'Rediger'} instrument{' '}
             </DialogTitle>
             <DialogContent>
-                <InstrumentSchema
-                    onSubmit={handleInstrumentSubmit}
-                    instrument={editInstrument}
-                />
+                {instrumentData.data && (
+                    <InstrumentSchema
+                        onSubmit={handleInstrumentSubmit}
+                        instrument={instrumentData.data}
+                    />
+                )}
             </DialogContent>
             <DialogActions>
                 <Button onClick={close} color="error">

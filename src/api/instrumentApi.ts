@@ -4,19 +4,6 @@ import { User } from '../contracts/userApi';
 import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
-interface InstrumentResponse {
-    status: number;
-    instruments: Instrument[];
-}
-
-export const getInstruments = async (): Promise<InstrumentResponse> => {
-    try {
-        const { status, data } = await sluttkontrollApi.get('/instrument/');
-        return { status, ...data };
-    } catch (error: any) {
-        throw new Error('Error Instrument API Get instruments');
-    }
-};
 interface InstrumentStatusResponse {
     status: number;
     dispInstruments?: Instrument[];

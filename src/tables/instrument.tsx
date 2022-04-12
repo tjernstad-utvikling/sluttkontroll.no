@@ -242,8 +242,12 @@ export const defaultColumns: string[] = [
 
 interface InstrumentTableProps {
     instruments: Instrument[];
+    isLoading: boolean;
 }
-export const InstrumentTable = ({ instruments }: InstrumentTableProps) => {
+export const InstrumentTable = ({
+    instruments,
+    isLoading
+}: InstrumentTableProps) => {
     const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
         if (row.passedCalibrationDate) {
             return RowStylingEnum.error;
@@ -252,5 +256,11 @@ export const InstrumentTable = ({ instruments }: InstrumentTableProps) => {
         }
     };
 
-    return <BaseTable data={instruments} getRowStyling={getRowStyling} />;
+    return (
+        <BaseTable
+            data={instruments}
+            getRowStyling={getRowStyling}
+            loading={isLoading}
+        />
+    );
 };

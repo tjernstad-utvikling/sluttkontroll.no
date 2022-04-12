@@ -12,8 +12,8 @@ import { InstrumentModal } from '../modal/instrument';
 import { InstrumentStatus } from '../components/instrument';
 import { TableContainer } from '../tables/tableContainer';
 import { useCurrentUser } from '../api/hooks/useUsers';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useInstrument } from '../data/instrument';
+import { useInstruments } from '../api/hooks/useInstrument';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
 
@@ -25,18 +25,14 @@ const InstrumentsView = () => {
 
     const currentUserData = useCurrentUser();
 
-    const {
-        state: { instruments },
-        loadInstruments,
-        updateInstrumentDisponent
-    } = useInstrument();
+    const instrumentsData = useInstruments();
 
-    useEffectOnce(() => {
-        loadInstruments();
-    });
+    const { updateInstrumentDisponent } = useInstrument();
 
     const handleInstrumentBooking = (instrumentId: number) => {
-        const instrument = instruments?.find((i) => i.id === instrumentId);
+        const instrument = instrumentsData.data?.find(
+            (i) => i.id === instrumentId
+        );
         if (currentUserData.data !== undefined && instrument !== undefined) {
             updateInstrumentDisponent(instrument, currentUserData.data);
         }
@@ -62,29 +58,25 @@ const InstrumentsView = () => {
                             }>
                             <CardContent>
                                 <InstrumentStatus />
-                                {instruments !== undefined ? (
-                                    <TableContainer
-                                        columns={instrumentColumns({
-                                            edit: (id: number) => {
-                                                setEditId(id);
-                                                setIsModalOpen(true);
-                                            },
-                                            regCalibration: (id: number) => {
-                                                setCalibrationModalId(id);
-                                            },
-                                            currentUser: currentUserData.data,
-                                            changeDisponent:
-                                                handleInstrumentBooking
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="instruments">
-                                        <InstrumentTable
-                                            instruments={instruments ?? []}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster instrumenter</div>
-                                )}
+                                <TableContainer
+                                    columns={instrumentColumns({
+                                        edit: (id: number) => {
+                                            setEditId(id);
+                                            setIsModalOpen(true);
+                                        },
+                                        regCalibration: (id: number) => {
+                                            setCalibrationModalId(id);
+                                        },
+                                        currentUser: currentUserData.data,
+                                        changeDisponent: handleInstrumentBooking
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="instruments">
+                                    <InstrumentTable
+                                        isLoading={instrumentsData.isLoading}
+                                        instruments={instrumentsData.data ?? []}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

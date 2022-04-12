@@ -8,7 +8,6 @@ import {
     defaultColumns
 } from '../tables/calibration';
 import { Card, CardContent } from '../components/card';
-import { Instrument, Kalibrering } from '../contracts/instrumentApi';
 import {
     getCalibrationCertificate,
     getCalibrationsByInstrument
@@ -18,10 +17,11 @@ import { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationViewParams } from '../contracts/navigation';
+import { Kalibrering } from '../contracts/instrumentApi';
 import { PdfViewer } from '../components/viewer';
 import { TableContainer } from '../tables/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
-import { useInstrument } from '../data/instrument';
+import { useInstrument } from '../api/hooks/useInstrument';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -32,7 +32,10 @@ const InstrumentsView = () => {
 
     const [_calibrations, setCalibrations] = useState<Kalibrering[]>();
     const [loadedInstrumentId, setLoadedInstrumentId] = useState<number>();
-    const [instrument, setInstrument] = useState<Instrument>();
+
+    const instrumentData = useInstrument({
+        instrumentId: Number(instrumentId)
+    });
 
     const [objectUrl, setObjectUrl] = useState<string | undefined>(undefined);
     const [openCertificateId, setOpenCertificateId] = useState<number>();
@@ -65,17 +68,10 @@ const InstrumentsView = () => {
         }
     };
 
-    const {
-        state: { instruments }
-    } = useInstrument();
-
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         const get = async () => {
-            setInstrument(
-                instruments?.find((i) => i.id === Number(instrumentId))
-            );
             const { calibrations, status } = await getCalibrationsByInstrument(
                 Number(instrumentId)
             );
@@ -89,7 +85,7 @@ const InstrumentsView = () => {
             }
         };
         if (Number(instrumentId) !== loadedInstrumentId) get();
-    }, [enqueueSnackbar, instrumentId, instruments, loadedInstrumentId]);
+    }, [enqueueSnackbar, instrumentId, loadedInstrumentId]);
 
     return (
         <>
@@ -99,14 +95,14 @@ const InstrumentsView = () => {
                     <Grid item xs={12}>
                         <Card title="Kalibreringer">
                             <CardContent>
-                                {_calibrations !== undefined &&
-                                instrument !== undefined ? (
+                                {_calibrations !== undefined && (
                                     <TableContainer
                                         columns={calibrationColumns({
                                             openCertificate,
                                             openCertificateId,
                                             instrumentLastCalibration:
-                                                instrument?.sisteKalibrert
+                                                instrumentData.data
+                                                    ?.sisteKalibrert ?? null
                                         })}
                                         defaultColumns={defaultColumns}
                                         tableId="calibrations">
@@ -114,8 +110,6 @@ const InstrumentsView = () => {
                                             calibrations={_calibrations ?? []}
                                         />
                                     </TableContainer>
-                                ) : (
-                                    <div>Laster kalibreringer</div>
                                 )}
                             </CardContent>
                         </Card>
@@ -123,8 +117,8 @@ const InstrumentsView = () => {
 
                     <PdfViewer
                         getFileName={() => {
-                            if (instrument !== undefined) {
-                                return `${instrument.name}-${instrument.serienr}.pdf`;
+                            if (instrumentData.data) {
+                                return `${instrumentData.data.name}-${instrumentData.data.serienr}.pdf`;
                             }
                             return 'sertifikat.pdf';
                         }}

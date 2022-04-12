@@ -22,8 +22,6 @@ export interface updateInstrument {
 export type UserActions = addInstruments | updateInstrument;
 
 export interface ContextInterface {
-    state: InstrumentState;
-    loadInstruments: () => Promise<void>;
     updateInstruments: (instrument: Instrument) => Promise<boolean>;
     updateInstrumentDisponent: (
         instrument: Instrument,

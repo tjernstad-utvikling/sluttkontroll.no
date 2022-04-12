@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 
 export function useCertificate({ userId }: { userId?: number }) {
     return useQuery(
-        ['certificate'],
+        ['certificate', userId],
         async () => {
             const { data } = await sluttkontrollApi.get<{
                 certificates: Sertifikat[];
@@ -58,13 +58,14 @@ export function useAddCertificate() {
             // 💡 response of the mutation is passed to onSuccess
             onSuccess: (newCertificate, vars) => {
                 const certificates = queryClient.getQueryData<Sertifikat[]>([
-                    'certificate'
+                    'certificate',
+                    vars.userId
                 ]);
                 // ✅ update detail view directly
 
                 if (certificates && certificates.length > 0) {
                     queryClient.setQueryData(
-                        ['measurements'],
+                        ['certificate', vars.userId],
                         unionBy([newCertificate], certificates, 'id').sort(
                             (a, b) => a.id - b.id
                         )
@@ -75,7 +76,8 @@ export function useAddCertificate() {
                     variant: 'success'
                 });
 
-                queryClient.invalidateQueries(['certificate']);
+                queryClient.invalidateQueries(['certificate', vars.userId]);
+                queryClient.invalidateQueries(['users']);
             },
             onError: (error: any) => {
                 if (

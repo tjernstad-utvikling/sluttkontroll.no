@@ -7,7 +7,6 @@ import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
 import { Roles } from '../contracts/userApi';
-import { Sertifikat } from '../contracts/certificateApi';
 import { UserSchema } from '../schema/user';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -49,15 +48,6 @@ const NewUserView = () => {
         return false;
     };
 
-    const handleAddCertificateToUser = (certificate: Sertifikat) => {
-        if (userData.data) {
-            // updateUserInState({
-            //     ...userData.data,
-            //     sertifikater: [...userData.data.sertifikater, certificate]
-            // });
-        }
-    };
-
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -76,10 +66,7 @@ const NewUserView = () => {
                         </Card>
                     </Grid>
                     <Grid item xs={12}>
-                        <CertificateList
-                            addCertificate={handleAddCertificateToUser}
-                            user={userData.data}
-                        />
+                        <CertificateList user={userData.data} />
                     </Grid>
                 </Grid>
             </Container>

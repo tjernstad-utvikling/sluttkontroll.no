@@ -4,7 +4,6 @@ import { CertificateList } from '../components/certificate';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { Roles } from '../contracts/userApi';
-import { Sertifikat } from '../contracts/certificateApi';
 import { UserProfileSchema } from '../schema/userProfile';
 import { useAuth } from '../hooks/useAuth';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -32,14 +31,6 @@ const ProfileView = () => {
         return false;
     };
 
-    const handleAddCertificateToUser = (certificate: Sertifikat) => {
-        if (user) {
-            // updateUserInState({
-            //     ...user,
-            //     sertifikater: [...user.sertifikater, certificate]
-            // });
-        }
-    };
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -61,10 +52,7 @@ const ProfileView = () => {
                     </Grid>
                     {userHasRole([Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]) && (
                         <Grid item xs={12}>
-                            <CertificateList
-                                addCertificate={handleAddCertificateToUser}
-                                user={user}
-                            />
+                            <CertificateList user={user} />
                         </Grid>
                     )}
                 </Grid>

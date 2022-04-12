@@ -4,7 +4,6 @@ import {
     columns,
     defaultColumns
 } from '../tables/certificate';
-import { Sertifikat, SertifikatType } from '../contracts/certificateApi';
 import {
     useAddCertificate,
     useCertificate,
@@ -12,18 +11,15 @@ import {
 } from '../api/hooks/useCertificate';
 
 import { CertificateModal } from '../modal/certificate';
+import { SertifikatType } from '../contracts/certificateApi';
 import { TableContainer } from '../tables/tableContainer';
 import { User } from '../contracts/userApi';
 import { useState } from 'react';
 
 interface CertificateListProps {
     user: User | undefined;
-    addCertificate: (certificate: Sertifikat) => void;
 }
-export const CertificateList = ({
-    user,
-    addCertificate
-}: CertificateListProps) => {
+export const CertificateList = ({ user }: CertificateListProps) => {
     const [addNew, setAddNew] = useState<boolean>(false);
 
     const certificateData = useCertificate({ userId: user?.id });
@@ -51,6 +47,7 @@ export const CertificateList = ({
             console.log(error);
             return false;
         } finally {
+            setAddNew(false);
             return true;
         }
     }

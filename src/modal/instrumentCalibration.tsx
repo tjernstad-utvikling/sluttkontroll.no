@@ -1,3 +1,5 @@
+import { useAddCalibration, useInstrument } from '../api/hooks/useInstrument';
+
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Button from '@mui/material/Button';
 import DatePicker from '@mui/lab/DatePicker';
@@ -12,7 +14,6 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 import nbLocale from 'date-fns/locale/nb';
-import { useInstrument } from '../api/hooks/useInstrument';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
@@ -33,15 +34,19 @@ export function InstrumentCalibrationModal({
 
     const instrumentData = useInstrument({ instrumentId: regId });
 
+    const calibrationMutation = useAddCalibration();
+
     const saveCalibration = async () => {
         if (instrumentData.data && newCalibrationDate && newCalibrationDate) {
-            if (
-                await addCalibration(
-                    instrumentData.data.id,
-                    format(newCalibrationDate, 'yyyy-MM-dd'),
-                    files[0]
-                )
-            ) {
+            try {
+                await calibrationMutation.mutateAsync({
+                    instrumentId: instrumentData.data.id,
+                    kalibrertDate: format(newCalibrationDate, 'yyyy-MM-dd'),
+                    sertifikatFile: files[0]
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 close();
             }
         } else {

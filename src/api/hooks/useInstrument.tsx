@@ -154,3 +154,64 @@ export function useUpdateInstrument() {
         }
     );
 }
+
+export function useAddCalibration() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            instrumentId: number;
+            kalibrertDate: string;
+            sertifikatFile: File;
+        }
+    >(
+        async (body) => {
+            const formData = new FormData();
+
+            formData.append('sertifikatFile', body.sertifikatFile);
+            const { data } = await sluttkontrollApi.post(
+                `/instrument/calibration/${body.instrumentId}`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: () => {
+                queryClient.invalidateQueries(['instrument']);
+
+                enqueueSnackbar('Instrument lagret', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                if (error.response.status === 400) {
+                    if (error.response.message === 'missing_file') {
+                        enqueueSnackbar('Kalibreringsfil mangler', {
+                            variant: 'warning'
+                        });
+                    } else {
+                        enqueueSnackbar(
+                            'Ikke alle nødvendige felter er fylt ut',
+                            {
+                                variant: 'warning'
+                            }
+                        );
+                    }
+                } else {
+                    enqueueSnackbar('Feil ved lagring', {
+                        variant: 'warning'
+                    });
+                }
+            }
+        }
+    );
+}

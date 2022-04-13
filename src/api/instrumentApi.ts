@@ -70,53 +70,6 @@ export const removeDisponent = async (
     }
 };
 
-export const addCalibrationFile = async (
-    kalibreringId: number,
-    sertifikatFile: File
-): Promise<{ status: number; message?: string }> => {
-    try {
-        const formData = new FormData();
-
-        formData.append('sertifikatFile', sertifikatFile);
-
-        const { status, data } = await sluttkontrollApi.post(
-            `/instrument/kalibrering/upload-sertifikat/${kalibreringId}`,
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }
-        );
-
-        return { status, ...data };
-    } catch (error: any) {
-        if (error.response.status === 400) {
-            return { status: 400, message: error.response.data.message };
-        }
-        errorHandler(error);
-        throw new Error(error);
-    }
-};
-
-export const addCalibration = async (
-    instrumentId: number,
-    kalibrertDate: string
-): Promise<{ status: number; instrument?: Instrument; message?: string }> => {
-    try {
-        const { status, data } = await sluttkontrollApi.post(
-            `/instrument/kalibrering/${instrumentId}`,
-            { kalibrertDate }
-        );
-        return { status, ...data };
-    } catch (error: any) {
-        if (error.response.status === 400) {
-            return { status: 400, message: error.response.data.message };
-        }
-        throw new Error(error);
-    }
-};
-
 export const getCalibrationsByInstrument = async (
     instrumentId: number
 ): Promise<{

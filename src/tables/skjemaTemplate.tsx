@@ -118,7 +118,8 @@ export const defaultColumns: Array<string> = ['id', 'name', 'count'];
 
 interface TemplateTableProps {
     templates: Template[];
+    isLoading: boolean;
 }
-export const TemplateTable = ({ templates }: TemplateTableProps) => {
-    return <BaseTable data={templates} />;
+export const TemplateTable = ({ templates, isLoading }: TemplateTableProps) => {
+    return <BaseTable data={templates} loading={isLoading} />;
 };

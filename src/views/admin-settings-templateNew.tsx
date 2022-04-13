@@ -8,27 +8,33 @@ import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
 import { TableContainer } from '../tables/tableContainer';
 import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { useHistory } from 'react-router-dom';
+import { useNewTemplate } from '../api/hooks/useSkjemaTemplate';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
-import { useTemplate } from '../data/skjemaTemplate';
 
 const SkjemaTemplateNewView = () => {
     const { classes } = usePageStyles();
 
     const history = useHistory();
 
-    const { newTemplate } = useTemplate();
-
     const [selected, setSelected] = useState<Checkpoint[]>([]);
 
     const checkpointData = useCheckpoints();
 
+    const newTemplateMutation = useNewTemplate();
+
     const onSaveTemplate = async (name: string): Promise<boolean> => {
-        if (await newTemplate(name, selected)) {
+        try {
+            newTemplateMutation.mutateAsync({
+                checkpointIds: selected.map((s) => s.id),
+                name
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
             history.goBack();
             return true;
         }
-        return false;
     };
 
     return (

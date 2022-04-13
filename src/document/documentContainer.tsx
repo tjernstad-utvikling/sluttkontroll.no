@@ -49,6 +49,7 @@ export const DocumentContainer = ({
     const [reportSetting, setReportSetting] = useState<ReportSetting>();
 
     const skjemaData = useSkjemaerReport({ kontrollId });
+
     const kontrollData = useReportKontrollById(kontrollId);
 
     const [hasLoaded, setHasLoaded] = useState<boolean>(false);

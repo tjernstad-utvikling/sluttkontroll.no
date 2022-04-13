@@ -171,6 +171,13 @@ export function useAddCalibration() {
             const formData = new FormData();
 
             formData.append('sertifikatFile', body.sertifikatFile);
+            formData.append(
+                'data',
+                JSON.stringify({
+                    kalibrertDate: body.kalibrertDate
+                })
+            );
+
             const { data } = await sluttkontrollApi.post(
                 `/instrument/calibration/${body.instrumentId}`,
                 formData,

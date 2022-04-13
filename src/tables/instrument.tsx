@@ -6,10 +6,12 @@ import {
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
+import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import CompassCalibrationIcon from '@mui/icons-material/CompassCalibration';
 import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
 import { Instrument } from '../contracts/instrumentApi';
 import { Link } from 'react-router-dom';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
@@ -121,11 +123,19 @@ export const instrumentColumns = ({
             headerName: 'Siste kalibrering',
             flex: 1,
             renderCell: (params: GridCellParams) => (
-                <Link to={`/instrument/${params.row.id}/calibration`}>
-                    {InstrumentValueGetter(params.row).sisteKalibrert(
-                        'dd.MM.Y'
-                    )}
-                </Link>
+                <>
+                    <Link to={`/instrument/${params.row.id}/calibration`}>
+                        {InstrumentValueGetter(params.row).sisteKalibrert(
+                            'dd.MM.Y'
+                        )}
+                    </Link>
+                    <IconButton
+                        onClick={() => regCalibration(params.row.id)}
+                        aria-label="Registrer ny kalibrering"
+                        size="large">
+                        <AddIcon />
+                    </IconButton>
+                </>
             ),
             sortComparator: (v1, v2, param1, param2) =>
                 String(

@@ -23,7 +23,7 @@ export const CalibrationValueGetter = (data: Kalibrering | GridRowModel) => {
 interface calibrationColumnsOptions {
     openCertificateId: number | undefined;
     instrumentLastCalibration: Kalibrering | null;
-    openCertificate: (calibrationId: number) => Promise<void>;
+    openCertificate: (calibration: Kalibrering) => Promise<void>;
 }
 export const calibrationColumns = ({
     openCertificate,
@@ -84,7 +84,7 @@ export const calibrationColumns = ({
                 <Button
                     variant="outlined"
                     color="primary"
-                    onClick={() => openCertificate(params.row.id)}>
+                    onClick={() => openCertificate(params.row)}>
                     Åpne
                 </Button>
             )
@@ -98,7 +98,11 @@ export const defaultColumns: string[] = ['date', 'status'];
 
 interface CalibrationTableProps {
     calibrations: Kalibrering[];
+    isLoading: boolean;
 }
-export const CalibrationTable = ({ calibrations }: CalibrationTableProps) => {
-    return <BaseTable data={calibrations} />;
+export const CalibrationTable = ({
+    calibrations,
+    isLoading
+}: CalibrationTableProps) => {
+    return <BaseTable data={calibrations} loading={isLoading} />;
 };

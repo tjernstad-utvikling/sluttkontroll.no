@@ -25,4 +25,5 @@ export interface Kalibrering {
 
 export interface KalibreringSertifikat {
     id: number;
+    fileName: string;
 }

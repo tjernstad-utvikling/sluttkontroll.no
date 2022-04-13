@@ -1,6 +1,6 @@
+import { Instrument, Kalibrering } from '../../contracts/instrumentApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { Instrument } from '../../contracts/instrumentApi';
 import { User } from '../../contracts/userApi';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
@@ -154,6 +154,7 @@ export function useUpdateInstrument() {
         }
     );
 }
+
 export function useSetInstrumentDisponent() {
     const queryClient = useQueryClient();
     const { enqueueSnackbar } = useSnackbar();
@@ -289,6 +290,40 @@ export function useAddCalibration() {
                     });
                 }
             }
+        }
+    );
+}
+
+export function useCurrentUserInstrumentStatus() {
+    return useQuery(
+        ['instrument', 'statusCurrentUser'],
+        async () => {
+            const { data } = await sluttkontrollApi.get<{
+                dispInstruments: Instrument[];
+                ownedInstruments: Instrument[];
+            }>('/instrument/calibration/status', {});
+            return data;
+        },
+        {
+            staleTime: 1000 * 240
+        }
+    );
+}
+export function useCalibrationByInstrument({
+    instrumentId
+}: {
+    instrumentId: number;
+}) {
+    return useQuery(
+        ['instrument', 'calibrations', instrumentId],
+        async () => {
+            const { data } = await sluttkontrollApi.get<{
+                calibrations: Kalibrering[];
+            }>(`/instrument/kalibrering/${instrumentId}`, {});
+            return data.calibrations;
+        },
+        {
+            enabled: !!instrumentId
         }
     );
 }

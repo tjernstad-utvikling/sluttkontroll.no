@@ -154,6 +154,76 @@ export function useUpdateInstrument() {
         }
     );
 }
+export function useSetInstrumentDisponent() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            instrumentId: number;
+            userId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `/instrument/disponent/${body.instrumentId}/${body.userId}`
+            );
+
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (_, vars) => {
+                queryClient.invalidateQueries(['instrument']);
+
+                enqueueSnackbar('Instrumentet er booket', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                enqueueSnackbar('Feil ved lagring', {
+                    variant: 'warning'
+                });
+            }
+        }
+    );
+}
+
+export function useRemoveInstrumentDisponent() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            instrumentId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put(
+                `/instrument/remove-disponent/${body.instrumentId}`
+            );
+
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (_, vars) => {
+                queryClient.invalidateQueries(['instrument']);
+
+                enqueueSnackbar('Instrumentet er levert', {
+                    variant: 'success'
+                });
+            },
+            onError: (error: any) => {
+                enqueueSnackbar('Feil ved lagring', {
+                    variant: 'warning'
+                });
+            }
+        }
+    );
+}
 
 export function useAddCalibration() {
     const queryClient = useQueryClient();

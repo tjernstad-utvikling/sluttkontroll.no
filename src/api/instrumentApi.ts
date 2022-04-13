@@ -1,7 +1,5 @@
 import { Instrument, Kalibrering } from '../contracts/instrumentApi';
 
-import { User } from '../contracts/userApi';
-import { errorHandler } from '../tools/errorHandler';
 import sluttkontrollApi from './sluttkontroll';
 
 interface InstrumentStatusResponse {
@@ -40,33 +38,6 @@ export const editInstrument = async (
             return { status: 400, message: error.response.data.message };
         }
         throw new Error(error);
-    }
-};
-
-export const setDisponent = async (
-    instrumentId: number,
-    userId: number
-): Promise<{ status: number }> => {
-    try {
-        const { status } = await sluttkontrollApi.put(
-            `/instrument/disponent/${instrumentId}/${userId}`
-        );
-        return { status };
-    } catch (error: any) {
-        throw new Error('Error Instrument API set Disponent');
-    }
-};
-
-export const removeDisponent = async (
-    instrumentId: number
-): Promise<{ status: number }> => {
-    try {
-        const { status } = await sluttkontrollApi.put(
-            `/instrument/remove-disponent/${instrumentId}`
-        );
-        return { status };
-    } catch (error: any) {
-        throw new Error('Error Instrument API set Disponent');
     }
 };
 

@@ -1,14 +1,9 @@
 import { ActionType, ContextInterface } from './contracts';
 import React, { createContext, useContext, useReducer } from 'react';
-import {
-    editInstrument,
-    removeDisponent,
-    setDisponent
-} from '../../api/instrumentApi';
 import { initialState, instrumentReducer } from './reducer';
 
 import { Instrument } from '../../contracts/instrumentApi';
-import { User } from '../../contracts/userApi';
+import { editInstrument } from '../../api/instrumentApi';
 import { errorHandler } from '../../tools/errorHandler';
 import { useSnackbar } from 'notistack';
 
@@ -60,52 +55,9 @@ export const InstrumentContextProvider = ({
             return false;
         }
     };
-    const updateInstrumentDisponent = async (
-        instrument: Instrument,
-        user: User
-    ): Promise<boolean> => {
-        try {
-            if (instrument.disponent?.id === user.id) {
-                const { status } = await removeDisponent(instrument.id);
-                if (status === 204 && instrument !== undefined) {
-                    dispatch({
-                        type: ActionType.addInstruments,
-                        payload: [{ ...instrument, disponent: null }]
-                    });
-                    enqueueSnackbar('Instrument er levert', {
-                        variant: 'success'
-                    });
-                    return true;
-                }
-            } else {
-                const { status } = await setDisponent(instrument.id, user.id);
-                if (status === 204 && instrument !== undefined) {
-                    dispatch({
-                        type: ActionType.addInstruments,
-                        payload: [{ ...instrument, disponent: user }]
-                    });
-                    enqueueSnackbar('Instrumentet er booket', {
-                        variant: 'success'
-                    });
-                    return true;
-                }
-            }
-
-            return false;
-        } catch (error: any) {
-            errorHandler(error);
-            enqueueSnackbar('Problemer med lagring av instrument', {
-                variant: 'error'
-            });
-            return false;
-        }
-    };
 
     return (
-        <InstrumentContext.Provider
-            value={{
-                updateInstrumentDisponent
-            }}>
+        <InstrumentContext.Provider value={{}}>
             {children}
         </InstrumentContext.Provider>
     );

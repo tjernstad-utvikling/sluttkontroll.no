@@ -4,12 +4,7 @@ import {
     KontrollClipboard
 } from '../components/clipboard';
 import { Card, CardContent, CardMenu } from '../components/card';
-import {
-    SjekklisteTable,
-    SjekklisteValueGetter,
-    columns,
-    defaultColumns
-} from '../tables/sjekkliste';
+import { SjekklisteTable, SjekklisteValueGetter } from '../tables/sjekkliste';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
@@ -17,7 +12,6 @@ import { Checklist } from '../contracts/kontrollApi';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../data/avvik';
 import { useClipBoard } from '../data/clipboard';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -98,20 +92,14 @@ const SjekklisterView = () => {
                             }>
                             <CardContent>
                                 {checklists !== undefined ? (
-                                    <TableContainer
-                                        columns={columns(
-                                            avvik ?? [],
-                                            url,
-                                            toggleAktuellChecklist,
-                                            clipboardHasAvvik,
-                                            avvikToPast
-                                        )}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checklists">
-                                        <SjekklisteTable
-                                            checklists={_checklists}
-                                        />
-                                    </TableContainer>
+                                    <SjekklisteTable
+                                        avvikToPast={avvikToPast}
+                                        clipboardHasAvvik={clipboardHasAvvik}
+                                        toggleAktuell={toggleAktuellChecklist}
+                                        avvik={avvik ?? []}
+                                        checklists={_checklists}
+                                        url={url}
+                                    />
                                 ) : (
                                     <div>Laster skjemaer</div>
                                 )}

@@ -1,31 +1,31 @@
-import { BaseTable, RowStylingEnum } from './baseTable';
-import {
-    GridCellParams,
-    GridColDef,
-    GridRowModel,
-    GridValueGetterParams
-} from '@mui/x-data-grid-pro';
+import { Column, useTable } from 'react-table';
 
 import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';
 import { Checklist } from '../contracts/kontrollApi';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
+import Paper from '@mui/material/Paper';
 import { PasteTableButton } from '../components/clipboard';
 import { Link as RouterLink } from 'react-router-dom';
 import { RowAction } from './tableUtils';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { useMemo } from 'react';
 
-export const SjekklisteValueGetter = (
-    data: Checklist | GridRowModel | null
-) => {
+export const SjekklisteValueGetter = (data: Checklist | null) => {
     const prosedyre = (): string => {
-        return data?.checkpoint.prosedyre;
+        return data?.checkpoint.prosedyre ?? '';
     };
     const prosedyreNr = (): string => {
-        return data?.checkpoint.prosedyreNr;
+        return data?.checkpoint.prosedyreNr ?? '';
     };
     const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
         if (avvik !== undefined) {
@@ -40,165 +40,206 @@ export const SjekklisteValueGetter = (
     };
     return { prosedyre, prosedyreNr, avvik };
 };
-export const columns = (
-    avvik: Avvik[],
-    url: string,
-    toggleAktuell: (id: number) => void,
-    clipboardHasAvvik: boolean,
-    avvikToPast: Avvik[]
-) => {
-    const columns: GridColDef[] = [
-        {
-            field: 'id',
-            headerName: '#',
-            flex: 1
-        },
-        {
-            field: 'prosedyreNr',
-            headerName: 'Prosedyre nr',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                SjekklisteValueGetter(params.row).prosedyreNr(),
-            sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    SjekklisteValueGetter(
-                        param1.api.getRow(param1.id)
-                    ).prosedyreNr()
-                ).localeCompare(
-                    String(
-                        SjekklisteValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).prosedyreNr()
-                    )
-                )
-        },
-        {
-            field: 'prosedyre',
-            headerName: 'Prosedyre',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                SjekklisteValueGetter(params.row).prosedyre(),
-            sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    SjekklisteValueGetter(
-                        param1.api.getRow(param1.id)
-                    ).prosedyre()
-                ).localeCompare(
-                    String(
-                        SjekklisteValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).prosedyre()
-                    )
-                )
-        },
-        {
-            field: 'avvik',
-            headerName: 'Avvik (åpne | lukket) ',
-            flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <>
-                    <Link to={`${url}/checklist/${params.row.id}/avvik`}>
-                        <span>
-                            ({' '}
-                            {
-                                SjekklisteValueGetter(params.row).avvik(avvik)
-                                    .open
-                            }{' '}
-                            |{' '}
-                            {
-                                SjekklisteValueGetter(params.row).avvik(avvik)
-                                    .closed
-                            }{' '}
-                            ){' '}
-                        </span>
-                    </Link>
-                    <IconButton
-                        to={`${url}/checklist/${params.row.id}/avvik/new`}
-                        component={RouterLink}
-                        aria-label="nytt avvik"
-                        size="large">
-                        <AddIcon />
-                    </IconButton>
-                </>
-            ),
-            sortComparator: (v1, v2, param1, param2) =>
-                SjekklisteValueGetter(param1.api.getRow(param1.id)).avvik(avvik)
-                    .open -
-                SjekklisteValueGetter(param2.api.getRow(param2.id)).avvik(avvik)
-                    .open
-        },
-        {
-            field: 'aktuell',
-            headerName: 'Aktuell',
-            flex: 1,
-            renderCell: (params: GridCellParams) =>
-                params.row.aktuell ? (
-                    <VisibilityIcon />
-                ) : (
-                    <>
-                        <VisibilityOffIcon />
-                        <Typography style={{ paddingLeft: 10 }}>
-                            Ikke aktuell
-                        </Typography>
-                    </>
-                )
-        },
-        {
-            field: 'action',
-            headerName: ' ',
-            sortable: false,
-            filterable: false,
-            disableColumnMenu: true,
-            renderCell: (params: GridCellParams) => {
-                return (
-                    <>
-                        {clipboardHasAvvik && (
-                            <PasteTableButton
-                                clipboardHas={true}
-                                options={{
-                                    avvikPaste: {
-                                        checklistId: params.row.id,
-                                        avvik: avvikToPast
-                                    }
-                                }}
-                            />
-                        )}
-                        <RowAction
-                            actionItems={[
-                                {
-                                    name: params.row.aktuell
-                                        ? 'sett: Ikke aktuell'
-                                        : 'sett: aktuell',
-                                    action: () => toggleAktuell(params.row.id),
-                                    // skip: kontroll?.done || false,
-                                    icon: params.row.aktuell ? (
-                                        <VisibilityOffIcon />
-                                    ) : (
-                                        <VisibilityIcon />
-                                    )
-                                }
-                            ]}
-                        />
-                    </>
-                );
-            }
-        }
-    ];
-
-    return columns;
+interface AvvikCellProps {
+    url: string;
+    id: string;
+    avvik: { open: number; closed: number };
+}
+const AvvikCell = ({ avvik, url, id }: AvvikCellProps) => {
+    return (
+        <>
+            <Link to={`${url}/checklist/${id}/avvik`}>
+                <span>
+                    ( {avvik.open} | {avvik.closed} ){' '}
+                </span>
+            </Link>
+            <IconButton
+                to={`${url}/checklist/${id}/avvik/new`}
+                component={RouterLink}
+                aria-label="nytt avvik"
+                size="large">
+                <AddIcon />
+            </IconButton>
+        </>
+    );
 };
 
-export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
+const AktuellCell = ({ aktuell }: { aktuell: boolean }) => {
+    if (aktuell) {
+        return <VisibilityIcon />;
+    }
+
+    return (
+        <>
+            <VisibilityOffIcon />
+            <Typography style={{ paddingLeft: 10 }}>Ikke aktuell</Typography>
+        </>
+    );
+};
+
+type Cols = {
+    id: number;
+    prosedyreNr: string;
+    prosedyre: string;
+    avvik: any;
+    aktuell: boolean;
+    action: number;
+};
 
 interface SjekklisteTableProps {
-    checklists: Array<Checklist>;
+    checklists: Checklist[];
+    avvik: Avvik[];
+    url: string;
+    toggleAktuell: (id: number) => void;
+    clipboardHasAvvik: boolean;
+    avvikToPast: Avvik[];
 }
-export const SjekklisteTable = ({ checklists }: SjekklisteTableProps) => {
-    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
-        if (!row.aktuell) {
-            return RowStylingEnum.disabled;
-        }
-    };
+export const SjekklisteTable = ({
+    checklists,
+    avvik,
+    url,
+    avvikToPast,
+    clipboardHasAvvik,
+    toggleAktuell
+}: SjekklisteTableProps) => {
+    const data = useMemo((): Cols[] => {
+        return checklists.map((c) => {
+            return {
+                ...c,
+                prosedyreNr: c.checkpoint.prosedyreNr,
+                prosedyre: c.checkpoint.prosedyre,
+                avvik: SjekklisteValueGetter(c).avvik(avvik),
+                action: c.id
+            };
+        });
+    }, [avvik, checklists]);
 
-    return <BaseTable data={checklists} getRowStyling={getRowStyling} />;
+    const columns: Column<{
+        id: number;
+        prosedyreNr: string;
+        prosedyre: string;
+        avvik: any;
+        aktuell: boolean;
+        action: number;
+    }>[] = useMemo(
+        () => [
+            {
+                Header: '#',
+                accessor: 'id'
+            },
+            {
+                Header: 'Prosedyre nr',
+                accessor: 'prosedyreNr'
+            },
+            {
+                Header: 'Prosedyre',
+                accessor: 'prosedyre'
+            },
+            {
+                Header: 'Avvik (åpne | lukket) ',
+                accessor: 'avvik'
+            },
+            {
+                Header: 'Aktuell',
+                accessor: 'aktuell'
+            },
+            {
+                Header: '',
+                accessor: 'action'
+            }
+        ],
+        []
+    );
+
+    const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } =
+        useTable({
+            columns,
+            data
+        });
+
+    return (
+        <TableContainer component={Paper}>
+            <Table aria-label="sjekkliste" {...getTableProps()}>
+                <TableHead>
+                    {headerGroups.map((headerGroup) => (
+                        <TableRow {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map((column) => (
+                                <TableCell {...column.getHeaderProps()}>
+                                    {column.render('Header')}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableHead>
+                <TableBody {...getTableBodyProps()}>
+                    {rows.map((row) => {
+                        prepareRow(row);
+                        return (
+                            <TableRow {...row.getRowProps()}>
+                                {row.cells.map((cell) => {
+                                    return (
+                                        <TableCell {...cell.getCellProps()}>
+                                            {cell.column.id === 'avvik' ? (
+                                                <AvvikCell
+                                                    avvik={cell.value}
+                                                    id={cell.row.id}
+                                                    url={url}
+                                                />
+                                            ) : cell.column.id === 'aktuell' ? (
+                                                <AktuellCell
+                                                    aktuell={cell.value}
+                                                />
+                                            ) : cell.column.id === 'action' ? (
+                                                <>
+                                                    {clipboardHasAvvik && (
+                                                        <PasteTableButton
+                                                            clipboardHas={true}
+                                                            options={{
+                                                                avvikPaste: {
+                                                                    checklistId:
+                                                                        Number(
+                                                                            row.id
+                                                                        ),
+                                                                    avvik: avvikToPast
+                                                                }
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <RowAction
+                                                        actionItems={[
+                                                            {
+                                                                name: row.values
+                                                                    .aktuell
+                                                                    ? 'sett: Ikke aktuell'
+                                                                    : 'sett: aktuell',
+                                                                action: () =>
+                                                                    toggleAktuell(
+                                                                        Number(
+                                                                            row.id
+                                                                        )
+                                                                    ),
+                                                                // skip: kontroll?.done || false,
+                                                                icon: row.values
+                                                                    .aktuell ? (
+                                                                    <VisibilityOffIcon />
+                                                                ) : (
+                                                                    <VisibilityIcon />
+                                                                )
+                                                            }
+                                                        ]}
+                                                    />
+                                                </>
+                                            ) : (
+                                                cell.render('Cell')
+                                            )}
+                                        </TableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
 };

@@ -236,7 +236,13 @@ export const SjekklisteTable = ({
                                             ) : cell.column.id === 'avvik' ? (
                                                 <AvvikCell
                                                     avvik={cell.value}
-                                                    id={cell.row.id}
+                                                    id={
+                                                        row.cells.find(
+                                                            (c) =>
+                                                                c.column.id ===
+                                                                'id'
+                                                        )?.value
+                                                    }
                                                     url={url}
                                                 />
                                             ) : cell.column.id === 'aktuell' ? (
@@ -252,7 +258,16 @@ export const SjekklisteTable = ({
                                                                 avvikPaste: {
                                                                     checklistId:
                                                                         Number(
-                                                                            row.id
+                                                                            row.cells.find(
+                                                                                (
+                                                                                    c
+                                                                                ) =>
+                                                                                    c
+                                                                                        .column
+                                                                                        .id ===
+                                                                                    'id'
+                                                                            )
+                                                                                ?.value
                                                                         ),
                                                                     avvik: avvikToPast
                                                                 }
@@ -269,7 +284,16 @@ export const SjekklisteTable = ({
                                                                 action: () =>
                                                                     toggleAktuell(
                                                                         Number(
-                                                                            row.id
+                                                                            row.cells.find(
+                                                                                (
+                                                                                    c
+                                                                                ) =>
+                                                                                    c
+                                                                                        .column
+                                                                                        .id ===
+                                                                                    'id'
+                                                                            )
+                                                                                ?.value
                                                                         )
                                                                     ),
                                                                 // skip: kontroll?.done || false,

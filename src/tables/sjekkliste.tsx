@@ -1,4 +1,4 @@
-import { Column, useTable } from 'react-table';
+import { Column, useExpanded, useGroupBy, useTable } from 'react-table';
 
 import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';
@@ -16,6 +16,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
+import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useMemo } from 'react';
@@ -26,6 +28,9 @@ export const SjekklisteValueGetter = (data: Checklist | null) => {
     };
     const prosedyreNr = (): string => {
         return data?.checkpoint.prosedyreNr ?? '';
+    };
+    const gruppe = (): string => {
+        return data?.checkpoint.gruppe ?? '';
     };
     const avvik = (avvik: Avvik[]): { open: number; closed: number } => {
         if (avvik !== undefined) {
@@ -38,7 +43,7 @@ export const SjekklisteValueGetter = (data: Checklist | null) => {
         }
         return { open: 0, closed: 0 };
     };
-    return { prosedyre, prosedyreNr, avvik };
+    return { prosedyre, prosedyreNr, avvik, gruppe };
 };
 interface AvvikCellProps {
     url: string;
@@ -83,6 +88,7 @@ type Cols = {
     prosedyre: string;
     avvik: any;
     aktuell: boolean;
+    gruppe: string;
     action: number;
 };
 
@@ -109,7 +115,8 @@ export const SjekklisteTable = ({
                 prosedyreNr: c.checkpoint.prosedyreNr,
                 prosedyre: c.checkpoint.prosedyre,
                 avvik: SjekklisteValueGetter(c).avvik(avvik),
-                action: c.id
+                action: c.id,
+                gruppe: c.checkpoint.gruppe
             };
         });
     }, [avvik, checklists]);
@@ -120,51 +127,78 @@ export const SjekklisteTable = ({
         prosedyre: string;
         avvik: any;
         aktuell: boolean;
+        gruppe: string;
         action: number;
     }>[] = useMemo(
         () => [
             {
                 Header: '#',
-                accessor: 'id'
+                accessor: 'id',
+                canGroupBy: false
             },
             {
                 Header: 'Prosedyre nr',
-                accessor: 'prosedyreNr'
+                accessor: 'prosedyreNr',
+                canGroupBy: false
             },
             {
                 Header: 'Prosedyre',
-                accessor: 'prosedyre'
+                accessor: 'prosedyre',
+                canGroupBy: false
             },
             {
                 Header: 'Avvik (åpne | lukket) ',
-                accessor: 'avvik'
+                accessor: 'avvik',
+                canGroupBy: false
             },
             {
                 Header: 'Aktuell',
-                accessor: 'aktuell'
+                accessor: 'aktuell',
+                canGroupBy: false
+            },
+            {
+                Header: 'Gruppe',
+                accessor: 'gruppe',
+                canGroupBy: true
             },
             {
                 Header: '',
-                accessor: 'action'
+                accessor: 'action',
+                canGroupBy: false
             }
         ],
         []
     );
 
     const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } =
-        useTable({
-            columns,
-            data
-        });
+        useTable<Cols>(
+            {
+                columns,
+                data,
+                initialState: {
+                    groupBy: ['gruppe']
+                }
+            },
+            useGroupBy,
+            useExpanded
+        );
 
     return (
         <TableContainer component={Paper}>
-            <Table aria-label="sjekkliste" {...getTableProps()}>
+            <Table size="small" aria-label="sjekkliste" {...getTableProps()}>
                 <TableHead>
                     {headerGroups.map((headerGroup) => (
                         <TableRow {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map((column) => (
                                 <TableCell {...column.getHeaderProps()}>
+                                    {column.canGroupBy
+                                        ? // If the column can be grouped, let's add a toggle
+                                          // <span
+                                          //     {...column.getGroupByToggleProps()}>
+                                          //     {column.isGrouped ? '🛑 ' : '👊 '}
+                                          // </span>
+                                          null
+                                        : null}
                                     {column.render('Header')}
                                 </TableCell>
                             ))}
@@ -179,7 +213,23 @@ export const SjekklisteTable = ({
                                 {row.cells.map((cell) => {
                                     return (
                                         <TableCell {...cell.getCellProps()}>
-                                            {cell.column.id === 'avvik' ? (
+                                            {cell.isGrouped ? (
+                                                // If it's a grouped cell, add an expander and row count
+                                                <>
+                                                    <IconButton
+                                                        {...row.getToggleRowExpandedProps()}>
+                                                        {row.isExpanded ? (
+                                                            <UnfoldLessIcon />
+                                                        ) : (
+                                                            <UnfoldMoreIcon />
+                                                        )}
+                                                    </IconButton>{' '}
+                                                    {cell.render('Cell')} (
+                                                    {row.subRows.length})
+                                                </>
+                                            ) : cell.row.isGrouped ? (
+                                                <span></span>
+                                            ) : cell.column.id === 'avvik' ? (
                                                 <AvvikCell
                                                     avvik={cell.value}
                                                     id={cell.row.id}

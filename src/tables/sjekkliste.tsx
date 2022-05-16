@@ -2,6 +2,7 @@ import { Column, useExpanded, useGroupBy, useTable } from 'react-table';
 
 import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';
+import Button from '@mui/material/Button';
 import { Checklist } from '../contracts/kontrollApi';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
@@ -216,16 +217,19 @@ export const SjekklisteTable = ({
                                             {cell.isGrouped ? (
                                                 // If it's a grouped cell, add an expander and row count
                                                 <>
-                                                    <IconButton
-                                                        {...row.getToggleRowExpandedProps()}>
-                                                        {row.isExpanded ? (
-                                                            <UnfoldLessIcon />
-                                                        ) : (
-                                                            <UnfoldMoreIcon />
-                                                        )}
-                                                    </IconButton>{' '}
-                                                    {cell.render('Cell')} (
-                                                    {row.subRows.length})
+                                                    <Button
+                                                        {...row.getToggleRowExpandedProps()}
+                                                        variant="text"
+                                                        startIcon={
+                                                            row.isExpanded ? (
+                                                                <UnfoldLessIcon />
+                                                            ) : (
+                                                                <UnfoldMoreIcon />
+                                                            )
+                                                        }>
+                                                        {cell.render('Cell')} (
+                                                        {row.subRows.length})
+                                                    </Button>
                                                 </>
                                             ) : cell.row.isGrouped ? (
                                                 <span></span>

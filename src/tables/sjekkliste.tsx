@@ -5,6 +5,7 @@ import {
     useGroupBy,
     useTable
 } from 'react-table';
+import { ColumnSelectRT, RowAction } from './tableUtils';
 import { useEffect, useMemo } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -16,7 +17,6 @@ import { Link } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import { PasteTableButton } from '../components/clipboard';
 import { Link as RouterLink } from 'react-router-dom';
-import { RowAction } from './tableUtils';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -31,6 +31,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useDebounce } from '../hooks/useDebounce';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useTableStyles } from './baseTable';
 
 export const SjekklisteValueGetter = (data: Checklist | null) => {
     const prosedyre = (): string => {
@@ -109,6 +110,7 @@ interface SjekklisteTableProps {
     toggleAktuell: (id: number) => void;
     clipboardHasAvvik: boolean;
     avvikToPast: Avvik[];
+    children?: React.ReactNode;
 }
 export const SjekklisteTable = ({
     checklists,
@@ -116,7 +118,8 @@ export const SjekklisteTable = ({
     url,
     avvikToPast,
     clipboardHasAvvik,
-    toggleAktuell
+    toggleAktuell,
+    children
 }: SjekklisteTableProps) => {
     const data = useMemo((): Cols[] => {
         return checklists.map((c) => {
@@ -185,14 +188,7 @@ export const SjekklisteTable = ({
         { groupBy: ['gruppe'] }
     );
 
-    const {
-        getTableProps,
-        headerGroups,
-        getTableBodyProps,
-        rows,
-        prepareRow,
-        state
-    } = useTable<Cols>(
+    const instance = useTable<Cols>(
         {
             columns,
             data,
@@ -201,6 +197,15 @@ export const SjekklisteTable = ({
         useGroupBy,
         useExpanded
     );
+
+    const {
+        getTableProps,
+        headerGroups,
+        getTableBodyProps,
+        rows,
+        prepareRow,
+        state
+    } = instance;
 
     const debouncedState = useDebounce<TableState>(state, 500);
 
@@ -213,8 +218,13 @@ export const SjekklisteTable = ({
         setInitialState(val);
     }, [setInitialState, debouncedState]);
 
+    const classes = useTableStyles();
     return (
         <TableContainer component={Paper}>
+            <div className={classes.tools}>
+                <div className={classes.pasteTool}>{children}</div>
+                <ColumnSelectRT instance={instance} />
+            </div>
             <Table size="small" aria-label="sjekkliste" {...getTableProps()}>
                 <TableHead>
                     {headerGroups.map((headerGroup) => (

@@ -1,3 +1,5 @@
+import React, { ReactElement } from 'react';
+
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -11,9 +13,9 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
+import { TableInstance } from 'react-table';
 import { useTable } from './tableContainer';
 
 export const ColumnSelect = (): JSX.Element => {
@@ -74,6 +76,75 @@ export const ColumnSelect = (): JSX.Element => {
         </>
     );
 };
+type ColumnHidePageProps<T extends Record<string, unknown>> = {
+    instance: TableInstance<T>;
+};
+export function ColumnSelectRT<T extends Record<string, unknown>>({
+    instance
+}: ColumnHidePageProps<T>): ReactElement | null {
+    const [open, setOpen] = React.useState(false);
+    const { allColumns, toggleHideColumn } = instance;
+    const hideableColumns = allColumns.filter(
+        (column) => !(column.id === 'action')
+    );
+    const checkedCount = hideableColumns.reduce(
+        (acc, val) => acc + (val.isVisible ? 0 : 1),
+        0
+    );
+
+    const onlyOneOptionLeft = checkedCount + 1 >= hideableColumns.length;
+
+    return (
+        <>
+            <Button
+                style={{ margin: '10px', marginLeft: 0 }}
+                variant="contained"
+                color="info"
+                onClick={() => setOpen(true)}>
+                Velg kolonner
+            </Button>
+            <Dialog
+                sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+                maxWidth="xs"
+                open={open}
+                onClose={() => setOpen(false)}>
+                <DialogTitle>Velg kolonner</DialogTitle>
+                <DialogContent dividers>
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Velg kolonner</FormLabel>
+                        <FormGroup>
+                            {hideableColumns.map((c) => (
+                                <FormControlLabel
+                                    key={c.id}
+                                    control={
+                                        <Switch
+                                            name={c.id}
+                                            color="primary"
+                                            size="small"
+                                            disabled={
+                                                c.isVisible && onlyOneOptionLeft
+                                            }
+                                        />
+                                    }
+                                    onChange={() =>
+                                        toggleHideColumn(c.id, c.isVisible)
+                                    }
+                                    checked={c.isVisible}
+                                    label={c.render('Header') || ''}
+                                />
+                            ))}
+                        </FormGroup>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={() => setOpen(false)}>
+                        lukk
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+}
 
 export interface ActionItem {
     name: string;

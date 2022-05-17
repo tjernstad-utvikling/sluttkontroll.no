@@ -1,4 +1,11 @@
-import { Column, useExpanded, useGroupBy, useTable } from 'react-table';
+import {
+    Column,
+    TableState,
+    useExpanded,
+    useGroupBy,
+    useTable
+} from 'react-table';
+import { useEffect, useMemo } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';
@@ -15,13 +22,15 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import { TableKey } from '../contracts/keys';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { useMemo } from 'react';
+import { useDebounce } from '../hooks/useDebounce';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export const SjekklisteValueGetter = (data: Checklist | null) => {
     const prosedyre = (): string => {
@@ -171,18 +180,38 @@ export const SjekklisteTable = ({
         []
     );
 
-    const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } =
-        useTable<Cols>(
-            {
-                columns,
-                data,
-                initialState: {
-                    groupBy: ['gruppe']
-                }
-            },
-            useGroupBy,
-            useExpanded
-        );
+    const [initialState, setInitialState] = useLocalStorage(
+        TableKey.checklist,
+        { groupBy: ['gruppe'] }
+    );
+
+    const {
+        getTableProps,
+        headerGroups,
+        getTableBodyProps,
+        rows,
+        prepareRow,
+        state
+    } = useTable<Cols>(
+        {
+            columns,
+            data,
+            initialState
+        },
+        useGroupBy,
+        useExpanded
+    );
+
+    const debouncedState = useDebounce<TableState>(state, 500);
+
+    useEffect(() => {
+        const { groupBy, expanded } = debouncedState;
+        const val = {
+            groupBy,
+            expanded
+        };
+        setInitialState(val);
+    }, [setInitialState, debouncedState]);
 
     return (
         <TableContainer component={Paper}>

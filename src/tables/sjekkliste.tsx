@@ -210,10 +210,11 @@ export const SjekklisteTable = ({
     const debouncedState = useDebounce<TableState>(state, 500);
 
     useEffect(() => {
-        const { groupBy, expanded } = debouncedState;
+        const { groupBy, expanded, hiddenColumns } = debouncedState;
         const val = {
             groupBy,
-            expanded
+            expanded,
+            hiddenColumns
         };
         setInitialState(val);
     }, [setInitialState, debouncedState]);

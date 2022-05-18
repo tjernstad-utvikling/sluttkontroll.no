@@ -24,7 +24,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ReorderIcon from '@mui/icons-material/Reorder';
 import { StorageKeys } from '../contracts/keys';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import { getAvvikReport } from '../api/avvikApi';
 import { useAvvik } from '../data/avvik';

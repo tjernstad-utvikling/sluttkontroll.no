@@ -1,4 +1,4 @@
-import { BaseTable, RowStylingEnum } from './baseTable';
+import { BaseTable, RowStylingEnum } from './base/baseTable';
 import {
     GridCellParams,
     GridColDef,
@@ -16,7 +16,7 @@ import InsertCommentIcon from '@mui/icons-material/InsertComment';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { PasteTableButton } from '../components/clipboard';
-import { RowAction } from '../tables/tableUtils';
+import { RowAction } from './base/tableUtils';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import { User } from '../contracts/userApi';
 import { useClipBoard } from '../data/clipboard';

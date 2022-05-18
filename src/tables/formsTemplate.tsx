@@ -1,9 +1,9 @@
 import { GridCellParams, GridColDef, GridRowData } from '@mui/x-data-grid-pro';
 
-import { BaseTable } from './baseTable';
+import { BaseTable } from './base/baseTable';
 import EditIcon from '@mui/icons-material/Edit';
 import { FormsTemplate } from '../contracts/formsApi';
-import { RowAction } from './tableUtils';
+import { RowAction } from './base/tableUtils';
 import { Template } from '../contracts/skjemaTemplateApi';
 
 export const TemplateValueGetter = (data: Template | GridRowData) => {

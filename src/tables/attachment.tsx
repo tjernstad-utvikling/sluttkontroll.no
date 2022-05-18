@@ -2,11 +2,11 @@ import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
 import React, { useEffect, useState } from 'react';
 
 import { Attachment } from '../contracts/attachmentApi';
-import { BaseTable } from './baseTable';
+import { BaseTable } from './base/baseTable';
 import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
-import { RowAction } from './tableUtils';
+import { RowAction } from './base/tableUtils';
 
 interface ColumnsOptions {
     onDelete?: (id: number) => void;

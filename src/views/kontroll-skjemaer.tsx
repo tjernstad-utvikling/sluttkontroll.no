@@ -16,7 +16,7 @@ import { PasteButton } from '../components/clipboard';
 import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { useAvvik } from '../data/avvik';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';

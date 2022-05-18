@@ -6,7 +6,7 @@ import {
 } from '@mui/x-data-grid-pro';
 
 import Avatar from '@mui/material/Avatar';
-import { BaseTable } from './baseTable';
+import { BaseTable } from './base/baseTable';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import { Kalibrering } from '../contracts/instrumentApi';

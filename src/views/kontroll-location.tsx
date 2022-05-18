@@ -27,7 +27,7 @@ import { KontrollObjectViewParams } from '../contracts/navigation';
 import { LocationEditSchema } from '../schema/location';
 import { LocationImageCard } from '../components/location';
 import { NewImageModal } from '../modal/newLocationImage';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';

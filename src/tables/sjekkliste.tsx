@@ -5,7 +5,7 @@ import {
     useGroupBy,
     useTable
 } from 'react-table';
-import { ColumnSelectRT, RowAction } from './tableUtils';
+import { ColumnSelectRT, RowAction } from './base/tableUtils';
 import { useEffect, useMemo } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -34,7 +34,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useDebounce } from '../hooks/useDebounce';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { useTableStyles } from './baseTable';
+import { useTableStyles } from './base/baseTable';
 
 export const SjekklisteValueGetter = (data: Checklist | null) => {
     const prosedyre = (): string => {

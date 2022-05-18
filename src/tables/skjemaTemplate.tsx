@@ -6,11 +6,11 @@ import {
 } from '@mui/x-data-grid-pro';
 
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { BaseTable } from './baseTable';
+import { BaseTable } from './base/baseTable';
 import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-import { RowAction } from './tableUtils';
+import { RowAction } from './base/tableUtils';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { Typography } from '@mui/material';
 

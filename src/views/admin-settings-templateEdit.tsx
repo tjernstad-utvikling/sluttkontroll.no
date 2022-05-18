@@ -8,7 +8,7 @@ import { Checkpoint } from '../contracts/checkpointApi';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { getCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';

@@ -1,4 +1,4 @@
-import { BaseTable, RowStylingEnum } from './baseTable';
+import { BaseTable, RowStylingEnum } from './base/baseTable';
 import {
     GridCellParams,
     GridColDef,
@@ -10,7 +10,7 @@ import { Measurement, MeasurementType } from '../contracts/measurementApi';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-import { RowAction } from './tableUtils';
+import { RowAction } from './base/tableUtils';
 import { useClipBoard } from '../data/clipboard';
 
 export const MeasurementValueGetter = (

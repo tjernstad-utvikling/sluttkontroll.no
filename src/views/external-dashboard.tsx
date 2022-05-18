@@ -13,7 +13,7 @@ import Grid from '@mui/material/Grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ReorderIcon from '@mui/icons-material/Reorder';
 import { StorageKeys } from '../contracts/keys';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import Typography from '@mui/material/Typography';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import { getAvvikReport } from '../api/avvikApi';

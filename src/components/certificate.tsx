@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import { CertificateModal } from '../modal/certificate';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { User } from '../contracts/userApi';
 import { errorHandler } from '../tools/errorHandler';
 import { useSnackbar } from 'notistack';

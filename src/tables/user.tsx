@@ -1,10 +1,10 @@
 import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
 import { Roles, RolesDesc, User } from '../contracts/userApi';
 
-import { BaseTable } from './baseTable';
+import { BaseTable } from './base/defaultTable';
 import Chip from '@mui/material/Chip';
 import EditIcon from '@mui/icons-material/Edit';
-import { RowAction } from './tableUtils';
+import { RowAction } from './base/tableUtils';
 import { Sertifikat } from '../contracts/certificateApi';
 
 interface columnsOptions {

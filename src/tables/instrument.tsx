@@ -1,4 +1,4 @@
-import { BaseTable, RowStylingEnum } from './baseTable';
+import { BaseTable, RowStylingEnum } from './base/defaultTable';
 import {
     GridCellParams,
     GridColDef,
@@ -13,7 +13,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Instrument } from '../contracts/instrumentApi';
 import { Link } from 'react-router-dom';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
-import { RowAction } from '../tables/tableUtils';
+import { RowAction } from './base/tableUtils';
 import TodayIcon from '@mui/icons-material/Today';
 import { Typography } from '@mui/material';
 import { User } from '../contracts/userApi';

@@ -6,7 +6,7 @@ import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointModal } from '../modal/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
 import { updateCheckpoints } from '../api/checkpointApi';
 import { useEffectOnce } from '../hooks/useEffectOnce';

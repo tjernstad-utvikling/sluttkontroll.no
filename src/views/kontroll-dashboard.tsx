@@ -20,7 +20,7 @@ import Grid from '@mui/material/Grid';
 import { InstrumentStatus } from '../components/instrument';
 import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollEditModal } from '../modal/kontroll';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { useAuth } from '../hooks/useAuth';
 import { useAvvik } from '../data/avvik';
 import { useClient } from '../data/klient';

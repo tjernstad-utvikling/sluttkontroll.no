@@ -1,4 +1,4 @@
-import { BaseTable, RowStylingEnum } from './baseTable';
+import { BaseTable, RowStylingEnum } from './base/defaultTable';
 import {
     GridCellParams,
     GridColDef,
@@ -13,7 +13,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { RowAction } from './tableUtils';
+import { RowAction } from './base/tableUtils';
 import { format } from 'date-fns';
 
 export const AvvikValueGetter = (data: Avvik | GridRowModel | null) => {

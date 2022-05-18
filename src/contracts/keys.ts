@@ -6,3 +6,7 @@ export enum StorageKeys {
     avvikViewMode = '@slk:avvik:view:mode',
     avvikViewAll = '@slk:avvik:view:all'
 }
+
+export enum TableKey {
+    checklist = '@slk:table:checklist'
+}

@@ -5,7 +5,7 @@ import {
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
-import { BaseTable } from './baseTable';
+import { BaseTable } from './base/defaultTable';
 import { Sertifikat } from '../contracts/certificateApi';
 import { format } from 'date-fns';
 

@@ -216,7 +216,7 @@ export const BaseTable = <T extends Data>({
     );
 };
 
-const useTableStyles = makeStyles((theme) => ({
+export const useTableStyles = makeStyles((theme) => ({
     root: {
         '& .slk-table--disabled': {
             backgroundColor: '#7A7A7A',

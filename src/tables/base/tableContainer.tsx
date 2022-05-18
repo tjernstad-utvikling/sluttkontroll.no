@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import { useEffect, useRef } from 'react';
 
 import { GridColDef } from '@mui/x-data-grid-pro';
-import { StorageKeys } from '../contracts/keys';
+import { StorageKeys } from '../../contracts/keys';
 
 const Context = createContext<ContextInterface>({} as ContextInterface);
 

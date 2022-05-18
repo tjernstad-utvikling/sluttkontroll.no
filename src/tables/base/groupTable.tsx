@@ -192,7 +192,9 @@ export function GroupTable<T extends Record<string, unknown>>(
                                                 getAction ? (
                                                     getAction(row)
                                                 ) : null
-                                            ) : (
+                                            ) : instance.state.groupBy.includes(
+                                                  cell.column.id
+                                              ) ? null : (
                                                 cell.render('Cell')
                                             )}
                                         </TableCell>

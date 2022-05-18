@@ -13,6 +13,7 @@ import { Avvik } from '../contracts/avvikApi';
 import Button from '@mui/material/Button';
 import { Checklist } from '../contracts/kontrollApi';
 import IconButton from '@mui/material/IconButton';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import { Link } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import { PasteTableButton } from '../components/clipboard';
@@ -24,6 +25,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { TableKey } from '../contracts/keys';
 import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
@@ -147,37 +150,37 @@ export const SjekklisteTable = ({
             {
                 Header: '#',
                 accessor: 'id',
-                canGroupBy: false
+                disableGroupBy: true
             },
             {
                 Header: 'Prosedyre nr',
                 accessor: 'prosedyreNr',
-                canGroupBy: false
+                disableGroupBy: true
             },
             {
                 Header: 'Prosedyre',
                 accessor: 'prosedyre',
-                canGroupBy: false
+                disableGroupBy: true
             },
             {
                 Header: 'Avvik (åpne | lukket) ',
                 accessor: 'avvik',
-                canGroupBy: false
+                disableGroupBy: true
             },
             {
                 Header: 'Aktuell',
                 accessor: 'aktuell',
-                canGroupBy: false
+                disableGroupBy: true
             },
             {
                 Header: 'Gruppe',
                 accessor: 'gruppe',
-                canGroupBy: true
+                disableGroupBy: false
             },
             {
                 Header: '',
                 accessor: 'action',
-                canGroupBy: false
+                disableGroupBy: true
             }
         ],
         []
@@ -230,19 +233,35 @@ export const SjekklisteTable = ({
                 <TableHead>
                     {headerGroups.map((headerGroup) => (
                         <TableRow {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
-                                <TableCell {...column.getHeaderProps()}>
-                                    {column.canGroupBy
-                                        ? // If the column can be grouped, let's add a toggle
-                                          // <span
-                                          //     {...column.getGroupByToggleProps()}>
-                                          //     {column.isGrouped ? '🛑 ' : '👊 '}
-                                          // </span>
-                                          null
-                                        : null}
-                                    {column.render('Header')}
-                                </TableCell>
-                            ))}
+                            {headerGroup.headers.map((column) => {
+                                const {
+                                    title: groupTitle = '',
+                                    ...columnGroupByProps
+                                } = column.getGroupByToggleProps();
+
+                                return (
+                                    <TableCell {...column.getHeaderProps()}>
+                                        {column.canGroupBy && (
+                                            <Tooltip title={groupTitle}>
+                                                <TableSortLabel
+                                                    active
+                                                    direction={
+                                                        column.isGrouped
+                                                            ? 'desc'
+                                                            : 'asc'
+                                                    }
+                                                    IconComponent={
+                                                        KeyboardArrowRight
+                                                    }
+                                                    {...columnGroupByProps}
+                                                />
+                                            </Tooltip>
+                                        )}
+
+                                        {column.render('Header')}
+                                    </TableCell>
+                                );
+                            })}
                         </TableRow>
                     ))}
                 </TableHead>
@@ -260,6 +279,7 @@ export const SjekklisteTable = ({
                                                     <Button
                                                         {...row.getToggleRowExpandedProps()}
                                                         variant="text"
+                                                        size="small"
                                                         startIcon={
                                                             row.isExpanded ? (
                                                                 <UnfoldLessIcon />

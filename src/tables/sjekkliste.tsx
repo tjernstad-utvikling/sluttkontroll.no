@@ -181,8 +181,9 @@ export const SjekklisteTable = ({
                         action: () =>
                             toggleAktuell(
                                 Number(
-                                    row.cells.find((c) => c.column.id === 'id')
-                                        ?.value
+                                    row.allCells.find(
+                                        (c) => c.column.id === 'id'
+                                    )?.value
                                 )
                             ),
                         // skip: kontroll?.done || false,
@@ -202,12 +203,16 @@ export const SjekklisteTable = ({
         row: Row<ChecklistColumns>,
         cell: Cell<ChecklistColumns, any>
     ) => {
+        console.log(row);
         switch (accessor) {
             case 'avvik':
                 return (
                     <AvvikCell
                         avvik={cell.value}
-                        id={row.cells.find((c) => c.column.id === 'id')?.value}
+                        id={
+                            row.allCells.find((c) => c.column.id === 'id')
+                                ?.value
+                        }
                         url={url}
                     />
                 );

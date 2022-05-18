@@ -34,7 +34,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useDebounce } from '../hooks/useDebounce';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { useTableStyles } from './base/baseTable';
+import { useTableStyles } from './base/defaultTable';
 
 export const SjekklisteValueGetter = (data: Checklist | null) => {
     const prosedyre = (): string => {

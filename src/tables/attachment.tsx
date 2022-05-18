@@ -2,7 +2,7 @@ import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
 import React, { useEffect, useState } from 'react';
 
 import { Attachment } from '../contracts/attachmentApi';
-import { BaseTable } from './base/baseTable';
+import { BaseTable } from './base/defaultTable';
 import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import FileOpenIcon from '@mui/icons-material/FileOpen';

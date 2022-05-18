@@ -1,4 +1,4 @@
-import { BaseTable, RowStylingEnum } from './base/baseTable';
+import { BaseTable, RowStylingEnum } from './base/defaultTable';
 import {
     GridCellParams,
     GridColDef,

@@ -1,7 +1,7 @@
 import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
 import { Roles, RolesDesc, User } from '../contracts/userApi';
 
-import { BaseTable } from './base/baseTable';
+import { BaseTable } from './base/defaultTable';
 import Chip from '@mui/material/Chip';
 import EditIcon from '@mui/icons-material/Edit';
 import { RowAction } from './base/tableUtils';

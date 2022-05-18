@@ -6,7 +6,7 @@ import {
     GridValueGetterParams
 } from '@mui/x-data-grid-pro';
 
-import { BaseTable } from './base/baseTable';
+import { BaseTable } from './base/defaultTable';
 import IconButton from '@mui/material/IconButton';
 import PrintIcon from '@mui/icons-material/Print';
 import { format } from 'date-fns';

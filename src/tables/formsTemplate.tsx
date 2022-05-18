@@ -1,6 +1,6 @@
 import { GridCellParams, GridColDef, GridRowData } from '@mui/x-data-grid-pro';
 
-import { BaseTable } from './base/baseTable';
+import { BaseTable } from './base/defaultTable';
 import EditIcon from '@mui/icons-material/Edit';
 import { FormsTemplate } from '../contracts/formsApi';
 import { RowAction } from './base/tableUtils';

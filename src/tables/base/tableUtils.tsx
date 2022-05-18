@@ -174,7 +174,7 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
                 onClick={handleClick}
-                size="large">
+                size="small">
                 <MoreVertIcon />
             </IconButton>
             <Menu

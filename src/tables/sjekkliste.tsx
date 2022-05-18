@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { PasteTableButton } from '../components/clipboard';
 import { Link as RouterLink } from 'react-router-dom';
 import { RowAction } from './base/tableUtils';
+import { RowStylingEnum } from './base/defaultTable';
 import { TableKey } from '../contracts/keys';
 import Typography from '@mui/material/Typography';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -42,8 +43,9 @@ interface AvvikCellProps {
     url: string;
     id: string;
     avvik: { open: number; closed: number };
+    row: Row<ChecklistColumns>;
 }
-const AvvikCell = ({ avvik, url, id }: AvvikCellProps) => {
+const AvvikCell = ({ avvik, url, id, row }: AvvikCellProps) => {
     return (
         <>
             <Link to={`${url}/checklist/${id}/avvik`}>
@@ -51,13 +53,17 @@ const AvvikCell = ({ avvik, url, id }: AvvikCellProps) => {
                     ( {avvik.open} | {avvik.closed} ){' '}
                 </span>
             </Link>
-            <IconButton
-                to={`${url}/checklist/${id}/avvik/new`}
-                component={RouterLink}
-                aria-label="nytt avvik"
-                size="small">
-                <AddIcon fontSize="small" />
-            </IconButton>
+            {row.allCells.find((c) => c.column.id === 'aktuell')?.value ? (
+                <IconButton
+                    to={`${url}/checklist/${id}/avvik/new`}
+                    component={RouterLink}
+                    aria-label="nytt avvik"
+                    size="small">
+                    <AddIcon fontSize="small" />
+                </IconButton>
+            ) : (
+                <span />
+            )}
         </>
     );
 };
@@ -70,7 +76,9 @@ const AktuellCell = ({ aktuell }: { aktuell: boolean }) => {
     return (
         <>
             <VisibilityOffIcon fontSize="small" />
-            <Typography style={{ paddingLeft: 10 }}>Ikke aktuell</Typography>
+            <Typography fontSize={'small'} style={{ paddingLeft: 10 }}>
+                Ikke aktuell
+            </Typography>
         </>
     );
 };
@@ -214,6 +222,7 @@ export const SjekklisteTable = ({
                                 ?.value
                         }
                         url={url}
+                        row={row}
                     />
                 );
             case 'aktuell':
@@ -221,6 +230,17 @@ export const SjekklisteTable = ({
 
             default:
                 return <span />;
+        }
+    };
+
+    const getRowStyling = (
+        row: Row<ChecklistColumns>
+    ): RowStylingEnum | undefined => {
+        if (
+            !row.allCells.find((c) => c.column.id === 'aktuell')?.value &&
+            !row.isGrouped
+        ) {
+            return RowStylingEnum.disabled;
         }
     };
 
@@ -233,6 +253,7 @@ export const SjekklisteTable = ({
             toRenderInCustomCell={['avvik', 'aktuell']}
             getCustomCell={getCustomCell}
             getAction={getAction}
+            getRowStyling={getRowStyling}
         />
     );
 };

@@ -8,6 +8,7 @@ import {
     useTable
 } from 'react-table';
 import { PropsWithChildren, ReactElement, useEffect } from 'react';
+import { RowStylingEnum, useTableStyles } from './defaultTable';
 
 import Button from '@mui/material/Button';
 import { ColumnSelectRT } from './tableUtils';
@@ -26,7 +27,6 @@ import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { useTableStyles } from './defaultTable';
 
 interface TableProperties<T extends Record<string, unknown>>
     extends TableOptions<T> {
@@ -40,6 +40,7 @@ interface TableProperties<T extends Record<string, unknown>>
         cell: Cell<T, any>
     ) => ReactElement;
     getAction?: (row: Row<T>) => ReactElement;
+    getRowStyling?: (row: Row<T>) => RowStylingEnum | undefined;
 }
 
 const hooks = [useGroupBy, useExpanded];
@@ -54,7 +55,8 @@ export function GroupTable<T extends Record<string, unknown>>(
         children,
         toRenderInCustomCell,
         getCustomCell,
-        getAction
+        getAction,
+        getRowStyling
     } = props;
     const classes = useTableStyles();
 
@@ -94,8 +96,18 @@ export function GroupTable<T extends Record<string, unknown>>(
         setInitialState(val);
     }, [setInitialState, debouncedState]);
 
+    function getRowClassName(row: Row<T>) {
+        if (getRowStyling !== undefined) {
+            const className = getRowStyling(row);
+            if (className !== undefined) {
+                return `slk-table--${className}`;
+            }
+        }
+        return '';
+    }
+
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className={classes.root}>
             <div className={classes.tools}>
                 <div className={classes.pasteTool}>{children}</div>
                 <ColumnSelectRT instance={instance} />
@@ -140,7 +152,9 @@ export function GroupTable<T extends Record<string, unknown>>(
                     {rows.map((row) => {
                         prepareRow(row);
                         return (
-                            <TableRow {...row.getRowProps()}>
+                            <TableRow
+                                {...row.getRowProps()}
+                                className={getRowClassName(row)}>
                                 {row.cells.map((cell) => {
                                     return (
                                         <TableCell {...cell.getCellProps()}>

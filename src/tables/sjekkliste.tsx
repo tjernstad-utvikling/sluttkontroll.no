@@ -55,8 +55,8 @@ const AvvikCell = ({ avvik, url, id }: AvvikCellProps) => {
                 to={`${url}/checklist/${id}/avvik/new`}
                 component={RouterLink}
                 aria-label="nytt avvik"
-                size="large">
-                <AddIcon />
+                size="small">
+                <AddIcon fontSize="small" />
             </IconButton>
         </>
     );
@@ -64,12 +64,12 @@ const AvvikCell = ({ avvik, url, id }: AvvikCellProps) => {
 
 const AktuellCell = ({ aktuell }: { aktuell: boolean }) => {
     if (aktuell) {
-        return <VisibilityIcon />;
+        return <VisibilityIcon fontSize="small" />;
     }
 
     return (
         <>
-            <VisibilityOffIcon />
+            <VisibilityOffIcon fontSize="small" />
             <Typography style={{ paddingLeft: 10 }}>Ikke aktuell</Typography>
         </>
     );

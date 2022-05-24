@@ -211,7 +211,6 @@ export const SjekklisteTable = ({
         row: Row<ChecklistColumns>,
         cell: Cell<ChecklistColumns, any>
     ) => {
-        console.log(row);
         switch (accessor) {
             case 'avvik':
                 return (

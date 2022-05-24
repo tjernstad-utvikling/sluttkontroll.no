@@ -218,6 +218,8 @@ export const kontrollColumns = ({
             field: 'attachments',
             headerName: 'Vedlegg',
             flex: 1,
+            valueGetter: (params: GridValueGetterParams) =>
+                KontrollValueGetter(params.row).attachment(attachments),
             renderCell: (params: GridCellParams) => (
                 <Link
                     to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/attachments`}>

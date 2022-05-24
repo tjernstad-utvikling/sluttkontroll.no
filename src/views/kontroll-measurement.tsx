@@ -21,7 +21,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { MeasurementModal } from '../modal/measurement';
 import { MeasurementsViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useKontrollById } from '../api/hooks/useKontroll';

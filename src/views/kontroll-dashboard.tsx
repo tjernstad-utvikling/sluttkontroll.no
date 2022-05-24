@@ -23,7 +23,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentStatus } from '../components/instrument';
 import { KontrollEditModal } from '../modal/kontroll';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClients } from '../api/hooks/useKlient';

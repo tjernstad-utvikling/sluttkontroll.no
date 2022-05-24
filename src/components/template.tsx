@@ -5,7 +5,7 @@ import {
 } from '../tables/skjemaTemplate';
 
 import Button from '@mui/material/Button';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';

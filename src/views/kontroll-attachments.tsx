@@ -10,7 +10,7 @@ import { AttachmentViewerModal } from '../modal/attachmentViewer';
 import { AttachmentsViewParams } from '../contracts/navigation';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { useConfirm } from '../hooks/useConfirm';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';

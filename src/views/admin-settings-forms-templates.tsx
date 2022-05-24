@@ -7,7 +7,7 @@ import {
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useForms } from '../data/forms';
 import { usePageStyles } from '../styles/kontroll/page';

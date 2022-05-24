@@ -27,7 +27,7 @@ import { ReportPropertiesSchema } from '../../schema/reportProperties';
 import { ReportSettingsSchema } from '../../schema/reportSettings';
 import { Skjema } from '../../contracts/kontrollApi';
 import Switch from '@mui/material/Switch';
-import { TableContainer } from '../../tables/tableContainer';
+import { TableContainer } from '../../tables/base/tableContainer';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../../theme/makeStyles';
 import { updateReportStatement } from '../../api/reportApi';

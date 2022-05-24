@@ -29,7 +29,7 @@ import Grid from '@mui/material/Grid';
 import { KlientEditSchema } from '../schema/klient';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';

@@ -15,7 +15,7 @@ import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
 import { InstrumentStatus } from '../components/instrument';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { useCurrentUser } from '../api/hooks/useUsers';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
@@ -31,7 +31,7 @@ const InstrumentsView = () => {
     const instrumentsData = useInstruments();
 
     const instrumentDisponentMutation = useSetInstrumentDisponent();
-    const removeinstrumentDisponentMutation = useRemoveInstrumentDisponent();
+    const removeInstrumentDisponentMutation = useRemoveInstrumentDisponent();
 
     const handleInstrumentBooking = async (instrumentId: number) => {
         const instrument = instrumentsData.data?.find(
@@ -40,7 +40,7 @@ const InstrumentsView = () => {
         if (currentUserData.data !== undefined && instrument !== undefined) {
             if (instrument.disponent?.id === currentUserData.data.id) {
                 try {
-                    await removeinstrumentDisponentMutation.mutateAsync({
+                    await removeInstrumentDisponentMutation.mutateAsync({
                         instrumentId: instrument.id
                     });
                 } catch (error) {

@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import { SelectTemplate } from '../components/template';
 import { SkjemaSchema } from '../schema/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { useNewSkjema } from '../api/hooks/useSkjema';

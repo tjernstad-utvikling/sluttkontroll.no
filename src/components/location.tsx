@@ -6,7 +6,7 @@ import CardMedia from '@mui/material/CardMedia';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Location } from '../contracts/kontrollApi';
 import { LocationImage } from './image';
-import { RowAction } from '../tables/tableUtils';
+import { RowAction } from '../tables/base/tableUtils';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../theme/makeStyles';
 import { useDeleteLocationImage } from '../api/hooks/useKlient';

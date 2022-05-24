@@ -1,7 +1,7 @@
 import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
 import { useEffect, useState } from 'react';
 
-import { BaseTable } from './baseTable';
+import { BaseTable } from './base/defaultTable';
 import Button from '@mui/material/Button';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';

@@ -5,7 +5,7 @@ import { getFormsByCurrentUser, getFormsDocument } from '../api/formsApi';
 import Container from '@mui/material/Container';
 import { Forms } from '../contracts/formsApi';
 import Grid from '@mui/material/Grid';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
 import { format } from 'date-fns';
 import { useEffectOnce } from '../hooks/useEffectOnce';

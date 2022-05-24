@@ -4,12 +4,7 @@ import {
     KontrollClipboard
 } from '../components/clipboard';
 import { Card, CardContent, CardMenu } from '../components/card';
-import {
-    SjekklisteTable,
-    SjekklisteValueGetter,
-    columns,
-    defaultColumns
-} from '../tables/sjekkliste';
+import { SjekklisteTable, SjekklisteValueGetter } from '../tables/sjekkliste';
 import { useChecklists, useToggleApplicable } from '../api/hooks/useChecklist';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
@@ -18,7 +13,6 @@ import { Checklist } from '../contracts/kontrollApi';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/tableContainer';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClipBoard } from '../data/clipboard';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -102,24 +96,23 @@ const SjekklisterView = () => {
                                 />
                             }>
                             <CardContent>
-                                <TableContainer
-                                    columns={columns(
-                                        avvikData.data ?? [],
-                                        url,
-                                        toggleAktuellChecklist,
-                                        clipboardHasAvvik,
-                                        avvikToPast
-                                    )}
-                                    defaultColumns={defaultColumns}
-                                    tableId="checklists">
+                                {checklistData.data !== undefined ? (
                                     <SjekklisteTable
+                                        avvikToPast={avvikToPast}
+                                        clipboardHasAvvik={clipboardHasAvvik}
+                                        toggleAktuell={toggleAktuellChecklist}
+                                        avvik={avvikData.data ?? []}
                                         checklists={_checklists}
-                                        isLoading={
+                                        url={url}
+                                    />
+                                ) : (
+                                    <div>
+                                        {/* isLoading={
                                             checklistData.isLoading ||
                                             avvikData.isLoading
-                                        }
-                                    />
-                                </TableContainer>
+                                        } */}
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </Grid>

@@ -16,7 +16,7 @@ import Grid from '@mui/material/Grid';
 import { PasteButton } from '../components/clipboard';
 import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';

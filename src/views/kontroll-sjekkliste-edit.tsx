@@ -10,7 +10,7 @@ import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import { SelectTemplate } from '../components/template';
 import { SjekklisterViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { usePageStyles } from '../styles/kontroll/page';

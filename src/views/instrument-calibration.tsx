@@ -18,7 +18,7 @@ import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationViewParams } from '../contracts/navigation';
 import { Kalibrering } from '../contracts/instrumentApi';
 import { PdfViewer } from '../components/viewer';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
 import { getCalibrationCertificate } from '../api/instrumentApi';
 import { usePageStyles } from '../styles/kontroll/page';

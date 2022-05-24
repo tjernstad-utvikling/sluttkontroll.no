@@ -9,7 +9,7 @@ import {
 import { CheckpointModal } from '../modal/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';

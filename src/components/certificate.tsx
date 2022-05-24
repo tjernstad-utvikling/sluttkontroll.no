@@ -12,7 +12,7 @@ import {
 
 import { CertificateModal } from '../modal/certificate';
 import { SertifikatType } from '../contracts/certificateApi';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { User } from '../contracts/userApi';
 import { useState } from 'react';
 

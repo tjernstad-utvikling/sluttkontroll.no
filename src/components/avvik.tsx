@@ -15,7 +15,7 @@ import { Image } from './image';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { RowAction } from '../tables/tableUtils';
+import { RowAction } from '../tables/base/tableUtils';
 import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';

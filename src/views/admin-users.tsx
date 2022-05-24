@@ -4,7 +4,7 @@ import { useCurrentUser, useUsers } from '../api/hooks/useUsers';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { TableContainer } from '../tables/tableContainer';
+import { TableContainer } from '../tables/base/tableContainer';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const UsersView = () => {

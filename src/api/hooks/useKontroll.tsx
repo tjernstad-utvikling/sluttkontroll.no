@@ -188,7 +188,13 @@ export function useUpdateKontroll() {
         async (body) => {
             const { data } = await sluttkontrollApi.put<{ kontroll: Kontroll }>(
                 `/kontroll/${body.id}`,
-                { ...body }
+                {
+                    ...body,
+                    user: { id: body.user.id },
+                    avvikUtbedrere: body.avvikUtbedrere.map((u) => {
+                        return { id: u.id };
+                    })
+                }
             );
             return data.kontroll;
         },
@@ -235,7 +241,11 @@ export function useNewKontroll() {
                 kontroll: Kontroll;
             }>(`/kontroll/${body.location.id}/${body.user.id}`, {
                 name: body.name,
-                avvikUtbedrere: body.avvikUtbedrere
+                avvikUtbedrere: [
+                    ...body.avvikUtbedrere.map((u) => {
+                        return { id: u.id };
+                    })
+                ]
             });
             return data.kontroll;
         },

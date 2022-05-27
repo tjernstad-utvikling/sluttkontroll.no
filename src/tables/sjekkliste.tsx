@@ -101,6 +101,7 @@ interface SjekklisteTableProps {
     clipboardHasAvvik: boolean;
     avvikToPast: Avvik[];
     children?: React.ReactNode;
+    isLoading: boolean;
 }
 export const SjekklisteTable = ({
     checklists,
@@ -109,7 +110,8 @@ export const SjekklisteTable = ({
     avvikToPast,
     clipboardHasAvvik,
     toggleAktuell,
-    children
+    children,
+    isLoading
 }: SjekklisteTableProps) => {
     const data = useMemo((): ChecklistColumns[] => {
         return checklists.map((c) => {
@@ -253,6 +255,7 @@ export const SjekklisteTable = ({
             getCustomCell={getCustomCell}
             getAction={getAction}
             getRowStyling={getRowStyling}
+            isLoading={isLoading}
         />
     );
 };

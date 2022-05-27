@@ -13,6 +13,7 @@ import { RowStylingEnum, useTableStyles } from './defaultTable';
 import Button from '@mui/material/Button';
 import { ColumnSelectRT } from './tableUtils';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -41,6 +42,7 @@ interface TableProperties<T extends Record<string, unknown>>
     ) => ReactElement;
     getAction?: (row: Row<T>) => ReactElement;
     getRowStyling?: (row: Row<T>) => RowStylingEnum | undefined;
+    isLoading: boolean;
 }
 
 const hooks = [useGroupBy, useExpanded];
@@ -80,7 +82,8 @@ export function GroupTable<T extends Record<string, unknown>>(
         getTableBodyProps,
         rows,
         prepareRow,
-        state
+        state,
+        visibleColumns
     } = instance;
 
     /**Save table settings */
@@ -149,6 +152,13 @@ export function GroupTable<T extends Record<string, unknown>>(
                     ))}
                 </TableHead>
                 <TableBody {...getTableBodyProps()}>
+                    {props.isLoading && (
+                        <tr>
+                            <td colSpan={visibleColumns.length}>
+                                <LinearProgress sx={{ width: '100%' }} />
+                            </td>
+                        </tr>
+                    )}
                     {rows.map((row) => {
                         prepareRow(row);
                         return (

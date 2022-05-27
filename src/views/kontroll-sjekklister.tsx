@@ -96,23 +96,18 @@ const SjekklisterView = () => {
                                 />
                             }>
                             <CardContent>
-                                {checklistData.data !== undefined ? (
-                                    <SjekklisteTable
-                                        avvikToPast={avvikToPast}
-                                        clipboardHasAvvik={clipboardHasAvvik}
-                                        toggleAktuell={toggleAktuellChecklist}
-                                        avvik={avvikData.data ?? []}
-                                        checklists={_checklists}
-                                        url={url}
-                                    />
-                                ) : (
-                                    <div>
-                                        {/* isLoading={
-                                            checklistData.isLoading ||
-                                            avvikData.isLoading
-                                        } */}
-                                    </div>
-                                )}
+                                <SjekklisteTable
+                                    avvikToPast={avvikToPast}
+                                    clipboardHasAvvik={clipboardHasAvvik}
+                                    toggleAktuell={toggleAktuellChecklist}
+                                    avvik={avvikData.data ?? []}
+                                    checklists={_checklists}
+                                    url={url}
+                                    isLoading={
+                                        checklistData.isLoading ||
+                                        avvikData.isLoading
+                                    }
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

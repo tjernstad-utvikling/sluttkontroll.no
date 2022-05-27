@@ -103,7 +103,8 @@ const SjekklisteEditView = () => {
                                             tableId="checkpoints">
                                             <CheckpointTable
                                                 isLoading={
-                                                    checkpointData.isLoading
+                                                    checkpointData.isLoading ||
+                                                    checklistData.isLoading
                                                 }
                                                 checklists={checklistData.data}
                                                 templateList={

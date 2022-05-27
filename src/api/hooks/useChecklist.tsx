@@ -89,20 +89,20 @@ export function useUpdateChecklist() {
             onSuccess: (updateChecklists, vars) => {
                 const checklists = queryClient.getQueryData<Checklist[]>([
                     'checklist',
-                    'skjema',
+                    'skjemaId',
                     vars.skjemaId
                 ]);
                 // ✅ update detail view directly
 
                 if (checklists && checklists?.length > 0) {
                     queryClient.setQueryData(
-                        ['checklist', 'skjema', vars.skjemaId],
+                        ['checklist', 'skjemaId', vars.skjemaId],
                         unionBy(updateChecklists, checklists, 'id')
                     );
                 }
                 queryClient.invalidateQueries([
                     'checklist',
-                    'skjema',
+                    'skjemaId',
                     vars.skjemaId
                 ]);
 
@@ -137,14 +137,14 @@ export function useToggleApplicable() {
             onSuccess: (updateChecklists, vars) => {
                 const checklists = queryClient.getQueryData<Checklist[]>([
                     'checklist',
-                    'skjema',
+                    'skjemaId',
                     vars.checklist.skjema.id
                 ]);
                 // ✅ update detail view directly
 
                 if (checklists && checklists?.length > 0) {
                     queryClient.setQueryData(
-                        ['checklist', 'skjema', vars.checklist.skjema.id],
+                        ['checklist', 'skjemaId', vars.checklist.skjema.id],
                         unionBy(
                             [{ ...vars.checklist, aktuell: vars.applicable }],
                             checklists,
@@ -154,7 +154,7 @@ export function useToggleApplicable() {
                 }
                 queryClient.invalidateQueries([
                     'checklist',
-                    'skjema',
+                    'skjemaId',
                     vars.checklist.skjema.id
                 ]);
 

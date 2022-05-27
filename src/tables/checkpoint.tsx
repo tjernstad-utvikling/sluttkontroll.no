@@ -79,10 +79,13 @@ export const CheckpointTable = ({
         if (checklists !== undefined) {
             setSelection(checklists.map((cl) => cl.checkpoint.id));
         }
+    }, [checklists]);
+
+    useEffect(() => {
         if (templateList !== undefined) {
             setSelection(templateList.map((tl) => tl.checkpoint.id));
         }
-    }, [checklists, templateList]);
+    }, [templateList]);
 
     function onSelection(checkpoints: number[]) {
         setSelection(checkpoints);

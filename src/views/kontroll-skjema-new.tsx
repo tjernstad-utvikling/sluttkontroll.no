@@ -1,8 +1,8 @@
 import { Card, CardContent } from '../components/card';
-import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { Checkpoint } from '../contracts/checkpointApi';
+import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SelectTemplate } from '../components/template';
@@ -88,33 +88,26 @@ const SkjemaNewView = () => {
                                 />
 
                                 {!selectFromTemplate ? (
-                                    <TableContainer
-                                        columns={columns({})}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checkpoints">
-                                        <CheckpointTable
-                                            isLoading={checkpointData.isLoading}
-                                            templateList={
-                                                template?.skjemaTemplateCheckpoints ||
-                                                []
-                                            }
-                                            checkpoints={
-                                                checkpointData.data ?? []
-                                            }
-                                            onSelected={(ids) =>
-                                                setSelected(
-                                                    checkpointData.data
-                                                        ? checkpointData.data?.filter(
-                                                              (c) =>
-                                                                  ids.indexOf(
-                                                                      c.id
-                                                                  ) !== -1
-                                                          )
-                                                        : []
-                                                )
-                                            }
-                                        />
-                                    </TableContainer>
+                                    <CheckpointTable
+                                        isLoading={checkpointData.isLoading}
+                                        // templateList={
+                                        //     template?.skjemaTemplateCheckpoints ||
+                                        //     []
+                                        // }
+                                        checkpoints={checkpointData.data ?? []}
+                                        // onSelected={(ids) =>
+                                        //     setSelected(
+                                        //         checkpointData.data
+                                        //             ? checkpointData.data?.filter(
+                                        //                   (c) =>
+                                        //                       ids.indexOf(
+                                        //                           c.id
+                                        //                       ) !== -1
+                                        //               )
+                                        //             : []
+                                        //     )
+                                        // }
+                                    />
                                 ) : (
                                     <div />
                                 )}

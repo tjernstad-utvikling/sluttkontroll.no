@@ -1,7 +1,7 @@
 import { Card, CardContent } from '../components/card';
-import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 
 import { Checkpoint } from '../contracts/checkpointApi';
+import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
@@ -50,27 +50,22 @@ const SkjemaTemplateNewView = () => {
                                     checkpointCount={selected.length}
                                 />
 
-                                <TableContainer
-                                    columns={columns({})}
-                                    defaultColumns={defaultColumns}
-                                    tableId="checkpoints">
-                                    <CheckpointTable
-                                        isLoading={checkpointData.isLoading}
-                                        checkpoints={checkpointData.data ?? []}
-                                        onSelected={(ids) =>
-                                            setSelected(
-                                                checkpointData.data
-                                                    ? checkpointData.data?.filter(
-                                                          (c) =>
-                                                              ids.indexOf(
-                                                                  c.id
-                                                              ) !== -1
-                                                      )
-                                                    : []
-                                            )
-                                        }
-                                    />
-                                </TableContainer>
+                                <CheckpointTable
+                                    isLoading={checkpointData.isLoading}
+                                    checkpoints={checkpointData.data ?? []}
+                                    // onSelected={(ids) =>
+                                    //     setSelected(
+                                    //         checkpointData.data
+                                    //             ? checkpointData.data?.filter(
+                                    //                   (c) =>
+                                    //                       ids.indexOf(
+                                    //                           c.id
+                                    //                       ) !== -1
+                                    //               )
+                                    //             : []
+                                    //     )
+                                    // }
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

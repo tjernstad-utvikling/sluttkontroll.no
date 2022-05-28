@@ -1,104 +1,118 @@
-import { GridCellParams, GridColDef } from '@mui/x-data-grid-pro';
-import { useEffect, useState } from 'react';
+import { BaseTable, RowStylingEnum } from './base/defaultTable';
+import { Column, Row } from 'react-table';
+import { useEffect, useMemo, useState } from 'react';
 
-import { BaseTable } from './base/defaultTable';
 import Button from '@mui/material/Button';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
 import EditIcon from '@mui/icons-material/Edit';
+import { GroupTable } from './base/groupTable';
+import { RowAction } from './base/tableUtils';
 import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
+import { TableKey } from '../contracts/keys';
 
-interface ColumnsParams {
-    editCheckpoint?: boolean;
-    onEditCheckpoint?: (checkpointId: number) => void;
-}
-export const columns = ({
-    editCheckpoint,
-    onEditCheckpoint
-}: ColumnsParams) => {
-    const columns: GridColDef[] = [
-        {
-            field: 'id',
-            headerName: 'id',
-            width: 100
-        },
-        {
-            field: 'prosedyreNr',
-            headerName: '#',
-            width: 120
-        },
-        {
-            field: 'prosedyre',
-            headerName: 'Prosedyre',
-            flex: 1
-        },
-        {
-            field: 'action',
-            headerName: ' ',
-            sortable: false,
-            filterable: false,
-            disableColumnMenu: true,
-            renderCell: (params: GridCellParams) => {
-                if (editCheckpoint && onEditCheckpoint !== undefined) {
-                    return (
-                        <Button
-                            onClick={() => onEditCheckpoint(params.row.id)}
-                            color="primary"
-                            startIcon={<EditIcon />}>
-                            {params.row.name}
-                        </Button>
-                    );
-                }
-                return <div />;
-            }
-        }
-    ];
-
-    return columns;
+type Columns = {
+    id: number;
+    prosedyreNr: string;
+    prosedyre: string;
+    gruppe: string;
+    action: number;
 };
-
-export const defaultColumns: Array<string> = ['prosedyreNr', 'prosedyre'];
 
 interface CheckpointTableProps {
     checkpoints: Checkpoint[];
-    checklists?: Checklist[];
-    templateList?: SkjemaTemplateCheckpoint[] | undefined;
-    onSelected?: (checkpoints: number[]) => void;
+    editCheckpoint?: boolean;
+    onEditCheckpoint?: (checkpointId: number) => void;
+    children?: React.ReactNode;
     isLoading: boolean;
 }
 export const CheckpointTable = ({
     checkpoints,
-    checklists,
-    templateList,
-    onSelected,
+    editCheckpoint,
+    onEditCheckpoint,
+    children,
     isLoading
 }: CheckpointTableProps) => {
-    const [selectionModel, setSelection] = useState<number[]>([]);
+    const data = useMemo((): Columns[] => {
+        return checkpoints.map((c) => {
+            return {
+                ...c,
+                action: c.id
+            };
+        });
+    }, [checkpoints]);
 
-    useEffect(() => {
-        if (checklists !== undefined) {
-            setSelection(checklists.map((cl) => cl.checkpoint.id));
+    const columns: Column<Columns>[] = useMemo(
+        () => [
+            {
+                Header: '#',
+                accessor: 'id',
+                disableGroupBy: true
+            },
+            {
+                Header: 'Prosedyre nr',
+                accessor: 'prosedyreNr',
+                disableGroupBy: true
+            },
+            {
+                Header: 'Prosedyre',
+                accessor: 'prosedyre',
+                disableGroupBy: true
+            },
+            {
+                Header: 'Gruppe',
+                accessor: 'gruppe',
+                disableGroupBy: false
+            },
+            {
+                Header: '',
+                accessor: 'action',
+                disableGroupBy: true
+            }
+        ],
+        []
+    );
+    const getAction = (row: Row<Columns>) => (
+        <>
+            {editCheckpoint && onEditCheckpoint !== undefined ? (
+                <Button
+                    onClick={() =>
+                        onEditCheckpoint(
+                            Number(
+                                row.cells.find((c) => c.column.id === 'id')
+                                    ?.value
+                            )
+                        )
+                    }
+                    color="primary"
+                    startIcon={<EditIcon />}>
+                    rediger
+                </Button>
+            ) : (
+                <div />
+            )}
+        </>
+    );
+
+    const getRowStyling = (row: Row<Columns>): RowStylingEnum | undefined => {
+        if (
+            !row.allCells.find((c) => c.column.id === 'aktuell')?.value &&
+            !row.isGrouped
+        ) {
+            return RowStylingEnum.disabled;
         }
-    }, [checklists]);
-
-    useEffect(() => {
-        if (templateList !== undefined) {
-            setSelection(templateList.map((tl) => tl.checkpoint.id));
-        }
-    }, [templateList]);
-
-    function onSelection(checkpoints: number[]) {
-        setSelection(checkpoints);
-
-        if (onSelected) onSelected(checkpoints);
-    }
+    };
 
     return (
-        <BaseTable
-            selectionModel={selectionModel}
-            onSelected={onSelection}
-            data={checkpoints}
-            loading={isLoading}
+        <GroupTable<Columns>
+            tableKey={TableKey.checkpoint}
+            columns={columns}
+            data={data}
+            defaultGroupBy={['gruppe']}
+            toRenderInCustomCell={[]}
+            getAction={getAction}
+            getRowStyling={getRowStyling}
+            isLoading={isLoading}
         />
     );
 };

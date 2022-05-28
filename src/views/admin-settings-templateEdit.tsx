@@ -1,11 +1,11 @@
 import { Card, CardContent } from '../components/card';
-import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useTemplate, useUpdateTemplate } from '../api/hooks/useSkjemaTemplate';
 
 import { AdminTemplateEditViewParams } from '../contracts/navigation';
 import { Checkpoint } from '../contracts/checkpointApi';
+import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
@@ -71,36 +71,29 @@ const SkjemaTemplateNewView = () => {
                                         template={templateData.data}
                                     />
 
-                                    <TableContainer
-                                        columns={columns({})}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checkpoints">
-                                        <CheckpointTable
-                                            isLoading={
-                                                checkpointData.isLoading ||
-                                                templateData.isLoading
-                                            }
-                                            templateList={
-                                                templateData.data
-                                                    ?.skjemaTemplateCheckpoints
-                                            }
-                                            checkpoints={
-                                                checkpointData.data ?? []
-                                            }
-                                            onSelected={(ids) =>
-                                                setSelected(
-                                                    checkpointData.data
-                                                        ? checkpointData.data?.filter(
-                                                              (c) =>
-                                                                  ids.indexOf(
-                                                                      c.id
-                                                                  ) !== -1
-                                                          )
-                                                        : []
-                                                )
-                                            }
-                                        />
-                                    </TableContainer>
+                                    <CheckpointTable
+                                        isLoading={
+                                            checkpointData.isLoading ||
+                                            templateData.isLoading
+                                        }
+                                        // templateList={
+                                        //     templateData.data
+                                        //         ?.skjemaTemplateCheckpoints
+                                        // }
+                                        checkpoints={checkpointData.data ?? []}
+                                        // onSelected={(ids) =>
+                                        //     setSelected(
+                                        //         checkpointData.data
+                                        //             ? checkpointData.data?.filter(
+                                        //                   (c) =>
+                                        //                       ids.indexOf(
+                                        //                           c.id
+                                        //                       ) !== -1
+                                        //               )
+                                        //             : []
+                                        //     )
+                                        // }
+                                    />
                                 </>
                             </CardContent>
                         </Card>

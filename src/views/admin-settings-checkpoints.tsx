@@ -1,5 +1,4 @@
 import { Card, CardContent, CardMenu } from '../components/card';
-import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 import {
     useAddCheckpoint,
     useCheckpoints,
@@ -7,6 +6,7 @@ import {
 } from '../api/hooks/useCheckpoint';
 
 import { CheckpointModal } from '../modal/checkpoint';
+import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/base/tableContainer';
@@ -78,19 +78,10 @@ const CheckpointView = () => {
                                 />
                             }>
                             <CardContent>
-                                <TableContainer
-                                    columns={columns({
-                                        onEditCheckpoint: (checkpointId) =>
-                                            setEditId(checkpointId),
-                                        editCheckpoint: true
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="checkpoints">
-                                    <CheckpointTable
-                                        isLoading={checkpointData.isLoading}
-                                        checkpoints={checkpointData.data ?? []}
-                                    />
-                                </TableContainer>
+                                <CheckpointTable
+                                    isLoading={checkpointData.isLoading}
+                                    checkpoints={checkpointData.data ?? []}
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

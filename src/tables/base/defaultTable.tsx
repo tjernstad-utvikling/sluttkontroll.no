@@ -254,6 +254,11 @@ export const useTableStyles = makeStyles((theme) => ({
             '&:hover': {
                 backgroundColor: '#EA998D'
             }
+        },
+        '& .slk-table-selectable': {
+            '&:hover': {
+                boxShadow: 'inset 0em 0em 0em 10em rgba(0, 0, 0, 0.3)'
+            }
         }
     },
     tools: {

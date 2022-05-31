@@ -312,7 +312,7 @@ export function GroupTable<T extends Record<string, unknown>>(
                                         !row.isGrouped && 'slk-table-selectable'
                                     } ${
                                         selectedRowIds.indexOf(row.id) > -1 &&
-                                        'slk-table-selected'
+                                        'Mui-selected'
                                     }`}>
                                     {row.cells.map((cell) => {
                                         return (

@@ -259,9 +259,6 @@ export const useTableStyles = makeStyles((theme) => ({
             '&:hover': {
                 boxShadow: 'inset 0em 0em 0em 10em rgba(0, 0, 0, 0.3)'
             }
-        },
-        '& .slk-table-selected': {
-            boxShadow: 'inset 0em 0em 0em 10em rgba(26, 77, 39, 0.3)'
         }
     },
     tools: {

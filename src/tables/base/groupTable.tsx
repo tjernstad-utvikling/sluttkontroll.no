@@ -222,7 +222,6 @@ export function GroupTable<T extends Record<string, unknown>>(
                 }
             }
 
-            console.log({ updatedSelectedRowIds, updatedSelectedRows });
             setSelectedRowIds(updatedSelectedRowIds);
             setSelectedRows(updatedSelectedRows);
         },
@@ -283,7 +282,6 @@ export function GroupTable<T extends Record<string, unknown>>(
                                 event.target as HTMLElement,
                                 rows
                             );
-                            console.log(row);
 
                             if (row) {
                                 handleRowSelection(event, row);
@@ -312,6 +310,9 @@ export function GroupTable<T extends Record<string, unknown>>(
                                     }}
                                     className={`${getRowClassName(row)} ${
                                         !row.isGrouped && 'slk-table-selectable'
+                                    } ${
+                                        selectedRowIds.indexOf(row.id) > -1 &&
+                                        'slk-table-selected'
                                     }`}>
                                     {row.cells.map((cell) => {
                                         return (

@@ -16,7 +16,6 @@ import {
 } from 'react';
 import { RowStylingEnum, useTableStyles } from './defaultTable';
 
-import Button from '@mui/material/Button';
 import { ColumnSelectRT } from './tableUtils';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -27,11 +26,10 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { TableKey } from '../../contracts/keys';
-import TableRow from '@mui/material/TableRow';
+import { TableRow } from './components/group';
+import TableRowMui from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Tooltip from '@mui/material/Tooltip';
-import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
-import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { VisuallyHidden } from '../../components/text';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -242,7 +240,7 @@ export function GroupTable<T extends Record<string, unknown>>(
                     {...getTableProps()}>
                     <TableHead>
                         {headerGroups.map((headerGroup) => (
-                            <TableRow {...headerGroup.getHeaderGroupProps()}>
+                            <TableRowMui {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map((column) => {
                                     const {
                                         title: groupTitle = '',
@@ -272,7 +270,7 @@ export function GroupTable<T extends Record<string, unknown>>(
                                         </TableCell>
                                     );
                                 })}
-                            </TableRow>
+                            </TableRowMui>
                         ))}
                     </TableHead>
                     <TableBody
@@ -297,81 +295,17 @@ export function GroupTable<T extends Record<string, unknown>>(
                         {rows.map((row) => {
                             prepareRow(row);
                             return (
-                                <TableRow
-                                    data-row-index={row.index}
-                                    data-row-is-group-row={
-                                        row.isGrouped ? 1 : undefined
+                                <TableRow<T>
+                                    row={row}
+                                    state={state}
+                                    isSelected={
+                                        selectedRowIds.indexOf(row.id) > -1
                                     }
-                                    {...row.getRowProps()}
-                                    style={{
-                                        cursor: !row.isGrouped
-                                            ? 'pointer'
-                                            : 'auto'
-                                    }}
-                                    className={`${getRowClassName(row)} ${
-                                        !row.isGrouped && 'slk-table-selectable'
-                                    } ${
-                                        selectedRowIds.indexOf(row.id) > -1 &&
-                                        'Mui-selected'
-                                    }`}>
-                                    {row.cells.map((cell) => {
-                                        return (
-                                            <TableCell
-                                                data-is-action={
-                                                    cell.column.id === 'action'
-                                                        ? 1
-                                                        : undefined
-                                                }
-                                                {...cell.getCellProps()}
-                                                aria-describedby="rowActionDescription">
-                                                {cell.isGrouped ? (
-                                                    // If it's a grouped cell, add an expander and row count
-                                                    <>
-                                                        <Button
-                                                            {...row.getToggleRowExpandedProps()}
-                                                            variant="text"
-                                                            size="small"
-                                                            startIcon={
-                                                                row.isExpanded ? (
-                                                                    <UnfoldLessIcon />
-                                                                ) : (
-                                                                    <UnfoldMoreIcon />
-                                                                )
-                                                            }>
-                                                            {cell.render(
-                                                                'Cell'
-                                                            )}{' '}
-                                                            (
-                                                            {row.subRows.length}
-                                                            )
-                                                        </Button>
-                                                    </>
-                                                ) : cell.row.isGrouped ? (
-                                                    <span></span>
-                                                ) : toRenderInCustomCell.includes(
-                                                      cell.column.id
-                                                  ) ? (
-                                                    getCustomCell ? (
-                                                        getCustomCell(
-                                                            cell.column.id,
-                                                            row,
-                                                            cell
-                                                        )
-                                                    ) : null
-                                                ) : cell.column.id ===
-                                                  'action' ? (
-                                                    getAction ? (
-                                                        getAction(row)
-                                                    ) : null
-                                                ) : instance.state.groupBy.includes(
-                                                      cell.column.id
-                                                  ) ? null : (
-                                                    cell.render('Cell')
-                                                )}
-                                            </TableCell>
-                                        );
-                                    })}
-                                </TableRow>
+                                    rowClassName={getRowClassName(row)}
+                                    getAction={getAction}
+                                    toRenderInCustomCell={toRenderInCustomCell}
+                                    getCustomCell={getCustomCell}
+                                />
                             );
                         })}
                     </TableBody>

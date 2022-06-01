@@ -79,6 +79,7 @@ const CheckpointView = () => {
                             }>
                             <CardContent>
                                 <CheckpointTable
+                                    checklists={[]}
                                     isLoading={checkpointData.isLoading}
                                     checkpoints={checkpointData.data ?? []}
                                 />

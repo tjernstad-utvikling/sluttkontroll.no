@@ -102,7 +102,9 @@ const SjekklisteEditView = () => {
                                                 checkpointData.isLoading ||
                                                 checklistData.isLoading
                                             }
-                                            // checklists={checklistData.data}
+                                            checklists={
+                                                checklistData.data ?? []
+                                            }
                                             // templateList={
                                             //     template?.skjemaTemplateCheckpoints
                                             // }

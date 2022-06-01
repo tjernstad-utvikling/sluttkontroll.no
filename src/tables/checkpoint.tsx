@@ -21,6 +21,7 @@ type Columns = {
 
 interface CheckpointTableProps {
     checkpoints: Checkpoint[];
+    checklists: Checklist[];
     editCheckpoint?: boolean;
     onEditCheckpoint?: (checkpointId: number) => void;
     children?: React.ReactNode;
@@ -28,6 +29,7 @@ interface CheckpointTableProps {
 }
 export const CheckpointTable = ({
     checkpoints,
+    checklists,
     editCheckpoint,
     onEditCheckpoint,
     children,
@@ -41,6 +43,21 @@ export const CheckpointTable = ({
             };
         });
     }, [checkpoints]);
+
+    const [selectedData, setSelectedData] = useState<Columns[]>([]);
+
+    useEffect(() => {
+        if (checklists !== undefined) {
+            setSelectedData(
+                data.filter((d) =>
+                    checklists.map((cl) => cl.checkpoint.id === d.id)
+                )
+            );
+        }
+        // if (templateList !== undefined) {
+        //     setSelection(templateList.map((tl) => tl.checkpoint.id));
+        // }
+    }, [checklists, data]);
 
     const columns: Column<Columns>[] = useMemo(
         () => [
@@ -94,15 +111,6 @@ export const CheckpointTable = ({
         </>
     );
 
-    const getRowStyling = (row: Row<Columns>): RowStylingEnum | undefined => {
-        if (
-            !row.allCells.find((c) => c.column.id === 'aktuell')?.value &&
-            !row.isGrouped
-        ) {
-            return RowStylingEnum.disabled;
-        }
-    };
-
     return (
         <GroupTable<Columns>
             tableKey={TableKey.checkpoint}
@@ -111,8 +119,9 @@ export const CheckpointTable = ({
             defaultGroupBy={['gruppe']}
             toRenderInCustomCell={[]}
             getAction={getAction}
-            getRowStyling={getRowStyling}
             isLoading={isLoading}
+            selectedRows={selectedData}
+            setSelectedRows={setSelectedData}
         />
     );
 };

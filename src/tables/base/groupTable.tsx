@@ -47,6 +47,8 @@ interface TableProperties<T extends Record<string, unknown>>
     ) => ReactElement;
     getAction?: (row: Row<T>) => ReactElement;
     getRowStyling?: (row: Row<T>) => RowStylingEnum | undefined;
+    setSelectedOriginals?: (rows: T[]) => void;
+    selectedOriginals?: T[];
     isLoading: boolean;
 }
 
@@ -63,7 +65,9 @@ export function GroupTable<T extends Record<string, unknown>>(
         toRenderInCustomCell,
         getCustomCell,
         getAction,
-        getRowStyling
+        getRowStyling,
+        setSelectedOriginals,
+        selectedOriginals
     } = props;
     const classes = useTableStyles();
 
@@ -147,8 +151,13 @@ export function GroupTable<T extends Record<string, unknown>>(
         return null;
     }
 
-    const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
-    const [selectedRows, setSelectedRows] = useState<Row<any>[]>([]);
+    const [selectedRows, setSelectedRows] = useState<Row<T>[]>([]);
+
+    useEffect(() => {
+        setSelectedRows(
+            rows.filter((r) => selectedOriginals?.map((o) => o === r.original))
+        );
+    }, [rows, selectedOriginals]);
 
     /**
      * Handle Row Selection:
@@ -160,37 +169,34 @@ export function GroupTable<T extends Record<string, unknown>>(
     const handleRowSelection = useCallback(
         (event: React.MouseEvent<HTMLTableSectionElement>, row: Row<T>) => {
             // See if row is already selected
+            const selectedRowIds = selectedRows?.map((r) => r.id) ?? [];
             const selectIndex = selectedRowIds.indexOf(row.id);
             const isSelected = selectIndex > -1;
 
-            let updatedSelectedRowIds = [...selectedRowIds];
-            let updatedSelectedRows = [...selectedRows];
+            let updatedSelectedRows = [...(selectedRows ? selectedRows : [])];
 
             if (event.ctrlKey || event.metaKey) {
                 // 1. Click + CMD/CTRL - select multiple rows
 
                 if (isSelected) {
-                    updatedSelectedRowIds.splice(selectIndex, 1);
                     updatedSelectedRows.splice(selectIndex, 1);
                 } else {
-                    updatedSelectedRowIds.push(row.id);
                     updatedSelectedRows.push(row);
                 }
             } else if (event.shiftKey) {
                 // 2. Click + SHIFT - Range Select multiple rows
 
-                if (selectedRows.length) {
+                if (selectedRows?.length) {
                     const lastSelectedRow = selectedRows[0];
                     // Calculate array indexes and reset selected rows
                     const lastIndex = rows.indexOf(lastSelectedRow);
                     const currentIndex = rows.indexOf(row);
-                    updatedSelectedRowIds = [];
+
                     updatedSelectedRows = [];
                     if (lastIndex < currentIndex) {
                         for (let i = lastIndex; i <= currentIndex; i++) {
                             const selectedRow = rows[i];
                             if (!selectedRow.isGrouped) {
-                                updatedSelectedRowIds.push(selectedRow.id);
                                 updatedSelectedRows.push(selectedRow);
                             }
                         }
@@ -198,32 +204,31 @@ export function GroupTable<T extends Record<string, unknown>>(
                         for (let i = currentIndex; i <= lastIndex; i++) {
                             const selectedRow = rows[i];
                             if (!selectedRow.isGrouped) {
-                                updatedSelectedRowIds.push(selectedRow.id);
                                 updatedSelectedRows.push(selectedRow);
                             }
                         }
                     }
                 } else {
                     // No rows previously selected, select only current row
-                    updatedSelectedRowIds = [row.id];
                     updatedSelectedRows = [row];
                 }
             } else {
                 // 3. Single Click - Select only one row
 
                 if (isSelected && updatedSelectedRows.length === 1) {
-                    updatedSelectedRowIds = [];
                     updatedSelectedRows = [];
                 } else {
-                    updatedSelectedRowIds = [row.id];
                     updatedSelectedRows = [row];
                 }
             }
-
-            setSelectedRowIds(updatedSelectedRowIds);
-            setSelectedRows(updatedSelectedRows);
+            if (setSelectedOriginals) {
+                setSelectedOriginals(
+                    updatedSelectedRows.map((r) => r.original)
+                );
+                setSelectedRows(updatedSelectedRows);
+            }
         },
-        [selectedRowIds, selectedRows, rows]
+        [selectedRows, setSelectedOriginals, rows]
     );
 
     return (
@@ -299,7 +304,9 @@ export function GroupTable<T extends Record<string, unknown>>(
                                     row={row}
                                     state={state}
                                     isSelected={
-                                        selectedRowIds.indexOf(row.id) > -1
+                                        !!selectedRows?.find(
+                                            (r) => r.id === row.id
+                                        )
                                     }
                                     rowClassName={getRowClassName(row)}
                                     getAction={getAction}

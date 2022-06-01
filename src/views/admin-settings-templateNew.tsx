@@ -51,6 +51,7 @@ const SkjemaTemplateNewView = () => {
                                 />
 
                                 <CheckpointTable
+                                    checklists={[]}
                                     isLoading={checkpointData.isLoading}
                                     checkpoints={checkpointData.data ?? []}
                                     // onSelected={(ids) =>

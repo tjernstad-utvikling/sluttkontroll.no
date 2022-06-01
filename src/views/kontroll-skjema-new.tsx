@@ -89,6 +89,7 @@ const SkjemaNewView = () => {
 
                                 {!selectFromTemplate ? (
                                     <CheckpointTable
+                                        checklists={[]}
                                         isLoading={checkpointData.isLoading}
                                         // templateList={
                                         //     template?.skjemaTemplateCheckpoints ||

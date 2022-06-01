@@ -72,6 +72,7 @@ const SkjemaTemplateNewView = () => {
                                     />
 
                                     <CheckpointTable
+                                        checklists={[]}
                                         isLoading={
                                             checkpointData.isLoading ||
                                             templateData.isLoading

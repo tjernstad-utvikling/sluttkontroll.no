@@ -1,15 +1,13 @@
-import { BaseTable, RowStylingEnum } from './base/defaultTable';
 import { Column, Row } from 'react-table';
-import { useEffect, useMemo, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
 import EditIcon from '@mui/icons-material/Edit';
 import { GroupTable } from './base/groupTable';
-import { RowAction } from './base/tableUtils';
 import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
 import { TableKey } from '../contracts/keys';
+import { useMemo } from 'react';
 
 type Columns = {
     id: number;
@@ -21,17 +19,21 @@ type Columns = {
 
 interface CheckpointTableProps {
     checkpoints: Checkpoint[];
-    checklists: Checklist[];
+    checklists?: Checklist[];
+    templateList?: SkjemaTemplateCheckpoint[];
     editCheckpoint?: boolean;
     onEditCheckpoint?: (checkpointId: number) => void;
+    onSelected?: (ids: number[]) => void;
     children?: React.ReactNode;
     isLoading: boolean;
 }
 export const CheckpointTable = ({
     checkpoints,
     checklists,
+    templateList,
     editCheckpoint,
     onEditCheckpoint,
+    onSelected,
     children,
     isLoading
 }: CheckpointTableProps) => {
@@ -44,20 +46,20 @@ export const CheckpointTable = ({
         });
     }, [checkpoints]);
 
-    const [selectedData, setSelectedData] = useState<Columns[]>([]);
-
-    useEffect(() => {
-        if (checklists !== undefined) {
-            setSelectedData(
-                data.filter((d) =>
-                    checklists.map((cl) => cl.checkpoint.id === d.id)
-                )
-            );
+    const selectedIds = useMemo(() => {
+        if (templateList !== undefined) {
+            return templateList.map((tl) => tl.checkpoint.id);
         }
-        // if (templateList !== undefined) {
-        //     setSelection(templateList.map((tl) => tl.checkpoint.id));
-        // }
-    }, [checklists, data]);
+        if (checklists !== undefined) {
+            console.log(checklists);
+            return checklists.map((cl) => cl.checkpoint.id);
+        }
+        return [];
+    }, [checklists, templateList]);
+
+    function updateSelected(rows: Row<Columns>[]) {
+        if (onSelected) onSelected(rows.map((r) => r.values.id));
+    }
 
     const columns: Column<Columns>[] = useMemo(
         () => [
@@ -120,8 +122,8 @@ export const CheckpointTable = ({
             toRenderInCustomCell={[]}
             getAction={getAction}
             isLoading={isLoading}
-            selectedRows={selectedData}
-            setSelectedRows={setSelectedData}
+            selectedIds={selectedIds}
+            setSelected={updateSelected}
         />
     );
 };

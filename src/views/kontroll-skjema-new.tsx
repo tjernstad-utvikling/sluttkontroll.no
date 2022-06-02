@@ -8,7 +8,6 @@ import Grid from '@mui/material/Grid';
 import { SelectTemplate } from '../components/template';
 import { SkjemaSchema } from '../schema/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/base/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { useNewSkjema } from '../api/hooks/useSkjema';
@@ -89,25 +88,24 @@ const SkjemaNewView = () => {
 
                                 {!selectFromTemplate ? (
                                     <CheckpointTable
-                                        checklists={[]}
                                         isLoading={checkpointData.isLoading}
-                                        // templateList={
-                                        //     template?.skjemaTemplateCheckpoints ||
-                                        //     []
-                                        // }
+                                        templateList={
+                                            template?.skjemaTemplateCheckpoints ||
+                                            []
+                                        }
                                         checkpoints={checkpointData.data ?? []}
-                                        // onSelected={(ids) =>
-                                        //     setSelected(
-                                        //         checkpointData.data
-                                        //             ? checkpointData.data?.filter(
-                                        //                   (c) =>
-                                        //                       ids.indexOf(
-                                        //                           c.id
-                                        //                       ) !== -1
-                                        //               )
-                                        //             : []
-                                        //     )
-                                        // }
+                                        onSelected={(ids) =>
+                                            setSelected(
+                                                checkpointData.data
+                                                    ? checkpointData.data?.filter(
+                                                          (c) =>
+                                                              ids.indexOf(
+                                                                  c.id
+                                                              ) !== -1
+                                                      )
+                                                    : []
+                                            )
+                                        }
                                     />
                                 ) : (
                                     <div />

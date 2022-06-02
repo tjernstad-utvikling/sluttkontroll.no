@@ -10,7 +10,6 @@ import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import { SelectTemplate } from '../components/template';
 import { SjekklisterViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/base/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
 import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { usePageStyles } from '../styles/kontroll/page';
@@ -105,24 +104,24 @@ const SjekklisteEditView = () => {
                                             checklists={
                                                 checklistData.data ?? []
                                             }
-                                            // templateList={
-                                            //     template?.skjemaTemplateCheckpoints
-                                            // }
+                                            templateList={
+                                                template?.skjemaTemplateCheckpoints
+                                            }
                                             checkpoints={
                                                 checkpointData.data ?? []
                                             }
-                                            // onSelected={(ids) =>
-                                            //     setSelected(
-                                            //         checkpointData.data
-                                            //             ? checkpointData.data?.filter(
-                                            //                   (c) =>
-                                            //                       ids.indexOf(
-                                            //                           c.id
-                                            //                       ) !== -1
-                                            //               )
-                                            //             : []
-                                            //     )
-                                            // }
+                                            onSelected={(ids) =>
+                                                setSelected(
+                                                    checkpointData.data
+                                                        ? checkpointData.data?.filter(
+                                                              (c) =>
+                                                                  ids.indexOf(
+                                                                      c.id
+                                                                  ) !== -1
+                                                          )
+                                                        : []
+                                                )
+                                            }
                                         />
                                     ) : (
                                         <div />

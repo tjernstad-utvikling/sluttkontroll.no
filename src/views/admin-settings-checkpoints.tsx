@@ -9,7 +9,6 @@ import { CheckpointModal } from '../modal/checkpoint';
 import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { TableContainer } from '../tables/base/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
@@ -79,7 +78,6 @@ const CheckpointView = () => {
                             }>
                             <CardContent>
                                 <CheckpointTable
-                                    checklists={[]}
                                     isLoading={checkpointData.isLoading}
                                     checkpoints={checkpointData.data ?? []}
                                 />

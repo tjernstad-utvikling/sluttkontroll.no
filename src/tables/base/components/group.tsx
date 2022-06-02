@@ -43,6 +43,7 @@ export function TableRow<T extends {}>({
             {row.cells.map((cell) => {
                 return (
                     <TableCell
+                        {...cell.getCellProps()}
                         toRenderInCustomCell={toRenderInCustomCell}
                         getCustomCell={getCustomCell}
                         cell={cell}

@@ -47,8 +47,8 @@ interface TableProperties<T extends Record<string, unknown>>
     ) => ReactElement;
     getAction?: (row: Row<T>) => ReactElement;
     getRowStyling?: (row: Row<T>) => RowStylingEnum | undefined;
-    setSelectedOriginals?: (rows: T[]) => void;
-    selectedOriginals?: T[];
+    setSelected?: (rows: Row<T>[]) => void;
+    selectedIds?: number[];
     isLoading: boolean;
 }
 
@@ -66,8 +66,8 @@ export function GroupTable<T extends Record<string, unknown>>(
         getCustomCell,
         getAction,
         getRowStyling,
-        setSelectedOriginals,
-        selectedOriginals
+        setSelected,
+        selectedIds
     } = props;
     const classes = useTableStyles();
 
@@ -154,10 +154,16 @@ export function GroupTable<T extends Record<string, unknown>>(
     const [selectedRows, setSelectedRows] = useState<Row<T>[]>([]);
 
     useEffect(() => {
-        setSelectedRows(
-            rows.filter((r) => selectedOriginals?.map((o) => o === r.original))
-        );
-    }, [rows, selectedOriginals]);
+        if (selectedIds)
+            setSelectedRows(
+                rows.filter((r) => {
+                    if (r.values.hasOwnProperty('id')) {
+                        return selectedIds.find((o) => o === r.values.id);
+                    }
+                    return false;
+                })
+            );
+    }, [rows, selectedIds]);
 
     /**
      * Handle Row Selection:
@@ -221,14 +227,11 @@ export function GroupTable<T extends Record<string, unknown>>(
                     updatedSelectedRows = [row];
                 }
             }
-            if (setSelectedOriginals) {
-                setSelectedOriginals(
-                    updatedSelectedRows.map((r) => r.original)
-                );
-                setSelectedRows(updatedSelectedRows);
-            }
+
+            setSelectedRows(updatedSelectedRows);
+            if (setSelected) setSelected(updatedSelectedRows);
         },
-        [selectedRows, setSelectedOriginals, rows]
+        [selectedRows, setSelected, rows]
     );
 
     return (
@@ -301,6 +304,7 @@ export function GroupTable<T extends Record<string, unknown>>(
                             prepareRow(row);
                             return (
                                 <TableRow<T>
+                                    {...row.getRowProps()}
                                     row={row}
                                     state={state}
                                     isSelected={

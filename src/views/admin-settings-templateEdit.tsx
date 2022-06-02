@@ -9,7 +9,6 @@ import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
-import { TableContainer } from '../tables/base/tableContainer';
 import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { usePageStyles } from '../styles/kontroll/page';
 
@@ -72,28 +71,27 @@ const SkjemaTemplateNewView = () => {
                                     />
 
                                     <CheckpointTable
-                                        checklists={[]}
                                         isLoading={
                                             checkpointData.isLoading ||
                                             templateData.isLoading
                                         }
-                                        // templateList={
-                                        //     templateData.data
-                                        //         ?.skjemaTemplateCheckpoints
-                                        // }
+                                        templateList={
+                                            templateData.data
+                                                ?.skjemaTemplateCheckpoints
+                                        }
                                         checkpoints={checkpointData.data ?? []}
-                                        // onSelected={(ids) =>
-                                        //     setSelected(
-                                        //         checkpointData.data
-                                        //             ? checkpointData.data?.filter(
-                                        //                   (c) =>
-                                        //                       ids.indexOf(
-                                        //                           c.id
-                                        //                       ) !== -1
-                                        //               )
-                                        //             : []
-                                        //     )
-                                        // }
+                                        onSelected={(ids) =>
+                                            setSelected(
+                                                checkpointData.data
+                                                    ? checkpointData.data?.filter(
+                                                          (c) =>
+                                                              ids.indexOf(
+                                                                  c.id
+                                                              ) !== -1
+                                                      )
+                                                    : []
+                                            )
+                                        }
                                     />
                                 </>
                             </CardContent>

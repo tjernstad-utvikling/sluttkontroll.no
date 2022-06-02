@@ -6,11 +6,16 @@ import {
 } from '../components/clipboard';
 import { AvvikTable, columns, defaultColumns } from '../tables/avvik';
 import { Card, CardContent, CardMenu } from '../components/card';
+import {
+    useAvvik,
+    useCloseAvvik,
+    useDeleteAvvik,
+    useOpenAvvik
+} from '../api/hooks/useAvvik';
 import { useEffect, useState } from 'react';
 import { useParams, useRouteMatch } from 'react-router-dom';
 
 import AddIcon from '@mui/icons-material/Add';
-import { Avvik } from '../contracts/avvikApi';
 import { AvvikCommentModal } from '../modal/avvikComment';
 import { AvvikEditModal } from '../modal/avvik';
 import { AvvikGrid } from '../components/avvik';
@@ -27,13 +32,13 @@ import { StorageKeys } from '../contracts/keys';
 import { TableContainer } from '../tables/base/tableContainer';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import { getAvvikReport } from '../api/avvikApi';
-import { useAvvik } from '../data/avvik';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useKontroll } from '../data/kontroll';
+import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useSkjemaer } from '../api/hooks/useSkjema';
 
 enum Modals {
     utbedrer,
@@ -46,7 +51,6 @@ const AvvikView = () => {
 
     const { url } = useRouteMatch();
 
-    const [_avvik, setAvvik] = useState<Array<Avvik>>([]);
     const [selected, setSelected] = useState<number[]>([]);
     const [selectedFromGrid, setSelectedFromGrid] = useState<boolean>(false);
 
@@ -64,58 +68,36 @@ const AvvikView = () => {
 
     const [editId, setEditId] = useState<number>();
 
-    const {
-        state: { skjemaer, kontroller },
-        loadKontroller
-    } = useKontroll();
+    const kontrollData = useKontrollById(Number(kontrollId));
+
+    const skjemaData = useSkjemaer({ kontrollId: Number(kontrollId) });
 
     const { confirm } = useConfirm();
-    const {
-        state: { avvik },
-        deleteAvvik,
-        openAvvik,
-        closeAvvik
-    } = useAvvik();
 
-    useEffectOnce(() => {
-        loadKontroller();
+    const avvikData = useAvvik({
+        includeClosed: showAll,
+        ...(checklistId
+            ? { checklistId: Number(checklistId) }
+            : skjemaId
+            ? { skjemaId: Number(skjemaId) }
+            : kontrollId
+            ? { kontrollId: Number(kontrollId) }
+            : {})
     });
-
-    useEffect(() => {
-        if (avvik !== undefined) {
-            let filteredAvvik;
-            if (checklistId !== undefined) {
-                filteredAvvik = avvik.filter(
-                    (a) => a.checklist.id === Number(checklistId)
-                );
-            } else if (skjemaId !== undefined) {
-                filteredAvvik = avvik.filter(
-                    (a) => a.checklist.skjema.id === Number(skjemaId)
-                );
-            } else {
-                filteredAvvik = avvik.filter(
-                    (a) => a.checklist.skjema.kontroll.id === Number(kontrollId)
-                );
-            }
-
-            if (!showAll) {
-                setAvvik(filteredAvvik.filter((a) => a.status !== 'lukket'));
-            } else {
-                setAvvik(filteredAvvik);
-            }
-        }
-    }, [avvik, checklistId, kontrollId, showAll, skjemaId]);
+    const deleteMutation = useDeleteAvvik();
 
     const askToDeleteAvvik = async (avvikId: number) => {
         const isConfirmed = await confirm(`Slette avvikID: ${avvikId}?`);
 
         if (isConfirmed) {
-            deleteAvvik(avvikId);
+            await deleteMutation.mutateAsync({
+                avvikId
+            });
         }
     };
 
     const close = async (avvikId: number) => {
-        const avvikToClose = avvik?.find((a) => a.id === avvikId);
+        const avvikToClose = avvikData.data?.find((a) => a.id === avvikId);
         if (avvikToClose !== undefined) {
             setSelected([avvikToClose.id]);
             setModalOpen(Modals.comment);
@@ -183,12 +165,38 @@ const AvvikView = () => {
     }, []);
 
     const onSelectForClipboard = (ids: number[]) => {
-        selectedAvvik(
-            _avvik.filter((avvik) => {
-                return ids.includes(avvik.id);
-            })
-        );
+        if (avvikData.data)
+            selectedAvvik(
+                avvikData.data?.filter((avvik) => {
+                    return ids.includes(avvik.id);
+                })
+            );
     };
+    const closeAvvikMutation = useCloseAvvik({ isFromDetailsPage: false });
+
+    async function closeAvvik(selectedAvvik: number[], kommentar: string) {
+        try {
+            await closeAvvikMutation.mutateAsync({
+                avvikList: selectedAvvik,
+                kommentar
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+    const openAvvikMutation = useOpenAvvik({ isFromDetailsPage: false });
+
+    async function openAvvik(avvikId: number) {
+        try {
+            await openAvvikMutation.mutateAsync({
+                avvikId
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
 
     return (
         <>
@@ -250,93 +258,87 @@ const AvvikView = () => {
                                 />
                             }>
                             <CardContent>
-                                {skjemaer !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({
-                                            kontroller: kontroller ?? [],
-                                            skjemaer: skjemaer ?? [],
-                                            url,
-                                            deleteSkjema: askToDeleteAvvik,
-                                            edit: setEditId,
-                                            open: openAvvik,
-                                            close
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="avvik">
-                                        {showTable ? (
-                                            <AvvikTable
-                                                avvik={_avvik ?? []}
-                                                selected={selected}
-                                                onSelected={(avvik) => {
-                                                    setSelected(avvik);
-                                                    onSelectForClipboard(avvik);
-                                                    setSelectedFromGrid(false);
-                                                }}
-                                                skjemaClipboard={
-                                                    skjemaClipboard
-                                                }
-                                                leftAction={
-                                                    checklistId !==
-                                                        undefined && (
-                                                        <PasteButton
-                                                            clipboardHas={
-                                                                clipboardHasAvvik
+                                <TableContainer
+                                    columns={columns({
+                                        kontroller: kontrollData.data
+                                            ? [kontrollData.data]
+                                            : [],
+                                        skjemaer: skjemaData.data ?? [],
+                                        url,
+                                        deleteSkjema: askToDeleteAvvik,
+                                        edit: setEditId,
+                                        open: openAvvik,
+                                        close
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="avvik">
+                                    {showTable ? (
+                                        <AvvikTable
+                                            avvik={avvikData.data ?? []}
+                                            selected={selected}
+                                            onSelected={(avvik) => {
+                                                setSelected(avvik);
+                                                onSelectForClipboard(avvik);
+                                                setSelectedFromGrid(false);
+                                            }}
+                                            isLoading={avvikData.isLoading}
+                                            skjemaClipboard={skjemaClipboard}
+                                            leftAction={
+                                                checklistId !== undefined && (
+                                                    <PasteButton
+                                                        clipboardHas={
+                                                            clipboardHasAvvik
+                                                        }
+                                                        options={{
+                                                            avvikPaste: {
+                                                                checklistId:
+                                                                    Number(
+                                                                        checklistId
+                                                                    ),
+                                                                avvik: avvikToPast
                                                             }
-                                                            options={{
-                                                                avvikPaste: {
-                                                                    checklistId:
-                                                                        Number(
-                                                                            checklistId
-                                                                        ),
-                                                                    avvik: avvikToPast
-                                                                }
-                                                            }}
-                                                        />
-                                                    )
-                                                }
-                                            />
-                                        ) : (
-                                            <AvvikGrid
-                                                deleteAvvik={askToDeleteAvvik}
-                                                edit={setEditId}
-                                                open={openAvvik}
-                                                close={close}
-                                                avvik={_avvik ?? []}
-                                                selected={selected}
-                                                setSelected={(a) => {
-                                                    setSelected(a);
-                                                    onSelectForClipboard(a);
-                                                    setSelectedFromGrid(true);
-                                                }}
-                                                selectedFromGrid={
-                                                    selectedFromGrid
-                                                }
-                                                url={url}
-                                                leftAction={
-                                                    checklistId !==
-                                                        undefined && (
-                                                        <PasteButton
-                                                            clipboardHas={
-                                                                clipboardHasAvvik
+                                                        }}
+                                                    />
+                                                )
+                                            }
+                                        />
+                                    ) : (
+                                        <AvvikGrid
+                                            deleteAvvik={askToDeleteAvvik}
+                                            edit={setEditId}
+                                            open={openAvvik}
+                                            close={close}
+                                            avvik={avvikData.data ?? []}
+                                            isLoading={avvikData.isLoading}
+                                            selected={selected}
+                                            setSelected={(a) => {
+                                                setSelected(a);
+                                                onSelectForClipboard(a);
+                                                setSelectedFromGrid(true);
+                                            }}
+                                            selectedFromGrid={selectedFromGrid}
+                                            url={url}
+                                            leftAction={
+                                                checklistId !== undefined && (
+                                                    <PasteButton
+                                                        clipboardHas={
+                                                            clipboardHasAvvik
+                                                        }
+                                                        options={{
+                                                            avvikPaste: {
+                                                                checklistId:
+                                                                    Number(
+                                                                        checklistId
+                                                                    ),
+                                                                avvik: avvikToPast
                                                             }
-                                                            options={{
-                                                                avvikPaste: {
-                                                                    checklistId:
-                                                                        Number(
-                                                                            checklistId
-                                                                        ),
-                                                                    avvik: avvikToPast
-                                                                }
-                                                            }}
-                                                        />
-                                                    )
-                                                }
-                                            />
-                                        )}
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster avvik</div>
-                                )}
+                                                        }}
+                                                    />
+                                                )
+                                            }
+                                        />
+                                    )}
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -358,6 +360,7 @@ const AvvikView = () => {
                 open={modalOpen === Modals.utbedrer}
                 close={() => setModalOpen(undefined)}
                 selectedAvvik={selected}
+                kontrollId={Number(kontrollId)}
             />
             <AvvikCommentModal
                 open={modalOpen === Modals.comment}

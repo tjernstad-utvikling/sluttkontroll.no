@@ -4,44 +4,40 @@ import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useEffect } from 'react';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 interface AvvikUtbedrereSchemaProps {
     selectedAvvik: number[];
     onSubmit: (utbedrer: Array<User> | null) => Promise<boolean>;
+    kontrollId: number;
 }
 export const AvvikUtbedrereSchema = ({
     selectedAvvik,
-    onSubmit
+    onSubmit,
+    kontrollId
 }: AvvikUtbedrereSchemaProps): JSX.Element => {
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
+    const usersData = useUsers();
 
-    const {
-        state: { avvik }
-    } = useAvvik();
-
+    const avvikData = useAvvik({
+        includeClosed: true,
+        kontrollId
+    });
     interface Option {
         value: User;
         label: string;
     }
-    const [userOptions, setUserOptions] = useState<Array<Option>>();
+    const [userOptions, setUserOptions] = useState<Option[]>();
 
     useEffect(() => {
-        if (users !== undefined) {
-            setUserOptions(users.map((u) => ({ value: u, label: u.name })));
+        if (usersData.data !== undefined) {
+            setUserOptions(
+                usersData.data.map((u) => ({ value: u, label: u.name }))
+            );
         }
-    }, [users]);
-
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    }, [usersData.data]);
 
     if (userOptions !== undefined) {
         return (
@@ -49,7 +45,7 @@ export const AvvikUtbedrereSchema = ({
                 initialValues={{
                     utbedrer:
                         selectedAvvik[0] !== undefined
-                            ? avvik
+                            ? avvikData.data
                                   ?.find(
                                       (avvik) => selectedAvvik[0] === avvik.id
                                   )
@@ -73,7 +69,7 @@ export const AvvikUtbedrereSchema = ({
                 {({ isSubmitting, setFieldValue, values }) => {
                     return (
                         <Form>
-                            {users && (
+                            {usersData.data && (
                                 <>
                                     <Typography>
                                         Alle valgte avvik vil få de samme

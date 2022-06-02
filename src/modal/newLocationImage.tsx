@@ -8,7 +8,7 @@ import { NewImageCard } from '../components/avvik';
 import { Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import { useClient } from '../data/klient';
+import { useAddLocationImage } from '../api/hooks/useKlient';
 import { useState } from 'react';
 
 interface NewImageModalProps {
@@ -26,12 +26,16 @@ export function NewImageModal({
     const classes = useStyles();
     const [images, setImages] = useState<File[]>([]);
 
-    const { addLocationImage } = useClient();
-
+    const addLocationImageMutation = useAddLocationImage();
     const saveNewImages = async () => {
-        if (
-            await addLocationImage({ image: images[0], klientId, locationId })
-        ) {
+        try {
+            await addLocationImageMutation.mutateAsync({
+                image: images[0],
+                locationId
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
             setImages([]);
             close();
         }

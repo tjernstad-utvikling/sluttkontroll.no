@@ -21,6 +21,7 @@ export const SkjemaTemplateSchema = ({
             initialValues={{
                 name: template?.name || ''
             }}
+            enableReinitialize
             validationSchema={Yup.object({
                 name: Yup.string().required('Navn er påkrevd')
             })}

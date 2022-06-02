@@ -9,28 +9,24 @@ export const PrivateRoute: React.FC<{
     exact?: boolean;
     requiredRole: Roles[];
 }> = ({ children, path, exact, requiredRole }) => {
-    const { user, hasCheckedLocal, userHasRole } = useAuth();
+    const { userHasRole } = useAuth();
 
-    if (hasCheckedLocal) {
-        return (
-            <Route
-                path={path}
-                exact={exact}
-                render={({ location }) =>
-                    user && userHasRole(requiredRole) ? (
-                        children
-                    ) : (
-                        <Redirect
-                            to={{
-                                pathname: '/',
-                                state: { from: location }
-                            }}
-                        />
-                    )
-                }
-            />
-        );
-    } else {
-        return <div></div>;
-    }
+    return (
+        <Route
+            path={path}
+            exact={exact}
+            render={({ location }) =>
+                userHasRole(requiredRole) ? (
+                    children
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: '/',
+                            state: { from: location }
+                        }}
+                    />
+                )
+            }
+        />
+    );
 };

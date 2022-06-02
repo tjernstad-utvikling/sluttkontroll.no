@@ -1,22 +1,20 @@
 import { AttachmentTable, columns, defaultColumns } from '../tables/attachment';
 import { Card, CardContent, CardMenu } from '../components/card';
-import { useEffect, useState } from 'react';
+import {
+    useAttachments,
+    useDeleteAttachment
+} from '../api/hooks/useAttachments';
 
-import { Attachment } from '../contracts/attachmentApi';
 import { AttachmentModal } from '../modal/attachment';
 import { AttachmentViewerModal } from '../modal/attachmentViewer';
 import { AttachmentsViewParams } from '../contracts/navigation';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { Kontroll } from '../contracts/kontrollApi';
 import { TableContainer } from '../tables/base/tableContainer';
-import { deleteAttachmentFile } from '../api/attachmentApi';
 import { useConfirm } from '../hooks/useConfirm';
-import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 
 const AttachmentsView = () => {
     const { classes } = usePageStyles();
@@ -28,31 +26,15 @@ const AttachmentsView = () => {
         number | undefined
     >();
 
-    const [_kontroll, setKontroll] = useState<Kontroll>();
-
     const { confirm } = useConfirm();
 
-    const { enqueueSnackbar } = useSnackbar();
+    const attachmentsData = useAttachments({ kontrollId: Number(kontrollId) });
 
-    const {
-        state: { kontroller },
-        loadKontroller,
-        updateKontroll
-    } = useKontroll();
-
-    useEffectOnce(() => {
-        loadKontroller();
-    });
-
-    useEffect(() => {
-        if (kontroller) {
-            setKontroll(kontroller.find((k) => k.id === Number(kontrollId)));
-        }
-    }, [kontroller, kontrollId]);
+    const deleteAttachmentMutation = useDeleteAttachment();
 
     const askToDeleteAttachment = async (attachmentId: number) => {
-        if (_kontroll) {
-            const attachment = _kontroll.attachments.find(
+        if (attachmentsData.data) {
+            const attachment = attachmentsData.data.find(
                 (a) => a.id === attachmentId
             );
             const isConfirmed = await confirm(
@@ -60,26 +42,15 @@ const AttachmentsView = () => {
             );
 
             if (isConfirmed) {
-                const { status } = await deleteAttachmentFile(attachmentId);
-                if (status === 204) {
-                    enqueueSnackbar('Vedlegg er slettet', {
-                        variant: 'success'
+                try {
+                    await deleteAttachmentMutation.mutateAsync({
+                        attachmentId,
+                        kontrollId: Number(kontrollId)
                     });
-                    const attachments = _kontroll.attachments.filter(
-                        (a) => a.id !== attachment?.id
-                    );
-                    updateKontroll({ ..._kontroll, attachments });
+                } catch (error) {
+                    console.log(error);
                 }
             }
-        }
-    };
-
-    const addAttachments = (attachment: Attachment) => {
-        if (_kontroll) {
-            updateKontroll({
-                ..._kontroll,
-                attachments: [..._kontroll.attachments, attachment]
-            });
         }
     };
 
@@ -105,37 +76,32 @@ const AttachmentsView = () => {
                                 />
                             }>
                             <CardContent>
-                                {_kontroll !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({
-                                            onDelete: askToDeleteAttachment,
-                                            openFile: (id) =>
-                                                setKontrollViewAttachmentId(id)
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="attachment">
-                                        <AttachmentTable
-                                            attachments={_kontroll.attachments}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster ...</div>
-                                )}
+                                <TableContainer
+                                    columns={columns({
+                                        onDelete: askToDeleteAttachment,
+                                        openFile: (id) =>
+                                            setKontrollViewAttachmentId(id)
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="attachment">
+                                    <AttachmentTable
+                                        attachments={attachmentsData.data ?? []}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>
                 </Grid>
             </Container>
             <AttachmentModal
-                updateAttachmentList={addAttachments}
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
             />
-            {_kontroll?.attachments && (
+            {attachmentsData.data && (
                 <AttachmentViewerModal
                     attachmentId={kontrollViewAttachmentId}
                     close={() => setKontrollViewAttachmentId(undefined)}
-                    attachments={_kontroll.attachments}
+                    attachments={attachmentsData.data}
                 />
             )}
         </div>

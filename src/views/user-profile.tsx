@@ -1,19 +1,22 @@
 import { Card, CardContent } from '../components/card';
+import { useCurrentUser, useUpdateCurrentUser } from '../api/hooks/useUsers';
 
 import { CertificateList } from '../components/certificate';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { Roles } from '../contracts/userApi';
-import { Sertifikat } from '../contracts/certificateApi';
 import { UserProfileSchema } from '../schema/userProfile';
 import { useAuth } from '../hooks/useAuth';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
 
 const ProfileView = () => {
     const { classes } = usePageStyles();
 
-    const { user, updateUser, updatePassword, userHasRole } = useAuth();
+    const { updatePassword, userHasRole } = useAuth();
+
+    const currentUserData = useCurrentUser();
+
+    const currentUserMutation = useUpdateCurrentUser();
 
     const handleUpdateUser = async (
         name: string,
@@ -23,26 +26,28 @@ const ProfileView = () => {
         changePassword: boolean,
         roles: Roles[] | undefined
     ) => {
-        if (changePassword) {
-            if (await updatePassword(password)) {
+        if (currentUserData.data) {
+            if (changePassword) {
+                if (await updatePassword(password)) {
+                }
             }
-        }
-        if (await updateUser(name, email, phone, roles)) {
-            return true;
+            try {
+                await currentUserMutation.mutateAsync({
+                    name,
+                    email,
+                    phone,
+                    roles:
+                        roles !== undefined ? roles : currentUserData.data.roles
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
+                return true;
+            }
         }
         return false;
     };
 
-    const { updateUserInState } = useUser();
-
-    const handleAddCertificateToUser = (certificate: Sertifikat) => {
-        if (user) {
-            updateUserInState({
-                ...user,
-                sertifikater: [...user.sertifikater, certificate]
-            });
-        }
-    };
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -51,11 +56,11 @@ const ProfileView = () => {
                     <Grid item xs={12}>
                         <Card title="Profil">
                             <CardContent>
-                                {user !== undefined && (
+                                {currentUserData.data !== undefined && (
                                     <div style={{ padding: 15 }}>
                                         <UserProfileSchema
                                             onSubmit={handleUpdateUser}
-                                            user={user}
+                                            user={currentUserData.data}
                                         />
                                     </div>
                                 )}
@@ -64,10 +69,7 @@ const ProfileView = () => {
                     </Grid>
                     {userHasRole([Roles.ROLE_ADMIN, Roles.ROLE_KONTROLL]) && (
                         <Grid item xs={12}>
-                            <CertificateList
-                                addCertificate={handleAddCertificateToUser}
-                                user={user}
-                            />
+                            <CertificateList user={currentUserData.data} />
                         </Grid>
                     )}
                 </Grid>

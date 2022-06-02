@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useAddCalibration, useInstrument } from '../api/hooks/useInstrument';
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Button from '@mui/material/Button';
@@ -8,15 +8,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { DropZone } from '../components/uploader';
-import { Instrument } from '../contracts/instrumentApi';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 import nbLocale from 'date-fns/locale/nb';
-import { useInstrument } from '../data/instrument';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 
 interface InstrumentCalibrationModalProps {
     regId: number | undefined;
@@ -26,12 +25,6 @@ export function InstrumentCalibrationModal({
     close,
     regId
 }: InstrumentCalibrationModalProps) {
-    const {
-        state: { instruments },
-        addCalibration
-    } = useInstrument();
-
-    const [instrument, setInstrument] = useState<Instrument>();
     const [newCalibrationDate, setNewCalibrationDate] = useState<Date | null>(
         null
     );
@@ -39,25 +32,21 @@ export function InstrumentCalibrationModal({
 
     const { enqueueSnackbar } = useSnackbar();
 
-    useEffect(() => {
-        if (regId !== undefined) {
-            setInstrument(instruments?.find((i) => i.id === regId));
-        }
-    }, [regId, instruments]);
+    const instrumentData = useInstrument({ instrumentId: regId });
+
+    const calibrationMutation = useAddCalibration();
 
     const saveCalibration = async () => {
-        if (
-            instrument !== undefined &&
-            newCalibrationDate !== null &&
-            newCalibrationDate !== undefined
-        ) {
-            if (
-                await addCalibration(
-                    instrument.id,
-                    format(newCalibrationDate, 'yyyy-MM-dd'),
-                    files[0]
-                )
-            ) {
+        if (instrumentData.data && newCalibrationDate && newCalibrationDate) {
+            try {
+                await calibrationMutation.mutateAsync({
+                    instrumentId: instrumentData.data.id,
+                    kalibrertDate: format(newCalibrationDate, 'yyyy-MM-dd'),
+                    sertifikatFile: files[0]
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 close();
             }
         } else {
@@ -76,7 +65,7 @@ export function InstrumentCalibrationModal({
             onClose={close}
             aria-labelledby="add-Picture-Dialog">
             <DialogTitle id="add-Picture-Dialog">
-                Registrer kalibrering for {instrument?.name}
+                Registrer kalibrering for {instrumentData.data?.name}
             </DialogTitle>
             <DialogContent>
                 <LocalizationProvider

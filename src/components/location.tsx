@@ -9,7 +9,7 @@ import { LocationImage } from './image';
 import { RowAction } from '../tables/base/tableUtils';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../theme/makeStyles';
-import { useClient } from '../data/klient';
+import { useDeleteLocationImage } from '../api/hooks/useKlient';
 
 interface LocationImageCardProps {
     location: Location;
@@ -23,17 +23,17 @@ export const LocationImageCard = ({
 }: LocationImageCardProps) => {
     const { classes } = useStyles();
 
-    const { saveDeleteLocationImage } = useClient();
+    const deleteLocationImageMutation = useDeleteLocationImage();
 
     async function deleteImage() {
         if (location.locationImage) {
-            if (
-                await saveDeleteLocationImage({
+            try {
+                await deleteLocationImageMutation.mutateAsync({
                     imageId: location.locationImage.id,
-                    locationId: location.id,
-                    klientId
-                })
-            ) {
+                    locationId: location.id
+                });
+            } catch (error) {
+                console.log(error);
             }
         }
     }

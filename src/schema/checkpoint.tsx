@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import { TextField } from '../components/input';
-import { checkpointGroupOptions } from '../api/checkpointApi';
+import { checkpointGroupOptions } from '../api/hooks/useCheckpoint';
 
 interface CheckpointSchemaProps {
     checkpoint?: Checkpoint | undefined;

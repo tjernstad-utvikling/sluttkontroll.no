@@ -5,6 +5,7 @@ import {
 } from '../components/clipboard';
 import { Card, CardContent, CardMenu } from '../components/card';
 import { SjekklisteTable, SjekklisteValueGetter } from '../tables/sjekkliste';
+import { useChecklists, useToggleApplicable } from '../api/hooks/useChecklist';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 
@@ -12,10 +13,8 @@ import { Checklist } from '../contracts/kontrollApi';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SjekklisterViewParams } from '../contracts/navigation';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClipBoard } from '../data/clipboard';
-import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SjekklisterView = () => {
@@ -25,38 +24,44 @@ const SjekklisterView = () => {
     const history = useHistory();
     let { url } = useRouteMatch();
 
-    const [_checklists, setChecklists] = useState<Array<Checklist>>([]);
-    const {
-        state: { checklists },
-        loadKontroller,
-        toggleAktuellChecklist
-    } = useKontroll();
+    const [_checklists, setChecklists] = useState<Checklist[]>([]);
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const checklistData = useChecklists({
+        skjemaId: Number(skjemaId)
+    });
 
-    useEffectOnce(() => {
-        loadKontroller();
+    const avvikData = useAvvik({
+        includeClosed: true,
+        skjemaId: Number(skjemaId)
     });
 
     useEffect(() => {
-        if (checklists !== undefined) {
+        if (checklistData.data !== undefined) {
             setChecklists(
-                checklists
-                    .filter((c) => c.skjema.id === Number(skjemaId))
-                    .sort((a, b) =>
-                        String(
-                            SjekklisteValueGetter(a).prosedyreNr()
-                        ).localeCompare(
-                            String(SjekklisteValueGetter(b).prosedyreNr()),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
+                checklistData.data.sort((a, b) =>
+                    String(
+                        SjekklisteValueGetter(a).prosedyreNr()
+                    ).localeCompare(
+                        String(SjekklisteValueGetter(b).prosedyreNr()),
+                        undefined,
+                        { numeric: true, sensitivity: 'base' }
                     )
+                )
             );
         }
-    }, [checklists, skjemaId]);
+    }, [checklistData.data]);
+
+    const toggleMutation = useToggleApplicable();
+
+    async function toggleAktuellChecklist(checklistId: number) {
+        const checklist = checklistData.data?.find((c) => c.id === checklistId);
+        if (!checklist) return;
+
+        await toggleMutation.mutateAsync({
+            applicable: !checklist.aktuell,
+            checklist
+        });
+    }
 
     /**
      * Clipboard
@@ -91,18 +96,18 @@ const SjekklisterView = () => {
                                 />
                             }>
                             <CardContent>
-                                {checklists !== undefined ? (
-                                    <SjekklisteTable
-                                        avvikToPast={avvikToPast}
-                                        clipboardHasAvvik={clipboardHasAvvik}
-                                        toggleAktuell={toggleAktuellChecklist}
-                                        avvik={avvik ?? []}
-                                        checklists={_checklists}
-                                        url={url}
-                                    />
-                                ) : (
-                                    <div>Laster skjemaer</div>
-                                )}
+                                <SjekklisteTable
+                                    avvikToPast={avvikToPast}
+                                    clipboardHasAvvik={clipboardHasAvvik}
+                                    toggleAktuell={toggleAktuellChecklist}
+                                    avvik={avvikData.data ?? []}
+                                    checklists={_checklists}
+                                    url={url}
+                                    isLoading={
+                                        checklistData.isLoading ||
+                                        avvikData.isLoading
+                                    }
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

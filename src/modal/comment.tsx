@@ -1,10 +1,12 @@
+import { useKontrollById, useUpdateKontroll } from '../api/hooks/useKontroll';
+import { useSkjemaById, useUpdateSkjema } from '../api/hooks/useSkjema';
+
 import Button from '@mui/material/Button';
 import { CommentSchema } from '../schema/comment';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useKontroll } from '../data/kontroll';
 import { useMemo } from 'react';
 
 interface CommentModalProps {
@@ -20,38 +22,47 @@ export const CommentModal = ({
     open,
     close
 }: CommentModalProps): JSX.Element => {
-    const {
-        state: { kontroller, skjemaer },
-        updateKontroll,
-        updateSkjema
-    } = useKontroll();
+    const kontrollData = useKontrollById(kontrollId);
+
+    const skjemaData = useSkjemaById(skjemaId);
+
+    const updateMutation = useUpdateKontroll();
+
+    const updateSkjemaMutation = useUpdateSkjema();
 
     const kommentar = useMemo(() => {
         if (kontrollId) {
-            const kontroll = kontroller?.find((k) => k.id === kontrollId);
-            return kontroll ? kontroll.kommentar : '';
+            return kontrollData.data ? kontrollData.data.kommentar : '';
         }
         if (skjemaId) {
-            const skjema = skjemaer?.find((s) => s.id === skjemaId);
-            return skjema ? skjema.kommentar : '';
+            return skjemaData.data ? skjemaData.data.kommentar : '';
         }
         return '';
-    }, [kontrollId, kontroller, skjemaId, skjemaer]);
+    }, [kontrollId, skjemaId, kontrollData.data, skjemaData.data]);
 
     async function handleCommentSave(kommentar: string) {
         if (kontrollId) {
-            const kontroll = kontroller?.find((k) => k.id === kontrollId);
-            if (kontroll) {
-                if (await updateKontroll({ ...kontroll, kommentar })) {
+            if (kontrollData.data) {
+                try {
+                    await updateMutation.mutateAsync({
+                        ...kontrollData.data,
+                        kommentar
+                    });
+                } catch (error) {
+                } finally {
                     close();
                     return true;
                 }
             }
         }
         if (skjemaId) {
-            const skjema = skjemaer?.find((s) => s.id === skjemaId);
-            if (skjema) {
-                if (await updateSkjema({ ...skjema, kommentar })) {
+            if (skjemaData.data) {
+                try {
+                    await updateSkjemaMutation.mutateAsync({
+                        skjema: { ...skjemaData.data, kommentar }
+                    });
+                } catch (error) {
+                } finally {
                     close();
                     return true;
                 }

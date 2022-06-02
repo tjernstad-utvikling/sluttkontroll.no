@@ -8,51 +8,55 @@ import {
     defaultColumns
 } from '../tables/calibration';
 import { Card, CardContent } from '../components/card';
-import { Instrument, Kalibrering } from '../contracts/instrumentApi';
 import {
-    getCalibrationCertificate,
-    getCalibrationsByInstrument
-} from '../api/instrumentApi';
-import { useEffect, useState } from 'react';
+    useCalibrationByInstrument,
+    useInstrument
+} from '../api/hooks/useInstrument';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationViewParams } from '../contracts/navigation';
+import { Kalibrering } from '../contracts/instrumentApi';
 import { PdfViewer } from '../components/viewer';
 import { TableContainer } from '../tables/base/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
-import { useInstrument } from '../data/instrument';
+import { getCalibrationCertificate } from '../api/instrumentApi';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 
 const InstrumentsView = () => {
     const { classes } = usePageStyles();
     const { instrumentId } = useParams<InstrumentCalibrationViewParams>();
 
-    const [_calibrations, setCalibrations] = useState<Kalibrering[]>();
-    const [loadedInstrumentId, setLoadedInstrumentId] = useState<number>();
-    const [instrument, setInstrument] = useState<Instrument>();
+    const instrumentData = useInstrument({
+        instrumentId: Number(instrumentId)
+    });
+
+    const calibrationData = useCalibrationByInstrument({
+        instrumentId: Number(instrumentId)
+    });
 
     const [objectUrl, setObjectUrl] = useState<string | undefined>(undefined);
     const [openCertificateId, setOpenCertificateId] = useState<number>();
 
-    const openCertificate = async (calibrationId: number) => {
+    const openCertificate = async (calibration: Kalibrering) => {
         if (objectUrl !== undefined) {
             URL.revokeObjectURL(objectUrl);
         }
         setObjectUrl(undefined);
         setOpenCertificateId(undefined);
         try {
-            const cal = _calibrations?.find((c) => c.id === calibrationId);
-            if (!cal) return;
-            const response = await getCalibrationCertificate(cal);
+            const response = await getCalibrationCertificate(
+                calibration.kalibreringSertifikat.fileName
+            );
 
             if (response.status === 200 && response.data !== undefined) {
                 const blob = new Blob([response.data]);
 
                 setObjectUrl(URL.createObjectURL(blob));
-                setOpenCertificateId(calibrationId);
+                setOpenCertificateId(calibration.id);
             }
             if (response.status === 404) {
                 enqueueSnackbar('Kalibreringssertifikat ikke funnet', {
@@ -67,31 +71,7 @@ const InstrumentsView = () => {
         }
     };
 
-    const {
-        state: { instruments }
-    } = useInstrument();
-
     const { enqueueSnackbar } = useSnackbar();
-
-    useEffect(() => {
-        const get = async () => {
-            setInstrument(
-                instruments?.find((i) => i.id === Number(instrumentId))
-            );
-            const { calibrations, status } = await getCalibrationsByInstrument(
-                Number(instrumentId)
-            );
-            if (status === 200) {
-                setCalibrations(calibrations);
-                setLoadedInstrumentId(Number(instrumentId));
-            } else if (status === 400) {
-                enqueueSnackbar('Ingen kalibreringer funnet', {
-                    variant: 'warning'
-                });
-            }
-        };
-        if (Number(instrumentId) !== loadedInstrumentId) get();
-    }, [enqueueSnackbar, instrumentId, instruments, loadedInstrumentId]);
 
     return (
         <>
@@ -101,32 +81,31 @@ const InstrumentsView = () => {
                     <Grid item xs={12}>
                         <Card title="Kalibreringer">
                             <CardContent>
-                                {_calibrations !== undefined &&
-                                instrument !== undefined ? (
-                                    <TableContainer
-                                        columns={calibrationColumns({
-                                            openCertificate,
-                                            openCertificateId,
-                                            instrumentLastCalibration:
-                                                instrument?.sisteKalibrert
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="calibrations">
-                                        <CalibrationTable
-                                            calibrations={_calibrations ?? []}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster kalibreringer</div>
-                                )}
+                                <TableContainer
+                                    columns={calibrationColumns({
+                                        openCertificate,
+                                        openCertificateId,
+                                        instrumentLastCalibration:
+                                            instrumentData.data
+                                                ?.sisteKalibrert ?? null
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="calibrations">
+                                    <CalibrationTable
+                                        isLoading={calibrationData.isLoading}
+                                        calibrations={
+                                            calibrationData.data ?? []
+                                        }
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>
 
                     <PdfViewer
                         getFileName={() => {
-                            if (instrument !== undefined) {
-                                return `${instrument.name}-${instrument.serienr}.pdf`;
+                            if (instrumentData.data) {
+                                return `${instrumentData.data.name}-${instrumentData.data.serienr}.pdf`;
                             }
                             return 'sertifikat.pdf';
                         }}

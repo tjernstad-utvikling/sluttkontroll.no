@@ -6,6 +6,10 @@ import {
 import { SkjemaTable, columns, defaultColumns } from '../../tables/skjema';
 import { getImageFile, uploadImageFile } from '../../api/imageApi';
 import { useEffect, useState } from 'react';
+import {
+    useKontrollById,
+    useUpdateReportKontroll
+} from '../../api/hooks/useKontroll';
 
 import { AttachmentModal } from '../../modal/attachment';
 import Button from '@mui/material/Button';
@@ -26,13 +30,11 @@ import Switch from '@mui/material/Switch';
 import { TableContainer } from '../../tables/base/tableContainer';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../../theme/makeStyles';
-import { saveKontrollReportData } from '../../api/kontrollApi';
 import { updateReportStatement } from '../../api/reportApi';
-import { useAvvik } from '../../data/avvik';
-import { useClient } from '../../data/klient';
+import { useAvvik } from '../../api/hooks/useAvvik';
+import { useClients } from '../../api/hooks/useKlient';
 import { useDebounce } from '../../hooks/useDebounce';
-import { useKontroll } from '../../data/kontroll';
-import { useMeasurement } from '../../data/measurement';
+import { useMeasurements } from '../../api/hooks/useMeasurement';
 import { useReport } from '../documentContainer';
 import { useSnackbar } from 'notistack';
 
@@ -91,13 +93,14 @@ export const KontrollDocAdjusting = ({
     const [open, setOpen] = useState<boolean>(false);
     const [_skjemaer, set_Skjemaer] = useState<Skjema[]>();
     const { updateFilteredSkjemaer, skjemaer, filteredSkjemaer } = useReport();
-    const { state } = useKontroll();
-    const {
-        state: { avvik }
-    } = useAvvik();
-    const {
-        state: { measurements }
-    } = useMeasurement();
+    const kontrollData = useKontrollById(kontrollId);
+
+    const avvikData = useAvvik({
+        includeClosed: true,
+        kontrollId: kontrollId
+    });
+
+    const measurementData = useMeasurements({ kontrollId });
 
     useEffect(() => {
         if (skjemaer !== undefined) {
@@ -133,9 +136,9 @@ export const KontrollDocAdjusting = ({
                     {_skjemaer !== undefined ? (
                         <TableContainer
                             columns={columns(
-                                state.kontroller ?? [],
-                                avvik ?? [],
-                                measurements ?? [],
+                                kontrollData.data,
+                                avvikData.data ?? [],
+                                measurementData.data ?? [],
                                 '',
                                 (a) => console.log(a),
                                 (a) => console.log(a),
@@ -148,6 +151,7 @@ export const KontrollDocAdjusting = ({
                             defaultColumns={defaultColumns}
                             tableId="skjemaer">
                             <SkjemaTable
+                                isLoading={false}
                                 skjemaer={_skjemaer}
                                 selectedSkjemaer={filteredSkjemaer}
                                 onSelected={(ids) => {
@@ -235,43 +239,27 @@ export const ReportProperties = () => {
     const [open, setOpen] = useState<boolean>(false);
 
     const { kontroll, updateKontroll } = useReport();
-    const { enqueueSnackbar } = useSnackbar();
-    const {
-        state: { klienter }
-    } = useClient();
+
+    const clientData = useClients();
+
+    const reportPropertiesMutation = useUpdateReportKontroll();
 
     const saveReportProperties = async (
         reportProperties: RapportEgenskaper
     ) => {
         try {
             if (kontroll !== undefined) {
-                const response = await saveKontrollReportData(
-                    kontroll.id,
+                await reportPropertiesMutation.mutateAsync({
+                    kontrollId: kontroll.id,
                     reportProperties
-                );
-                if (response.status === 400) {
-                    enqueueSnackbar('Et eller flere felter mangler data', {
-                        variant: 'warning'
-                    });
-                }
-                if (
-                    response.status === 200 &&
-                    response.kontroll !== undefined
-                ) {
-                    updateKontroll(response.kontroll);
-                    setOpen(false);
-                    enqueueSnackbar('Rapportegenskaper er lagret', {
-                        variant: 'success'
-                    });
-                    return true;
-                }
+                });
             }
-            return false;
         } catch (error: any) {
-            enqueueSnackbar('Problemer med lagring av kontrollegenskaper', {
-                variant: 'error'
-            });
             return false;
+        } finally {
+            updateKontroll();
+            setOpen(false);
+            return true;
         }
     };
     return (
@@ -292,12 +280,12 @@ export const ReportProperties = () => {
                     Rapportegenskaper
                 </DialogTitle>
                 <DialogContent>
-                    {kontroll !== undefined && klienter !== undefined && (
+                    {kontroll !== undefined && clientData.data !== undefined && (
                         <div className={classes.propertiesBox}>
                             <ReportPropertiesSchema
                                 onSubmit={saveReportProperties}
                                 kontroll={kontroll}
-                                klienter={klienter}
+                                klienter={clientData.data}
                             />
                         </div>
                     )}
@@ -448,12 +436,8 @@ export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
     const [openAddAttachment, setOpenAddAttachment] = useState<
         number | undefined
     >(undefined);
-    const {
-        attachments,
-        updateSelectedAttachments,
-        selectedAttachments,
-        setAttachments
-    } = useReport();
+    const { attachments, updateSelectedAttachments, selectedAttachments } =
+        useReport();
 
     return (
         <>
@@ -509,14 +493,6 @@ export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
                 </DialogActions>
             </Dialog>
             <AttachmentModal
-                updateAttachmentList={(attachment) =>
-                    setAttachments((prev) => {
-                        if (prev) {
-                            return [...prev, attachment];
-                        }
-                        return [];
-                    })
-                }
                 kontrollId={openAddAttachment}
                 close={() => setOpenAddAttachment(undefined)}
             />

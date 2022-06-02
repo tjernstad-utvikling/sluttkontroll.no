@@ -1,12 +1,9 @@
 import { Route, Switch } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
-import { AvvikContextProvider } from '../../data/avvik';
 import { ClipBoardContextProvider } from '../../data/clipboard';
 import { KontrollContextProvider } from '../../data/kontroll';
 import { MainLayout } from '../../layout/main';
-import { MeasurementContextProvider } from '../../data/measurement';
-import { TemplateContextProvider } from '../../data/skjemaTemplate';
 
 const AvvikNewView = lazy(() => import('../../views/kontroll-avvikNew'));
 const AvvikPageView = lazy(() => import('../../views/kontroll-avvikPage'));
@@ -119,16 +116,8 @@ export const Kontroll = () => {
 
 const KontrollProvider = ({ children }: { children: React.ReactNode }) => {
     return (
-        <AvvikContextProvider>
-            <MeasurementContextProvider>
-                <KontrollContextProvider>
-                    <TemplateContextProvider>
-                        <ClipBoardContextProvider>
-                            {children}
-                        </ClipBoardContextProvider>
-                    </TemplateContextProvider>
-                </KontrollContextProvider>
-            </MeasurementContextProvider>
-        </AvvikContextProvider>
+        <KontrollContextProvider>
+            <ClipBoardContextProvider>{children}</ClipBoardContextProvider>
+        </KontrollContextProvider>
     );
 };

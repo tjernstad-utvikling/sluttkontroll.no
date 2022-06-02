@@ -1,40 +1,23 @@
 import { Card, CardContent } from '../components/card';
-import { Roles, User } from '../contracts/userApi';
-import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { useUpdateUser, useUserById } from '../api/hooks/useUsers';
 
 import { CertificateList } from '../components/certificate';
 import Container from '@mui/material/Container';
 import { EditUserViewParams } from '../contracts/navigation';
 import Grid from '@mui/material/Grid';
-import { Sertifikat } from '../contracts/certificateApi';
+import { Roles } from '../contracts/userApi';
 import { UserSchema } from '../schema/user';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
 
 const NewUserView = () => {
     const { classes } = usePageStyles();
     const { userId } = useParams<EditUserViewParams>();
     const history = useHistory();
-    const [user, setUser] = useState<User>();
 
-    const {
-        state: { users },
-        updateUser,
-        loadUsers,
-        updateUserInState
-    } = useUser();
-    useEffect(() => {
-        const _user = users?.find((u) => u.id === Number(userId));
-        if (_user !== undefined) {
-            setUser(_user);
-        }
-    }, [userId, users]);
+    const updateUserMutation = useUpdateUser();
 
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    const userData = useUserById({ userId: Number(userId) });
 
     const handleEditUser = async (
         name: string,
@@ -42,26 +25,27 @@ const NewUserView = () => {
         email: string,
         roles: Roles[] | undefined
     ) => {
-        if (user !== undefined) {
-            const _roles = roles !== undefined ? roles : user.roles;
+        if (userData.data !== undefined) {
+            const _roles = roles !== undefined ? roles : userData.data.roles;
 
-            if (
-                await updateUser({ ...user, name, phone, email, roles: _roles })
-            ) {
+            try {
+                await updateUserMutation.mutateAsync({
+                    user: {
+                        ...userData.data,
+                        name,
+                        phone,
+                        email,
+                        roles: _roles
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 history.goBack();
                 return true;
             }
         }
         return false;
-    };
-
-    const handleAddCertificateToUser = (certificate: Sertifikat) => {
-        if (user) {
-            updateUserInState({
-                ...user,
-                sertifikater: [...user.sertifikater, certificate]
-            });
-        }
     };
 
     return (
@@ -72,20 +56,17 @@ const NewUserView = () => {
                     <Grid item xs={12}>
                         <Card title="Rediger bruker">
                             <CardContent>
-                                {user !== undefined && (
+                                {userData.data !== undefined && (
                                     <UserSchema
                                         onSubmit={handleEditUser}
-                                        user={user}
+                                        user={userData.data}
                                     />
                                 )}
                             </CardContent>
                         </Card>
                     </Grid>
                     <Grid item xs={12}>
-                        <CertificateList
-                            addCertificate={handleAddCertificateToUser}
-                            user={user}
-                        />
+                        <CertificateList user={userData.data} />
                     </Grid>
                 </Grid>
             </Container>

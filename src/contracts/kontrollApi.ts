@@ -1,4 +1,3 @@
-import { Attachment } from './attachmentApi';
 import { RapportEgenskaper } from './reportApi';
 export interface Klient {
     id: number;
@@ -35,7 +34,6 @@ export interface Kontroll {
         id: number;
     };
     avvikUtbedrere: { id: number }[];
-    attachments: Attachment[];
 }
 export interface ReportKontroll {
     id: number;

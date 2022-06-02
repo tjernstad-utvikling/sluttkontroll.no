@@ -1,53 +1,39 @@
 import { Card, CardContent } from '../components/card';
-import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
 
 import { Checkpoint } from '../contracts/checkpointApi';
+import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SkjemaTemplateSchema } from '../schema/skjemaTemplate';
-import { TableContainer } from '../tables/base/tableContainer';
-import { getCheckpoints } from '../api/checkpointApi';
-import { useEffectOnce } from '../hooks/useEffectOnce';
+import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { useHistory } from 'react-router-dom';
+import { useNewTemplate } from '../api/hooks/useSkjemaTemplate';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
-import { useTemplate } from '../data/skjemaTemplate';
 
 const SkjemaTemplateNewView = () => {
     const { classes } = usePageStyles();
 
     const history = useHistory();
 
-    const { newTemplate } = useTemplate();
-
-    const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [selected, setSelected] = useState<Checkpoint[]>([]);
 
-    useEffectOnce(async () => {
-        try {
-            const res = await getCheckpoints();
-            if (res.status === 200) {
-                setCheckpoints(
-                    res.checkpoints.sort((a, b) =>
-                        String(a.prosedyreNr).localeCompare(
-                            String(b.prosedyreNr),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    )
-                );
-            }
-        } catch (error: any) {
-            console.error(error);
-        }
-    });
+    const checkpointData = useCheckpoints();
+
+    const newTemplateMutation = useNewTemplate();
 
     const onSaveTemplate = async (name: string): Promise<boolean> => {
-        if (await newTemplate(name, selected)) {
+        try {
+            newTemplateMutation.mutateAsync({
+                checkpointIds: selected.map((s) => s.id),
+                name
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
             history.goBack();
             return true;
         }
-        return false;
     };
 
     return (
@@ -63,28 +49,21 @@ const SkjemaTemplateNewView = () => {
                                     checkpointCount={selected.length}
                                 />
 
-                                {checkpoints !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({})}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checkpoints">
-                                        <CheckpointTable
-                                            checkpoints={checkpoints}
-                                            onSelected={(ids) =>
-                                                setSelected(
-                                                    checkpoints?.filter(
-                                                        (c) =>
-                                                            ids.indexOf(
-                                                                c.id
-                                                            ) !== -1
-                                                    )
-                                                )
-                                            }
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster sjekkpunkter</div>
-                                )}
+                                <CheckpointTable
+                                    isLoading={checkpointData.isLoading}
+                                    checkpoints={checkpointData.data ?? []}
+                                    onSelected={(ids) =>
+                                        setSelected(
+                                            checkpointData.data
+                                                ? checkpointData.data?.filter(
+                                                      (c) =>
+                                                          ids.indexOf(c.id) !==
+                                                          -1
+                                                  )
+                                                : []
+                                        )
+                                    }
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

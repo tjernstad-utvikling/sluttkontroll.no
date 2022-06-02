@@ -71,7 +71,11 @@ export const defaultColumns: string[] = ['icon', 'type', 'number', 'validTo'];
 
 interface CertificateTableProps {
     certificates: Sertifikat[];
+    isLoading: boolean;
 }
-export const CertificateTable = ({ certificates }: CertificateTableProps) => {
-    return <BaseTable data={certificates} />;
+export const CertificateTable = ({
+    certificates,
+    isLoading
+}: CertificateTableProps) => {
+    return <BaseTable data={certificates} loading={isLoading} />;
 };

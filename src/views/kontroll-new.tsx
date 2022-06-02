@@ -2,6 +2,7 @@ import { Card, CardContent } from '../components/card';
 import { ColorlibConnector, ColorlibStepIconRoot } from '../components/stepper';
 import { Klient, Location } from '../contracts/kontrollApi';
 import React, { useState } from 'react';
+import { useAddNewClient, useAddNewLocation } from '../api/hooks/useKlient';
 
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import Container from '@mui/material/Container';
@@ -16,59 +17,86 @@ import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { User } from '../contracts/userApi';
-import { useClient } from '../data/klient';
 import { useHistory } from 'react-router-dom';
-import { useKontroll } from '../data/kontroll';
+import { useNewKontroll } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useSnackbar } from 'notistack';
 
 const KontrollNewView = () => {
     const { classes } = usePageStyles();
 
     const history = useHistory();
 
-    const { saveNewKontroll } = useKontroll();
-    const { saveNewKlient, saveNewLocation } = useClient();
+    const { enqueueSnackbar } = useSnackbar();
+
     const [activeStep, setActiveStep] = useState(0);
     const [selectedKlient, setSelectedKlient] = useState<Klient>();
     const [selectedLocation, setSelectedLocation] = useState<Location>();
 
+    const newClientMutation = useAddNewClient();
+
     const createNew = async (name: string) => {
-        const res = await saveNewKlient(name);
-        if (res.status && res.klient !== undefined) {
-            setSelectedKlient(res.klient);
-            setActiveStep(1);
+        try {
+            await newClientMutation.mutateAsync({
+                name,
+                setClient: (client: Klient) => {
+                    setSelectedKlient(client);
+                    setActiveStep(1);
+                }
+            });
+        } catch (error) {
+            return false;
+        } finally {
+            return true;
         }
-        return res.status;
     };
+
+    const newLocationMutation = useAddNewLocation();
     const createNewLocation = async (name: string) => {
         if (selectedKlient !== undefined) {
-            const res = await saveNewLocation(name, selectedKlient);
-            if (res.status && res.location !== undefined) {
-                setSelectedLocation(res.location);
-                setActiveStep(2);
+            try {
+                await newLocationMutation.mutateAsync({
+                    clientId: selectedKlient.id,
+                    name,
+                    setLocation: (location: Location) => {
+                        setSelectedLocation(location);
+                        setActiveStep(2);
+                    }
+                });
+            } catch (error) {
+                return false;
+            } finally {
+                return true;
             }
-            return res.status;
         }
         return false;
     };
+
+    const newMutation = useNewKontroll();
+
     const saveKontroll = async (
         name: string,
         user: User,
         avvikUtbedrere: Array<User> | null
     ): Promise<boolean> => {
         if (selectedLocation !== undefined) {
-            if (
-                await saveNewKontroll(
+            try {
+                await newMutation.mutateAsync({
+                    avvikUtbedrere:
+                        avvikUtbedrere !== null ? avvikUtbedrere : [],
+                    location: selectedLocation,
                     name,
-                    avvikUtbedrere !== null ? avvikUtbedrere : [],
-                    selectedLocation,
                     user
-                )
-            ) {
+                });
+            } catch (error) {
+                enqueueSnackbar('Problemer med lagring av kontrollen', {
+                    variant: 'error'
+                });
+                return false;
+            } finally {
                 history.push('/kontroll');
                 return true;
             }
-            return false;
         }
         return false;
     };

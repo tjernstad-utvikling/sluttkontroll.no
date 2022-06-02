@@ -4,15 +4,17 @@ import {
     columns,
     defaultColumns
 } from '../tables/skjemaTemplate';
+import {
+    useRemoveTemplate,
+    useTemplates
+} from '../api/hooks/useSkjemaTemplate';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/base/tableContainer';
 import { useConfirm } from '../hooks/useConfirm';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useRouteMatch } from 'react-router';
-import { useTemplate } from '../data/skjemaTemplate';
 
 const SettingsView = () => {
     const { classes } = usePageStyles();
@@ -21,24 +23,25 @@ const SettingsView = () => {
 
     const { confirm } = useConfirm();
 
-    const {
-        state: { templates },
-        loadTemplates,
-        removeTemplate
-    } = useTemplate();
-    useEffectOnce(async () => {
-        loadTemplates();
-    });
+    const removeTemplateMutation = useRemoveTemplate();
+
+    const templateData = useTemplates();
 
     const askToDeleteTemplate = async (templateId: number) => {
-        const template = templates?.find((t) => t.id === templateId);
+        const template = templateData.data?.find((t) => t.id === templateId);
         if (template !== undefined) {
             const isConfirmed = await confirm(
                 `Slette sjekklistemal: ${template.id} - ${template.name}?`
             );
 
             if (isConfirmed) {
-                removeTemplate(template);
+                try {
+                    await removeTemplateMutation.mutateAsync({
+                        templateId: template.id
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             }
         }
     };
@@ -61,19 +64,18 @@ const SettingsView = () => {
                                 />
                             }>
                             <CardContent>
-                                {templates !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({
-                                            path,
-                                            deleteTemplate: askToDeleteTemplate
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="skjemaTemplates">
-                                        <TemplateTable templates={templates} />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster maler</div>
-                                )}
+                                <TableContainer
+                                    columns={columns({
+                                        path,
+                                        deleteTemplate: askToDeleteTemplate
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="skjemaTemplates">
+                                    <TemplateTable
+                                        isLoading={templateData.isLoading}
+                                        templates={templateData.data ?? []}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

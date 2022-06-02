@@ -4,14 +4,18 @@ import {
     KontrollClipboard,
     SkjemaClipboard
 } from '../components/clipboard';
-import { Klient, Kontroll } from '../contracts/kontrollApi';
 import {
     KontrollTable,
     defaultColumns,
     kontrollColumns
 } from '../tables/kontroll';
+import { useClientById, useUpdateClient } from '../api/hooks/useKlient';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import {
+    useKontroller,
+    useToggleKontrollStatus
+} from '../api/hooks/useKontroll';
 
 import AddIcon from '@mui/icons-material/Add';
 import { AttachmentModal } from '../modal/attachment';
@@ -27,13 +31,13 @@ import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/base/tableContainer';
 import Typography from '@mui/material/Typography';
-import { useAvvik } from '../data/avvik';
-import { useClient } from '../data/klient';
+import { useAttachments } from '../api/hooks/useAttachments';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClipBoard } from '../data/clipboard';
-import { useKontroll } from '../data/kontroll';
-import { useMeasurement } from '../data/measurement';
+import { useKontroll as useKontrollCtx } from '../data/kontroll';
+import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollKlientView = () => {
     const { classes } = usePageStyles();
@@ -41,64 +45,37 @@ const KontrollKlientView = () => {
     const { klientId } = useParams<KontrollKlientViewParams>();
     const history = useHistory();
 
-    const [loadedKlient, setLoadedKlient] = useState<number>();
-    const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
-    const [_klient, setKlient] = useState<Klient>();
-
     const [editKlient, setEditKlient] = useState<boolean>(false);
 
-    const {
-        state: { kontroller },
-        loadKontrollerByKlient,
-        toggleStatusKontroll,
-        showAllKontroller,
-        setShowAllKontroller
-    } = useKontroll();
-    const {
-        state: { klienter },
-        saveEditKlient
-    } = useClient();
-    const {
-        loadUsers,
-        state: { users }
-    } = useUser();
+    const { showAllKontroller, setShowAllKontroller } = useKontrollCtx();
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const kontrollData = useKontroller({
+        includeDone: showAllKontroller,
+        clientId: Number(klientId)
+    });
 
-    const {
-        state: { measurements }
-    } = useMeasurement();
+    const attachmentsData = useAttachments({
+        clientId: Number(klientId)
+    });
 
-    useEffect(() => {
-        if (loadedKlient !== Number(klientId)) {
-            loadKontrollerByKlient(Number(klientId), showAllKontroller);
-            setLoadedKlient(Number(klientId));
-            loadUsers();
-        }
-    }, [
-        klientId,
-        loadKontrollerByKlient,
-        loadUsers,
-        loadedKlient,
-        showAllKontroller
-    ]);
+    const statusMutation = useToggleKontrollStatus();
 
-    useEffect(() => {
-        if (kontroller !== undefined) {
-            setKontroller(
-                kontroller.filter(
-                    (k) => k.location.klient.id === Number(klientId)
-                )
-            );
-        }
-    }, [kontroller, klientId]);
-    useEffect(() => {
-        if (klienter !== undefined) {
-            setKlient(klienter.find((k) => k.id === Number(klientId)));
-        }
-    }, [kontroller, klientId, klienter]);
+    function toggleStatusKontroll(kontrollId: number) {
+        const kontroll = kontrollData.data?.find((k) => k.id === kontrollId);
+        if (kontroll) statusMutation.mutateAsync({ kontroll });
+    }
+
+    const updateClientMutation = useUpdateClient();
+    const clientData = useClientById({ clientId: Number(klientId) });
+
+    const userData = useUsers();
+
+    const avvikData = useAvvik({
+        includeClosed: true,
+        clientId: Number(klientId)
+    });
+
+    const measurementData = useMeasurements({ clientId: Number(klientId) });
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -114,10 +91,15 @@ const KontrollKlientView = () => {
     };
 
     const handleEditKlient = async (name: string): Promise<void> => {
-        if (_klient !== undefined) {
-            if (await saveEditKlient(name, _klient)) {
-                setEditKlient(false);
-            }
+        try {
+            await updateClientMutation.mutateAsync({
+                name,
+                clientId: Number(klientId)
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setEditKlient(false);
         }
     };
 
@@ -142,9 +124,9 @@ const KontrollKlientView = () => {
 
     const onSelectForClipboard = (ids: number[]) => {
         selectedKontroll(
-            _kontroller.filter((kontroll) => {
+            kontrollData.data?.filter((kontroll) => {
                 return ids.includes(kontroll.id);
-            })
+            }) ?? []
         );
     };
 
@@ -172,11 +154,12 @@ const KontrollKlientView = () => {
                                 <div style={{ paddingBottom: '10px' }} />
 
                                 <Typography paragraph>
-                                    <strong>Kunde:</strong> {_klient?.name}
+                                    <strong>Kunde:</strong>{' '}
+                                    {clientData.data?.name}
                                 </Typography>
-                                {editKlient && _klient !== undefined ? (
+                                {editKlient && clientData.data !== undefined ? (
                                     <KlientEditSchema
-                                        klient={_klient}
+                                        klient={clientData.data}
                                         onSubmit={handleEditKlient}
                                     />
                                 ) : (
@@ -206,53 +189,41 @@ const KontrollKlientView = () => {
                                                 ? 'Vis kun åpne kontroller'
                                                 : 'Vis alle kontroller',
                                             icon: <CallMergeIcon />,
-                                            action: () => {
-                                                if (!showAllKontroller)
-                                                    loadKontrollerByKlient(
-                                                        Number(klientId),
-                                                        true
-                                                    );
+                                            action: () =>
                                                 setShowAllKontroller(
                                                     !showAllKontroller
-                                                );
-                                            }
+                                                )
                                         }
                                     ]}
                                 />
                             }>
                             <CardContent>
-                                {kontroller !== undefined ? (
-                                    <TableContainer
-                                        columns={kontrollColumns({
-                                            users: users ?? [],
-                                            klienter: klienter ?? [],
-                                            avvik: avvik ?? [],
-                                            measurements: measurements ?? [],
-                                            edit: editKontroll,
-                                            toggleStatus: toggleStatusKontroll,
-                                            clipboardHasSkjema,
-                                            skjemaToPast,
-                                            editComment: setCommentId,
-                                            addAttachment:
-                                                setKontrollAddAttachmentId
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="kontroller">
-                                        <KontrollTable
-                                            kontroller={_kontroller.filter(
-                                                (k) => {
-                                                    if (showAllKontroller) {
-                                                        return true;
-                                                    }
-                                                    return k.done !== true;
-                                                }
-                                            )}
-                                            onSelected={onSelectForClipboard}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster kontroller</div>
-                                )}
+                                <TableContainer
+                                    columns={kontrollColumns({
+                                        users: userData.data ?? [],
+                                        klienter: clientData.data
+                                            ? [clientData.data]
+                                            : [],
+                                        avvik: avvikData.data ?? [],
+                                        measurements:
+                                            measurementData.data ?? [],
+                                        edit: editKontroll,
+                                        toggleStatus: toggleStatusKontroll,
+                                        clipboardHasSkjema,
+                                        skjemaToPast,
+                                        editComment: setCommentId,
+                                        addAttachment:
+                                            setKontrollAddAttachmentId,
+                                        attachments: attachmentsData.data ?? []
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="kontroller">
+                                    <KontrollTable
+                                        kontroller={kontrollData.data ?? []}
+                                        onSelected={onSelectForClipboard}
+                                        loading={kontrollData.isLoading}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

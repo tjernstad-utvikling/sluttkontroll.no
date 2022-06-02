@@ -1,46 +1,28 @@
 import { Card, CardContent, CardMenu } from '../components/card';
-import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
-import { getCheckpoints, newCheckpoints } from '../api/checkpointApi';
+import {
+    useAddCheckpoint,
+    useCheckpoints,
+    useUpdateCheckpoint
+} from '../api/hooks/useCheckpoint';
 
-import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointModal } from '../modal/checkpoint';
+import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { TableContainer } from '../tables/base/tableContainer';
 import { errorHandler } from '../tools/errorHandler';
-import { updateCheckpoints } from '../api/checkpointApi';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
 const CheckpointView = () => {
     const { classes } = usePageStyles();
 
-    const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
+    const checkpointData = useCheckpoints();
+
     const [editId, setEditId] = useState<number | undefined>(undefined);
     const [addNew, setAddNew] = useState<boolean>(false);
 
-    const { enqueueSnackbar } = useSnackbar();
-
-    useEffectOnce(async () => {
-        try {
-            const res = await getCheckpoints();
-            if (res.status === 200) {
-                setCheckpoints(
-                    res.checkpoints.sort((a, b) =>
-                        String(a.prosedyreNr).localeCompare(
-                            String(b.prosedyreNr),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    )
-                );
-            }
-        } catch (error: any) {
-            console.error(error);
-        }
-    });
+    const newCheckpointMutation = useAddCheckpoint();
+    const updateCheckpointMutation = useUpdateCheckpoint();
 
     const handleCheckpointSubmit = async (
         prosedyre: string,
@@ -50,90 +32,30 @@ const CheckpointView = () => {
     ): Promise<boolean> => {
         if (editId !== undefined) {
             try {
-                const { status } = await updateCheckpoints(
-                    editId,
+                await updateCheckpointMutation.mutateAsync({
+                    checkpointId: editId,
+                    gruppe,
                     prosedyre,
                     prosedyreNr,
-                    tekst,
-                    gruppe
-                );
-                const c = checkpoints.find((c) => c.id === editId);
-                if (c !== undefined) {
-                    handleSaveResponse(status, {
-                        ...c,
-                        prosedyre,
-                        prosedyreNr,
-                        tekst,
-                        gruppe
-                    });
-                }
+                    tekst
+                });
             } catch (error: any) {
                 errorHandler(error);
-                enqueueSnackbar('Problemer med lagring av mal', {
-                    variant: 'error'
-                });
             }
             return false;
         } else {
             try {
-                const { status, checkpoint } = await newCheckpoints(
+                await newCheckpointMutation.mutateAsync({
                     prosedyre,
                     prosedyreNr,
                     tekst,
                     gruppe
-                );
-
-                if (checkpoint !== undefined) {
-                    handleSaveResponse(status, checkpoint);
-                }
+                });
             } catch (error: any) {
                 errorHandler(error);
-                enqueueSnackbar('Problemer med lagring av mal', {
-                    variant: 'error'
-                });
             }
             return false;
         }
-    };
-
-    const handleSaveResponse = (
-        status: number,
-        checkpoint: Checkpoint
-    ): boolean => {
-        if (status === 200) {
-            setCheckpoints((prev) => [...prev, checkpoint]);
-            enqueueSnackbar('Sjekkpunkt lagret', {
-                variant: 'success'
-            });
-            setAddNew(false);
-            return true;
-        }
-        if (status === 204) {
-            setCheckpoints((prev) =>
-                prev.map((c) => {
-                    if (c.id === editId) {
-                        return checkpoint;
-                    }
-                    return c;
-                })
-            );
-            enqueueSnackbar('Sjekkpunkt lagret', {
-                variant: 'success'
-            });
-            setEditId(undefined);
-            return true;
-        }
-        if (status === 400) {
-            enqueueSnackbar('Et eller flere felter mangler', {
-                variant: 'warning'
-            });
-            return false;
-        }
-
-        enqueueSnackbar('Ukjent feil ved lagring av mal', {
-            variant: 'warning'
-        });
-        return false;
     };
 
     return (
@@ -155,22 +77,10 @@ const CheckpointView = () => {
                                 />
                             }>
                             <CardContent>
-                                {checkpoints !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({
-                                            onEditCheckpoint: (checkpointId) =>
-                                                setEditId(checkpointId),
-                                            editCheckpoint: true
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="checkpoints">
-                                        <CheckpointTable
-                                            checkpoints={checkpoints}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster sjekkpunkter</div>
-                                )}
+                                <CheckpointTable
+                                    isLoading={checkpointData.isLoading}
+                                    checkpoints={checkpointData.data ?? []}
+                                />
                             </CardContent>
                         </Card>
                     </Grid>
@@ -179,9 +89,12 @@ const CheckpointView = () => {
             <CheckpointModal
                 onSubmit={handleCheckpointSubmit}
                 editId={editId}
-                isOpen={addNew}
-                close={() => setEditId(undefined)}
-                checkpoints={checkpoints}
+                isOpen={addNew || !!editId}
+                close={() => {
+                    setEditId(undefined);
+                    setAddNew(false);
+                }}
+                checkpoints={checkpointData.data}
             />
         </>
     );

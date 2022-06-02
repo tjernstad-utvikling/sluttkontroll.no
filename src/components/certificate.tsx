@@ -4,85 +4,29 @@ import {
     columns,
     defaultColumns
 } from '../tables/certificate';
-import { Sertifikat, SertifikatType } from '../contracts/certificateApi';
 import {
-    getSertifikatByUser,
-    getSertifikatTypes,
-    saveNewSertifikat
-} from '../api/certificateApi';
-import { useEffect, useState } from 'react';
+    useAddCertificate,
+    useCertificate,
+    useCertificateTypes
+} from '../api/hooks/useCertificate';
 
 import { CertificateModal } from '../modal/certificate';
+import { SertifikatType } from '../contracts/certificateApi';
 import { TableContainer } from '../tables/base/tableContainer';
 import { User } from '../contracts/userApi';
-import { errorHandler } from '../tools/errorHandler';
-import { useSnackbar } from 'notistack';
+import { useState } from 'react';
 
 interface CertificateListProps {
     user: User | undefined;
-    addCertificate: (certificate: Sertifikat) => void;
 }
-export const CertificateList = ({
-    user,
-    addCertificate
-}: CertificateListProps) => {
-    const [certificates, setCertificates] = useState<Sertifikat[]>([]);
-    const [certificateTypes, setCertificateTypes] =
-        useState<SertifikatType[]>();
-
+export const CertificateList = ({ user }: CertificateListProps) => {
     const [addNew, setAddNew] = useState<boolean>(false);
 
-    const { enqueueSnackbar } = useSnackbar();
+    const certificateData = useCertificate({ userId: user?.id });
 
-    useEffect(() => {
-        let isActive = true;
-        async function get() {
-            try {
-                if (certificateTypes === undefined) {
-                    const { status, certificateTypes } =
-                        await getSertifikatTypes();
-                    if (status === 200 && isActive) {
-                        setCertificateTypes(certificateTypes);
-                    }
-                }
-            } catch (error) {
-                errorHandler(error);
-                enqueueSnackbar('Kan ikke laste sertifikater', {
-                    variant: 'error'
-                });
-            }
-        }
-        get();
-        return () => {
-            isActive = false;
-        };
-    }, [certificateTypes, enqueueSnackbar]);
+    const certificateTypeData = useCertificateTypes();
 
-    useEffect(() => {
-        let isActive = true;
-        async function get() {
-            try {
-                if (user) {
-                    const { status, certificates } = await getSertifikatByUser(
-                        user
-                    );
-                    if (status === 200 && isActive) {
-                        setCertificates(certificates);
-                    }
-                }
-            } catch (error) {
-                errorHandler(error);
-                enqueueSnackbar('Kan ikke laste sertifikater', {
-                    variant: 'error'
-                });
-            }
-        }
-        get();
-        return () => {
-            isActive = false;
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
+    const certificateMutation = useAddCertificate();
 
     async function handleSubmit(
         number: string,
@@ -91,38 +35,20 @@ export const CertificateList = ({
     ): Promise<boolean> {
         try {
             if (user) {
-                const { status, certificate } = await saveNewSertifikat(
+                await certificateMutation.mutateAsync({
                     number,
-                    type.id,
-                    validTo,
-                    user.id
-                );
-                if (status === 200) {
-                    addCertificate(certificate);
-                    setCertificates((prev) => [...prev, certificate]);
-
-                    enqueueSnackbar('Sertifikat lagret', {
-                        variant: 'success'
-                    });
-                    setAddNew(false);
-                    return true;
-                }
-                if (status === 400 || status === 404) {
-                    enqueueSnackbar(
-                        'Det mangler opplysninger for lagring, sjekk at alle felter er fylt ut',
-                        {
-                            variant: 'success'
-                        }
-                    );
-                }
+                    typeId: type.id,
+                    userId: user.id,
+                    validTo
+                });
             }
             return false;
         } catch (error) {
-            errorHandler(error);
-            enqueueSnackbar('Kan ikke lagre nytt sertifikat', {
-                variant: 'error'
-            });
+            console.log(error);
             return false;
+        } finally {
+            setAddNew(false);
+            return true;
         }
     }
 
@@ -141,23 +67,20 @@ export const CertificateList = ({
                     />
                 }>
                 <CardContent>
-                    {certificates !== undefined ? (
-                        <TableContainer
-                            columns={columns()}
-                            defaultColumns={defaultColumns}
-                            tableId="certificates">
-                            <CertificateTable
-                                certificates={certificates ?? []}
-                            />
-                        </TableContainer>
-                    ) : (
-                        <div>Laster Sertifikater</div>
-                    )}
+                    <TableContainer
+                        columns={columns()}
+                        defaultColumns={defaultColumns}
+                        tableId="certificates">
+                        <CertificateTable
+                            certificates={certificateData.data ?? []}
+                            isLoading={certificateData.isLoading}
+                        />
+                    </TableContainer>
                 </CardContent>
             </Card>
             <CertificateModal
                 handleSubmit={handleSubmit}
-                certificateTypes={certificateTypes}
+                certificateTypes={certificateTypeData.data}
                 isOpen={addNew}
                 close={() => setAddNew(false)}
             />

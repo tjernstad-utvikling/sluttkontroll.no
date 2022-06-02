@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { Attachment } from '../contracts/attachmentApi';
 import { AttachmentSchema } from '../schema/attachment';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -9,55 +8,39 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { DropZone } from '../components/uploader';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { uploadAttachment } from '../api/attachmentApi';
-import { useSnackbar } from 'notistack';
+import { useAddAttachment } from '../api/hooks/useAttachments';
 
 interface AttachmentModalProps {
     kontrollId: number | undefined;
     close: () => void;
-    updateAttachmentList?: (attachment: Attachment) => void;
 }
-export function AttachmentModal({
-    kontrollId,
-    close,
-    updateAttachmentList
-}: AttachmentModalProps) {
+export function AttachmentModal({ kontrollId, close }: AttachmentModalProps) {
     const [files, setFiles] = useState<File[]>([]);
 
     const [name, setName] = useState<string>('');
-
-    const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         if (files.length > 0) {
             setName(files[0].name);
         }
     }, [files]);
-
+    const attachmentMutation = useAddAttachment();
     const saveAttachment = async (name: string, description: string) => {
         if (kontrollId) {
-            const res = await uploadAttachment(
-                kontrollId,
-                files[0],
-                name,
-                description
-            );
-            if (res.status === 200) {
-                if (updateAttachmentList) {
-                    if (res.attachment) updateAttachmentList(res.attachment);
-                }
+            try {
+                attachmentMutation.mutateAsync({
+                    attachment: files[0],
+                    description,
+                    kontrollId,
+                    name
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 setFiles([]);
                 setName('');
                 close();
-                enqueueSnackbar('Fil er lastet opp.', {
-                    variant: 'success'
-                });
                 return true;
-            }
-            if (res.status === 400) {
-                enqueueSnackbar('Navn eller fil mangler', {
-                    variant: 'warning'
-                });
             }
         }
         return false;

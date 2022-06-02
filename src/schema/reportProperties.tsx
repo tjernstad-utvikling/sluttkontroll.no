@@ -14,9 +14,9 @@ import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { User } from '../contracts/userApi';
 import { makeStyles } from '../theme/makeStyles';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
+import { useZipCode } from '../api/hooks/useUtils';
 
 interface Option {
     value: User;
@@ -51,25 +51,22 @@ export const ReportPropertiesSchema = ({
     klienter
 }: ReportPropertiesSchemaProps): JSX.Element => {
     const { classes } = useStyles();
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
 
-    const [userOptions, setUserOptions] = useState<Array<Option>>();
+    const usersData = useUsers();
+
+    const [userOptions, setUserOptions] = useState<Option[]>();
     const [sertifikatOptions, setSertifikatOptions] = useState<
         Array<SertifikatOption>
     >([]);
 
     useEffect(() => {
-        if (users !== undefined) {
-            setUserOptions(users.map((u) => ({ value: u, label: u.name })));
+        if (usersData.data !== undefined) {
+            setUserOptions(
+                usersData.data.map((u) => ({ value: u, label: u.name }))
+            );
         }
-    }, [users]);
+    }, [usersData.data]);
 
-    useEffectOnce(() => {
-        loadUsers();
-    });
     const initialData = useMemo(() => {
         let user =
             kontroll !== undefined
@@ -227,10 +224,7 @@ export const ReportPropertiesSchema = ({
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        id="postnr"
+                                    <ZipCodeField
                                         label="Postnr"
                                         name="postnr"
                                     />
@@ -284,7 +278,7 @@ export const ReportPropertiesSchema = ({
                                     Kontrollert av
                                 </Typography>
                                 <Grid item xs={12}>
-                                    {users && (
+                                    {usersData.data && (
                                         <div>
                                             <label htmlFor="rapportUser-select">
                                                 Kontrollør
@@ -409,6 +403,39 @@ const KontrollerContactField = ({
     return (
         <TextField
             readonly
+            variant="outlined"
+            fullWidth
+            id={name}
+            label={label}
+            name={name}
+        />
+    );
+};
+interface ZipCodeFieldProps {
+    name: string;
+    label: string;
+}
+const ZipCodeField = ({ name, label }: ZipCodeFieldProps) => {
+    const {
+        values: { postnr },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    const zipCodeData = useZipCode({
+        code: postnr
+    });
+
+    useEffect(() => {
+        console.log(zipCodeData.data);
+        if (zipCodeData.data) {
+            setFieldValue('poststed', zipCodeData.data.poststed);
+        }
+        console.log('save ZipCode');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [zipCodeData.data]);
+
+    return (
+        <TextField
             variant="outlined"
             fullWidth
             id={name}

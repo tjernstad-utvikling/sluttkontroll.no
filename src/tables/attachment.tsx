@@ -90,12 +90,14 @@ interface AttachmentTableProps {
     attachments: Attachment[];
     selectedAttachments?: Attachment[] | undefined;
 
+    isLoading?: boolean;
     onSelected?: (ids: number[]) => void;
     leftAction?: React.ReactNode;
 }
 export const AttachmentTable = ({
     attachments,
     selectedAttachments,
+    isLoading,
     onSelected,
     leftAction
 }: AttachmentTableProps) => {
@@ -116,6 +118,7 @@ export const AttachmentTable = ({
         <BaseTable
             selectionModel={selectionModel}
             onSelected={onSelection}
+            loading={isLoading}
             data={attachments}>
             {leftAction}
         </BaseTable>

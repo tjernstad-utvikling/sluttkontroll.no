@@ -4,6 +4,11 @@ import {
     defaultColumns,
     instrumentColumns
 } from '../tables/instrument';
+import {
+    useInstruments,
+    useRemoveInstrumentDisponent,
+    useSetInstrumentDisponent
+} from '../api/hooks/useInstrument';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -11,9 +16,7 @@ import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
 import { InstrumentStatus } from '../components/instrument';
 import { TableContainer } from '../tables/base/tableContainer';
-import { useAuth } from '../hooks/useAuth';
-import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useInstrument } from '../data/instrument';
+import { useCurrentUser } from '../api/hooks/useUsers';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
 
@@ -23,21 +26,36 @@ const InstrumentsView = () => {
     const [calibrationModalId, setCalibrationModalId] = useState<number>();
     const [editId, setEditId] = useState<number>();
 
-    const { user } = useAuth();
-    const {
-        state: { instruments },
-        loadInstruments,
-        updateInstrumentDisponent
-    } = useInstrument();
+    const currentUserData = useCurrentUser();
 
-    useEffectOnce(() => {
-        loadInstruments();
-    });
+    const instrumentsData = useInstruments();
 
-    const handleInstrumentBooking = (instrumentId: number) => {
-        const instrument = instruments?.find((i) => i.id === instrumentId);
-        if (user !== undefined && instrument !== undefined) {
-            updateInstrumentDisponent(instrument, user);
+    const instrumentDisponentMutation = useSetInstrumentDisponent();
+    const removeInstrumentDisponentMutation = useRemoveInstrumentDisponent();
+
+    const handleInstrumentBooking = async (instrumentId: number) => {
+        const instrument = instrumentsData.data?.find(
+            (i) => i.id === instrumentId
+        );
+        if (currentUserData.data !== undefined && instrument !== undefined) {
+            if (instrument.disponent?.id === currentUserData.data.id) {
+                try {
+                    await removeInstrumentDisponentMutation.mutateAsync({
+                        instrumentId: instrument.id
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            } else {
+                try {
+                    await instrumentDisponentMutation.mutateAsync({
+                        instrumentId: instrument.id,
+                        userId: currentUserData.data.id
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
         }
     };
 
@@ -61,29 +79,25 @@ const InstrumentsView = () => {
                             }>
                             <CardContent>
                                 <InstrumentStatus />
-                                {instruments !== undefined ? (
-                                    <TableContainer
-                                        columns={instrumentColumns({
-                                            edit: (id: number) => {
-                                                setEditId(id);
-                                                setIsModalOpen(true);
-                                            },
-                                            regCalibration: (id: number) => {
-                                                setCalibrationModalId(id);
-                                            },
-                                            currentUser: user,
-                                            changeDisponent:
-                                                handleInstrumentBooking
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="instruments">
-                                        <InstrumentTable
-                                            instruments={instruments ?? []}
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster instrumenter</div>
-                                )}
+                                <TableContainer
+                                    columns={instrumentColumns({
+                                        edit: (id: number) => {
+                                            setEditId(id);
+                                            setIsModalOpen(true);
+                                        },
+                                        regCalibration: (id: number) => {
+                                            setCalibrationModalId(id);
+                                        },
+                                        currentUser: currentUserData.data,
+                                        changeDisponent: handleInstrumentBooking
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="instruments">
+                                    <InstrumentTable
+                                        isLoading={instrumentsData.isLoading}
+                                        instruments={instrumentsData.data ?? []}
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

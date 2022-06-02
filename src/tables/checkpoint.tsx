@@ -51,7 +51,6 @@ export const CheckpointTable = ({
             return templateList.map((tl) => tl.checkpoint.id);
         }
         if (checklists !== undefined) {
-            console.log(checklists);
             return checklists.map((cl) => cl.checkpoint.id);
         }
         return [];

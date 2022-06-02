@@ -123,6 +123,7 @@ export const CheckpointTable = ({
             isLoading={isLoading}
             selectedIds={selectedIds}
             setSelected={updateSelected}
+            preserveSelected
         />
     );
 };

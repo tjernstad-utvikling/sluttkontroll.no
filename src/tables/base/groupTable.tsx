@@ -49,6 +49,7 @@ interface TableProperties<T extends Record<string, unknown>>
     getRowStyling?: (row: Row<T>) => RowStylingEnum | undefined;
     setSelected?: (rows: Row<T>[]) => void;
     selectedIds?: number[];
+    preserveSelected?: boolean;
     isLoading: boolean;
 }
 
@@ -67,6 +68,7 @@ export function GroupTable<T extends Record<string, unknown>>(
         getAction,
         getRowStyling,
         setSelected,
+        preserveSelected,
         selectedIds
     } = props;
     const classes = useTableStyles();
@@ -181,7 +183,11 @@ export function GroupTable<T extends Record<string, unknown>>(
 
             let updatedSelectedRows = [...(selectedRows ? selectedRows : [])];
 
-            if (event.ctrlKey || event.metaKey) {
+            if (
+                event.ctrlKey ||
+                event.metaKey ||
+                (preserveSelected && !event.shiftKey)
+            ) {
                 // 1. Click + CMD/CTRL - select multiple rows
 
                 if (isSelected) {
@@ -231,7 +237,7 @@ export function GroupTable<T extends Record<string, unknown>>(
             setSelectedRows(updatedSelectedRows);
             if (setSelected) setSelected(updatedSelectedRows);
         },
-        [selectedRows, setSelected, rows]
+        [selectedRows, preserveSelected, setSelected, rows]
     );
 
     return (

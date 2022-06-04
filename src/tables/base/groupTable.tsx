@@ -234,8 +234,10 @@ export function GroupTable<T extends Record<string, unknown>>(
                 }
             }
 
-            setSelectedRows(updatedSelectedRows);
-            if (setSelected) setSelected(updatedSelectedRows);
+            if (setSelected) {
+                setSelectedRows(updatedSelectedRows);
+                setSelected(updatedSelectedRows);
+            }
         },
         [selectedRows, preserveSelected, setSelected, rows]
     );

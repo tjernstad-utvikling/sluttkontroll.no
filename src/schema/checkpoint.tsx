@@ -86,6 +86,9 @@ export const CheckpointSchema = ({
                 tekst: Yup.string().required('Avvikstekst er påkrevd'),
                 mainCategory: new Yup.MixedSchema().required(
                     'Kategori er påkrevd'
+                ),
+                groupCategory: new Yup.MixedSchema().required(
+                    'Gruppe er påkrevd'
                 )
             })}
             onSubmit={async (values, { setSubmitting }) => {
@@ -118,14 +121,7 @@ export const CheckpointSchema = ({
                                     {values.groupCategory !== null && (
                                         <>
                                             <Grid item xs={12} sm={3}>
-                                                <TextField
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    id="prosedyreNr"
-                                                    label="Prosedyre nummer"
-                                                    name="prosedyreNr"
-                                                    autoFocus
-                                                />
+                                                <ProsedyreNrField />
                                             </Grid>
                                             <Grid item xs={12} sm={9}>
                                                 <TextField
@@ -168,6 +164,32 @@ export const CheckpointSchema = ({
     );
 };
 
+const ProsedyreNrField = () => {
+    const {
+        values: { mainCategory, groupCategory },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    useEffect(() => {
+        if (mainCategory !== null && groupCategory !== null) {
+            setFieldValue(
+                'prosedyreNr',
+                `${mainCategory.value}.${groupCategory.value}`
+            );
+        }
+    }, [groupCategory, mainCategory, setFieldValue]);
+
+    return (
+        <TextField
+            variant="outlined"
+            fullWidth
+            id="prosedyreNr"
+            label="Prosedyre nr"
+            name="prosedyreNr"
+            autoFocus
+        />
+    );
+};
 const GroupField = () => {
     const {
         values: { mainCategory },

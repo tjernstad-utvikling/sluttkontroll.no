@@ -1,3 +1,4 @@
+import { Checkpoint } from './checkpointApi';
 import { RapportEgenskaper } from './reportApi';
 export interface Klient {
     id: number;
@@ -74,14 +75,7 @@ export interface ExtendedSkjema {
 
 export interface Checklist {
     id: number;
-    checkpoint: {
-        id: number;
-        prosedyreNr: string;
-        prosedyre: string;
-        tiltak: null;
-        tekst: string;
-        gruppe: string;
-    };
+    checkpoint: Checkpoint;
     aktuell: boolean;
     skjema: { id: number };
 }

@@ -152,10 +152,3 @@ export function useUpdateCheckpoint() {
         }
     );
 }
-
-export const checkpointGroupOptions = [
-    { value: 'Installasjon', label: 'Installasjon' },
-    { value: 'Målinger', label: 'Målinger' },
-    { value: 'Tavler', label: 'Tavler' },
-    { value: 'Annet', label: 'Annet' }
-];

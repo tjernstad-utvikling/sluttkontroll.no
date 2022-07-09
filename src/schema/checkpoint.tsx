@@ -32,12 +32,14 @@ interface FormValues {
 
 interface CheckpointSchemaProps {
     checkpoint?: Checkpoint | undefined;
-    onSubmit: (
-        prosedyre: string,
-        prosedyreNr: string,
-        tekst: string,
-        gruppe: string
-    ) => Promise<boolean>;
+    onSubmit: (saveValues: {
+        prosedyre: string;
+        prosedyreNr: string;
+        tekst: string;
+        mainCategory: string;
+        groupCategory: number;
+        checkpointNumber: number;
+    }) => Promise<boolean>;
 }
 
 export const CheckpointSchema = ({
@@ -100,13 +102,16 @@ export const CheckpointSchema = ({
                 )
             })}
             onSubmit={async (values, { setSubmitting }) => {
-                if (values.mainCategory !== null) {
-                    await onSubmit(
-                        values.prosedyre,
-                        values.prosedyreNr,
-                        values.tekst,
-                        values.mainCategory.value
-                    );
+                if (
+                    values.mainCategory !== null &&
+                    values.groupCategory !== null
+                ) {
+                    await onSubmit({
+                        ...values,
+                        mainCategory: values.mainCategory.value,
+                        groupCategory: values.groupCategory.value,
+                        checkpointNumber: values.checkpointNumber
+                    });
                 }
             }}>
             {({ isSubmitting, setFieldValue, values, errors, touched }) => {

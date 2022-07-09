@@ -5,9 +5,15 @@ import { SelectField, TextField } from '../components/input';
 import { useEffect, useMemo, useState } from 'react';
 
 import { Checkpoint } from '../contracts/checkpointApi';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import { LoadingButton } from '../components/button';
+import { Typography } from '@mui/material';
 import { categories } from '../utils/checkpointCategories.json';
+import { useCheckpoints } from '../api/hooks/useCheckpoint';
 
 interface Option {
     value: string | number;
@@ -21,6 +27,7 @@ interface FormValues {
     tekst: string;
     mainCategory: Option | null;
     groupCategory: Option | null;
+    checkpointNumber: number;
 }
 
 interface CheckpointSchemaProps {
@@ -78,7 +85,8 @@ export const CheckpointSchema = ({
                 prosedyreNr: checkpoint?.prosedyreNr || '',
                 tekst: checkpoint?.tekst || '',
                 mainCategory: mainOption || null,
-                groupCategory: selectedGroup
+                groupCategory: selectedGroup,
+                checkpointNumber: checkpoint?.checkpointNumber || 1
             }}
             validationSchema={Yup.object({
                 prosedyre: Yup.string().required('Prosedyre er påkrevd'),
@@ -105,57 +113,71 @@ export const CheckpointSchema = ({
                 return (
                     <Form>
                         <Grid container spacing={3}>
-                            <Grid item xs={12}>
-                                <SelectField
-                                    id="mainCategory"
-                                    label="Kategori"
-                                    name="mainCategory"
-                                    options={mainOptions ?? []}
-                                />
+                            <Grid container item xs={6}>
+                                <Grid item xs={12}>
+                                    <SelectField
+                                        id="mainCategory"
+                                        label="Kategori"
+                                        name="mainCategory"
+                                        options={mainOptions ?? []}
+                                    />
+                                </Grid>
+                                {values.mainCategory !== null && (
+                                    <>
+                                        <Grid item xs={12}>
+                                            <GroupField />
+                                        </Grid>
+                                        {values.groupCategory !== null && (
+                                            <>
+                                                <Grid item xs={12} sm={6}>
+                                                    <TextField
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        id="checkpointNumber"
+                                                        label="Sjekkpunkt nummer"
+                                                        name="checkpointNumber"
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12} sm={6}>
+                                                    <ProsedyreNrField />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <TextField
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        id="prosedyre"
+                                                        label="Prosedyre"
+                                                        name="prosedyre"
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <TextField
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        multiline
+                                                        id="tekst"
+                                                        label="Avvikstekst"
+                                                        name="tekst"
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <LoadingButton
+                                                        isLoading={isSubmitting}
+                                                        type="submit"
+                                                        fullWidth
+                                                        variant="contained"
+                                                        color="primary">
+                                                        Lagre
+                                                    </LoadingButton>
+                                                </Grid>
+                                            </>
+                                        )}
+                                    </>
+                                )}
                             </Grid>
-                            {values.mainCategory !== null && (
-                                <>
-                                    <Grid item xs={12}>
-                                        <GroupField />
-                                    </Grid>
-                                    {values.groupCategory !== null && (
-                                        <>
-                                            <Grid item xs={12} sm={3}>
-                                                <ProsedyreNrField />
-                                            </Grid>
-                                            <Grid item xs={12} sm={9}>
-                                                <TextField
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    id="prosedyre"
-                                                    label="Prosedyre"
-                                                    name="prosedyre"
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    multiline
-                                                    id="tekst"
-                                                    label="Avvikstekst"
-                                                    name="tekst"
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <LoadingButton
-                                                    isLoading={isSubmitting}
-                                                    type="submit"
-                                                    fullWidth
-                                                    variant="contained"
-                                                    color="primary">
-                                                    Lagre
-                                                </LoadingButton>
-                                            </Grid>
-                                        </>
-                                    )}
-                                </>
-                            )}
+                            <Grid container item xs={6}>
+                                <CheckpointGroupList />
+                            </Grid>
                         </Grid>
                     </Form>
                 );
@@ -166,7 +188,7 @@ export const CheckpointSchema = ({
 
 const ProsedyreNrField = () => {
     const {
-        values: { mainCategory, groupCategory },
+        values: { mainCategory, groupCategory, checkpointNumber },
         setFieldValue
     } = useFormikContext<FormValues>();
 
@@ -174,10 +196,10 @@ const ProsedyreNrField = () => {
         if (mainCategory !== null && groupCategory !== null) {
             setFieldValue(
                 'prosedyreNr',
-                `${mainCategory.value}.${groupCategory.value}`
+                `${mainCategory.value}.${groupCategory.value}.${checkpointNumber}`
             );
         }
-    }, [groupCategory, mainCategory, setFieldValue]);
+    }, [checkpointNumber, groupCategory, mainCategory, setFieldValue]);
 
     return (
         <TextField
@@ -190,6 +212,7 @@ const ProsedyreNrField = () => {
         />
     );
 };
+
 const GroupField = () => {
     const {
         values: { mainCategory },
@@ -224,5 +247,58 @@ const GroupField = () => {
             name="groupCategory"
             options={groupOptions ?? []}
         />
+    );
+};
+
+const CheckpointGroupList = () => {
+    const {
+        values: { groupCategory, mainCategory },
+        setFieldValue
+    } = useFormikContext<FormValues>();
+
+    const checkpointData = useCheckpoints();
+
+    const groupCheckpoints = useMemo(() => {
+        console.log(groupCategory);
+        if (groupCategory !== null) {
+            return checkpointData.data?.filter((c) => {
+                return (
+                    c.groupCategory === groupCategory.value &&
+                    c.mainCategory === mainCategory?.value
+                );
+            });
+        }
+        return undefined;
+    }, [checkpointData.data, groupCategory, mainCategory?.value]);
+
+    useEffect(() => {
+        if (mainCategory !== null && groupCategory !== null) {
+            const numbers = groupCheckpoints?.map((gc) => gc.checkpointNumber);
+            if (numbers && numbers.length > 0) {
+                setFieldValue('checkpointNumber', Math.max(...numbers) + 1);
+            } else {
+                setFieldValue('checkpointNumber', 1);
+            }
+        }
+    }, [groupCategory, groupCheckpoints, mainCategory, setFieldValue]);
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="h6" component="h3">
+                Andre sjekkpunkter i valgt gruppe
+            </Typography>
+            <List>
+                {groupCheckpoints?.map((gc) => (
+                    <div key={gc.id}>
+                        <ListItem disablePadding>
+                            <ListItemText
+                                primary={`${gc.prosedyreNr} - ${gc.prosedyre}`}
+                            />
+                        </ListItem>
+                        <Divider />
+                    </div>
+                ))}
+            </List>
+        </div>
     );
 };

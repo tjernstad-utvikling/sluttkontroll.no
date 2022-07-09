@@ -41,7 +41,7 @@ export const CheckpointModal = ({
             open={isOpen}
             onClose={close}
             aria-labelledby="add-Picture-Dialog"
-            fullWidth>
+            fullScreen>
             <DialogTitle id="add-Picture-Dialog">
                 {editId ? 'Rediger' : 'Nytt'} sjekkpunkt
             </DialogTitle>

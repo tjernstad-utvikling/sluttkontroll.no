@@ -24,17 +24,28 @@ const CheckpointView = () => {
     const newCheckpointMutation = useAddCheckpoint();
     const updateCheckpointMutation = useUpdateCheckpoint();
 
-    const handleCheckpointSubmit = async (
-        prosedyre: string,
-        prosedyreNr: string,
-        tekst: string,
-        gruppe: string
-    ): Promise<boolean> => {
+    const handleCheckpointSubmit = async ({
+        checkpointNumber,
+        groupCategory,
+        mainCategory,
+        prosedyre,
+        prosedyreNr,
+        tekst
+    }: {
+        prosedyre: string;
+        prosedyreNr: string;
+        tekst: string;
+        mainCategory: string;
+        groupCategory: number;
+        checkpointNumber: number;
+    }): Promise<boolean> => {
         if (editId !== undefined) {
             try {
                 await updateCheckpointMutation.mutateAsync({
                     checkpointId: editId,
-                    gruppe,
+                    mainCategory,
+                    groupCategory,
+                    checkpointNumber,
                     prosedyre,
                     prosedyreNr,
                     tekst
@@ -46,10 +57,12 @@ const CheckpointView = () => {
         } else {
             try {
                 await newCheckpointMutation.mutateAsync({
+                    mainCategory,
+                    groupCategory,
+                    checkpointNumber,
                     prosedyre,
                     prosedyreNr,
-                    tekst,
-                    gruppe
+                    tekst
                 });
             } catch (error: any) {
                 errorHandler(error);

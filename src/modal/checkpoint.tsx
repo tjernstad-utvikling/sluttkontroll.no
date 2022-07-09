@@ -13,12 +13,14 @@ interface CheckpointModalProps {
     isOpen: boolean;
     checkpoints?: Checkpoint[];
     close: () => void;
-    onSubmit: (
-        prosedyre: string,
-        prosedyreNr: string,
-        tekst: string,
-        gruppe: string
-    ) => Promise<boolean>;
+    onSubmit: (saveValues: {
+        prosedyre: string;
+        prosedyreNr: string;
+        tekst: string;
+        mainCategory: string;
+        groupCategory: number;
+        checkpointNumber: number;
+    }) => Promise<boolean>;
 }
 
 export const CheckpointModal = ({

@@ -93,6 +93,8 @@ const CheckpointView = () => {
                                 <CheckpointTable
                                     isLoading={checkpointData.isLoading}
                                     checkpoints={checkpointData.data ?? []}
+                                    editCheckpoint
+                                    onEditCheckpoint={setEditId}
                                 />
                             </CardContent>
                         </Card>

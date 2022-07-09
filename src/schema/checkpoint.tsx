@@ -63,7 +63,12 @@ export const CheckpointSchema = ({
 
     const mainOption =
         checkpoint !== undefined
-            ? mainOptions?.find((mo) => mo.value === checkpoint.mainCategory)
+            ? {
+                  value: checkpoint.mainCategory,
+                  label: categories?.find(
+                      (cat) => cat.key === checkpoint.mainCategory
+                  )?.name
+              }
             : null;
 
     const selectedGroup = useMemo(() => {
@@ -74,7 +79,7 @@ export const CheckpointSchema = ({
         const group = mainCategory?.groups.find(
             (g) => g.key === checkpoint?.groupCategory
         );
-        if (group !== undefined) {
+        if (group) {
             return { value: group.key, label: group.name };
         }
         return null;
@@ -90,6 +95,7 @@ export const CheckpointSchema = ({
                 groupCategory: selectedGroup,
                 checkpointNumber: checkpoint?.checkpointNumber || 1
             }}
+            enableReinitialize
             validationSchema={Yup.object({
                 prosedyre: Yup.string().required('Prosedyre er påkrevd'),
                 prosedyreNr: Yup.string().required('Prosedyre nr er påkrevd'),
@@ -99,6 +105,9 @@ export const CheckpointSchema = ({
                 ),
                 groupCategory: new Yup.MixedSchema().required(
                     'Gruppe er påkrevd'
+                ),
+                checkpointNumber: Yup.number().required(
+                    'Sjekkpunkt nummer er påkrevd'
                 )
             })}
             onSubmit={async (values, { setSubmitting }) => {
@@ -130,7 +139,12 @@ export const CheckpointSchema = ({
                                 {values.mainCategory !== null && (
                                     <>
                                         <Grid item xs={12}>
-                                            <GroupField />
+                                            <GroupField
+                                                mainCategoryToEdit={
+                                                    checkpoint?.mainCategory ??
+                                                    ''
+                                                }
+                                            />
                                         </Grid>
                                         {values.groupCategory !== null && (
                                             <>
@@ -181,7 +195,11 @@ export const CheckpointSchema = ({
                                 )}
                             </Grid>
                             <Grid container item xs={6}>
-                                <CheckpointGroupList />
+                                <CheckpointGroupList
+                                    checkpointNumberToEdit={
+                                        checkpoint?.checkpointNumber
+                                    }
+                                />
                             </Grid>
                         </Grid>
                     </Form>
@@ -218,7 +236,10 @@ const ProsedyreNrField = () => {
     );
 };
 
-const GroupField = () => {
+interface GroupFieldProps {
+    mainCategoryToEdit: string;
+}
+const GroupField = ({ mainCategoryToEdit }: GroupFieldProps) => {
     const {
         values: { mainCategory },
         setFieldValue
@@ -235,7 +256,8 @@ const GroupField = () => {
         if (mainCategory !== null) {
             const main = categories.find((c) => c.key === mainCategory.value);
 
-            setFieldValue('groupCategory', null);
+            if (mainCategoryToEdit !== main?.key)
+                setFieldValue('groupCategory', null);
 
             setGroupOptions(
                 main?.groups.map((g) => {
@@ -243,7 +265,7 @@ const GroupField = () => {
                 })
             );
         }
-    }, [mainCategory, setFieldValue]);
+    }, [mainCategory, mainCategoryToEdit, setFieldValue]);
 
     return (
         <SelectField
@@ -255,7 +277,13 @@ const GroupField = () => {
     );
 };
 
-const CheckpointGroupList = () => {
+interface CheckpointGroupListProps {
+    checkpointNumberToEdit: number | undefined;
+}
+
+const CheckpointGroupList = ({
+    checkpointNumberToEdit
+}: CheckpointGroupListProps) => {
     const {
         values: { groupCategory, mainCategory },
         setFieldValue
@@ -264,7 +292,6 @@ const CheckpointGroupList = () => {
     const checkpointData = useCheckpoints();
 
     const groupCheckpoints = useMemo(() => {
-        console.log(groupCategory);
         if (groupCategory !== null) {
             return checkpointData.data?.filter((c) => {
                 return (
@@ -277,7 +304,11 @@ const CheckpointGroupList = () => {
     }, [checkpointData.data, groupCategory, mainCategory?.value]);
 
     useEffect(() => {
-        if (mainCategory !== null && groupCategory !== null) {
+        if (
+            mainCategory !== null &&
+            groupCategory !== null &&
+            !checkpointNumberToEdit
+        ) {
             const numbers = groupCheckpoints?.map((gc) => gc.checkpointNumber);
             if (numbers && numbers.length > 0) {
                 setFieldValue('checkpointNumber', Math.max(...numbers) + 1);
@@ -285,7 +316,13 @@ const CheckpointGroupList = () => {
                 setFieldValue('checkpointNumber', 1);
             }
         }
-    }, [groupCategory, groupCheckpoints, mainCategory, setFieldValue]);
+    }, [
+        checkpointNumberToEdit,
+        groupCategory,
+        groupCheckpoints,
+        mainCategory,
+        setFieldValue
+    ]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>

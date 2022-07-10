@@ -54,6 +54,9 @@ export interface AdminTemplateEditViewParams {
 export interface AdminFormsTemplateEditViewParams {
     templateId: string;
 }
+export interface AdminCheckpointEditViewParams {
+    checkpointId: string;
+}
 export interface PasswordResetViewParams {
     token?: string;
 }

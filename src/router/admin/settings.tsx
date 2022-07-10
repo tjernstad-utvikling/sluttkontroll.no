@@ -2,6 +2,8 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
 import { AdminLayout } from '../../layout/admin';
+import CheckpointEditView from '../../views/admin-settings-checkpointsEdit';
+import CheckpointNewView from '../../views/admin-settings-checkpointsNew';
 import Forms from './settings/forms';
 
 const SettingsView = lazy(() => import('../../views/admin-settings'));
@@ -22,6 +24,12 @@ export const Settings = () => {
                     </Route>
                     <Route path={`${path}/template`}>
                         <Template />
+                    </Route>
+                    <Route path={`${path}/checkpoint/new`}>
+                        <CheckpointNewView />
+                    </Route>
+                    <Route path={`${path}/checkpoint/:checkpointId`}>
+                        <CheckpointEditView />
                     </Route>
                     <Route path={`${path}/checkpoint`}>
                         <CheckpointsView />

@@ -1,16 +1,37 @@
 import { Card, CardContent } from '../components/card';
+import {
+    useCheckpoints,
+    useUpdateCheckpoint
+} from '../api/hooks/useCheckpoint';
+import { useEffect, useState } from 'react';
 
+import { AdminCheckpointEditViewParams } from '../contracts/navigation';
+import { Checkpoint } from '../contracts/checkpointApi';
 import { CheckpointSchema } from '../schema/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { errorHandler } from '../tools/errorHandler';
-import { useAddCheckpoint } from '../api/hooks/useCheckpoint';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useParams } from 'react-router-dom';
 
-const CheckpointNewView = () => {
+const CheckpointEditView = () => {
     const { classes } = usePageStyles();
 
-    const newCheckpointMutation = useAddCheckpoint();
+    const { checkpointId } = useParams<AdminCheckpointEditViewParams>();
+
+    const checkpointData = useCheckpoints();
+
+    const [checkpoint, setCheckpoint] = useState<Checkpoint>();
+
+    useEffect(() => {
+        if (checkpointData?.data !== undefined) {
+            setCheckpoint(
+                checkpointData.data.find((c) => c.id === Number(checkpointId))
+            );
+        }
+    }, [checkpointData.data, checkpointId]);
+
+    const updateCheckpointMutation = useUpdateCheckpoint();
 
     const handleCheckpointSubmit = async ({
         checkpointNumber,
@@ -28,7 +49,8 @@ const CheckpointNewView = () => {
         checkpointNumber: number;
     }): Promise<boolean> => {
         try {
-            await newCheckpointMutation.mutateAsync({
+            await updateCheckpointMutation.mutateAsync({
+                checkpointId: Number(checkpointId),
                 mainCategory,
                 groupCategory,
                 checkpointNumber,
@@ -52,6 +74,7 @@ const CheckpointNewView = () => {
                             <CardContent>
                                 <CheckpointSchema
                                     onSubmit={handleCheckpointSubmit}
+                                    checkpoint={checkpoint}
                                 />
                             </CardContent>
                         </Card>
@@ -62,4 +85,4 @@ const CheckpointNewView = () => {
     );
 };
 
-export default CheckpointNewView;
+export default CheckpointEditView;

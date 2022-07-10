@@ -521,7 +521,11 @@ export function useUpdateAvvik() {
                 {
                     beskrivelse: body.avvik.beskrivelse,
                     kommentar: body.avvik.kommentar,
-                    utbedrer: body.avvik.utbedrer.map((u) => u.id)
+                    utbedrer: body.avvik.utbedrer.map((u) => {
+                        return {
+                            id: u.id
+                        };
+                    })
                 }
             );
             return data;

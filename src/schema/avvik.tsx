@@ -54,7 +54,7 @@ export const AvvikSchema = ({
                     discoverLocation: avvik?.discoverLocation || '',
                     utbedrer:
                         avvik !== undefined
-                            ? avvik.utbedrer.map((a) => {
+                            ? avvik.utbedrer?.map((a) => {
                                   let user = userOptions.find(
                                       (u) => u.value.id === a.id
                                   );

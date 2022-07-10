@@ -7,13 +7,15 @@ import { GroupTable } from './base/groupTable';
 import { RouterButton } from '../components/button';
 import { SkjemaTemplateCheckpoint } from '../contracts/skjemaTemplateApi';
 import { TableKey } from '../contracts/keys';
+import { categories } from '../utils/checkpointCategories.json';
 import { useMemo } from 'react';
 
 type Columns = {
     id: number;
     prosedyreNr: string;
     prosedyre: string;
-    gruppe: string;
+    groupCategory: string;
+    mainCategory: string;
     action: number;
 };
 
@@ -41,6 +43,14 @@ export const CheckpointTable = ({
         return checkpoints.map((c) => {
             return {
                 ...c,
+                groupCategory:
+                    categories
+                        .find((mc) => mc.key === c.mainCategory)
+                        ?.groups.find((g) => g.key === c.groupCategory)?.name ??
+                    String(c.groupCategory),
+                mainCategory:
+                    categories.find((mc) => mc.key === c.mainCategory)?.name ??
+                    String(c.groupCategory),
                 action: c.id
             };
         });
@@ -78,8 +88,13 @@ export const CheckpointTable = ({
                 disableGroupBy: true
             },
             {
+                Header: 'Kategori',
+                accessor: 'mainCategory',
+                disableGroupBy: false
+            },
+            {
                 Header: 'Gruppe',
-                accessor: 'gruppe',
+                accessor: 'groupCategory',
                 disableGroupBy: false
             },
             {
@@ -113,7 +128,7 @@ export const CheckpointTable = ({
             tableKey={TableKey.checkpoint}
             columns={columns}
             data={data}
-            defaultGroupBy={['gruppe']}
+            defaultGroupBy={['mainCategory', 'groupCategory']}
             toRenderInCustomCell={[]}
             getAction={getAction}
             isLoading={isLoading}

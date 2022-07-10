@@ -30,7 +30,8 @@ const AvvikNewView = () => {
     const saveNewAvvik = async (
         beskrivelse: string,
         kommentar: string,
-        utbedrer: User[] | null
+        utbedrer: User[] | null,
+        discoverLocation: string
     ) => {
         try {
             await newAvvikMutation.mutateAsync({
@@ -38,7 +39,8 @@ const AvvikNewView = () => {
                 kommentar,
                 utbedrer,
                 checklistId: Number(checklistId),
-                images
+                images,
+                discoverLocation
             });
         } catch (error) {
             console.log(error);

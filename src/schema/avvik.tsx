@@ -17,7 +17,8 @@ interface AvvikSchemaProps {
     onSubmit: (
         beskrivelse: string,
         kommentar: string,
-        utbedrer: Array<User> | null
+        utbedrer: Array<User> | null,
+        discoverLocation: string
     ) => Promise<boolean>;
 }
 export const AvvikSchema = ({
@@ -50,6 +51,7 @@ export const AvvikSchema = ({
                             ? beskrivelse
                             : avvik?.beskrivelse || '',
                     kommentar: avvik?.kommentar || '',
+                    discoverLocation: avvik?.discoverLocation || '',
                     utbedrer:
                         avvik !== undefined
                             ? avvik.utbedrer.map((a) => {
@@ -71,12 +73,21 @@ export const AvvikSchema = ({
                         values.kommentar,
                         values.utbedrer !== null
                             ? values.utbedrer.map((ut) => ut.value)
-                            : null
+                            : null,
+                        values.discoverLocation
                     );
                 }}>
                 {({ isSubmitting, setFieldValue, values }) => {
                     return (
                         <Form>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                id="discoverLocation"
+                                label="Oppdaget sted"
+                                name="discoverLocation"
+                                autoFocus
+                            />
                             <TextField
                                 variant="outlined"
                                 fullWidth

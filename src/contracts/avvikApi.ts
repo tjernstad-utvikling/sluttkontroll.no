@@ -12,6 +12,7 @@ export interface Avvik {
         };
     };
     kommentar: string;
+    discoverLocation?: string;
     registrertDato: string;
     status: string | null;
     oppdagetAv: {

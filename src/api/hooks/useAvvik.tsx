@@ -219,6 +219,7 @@ export function useNewAvvik() {
             utbedrer: User[] | null;
             checklistId: number;
             images: File[];
+            discoverLocation: string;
         }
     >(
         async (body) => {

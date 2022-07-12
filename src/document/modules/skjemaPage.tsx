@@ -62,6 +62,7 @@ export const SkjemaPage = ({
                                             (a) =>
                                                 a.checklist.id === checklist.id
                                         )}
+                                        notApplicable={!checklist.aktuell}
                                     />
                                 ))}
                             </View>

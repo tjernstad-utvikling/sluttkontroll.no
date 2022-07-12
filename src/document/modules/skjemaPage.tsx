@@ -1,17 +1,17 @@
+import { ChecklistRow, ChecklistSection } from './components/skjema';
 import { Measurement, MeasurementType } from '../../contracts/measurementApi';
 import { Page, StyleSheet, View } from '@react-pdf/renderer';
 import { TableCell, TableHeader, TableRow } from './components/table';
 
 import { Avvik } from '../../contracts/avvikApi';
-import { ChecklistRow } from './components/skjema';
 import { ExtendedSkjema } from '../../contracts/kontrollApi';
 import { Footer } from './components/footer';
 import { Header } from './components/header';
 import { MeasurementModule } from './components/measurement';
 import { ReportSetting } from '../../contracts/reportApi';
-import { SjekklisteValueGetter } from '../../tables/sjekkliste';
 import { Spacer } from './components/spacing';
 import { Text } from './components/text';
+import { sortChecklist } from '../utils/sort';
 
 interface SkjemaPageProps {
     reportSetting: ReportSetting | undefined;
@@ -45,27 +45,29 @@ export const SkjemaPage = ({
                     {skjema.area}, {skjema.omrade}
                 </Text>
                 <TableHeader title="Kontrollskjema" />
-                {skjema.checklists
-                    .sort((a, b) =>
-                        String(
-                            SjekklisteValueGetter(a).prosedyreNr()
-                        ).localeCompare(
-                            String(SjekklisteValueGetter(b).prosedyreNr()),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    )
-                    .map((checklist, index) => (
-                        <ChecklistRow
-                            isEvenIndex={index % 2 === 0}
-                            key={checklist.id}
-                            nr={checklist.checkpoint.prosedyreNr}
-                            prosedyre={checklist.checkpoint.prosedyre}
-                            avvik={avvik.filter(
-                                (a) => a.checklist.id === checklist.id
-                            )}
-                        />
-                    ))}
+                {Object.entries(sortChecklist(skjema.checklists)).map(
+                    ([key, value]) => {
+                        return (
+                            <View key={key}>
+                                <ChecklistSection title={value.title} />
+                                {value.data.map((checklist, index) => (
+                                    <ChecklistRow
+                                        isEvenIndex={index % 2 === 0}
+                                        key={checklist.id}
+                                        nr={checklist.checkpoint.prosedyreNr}
+                                        prosedyre={
+                                            checklist.checkpoint.prosedyre
+                                        }
+                                        avvik={avvik.filter(
+                                            (a) =>
+                                                a.checklist.id === checklist.id
+                                        )}
+                                    />
+                                ))}
+                            </View>
+                        );
+                    }
+                )}
                 {skjema.kommentar !== null && skjema.kommentar !== '' && (
                     <TableRow hasBottomBorder hasTopBorder>
                         <TableCell>{skjema.kommentar}</TableCell>

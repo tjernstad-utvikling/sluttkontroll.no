@@ -28,3 +28,13 @@ export const ChecklistRow = ({
         </TableRow>
     );
 };
+interface ChecklistSectionProps {
+    title: string;
+}
+export const ChecklistSection = ({ title }: ChecklistSectionProps) => {
+    return (
+        <TableRow style={{ backgroundColor: '#9BC1E5' }}>
+            <TableCell>{title}</TableCell>
+        </TableRow>
+    );
+};

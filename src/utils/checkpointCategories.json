@@ -1,0 +1,120 @@
+{
+  "categories": [
+    {
+      "key": "I",
+      "name": "Installasjon",
+      "groups": [
+        {
+          "key": 1,
+          "name": "Jording"
+        },
+        {
+          "key": 2,
+          "name": "Kabler og ledninger"
+        },
+        {
+          "key": 3,
+          "name": "Føringsveier"
+        },
+        {
+          "key": 4,
+          "name": "Utstyr"
+        },
+        {
+          "key": 5,
+          "name": "Belysning"
+        },
+        {
+          "key": 6,
+          "name": "Varme"
+        },
+        {
+          "key": 7,
+          "name": "Dokumentasjon"
+        }
+      ]
+    },
+    {
+      "key": "F",
+      "name": "Fordeling",
+      "groups": [
+        {
+          "key": 1,
+          "name": "Jordfeil"
+        },
+        {
+          "key": 2,
+          "name": "Overspenning"
+        },
+        {
+          "key": 3,
+          "name": "Sikringer"
+        },
+        {
+          "key": 4,
+          "name": "Komponenter"
+        },
+        {
+          "key": 5,
+          "name": "Dokumentasjon"
+        },
+        {
+          "key": 6,
+          "name": "Avdekning"
+        },
+        {
+          "key": 7,
+          "name": "Tilkobling"
+        },
+        {
+          "key": 8,
+          "name": "Kabler"
+        },
+        {
+          "key": 9,
+          "name": "Kabelføringer"
+        },
+        {
+          "key": 10,
+          "name": "Kapsling"
+        }
+      ]
+    },
+    {
+      "key": "M",
+      "name": "Måling",
+      "groups": [
+        {
+          "key": 1,
+          "name": "Ohm"
+        },
+        {
+          "key": 2,
+          "name": "Volt"
+        },
+        {
+          "key": 3,
+          "name": "Ampere"
+        },
+        {
+          "key": 4,
+          "name": "Tid"
+        },
+        {
+          "key": 5,
+          "name": "Annet"
+        }
+      ]
+    },
+    {
+      "key": "Z",
+      "name": "Annet",
+      "groups": [
+        {
+          "key": 1,
+          "name": "Annet"
+        }
+      ]
+    }
+  ]
+}

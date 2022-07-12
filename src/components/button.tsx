@@ -2,6 +2,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import LinearProgress from '@mui/material/LinearProgress';
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { Theme } from '@mui/material';
 import { makeStyles } from '../theme/makeStyles';
 
@@ -80,5 +81,36 @@ export const LoadingButton = ({
                 )}
             </div>
         </div>
+    );
+};
+
+interface RouterButtonProps {
+    children: string;
+    to: string;
+    startIcon?: React.ReactNode;
+    color?:
+        | 'inherit'
+        | 'primary'
+        | 'secondary'
+        | 'success'
+        | 'error'
+        | 'info'
+        | 'warning'
+        | undefined;
+}
+export const RouterButton = ({
+    children,
+    to,
+    color,
+    startIcon
+}: RouterButtonProps) => {
+    return (
+        <Button
+            component={RouterLink}
+            to={to}
+            color={color}
+            startIcon={startIcon}>
+            {children}
+        </Button>
     );
 };

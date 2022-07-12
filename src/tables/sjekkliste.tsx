@@ -14,6 +14,7 @@ import { TableKey } from '../contracts/keys';
 import Typography from '@mui/material/Typography';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { categories } from '../utils/checkpointCategories.json';
 import { useMemo } from 'react';
 
 export const SjekklisteValueGetter = (data: Checklist | null) => {
@@ -89,7 +90,8 @@ type ChecklistColumns = {
     prosedyre: string;
     avvik: any;
     aktuell: boolean;
-    gruppe: string;
+    groupCategory: string;
+    mainCategory: string;
     action: number;
 };
 
@@ -120,6 +122,16 @@ export const SjekklisteTable = ({
                 prosedyreNr: c.checkpoint.prosedyreNr,
                 prosedyre: c.checkpoint.prosedyre,
                 avvik: SjekklisteValueGetter(c).avvik(avvik),
+                groupCategory:
+                    categories
+                        .find((mc) => mc.key === c.checkpoint.mainCategory)
+                        ?.groups.find(
+                            (g) => g.key === c.checkpoint.groupCategory
+                        )?.name ?? String(c.checkpoint.groupCategory),
+                mainCategory:
+                    categories.find(
+                        (mc) => mc.key === c.checkpoint.mainCategory
+                    )?.name ?? String(c.checkpoint.groupCategory),
                 action: c.id,
                 gruppe: c.checkpoint.gruppe
             };
@@ -154,8 +166,13 @@ export const SjekklisteTable = ({
                 disableGroupBy: true
             },
             {
+                Header: 'Kategori',
+                accessor: 'mainCategory',
+                disableGroupBy: false
+            },
+            {
                 Header: 'Gruppe',
-                accessor: 'gruppe',
+                accessor: 'groupCategory',
                 disableGroupBy: false
             },
             {
@@ -250,7 +267,7 @@ export const SjekklisteTable = ({
             tableKey={TableKey.checklist}
             columns={columns}
             data={data}
-            defaultGroupBy={['gruppe']}
+            defaultGroupBy={['groupCategory']}
             toRenderInCustomCell={['avvik', 'aktuell']}
             getCustomCell={getCustomCell}
             getAction={getAction}

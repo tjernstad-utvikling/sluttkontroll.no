@@ -7,12 +7,14 @@ import {
 } from '@mui/x-data-grid-pro';
 import { Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
 
+import AddIcon from '@mui/icons-material/Add';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
 import InsertCommentIcon from '@mui/icons-material/InsertComment';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
@@ -233,6 +235,34 @@ export const kontrollColumns = ({
                 KontrollValueGetter(param2.api.getRow(param2.id)).attachment(
                     attachments
                 )
+        },
+        {
+            field: 'instrumenter',
+            headerName: 'Instrumenter',
+            flex: 1,
+            valueGetter: (params: GridValueGetterParams) => 1,
+            renderCell: (params: GridCellParams) => (
+                <>
+                    <Link to={'/'}>
+                        <span>1</span>
+                    </Link>
+
+                    <IconButton
+                        // to={`${url}/checklist/${id}/avvik/new`}
+                        // component={RouterLink}
+                        aria-label="Legg til instrument"
+                        size="small">
+                        <AddIcon fontSize="small" />
+                    </IconButton>
+                </>
+            )
+            // sortComparator: (v1, v2, param1, param2) =>
+            //     KontrollValueGetter(param1.api.getRow(param1.id)).attachment(
+            //         attachments
+            //     ) -
+            //     KontrollValueGetter(param2.api.getRow(param2.id)).attachment(
+            //         attachments
+            //     )
         },
         {
             field: 'user',

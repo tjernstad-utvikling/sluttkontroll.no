@@ -1,5 +1,6 @@
 import { Checkpoint } from './checkpointApi';
 import { RapportEgenskaper } from './reportApi';
+
 export interface Klient {
     id: number;
     name: string;
@@ -35,6 +36,7 @@ export interface Kontroll {
         id: number;
     };
     avvikUtbedrere: { id: number }[];
+    instrumenter: { id: number }[];
 }
 export interface ReportKontroll {
     id: number;
@@ -54,6 +56,7 @@ export interface ReportKontroll {
     };
     avvikUtbedrere: { id: number }[];
     rapportEgenskaper: RapportEgenskaper | null;
+    instrumenter: { id: number }[];
 }
 
 export interface Skjema {

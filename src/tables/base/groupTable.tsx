@@ -1,12 +1,14 @@
 import {
     Cell,
+    GroupingState,
     Row,
     TableOptions,
     TableState,
-    useExpanded,
-    useGroupBy,
-    useTable
-} from 'react-table';
+    Updater,
+    VisibilityState,
+    flexRender,
+    useReactTable
+} from '@tanstack/react-table';
 import {
     PropsWithChildren,
     ReactElement,
@@ -31,13 +33,13 @@ import TableRowMui from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Tooltip from '@mui/material/Tooltip';
 import { VisuallyHidden } from '../../components/text';
-import { useDebounce } from '../../hooks/useDebounce';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useTableState } from './hooks/useTableState';
 
 interface TableProperties<T extends Record<string, unknown>>
     extends TableOptions<T> {
     tableKey: TableKey;
-    defaultGroupBy: string[];
+    defaultGrouping: string[];
+    defaultVisibilityState: Record<string, boolean>;
     children?: React.ReactNode;
     toRenderInCustomCell: string[];
     getCustomCell?: (
@@ -53,7 +55,7 @@ interface TableProperties<T extends Record<string, unknown>>
     isLoading: boolean;
 }
 
-const hooks = [useGroupBy, useExpanded];
+// const hooks = [useGroupBy, useExpanded];
 
 export function GroupTable<T extends Record<string, unknown>>(
     props: PropsWithChildren<TableProperties<T>>
@@ -61,7 +63,8 @@ export function GroupTable<T extends Record<string, unknown>>(
     const {
         columns,
         tableKey,
-        defaultGroupBy,
+        defaultGrouping,
+        defaultVisibilityState,
         children,
         toRenderInCustomCell,
         getCustomCell,
@@ -74,41 +77,39 @@ export function GroupTable<T extends Record<string, unknown>>(
     const classes = useTableStyles();
 
     /**Get saved table settings */
-    const [initialState, setInitialState] = useLocalStorage(tableKey, {
-        groupBy: defaultGroupBy
-    });
+    const [tableState, setTableState] = useTableState<TableState>(tableKey, {
+        grouping: defaultGrouping,
+        columnVisibility: defaultVisibilityState
+    } as TableState);
+
+    function updateGrouping(grouping: Updater<GroupingState>) {
+        const valueToStore =
+            grouping instanceof Function
+                ? grouping(tableState.grouping)
+                : grouping;
+        setTableState((prev) => {
+            return { ...prev, valueToStore };
+        });
+    }
+
+    function updateVisibility(grouping: Updater<VisibilityState>) {
+        const valueToStore =
+            grouping instanceof Function
+                ? grouping(tableState.columnVisibility)
+                : grouping;
+        setTableState((prev) => {
+            return { ...prev, valueToStore };
+        });
+    }
 
     /**Table instance */
-    const instance = useTable<T>(
-        {
-            ...props,
-            columns,
-            initialState
-        },
-        ...hooks
-    );
-    const {
-        getTableProps,
-        headerGroups,
-        getTableBodyProps,
-        rows,
-        prepareRow,
-        state,
-        visibleColumns
-    } = instance;
-
-    /**Save table settings */
-    const debouncedState = useDebounce<TableState>(state, 500);
-
-    useEffect(() => {
-        const { groupBy, expanded, hiddenColumns } = debouncedState;
-        const val = {
-            groupBy,
-            expanded,
-            hiddenColumns
-        };
-        setInitialState(val);
-    }, [setInitialState, debouncedState]);
+    const table = useReactTable<T>({
+        ...props,
+        columns,
+        state: tableState,
+        onGroupingChange: updateGrouping,
+        onColumnVisibilityChange: updateVisibility
+    });
 
     function getRowClassName(row: Row<T>) {
         if (getRowStyling !== undefined) {
@@ -128,44 +129,41 @@ export function GroupTable<T extends Record<string, unknown>>(
      * @param target  The Target HTMLElement (event.target) that raised the event
      * @param rows    The list of sorted rows
      */
-    function getRowFromEvent(target: HTMLElement, rows: Row<T>[]) {
-        // skip if this is group header
-        const isGroup =
-            target.closest('tr')?.getAttribute('data-row-is-group-row') ?? '';
-        if (isGroup) return null;
+    // function getRowFromEvent(target: HTMLElement, rows: RowModel<T>[]) {
+    //     // skip if this is group header
+    //     const isGroup =
+    //         target.closest('tr')?.getAttribute('data-row-is-group-row') ?? '';
+    //     if (isGroup) return null;
 
-        // Skip if this is action cell
-        const isAction =
-            target.closest('td')?.getAttribute('data-is-action') ?? '';
-        if (isAction) return null;
+    //     // Skip if this is action cell
+    //     const isAction =
+    //         target.closest('td')?.getAttribute('data-is-action') ?? '';
+    //     if (isAction) return null;
 
-        const rowIndex = parseInt(
-            target.closest('tr')?.getAttribute('data-row-index') ?? ''
-        );
+    //     const rowIndex = parseInt(
+    //         target.closest('tr')?.getAttribute('data-row-index') ?? ''
+    //     );
 
-        const filteredRows = rows.filter(
-            (row) => row.index === rowIndex && !row.isGrouped
-        );
-        if (filteredRows.length) {
-            // Should only be one result
-            return filteredRows[0];
-        }
-        return null;
-    }
+    //     const filteredRows = rows.filter(
+    //         (row) => row.  index === rowIndex && !row.getIsGrouped()
+    //     );
+    //     if (filteredRows.length) {
+    //         // Should only be one result
+    //         return filteredRows[0];
+    //     }
+    //     return null;
+    // }
 
     const [selectedRows, setSelectedRows] = useState<Row<T>[]>([]);
 
     useEffect(() => {
         if (selectedIds)
             setSelectedRows(
-                rows.filter((r) => {
-                    if (r.values.hasOwnProperty('id')) {
-                        return selectedIds.find((o) => o === r.values.id);
-                    }
-                    return false;
+                table.getRowModel().rows.filter((r) => {
+                    return selectedIds.find((o) => o === r.getValue('id'));
                 })
             );
-    }, [rows, selectedIds]);
+    }, [selectedIds, table]);
 
     /**
      * Handle Row Selection:
@@ -174,115 +172,119 @@ export function GroupTable<T extends Record<string, unknown>>(
      * 2. Click + SHIFT - Range Select multiple rows
      * 3. Single Click - Select only one row
      */
-    const handleRowSelection = useCallback(
-        (event: React.MouseEvent<HTMLTableSectionElement>, row: Row<T>) => {
-            // See if row is already selected
-            const selectedRowIds = selectedRows?.map((r) => r.id) ?? [];
-            const selectIndex = selectedRowIds.indexOf(row.id);
-            const isSelected = selectIndex > -1;
+    // const handleRowSelection = useCallback(
+    //     (event: React.MouseEvent<HTMLTableSectionElement>, row: Row<T>) => {
+    //         // See if row is already selected
+    //         const selectedRowIds = selectedRows?.map((r) => r.id) ?? [];
+    //         const selectIndex = selectedRowIds.indexOf(row.id);
+    //         const isSelected = selectIndex > -1;
 
-            let updatedSelectedRows = [...(selectedRows ? selectedRows : [])];
+    //         let updatedSelectedRows = [...(selectedRows ? selectedRows : [])];
 
-            if (
-                event.ctrlKey ||
-                event.metaKey ||
-                (preserveSelected && !event.shiftKey)
-            ) {
-                // 1. Click + CMD/CTRL - select multiple rows
+    //         if (
+    //             event.ctrlKey ||
+    //             event.metaKey ||
+    //             (preserveSelected && !event.shiftKey)
+    //         ) {
+    //             // 1. Click + CMD/CTRL - select multiple rows
 
-                if (isSelected) {
-                    updatedSelectedRows.splice(selectIndex, 1);
-                } else {
-                    updatedSelectedRows.push(row);
-                }
-            } else if (event.shiftKey) {
-                // 2. Click + SHIFT - Range Select multiple rows
+    //             if (isSelected) {
+    //                 updatedSelectedRows.splice(selectIndex, 1);
+    //             } else {
+    //                 updatedSelectedRows.push(row);
+    //             }
+    //         } else if (event.shiftKey) {
+    //             // 2. Click + SHIFT - Range Select multiple rows
 
-                if (selectedRows?.length) {
-                    const lastSelectedRow = selectedRows[0];
-                    // Calculate array indexes and reset selected rows
-                    const lastIndex = rows.indexOf(lastSelectedRow);
-                    const currentIndex = rows.indexOf(row);
+    //             if (selectedRows?.length) {
+    //                 const lastSelectedRow = selectedRows[0];
+    //                 // Calculate array indexes and reset selected rows
+    //                 const lastIndex = table
+    //                     .getRowModel()
+    //                     .rows.indexOf(lastSelectedRow);
+    //                 const currentIndex = table.getRowModel().rows.indexOf(row);
 
-                    updatedSelectedRows = [];
-                    if (lastIndex < currentIndex) {
-                        for (let i = lastIndex; i <= currentIndex; i++) {
-                            const selectedRow = rows[i];
-                            if (!selectedRow.isGrouped) {
-                                updatedSelectedRows.push(selectedRow);
-                            }
-                        }
-                    } else {
-                        for (let i = currentIndex; i <= lastIndex; i++) {
-                            const selectedRow = rows[i];
-                            if (!selectedRow.isGrouped) {
-                                updatedSelectedRows.push(selectedRow);
-                            }
-                        }
-                    }
-                } else {
-                    // No rows previously selected, select only current row
-                    updatedSelectedRows = [row];
-                }
-            } else {
-                // 3. Single Click - Select only one row
+    //                 updatedSelectedRows = [];
+    //                 if (lastIndex < currentIndex) {
+    //                     for (let i = lastIndex; i <= currentIndex; i++) {
+    //                         const selectedRow = table.getRowModel().rows[i];
+    //                         if (!selectedRow.getIsGrouped()) {
+    //                             updatedSelectedRows.push(selectedRow);
+    //                         }
+    //                     }
+    //                 } else {
+    //                     for (let i = currentIndex; i <= lastIndex; i++) {
+    //                         const selectedRow = table.getRowModel().rows[i];
+    //                         if (!selectedRow.getIsGrouped()) {
+    //                             updatedSelectedRows.push(selectedRow);
+    //                         }
+    //                     }
+    //                 }
+    //             } else {
+    //                 // No rows previously selected, select only current row
+    //                 updatedSelectedRows = [row];
+    //             }
+    //         } else {
+    //             // 3. Single Click - Select only one row
 
-                if (isSelected && updatedSelectedRows.length === 1) {
-                    updatedSelectedRows = [];
-                } else {
-                    updatedSelectedRows = [row];
-                }
-            }
+    //             if (isSelected && updatedSelectedRows.length === 1) {
+    //                 updatedSelectedRows = [];
+    //             } else {
+    //                 updatedSelectedRows = [row];
+    //             }
+    //         }
 
-            if (setSelected) {
-                setSelectedRows(updatedSelectedRows);
-                setSelected(updatedSelectedRows);
-            }
-        },
-        [selectedRows, preserveSelected, setSelected, rows]
-    );
+    //         if (setSelected) {
+    //             setSelectedRows(updatedSelectedRows);
+    //             setSelected(updatedSelectedRows);
+    //         }
+    //     },
+    //     [selectedRows, preserveSelected, setSelected, table]
+    // );
 
     return (
         <>
             <TableContainer component={Paper} className={classes.root}>
                 <div className={classes.tools}>
                     <div className={classes.pasteTool}>{children}</div>
-                    <ColumnSelectRT instance={instance} />
+                    <ColumnSelectRT instance={table} />
                 </div>
-                <Table
-                    role="grid"
-                    size="small"
-                    aria-label="sjekkliste"
-                    {...getTableProps()}>
+                <Table role="grid" size="small" aria-label="sjekkliste">
                     <TableHead>
-                        {headerGroups.map((headerGroup) => (
-                            <TableRowMui {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map((column) => {
-                                    const {
-                                        title: groupTitle = '',
-                                        ...columnGroupByProps
-                                    } = column.getGroupByToggleProps();
-
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRowMui key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableCell {...column.getHeaderProps()}>
-                                            {column.canGroupBy && (
-                                                <Tooltip title={groupTitle}>
-                                                    <TableSortLabel
-                                                        active
-                                                        direction={
-                                                            column.isGrouped
-                                                                ? 'desc'
-                                                                : 'asc'
-                                                        }
-                                                        IconComponent={
-                                                            KeyboardArrowRight
-                                                        }
-                                                        {...columnGroupByProps}
-                                                    />
-                                                </Tooltip>
+                                        <TableCell
+                                            key={header.id}
+                                            colSpan={header.colSpan}>
+                                            {header.isPlaceholder ? null : (
+                                                <div>
+                                                    {header.column.getCanGroup() ? (
+                                                        <Tooltip
+                                                            title={
+                                                                'Grupper kolonne'
+                                                            }>
+                                                            <TableSortLabel
+                                                                active
+                                                                direction={
+                                                                    header.column.getIsGrouped()
+                                                                        ? 'desc'
+                                                                        : 'asc'
+                                                                }
+                                                                IconComponent={
+                                                                    KeyboardArrowRight
+                                                                }
+                                                            />
+                                                        </Tooltip>
+                                                    ) : null}{' '}
+                                                    {flexRender(
+                                                        header.column.columnDef
+                                                            .header,
+                                                        header.getContext()
+                                                    )}
+                                                </div>
                                             )}
-
-                                            {column.render('Header')}
                                         </TableCell>
                                     );
                                 })}
@@ -290,31 +292,33 @@ export function GroupTable<T extends Record<string, unknown>>(
                         ))}
                     </TableHead>
                     <TableBody
-                        {...getTableBodyProps()}
-                        onClick={(event) => {
-                            const row = getRowFromEvent(
-                                event.target as HTMLElement,
-                                rows
-                            );
+                    // onClick={(event) => {
+                    //     const row = getRowFromEvent(
+                    //         event.target as HTMLElement,
+                    //         table.rows()
+                    //     );
 
-                            if (row) {
-                                handleRowSelection(event, row);
-                            }
-                        }}>
+                    //     if (row) {
+                    //         handleRowSelection(event, row);
+                    //     }
+                    // }}
+                    >
                         {props.isLoading && (
                             <tr>
-                                <td colSpan={visibleColumns.length}>
+                                <td
+                                    colSpan={
+                                        table.getVisibleFlatColumns().length
+                                    }>
                                     <LinearProgress sx={{ width: '100%' }} />
                                 </td>
                             </tr>
                         )}
-                        {rows.map((row) => {
-                            prepareRow(row);
+                        {table.getRowModel().rows.map((row) => {
                             return (
                                 <TableRow<T>
-                                    {...row.getRowProps()}
+                                    key={row.id}
                                     row={row}
-                                    state={state}
+                                    state={tableState}
                                     isSelected={
                                         !!selectedRows?.find(
                                             (r) => r.id === row.id
@@ -330,9 +334,9 @@ export function GroupTable<T extends Record<string, unknown>>(
                     </TableBody>
                 </Table>
             </TableContainer>
-            <VisuallyHidden id="rowActionDescription">
+            {/* <VisuallyHidden id="rowActionDescription">
                 Trykk for å velge
-            </VisuallyHidden>
+            </VisuallyHidden> */}
         </>
     );
 }

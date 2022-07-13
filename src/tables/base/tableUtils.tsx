@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
-import { TableInstance } from 'react-table';
+import { Table } from '@tanstack/react-table';
 import { useTable } from './tableContainer';
 
 export const ColumnSelect = (): JSX.Element => {
@@ -77,18 +77,18 @@ export const ColumnSelect = (): JSX.Element => {
     );
 };
 type ColumnHidePageProps<T extends Record<string, unknown>> = {
-    instance: TableInstance<T>;
+    instance: Table<T>;
 };
 export function ColumnSelectRT<T extends Record<string, unknown>>({
     instance
 }: ColumnHidePageProps<T>): ReactElement | null {
     const [open, setOpen] = React.useState(false);
-    const { allColumns, toggleHideColumn } = instance;
-    const hideableColumns = allColumns.filter(
-        (column) => !(column.id === 'action')
-    );
+    // const { allColumns, toggleHideColumn } = instance;
+    const hideableColumns = instance
+        .getAllColumns()
+        .filter((column) => !(column.id === 'action'));
     const checkedCount = hideableColumns.reduce(
-        (acc, val) => acc + (val.isVisible ? 0 : 1),
+        (acc, val) => acc + (val.getIsVisible() ? 0 : 1),
         0
     );
 
@@ -113,7 +113,7 @@ export function ColumnSelectRT<T extends Record<string, unknown>>({
                     <FormControl component="fieldset">
                         <FormLabel component="legend">Velg kolonner</FormLabel>
                         <FormGroup>
-                            {hideableColumns.map((c) => (
+                            {instance.getAllLeafColumns().map((c) => (
                                 <FormControlLabel
                                     key={c.id}
                                     control={
@@ -122,15 +122,14 @@ export function ColumnSelectRT<T extends Record<string, unknown>>({
                                             color="primary"
                                             size="small"
                                             disabled={
-                                                c.isVisible && onlyOneOptionLeft
+                                                c.getIsVisible() &&
+                                                onlyOneOptionLeft
                                             }
                                         />
                                     }
-                                    onChange={() =>
-                                        toggleHideColumn(c.id, c.isVisible)
-                                    }
-                                    checked={c.isVisible}
-                                    label={c.render('Header') || ''}
+                                    onChange={c.getToggleVisibilityHandler()}
+                                    checked={c.getIsVisible()}
+                                    label={c.id}
                                 />
                             ))}
                         </FormGroup>

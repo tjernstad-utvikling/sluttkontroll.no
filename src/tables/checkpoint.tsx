@@ -1,4 +1,4 @@
-import { Column, Row } from 'react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 
 import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
@@ -70,7 +70,7 @@ export const CheckpointTable = ({
         if (onSelected) onSelected(rows.map((r) => r.values.id));
     }
 
-    const columns: Column<Columns>[] = useMemo(
+    const columns: ColumnDef<Columns>[] = useMemo(
         () => [
             {
                 Header: '#',
@@ -110,9 +110,10 @@ export const CheckpointTable = ({
         <>
             {editCheckpoint ? (
                 <RouterButton
-                    to={`/admin/settings/checkpoint/${
-                        row.cells.find((c) => c.column.id === 'id')?.value
-                    }`}
+                    to={`/admin/settings/checkpoint/${row
+                        .getAllCells()
+                        .find((c) => c.column.id === 'id')
+                        ?.getValue()}`}
                     color="primary"
                     startIcon={<EditIcon />}>
                     rediger
@@ -128,7 +129,8 @@ export const CheckpointTable = ({
             tableKey={TableKey.checkpoint}
             columns={columns}
             data={data}
-            defaultGroupBy={['mainCategory', 'groupCategory']}
+            defaultGrouping={['mainCategory', 'groupCategory']}
+            defaultVisibilityState={{}}
             toRenderInCustomCell={[]}
             getAction={getAction}
             isLoading={isLoading}

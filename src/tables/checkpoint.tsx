@@ -23,7 +23,7 @@ interface CheckpointTableProps {
     checklists?: Checklist[];
     templateList?: SkjemaTemplateCheckpoint[];
     editCheckpoint?: boolean;
-
+    enableSelection?: boolean;
     onSelected?: (ids: number[]) => void;
     children?: React.ReactNode;
     isLoading: boolean;
@@ -34,6 +34,7 @@ export const CheckpointTable = ({
     templateList,
     editCheckpoint,
     onSelected,
+    enableSelection,
     children,
     isLoading
 }: CheckpointTableProps) => {
@@ -133,6 +134,7 @@ export const CheckpointTable = ({
             selectedIds={selectedIds}
             setSelected={updateSelected}
             preserveSelected
+            enableSelection={enableSelection}
         />
     );
 };

@@ -15,7 +15,13 @@ import {
     getPaginationRowModel,
     useReactTable
 } from '@tanstack/react-table';
-import { PropsWithChildren, ReactElement, useEffect, useState } from 'react';
+import {
+    PropsWithChildren,
+    ReactElement,
+    useCallback,
+    useEffect,
+    useState
+} from 'react';
 import { RowStylingEnum, useTableStyles } from './defaultTable';
 
 import { ColumnSelectRT } from './tableUtils';
@@ -52,6 +58,7 @@ interface TableProperties<T extends Record<string, unknown>>
     selectedIds?: number[];
     preserveSelected?: boolean;
     isLoading: boolean;
+    enableSelection?: boolean;
 }
 
 // const hooks = [useGroupBy, useExpanded];
@@ -70,7 +77,8 @@ export function GroupTable<T extends Record<string, unknown>>(
         getRowStyling,
         setSelected,
         preserveSelected,
-        selectedIds
+        selectedIds,
+        enableSelection
     } = props;
     const classes = useTableStyles();
 
@@ -145,30 +153,30 @@ export function GroupTable<T extends Record<string, unknown>>(
      * @param target  The Target HTMLElement (event.target) that raised the event
      * @param rows    The list of sorted rows
      */
-    // function getRowFromEvent(target: HTMLElement, rows: RowModel<T>[]) {
-    //     // skip if this is group header
-    //     const isGroup =
-    //         target.closest('tr')?.getAttribute('data-row-is-group-row') ?? '';
-    //     if (isGroup) return null;
+    function getRowFromEvent(target: HTMLElement, rows: Row<T>[]) {
+        // skip if this is group header
+        const isGroup =
+            target.closest('tr')?.getAttribute('data-row-is-group-row') ?? '';
+        if (isGroup) return null;
 
-    //     // Skip if this is action cell
-    //     const isAction =
-    //         target.closest('td')?.getAttribute('data-is-action') ?? '';
-    //     if (isAction) return null;
+        // Skip if this is action cell
+        const isAction =
+            target.closest('td')?.getAttribute('data-is-action') ?? '';
+        if (isAction) return null;
 
-    //     const rowIndex = parseInt(
-    //         target.closest('tr')?.getAttribute('data-row-index') ?? ''
-    //     );
+        const rowIndex = parseInt(
+            target.closest('tr')?.getAttribute('data-row-index') ?? ''
+        );
 
-    //     const filteredRows = rows.filter(
-    //         (row) => row.  index === rowIndex && !row.getIsGrouped()
-    //     );
-    //     if (filteredRows.length) {
-    //         // Should only be one result
-    //         return filteredRows[0];
-    //     }
-    //     return null;
-    // }
+        const filteredRows = rows.filter(
+            (row) => row.index === rowIndex && !row.getIsGrouped()
+        );
+        if (filteredRows.length) {
+            // Should only be one result
+            return filteredRows[0];
+        }
+        return null;
+    }
 
     const [selectedRows, setSelectedRows] = useState<Row<T>[]>([]);
 
@@ -188,75 +196,75 @@ export function GroupTable<T extends Record<string, unknown>>(
      * 2. Click + SHIFT - Range Select multiple rows
      * 3. Single Click - Select only one row
      */
-    // const handleRowSelection = useCallback(
-    //     (event: React.MouseEvent<HTMLTableSectionElement>, row: Row<T>) => {
-    //         // See if row is already selected
-    //         const selectedRowIds = selectedRows?.map((r) => r.id) ?? [];
-    //         const selectIndex = selectedRowIds.indexOf(row.id);
-    //         const isSelected = selectIndex > -1;
+    const handleRowSelection = useCallback(
+        (event: React.MouseEvent<HTMLTableSectionElement>, row: Row<T>) => {
+            // See if row is already selected
+            const selectedRowIds = selectedRows?.map((r) => r.id) ?? [];
+            const selectIndex = selectedRowIds.indexOf(row.id);
+            const isSelected = selectIndex > -1;
 
-    //         let updatedSelectedRows = [...(selectedRows ? selectedRows : [])];
+            let updatedSelectedRows = [...(selectedRows ? selectedRows : [])];
 
-    //         if (
-    //             event.ctrlKey ||
-    //             event.metaKey ||
-    //             (preserveSelected && !event.shiftKey)
-    //         ) {
-    //             // 1. Click + CMD/CTRL - select multiple rows
+            if (
+                event.ctrlKey ||
+                event.metaKey ||
+                (preserveSelected && !event.shiftKey)
+            ) {
+                // 1. Click + CMD/CTRL - select multiple rows
 
-    //             if (isSelected) {
-    //                 updatedSelectedRows.splice(selectIndex, 1);
-    //             } else {
-    //                 updatedSelectedRows.push(row);
-    //             }
-    //         } else if (event.shiftKey) {
-    //             // 2. Click + SHIFT - Range Select multiple rows
+                if (isSelected) {
+                    updatedSelectedRows.splice(selectIndex, 1);
+                } else {
+                    updatedSelectedRows.push(row);
+                }
+            } else if (event.shiftKey) {
+                // 2. Click + SHIFT - Range Select multiple rows
 
-    //             if (selectedRows?.length) {
-    //                 const lastSelectedRow = selectedRows[0];
-    //                 // Calculate array indexes and reset selected rows
-    //                 const lastIndex = table
-    //                     .getRowModel()
-    //                     .rows.indexOf(lastSelectedRow);
-    //                 const currentIndex = table.getRowModel().rows.indexOf(row);
+                if (selectedRows?.length) {
+                    const lastSelectedRow = selectedRows[0];
+                    // Calculate array indexes and reset selected rows
+                    const lastIndex = table
+                        .getRowModel()
+                        .rows.indexOf(lastSelectedRow);
+                    const currentIndex = table.getRowModel().rows.indexOf(row);
 
-    //                 updatedSelectedRows = [];
-    //                 if (lastIndex < currentIndex) {
-    //                     for (let i = lastIndex; i <= currentIndex; i++) {
-    //                         const selectedRow = table.getRowModel().rows[i];
-    //                         if (!selectedRow.getIsGrouped()) {
-    //                             updatedSelectedRows.push(selectedRow);
-    //                         }
-    //                     }
-    //                 } else {
-    //                     for (let i = currentIndex; i <= lastIndex; i++) {
-    //                         const selectedRow = table.getRowModel().rows[i];
-    //                         if (!selectedRow.getIsGrouped()) {
-    //                             updatedSelectedRows.push(selectedRow);
-    //                         }
-    //                     }
-    //                 }
-    //             } else {
-    //                 // No rows previously selected, select only current row
-    //                 updatedSelectedRows = [row];
-    //             }
-    //         } else {
-    //             // 3. Single Click - Select only one row
+                    updatedSelectedRows = [];
+                    if (lastIndex < currentIndex) {
+                        for (let i = lastIndex; i <= currentIndex; i++) {
+                            const selectedRow = table.getRowModel().rows[i];
+                            if (!selectedRow.getIsGrouped()) {
+                                updatedSelectedRows.push(selectedRow);
+                            }
+                        }
+                    } else {
+                        for (let i = currentIndex; i <= lastIndex; i++) {
+                            const selectedRow = table.getRowModel().rows[i];
+                            if (!selectedRow.getIsGrouped()) {
+                                updatedSelectedRows.push(selectedRow);
+                            }
+                        }
+                    }
+                } else {
+                    // No rows previously selected, select only current row
+                    updatedSelectedRows = [row];
+                }
+            } else {
+                // 3. Single Click - Select only one row
 
-    //             if (isSelected && updatedSelectedRows.length === 1) {
-    //                 updatedSelectedRows = [];
-    //             } else {
-    //                 updatedSelectedRows = [row];
-    //             }
-    //         }
+                if (isSelected && updatedSelectedRows.length === 1) {
+                    updatedSelectedRows = [];
+                } else {
+                    updatedSelectedRows = [row];
+                }
+            }
 
-    //         if (setSelected) {
-    //             setSelectedRows(updatedSelectedRows);
-    //             setSelected(updatedSelectedRows);
-    //         }
-    //     },
-    //     [selectedRows, preserveSelected, setSelected, table]
-    // );
+            if (setSelected && enableSelection) {
+                setSelectedRows(updatedSelectedRows);
+                setSelected(updatedSelectedRows);
+            }
+        },
+        [selectedRows, preserveSelected, setSelected, enableSelection, table]
+    );
 
     return (
         <>
@@ -315,17 +323,16 @@ export function GroupTable<T extends Record<string, unknown>>(
                         ))}
                     </TableHead>
                     <TableBody
-                    // onClick={(event) => {
-                    //     const row = getRowFromEvent(
-                    //         event.target as HTMLElement,
-                    //         table.rows()
-                    //     );
+                        onClick={(event) => {
+                            const row = getRowFromEvent(
+                                event.target as HTMLElement,
+                                table.getRowModel().rows
+                            );
 
-                    //     if (row) {
-                    //         handleRowSelection(event, row);
-                    //     }
-                    // }}
-                    >
+                            if (row) {
+                                handleRowSelection(event, row);
+                            }
+                        }}>
                         {props.isLoading && (
                             <tr>
                                 <td
@@ -356,9 +363,9 @@ export function GroupTable<T extends Record<string, unknown>>(
                     </TableBody>
                 </Table>
             </TableContainer>
-            {/* <VisuallyHidden id="rowActionDescription">
+            <VisuallyHidden id="rowActionDescription">
                 Trykk for å velge
-            </VisuallyHidden> */}
+            </VisuallyHidden>
         </>
     );
 }

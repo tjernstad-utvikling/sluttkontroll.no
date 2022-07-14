@@ -110,6 +110,7 @@ const SjekklisteEditView = () => {
                                             checkpoints={
                                                 checkpointData.data ?? []
                                             }
+                                            enableSelection
                                             onSelected={(ids) =>
                                                 setSelected(
                                                     checkpointData.data

@@ -12,7 +12,6 @@ interface TableRowProps<T extends {}> {
     state: TableState;
     isSelected: boolean;
     rowClassName: string;
-    getAction?: (row: Row<T>) => ReactElement;
     toRenderInCustomCell: string[];
     getCustomCell?: (
         accessor: string,
@@ -25,7 +24,6 @@ export function TableRow<T extends {}>({
     state,
     rowClassName,
     isSelected,
-    getAction,
     toRenderInCustomCell,
     getCustomCell
 }: TableRowProps<T>) {
@@ -47,7 +45,6 @@ export function TableRow<T extends {}>({
                         getCustomCell={getCustomCell}
                         cell={cell}
                         state={state}
-                        getAction={getAction}
                     />
                 );
             })}
@@ -58,7 +55,6 @@ export function TableRow<T extends {}>({
 interface TableCellProps<T extends {}> {
     cell: Cell<T, any>;
     state: TableState;
-    getAction?: (row: Row<T>) => ReactElement;
     toRenderInCustomCell: string[];
     getCustomCell?: (
         accessor: string,
@@ -69,18 +65,13 @@ interface TableCellProps<T extends {}> {
 export function TableCell<T extends {}>({
     cell,
     state,
-    getAction,
     toRenderInCustomCell,
     getCustomCell
 }: TableCellProps<T>) {
     if (cell.column.id === 'action')
         return (
             <TableCellMui data-is-action={1}>
-                {cell.row.getIsGrouped() ? (
-                    <span></span>
-                ) : getAction ? (
-                    getAction(cell.row)
-                ) : null}
+                {cell.row.getIsGrouped() ? <span></span> : null}
             </TableCellMui>
         );
     if (cell.getIsGrouped() || cell.row.getIsGrouped())
@@ -124,13 +115,16 @@ export function TableCell<T extends {}>({
 
     return (
         <TableCellMui aria-describedby="rowActionDescription">
-            {toRenderInCustomCell.includes(cell.column.id)
-                ? getCustomCell
-                    ? getCustomCell(cell.column.id, cell.row, cell)
-                    : null
-                : state.grouping.includes(cell.column.id)
-                ? null
-                : flexRender(cell.column.columnDef.cell, cell.getContext())}
+            {
+                // toRenderInCustomCell.includes(cell.column.id)
+                //     ? getCustomCell
+                //         ? getCustomCell(cell.column.id, cell.row, cell)
+                //         : null
+                //     : state.grouping.includes(cell.column.id)
+                //     ? null
+                //     :
+                flexRender(cell.column.columnDef.cell, cell.getContext())
+            }
         </TableCellMui>
     );
 }

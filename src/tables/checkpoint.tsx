@@ -16,7 +16,6 @@ type Columns = {
     prosedyre: string;
     groupCategory: string;
     mainCategory: string;
-    action: number;
 };
 
 interface CheckpointTableProps {
@@ -34,7 +33,6 @@ export const CheckpointTable = ({
     checklists,
     templateList,
     editCheckpoint,
-
     onSelected,
     children,
     isLoading
@@ -67,61 +65,60 @@ export const CheckpointTable = ({
     }, [checklists, templateList]);
 
     function updateSelected(rows: Row<Columns>[]) {
-        if (onSelected) onSelected(rows.map((r) => r.values.id));
+        if (onSelected) onSelected(rows.map((r) => r.getValue('id')));
     }
 
     const columns: ColumnDef<Columns>[] = useMemo(
         () => [
             {
-                Header: '#',
-                accessor: 'id',
-                disableGroupBy: true
+                header: '#',
+                accessorKey: 'id',
+                enableGrouping: false
             },
             {
-                Header: 'Prosedyre nr',
-                accessor: 'prosedyreNr',
-                disableGroupBy: true
+                header: 'Prosedyre nr',
+                accessorKey: 'prosedyreNr',
+                enableGrouping: false
             },
             {
-                Header: 'Prosedyre',
-                accessor: 'prosedyre',
-                disableGroupBy: true
+                header: 'Prosedyre',
+                accessorKey: 'prosedyre',
+                enableGrouping: false
             },
             {
-                Header: 'Kategori',
-                accessor: 'mainCategory',
-                disableGroupBy: false
+                header: 'Kategori',
+                accessorKey: 'mainCategory',
+                enableGrouping: true
             },
             {
-                Header: 'Gruppe',
-                accessor: 'groupCategory',
-                disableGroupBy: false
+                header: 'Gruppe',
+                accessorKey: 'groupCategory',
+                enableGrouping: true
             },
             {
-                Header: '',
-                accessor: 'action',
-                disableGroupBy: true
+                id: 'actions',
+                header: '',
+                enableGrouping: false,
+                cell: ({ row }) => (
+                    <>
+                        {editCheckpoint ? (
+                            <RouterButton
+                                to={`/admin/settings/checkpoint/${row
+                                    .getAllCells()
+                                    .find((c) => c.column.id === 'id')
+                                    ?.getValue()}`}
+                                color="primary"
+                                startIcon={<EditIcon />}>
+                                rediger
+                            </RouterButton>
+                        ) : (
+                            <div>Test</div>
+                        )}
+                    </>
+                )
             }
         ],
-        []
-    );
-
-    const getAction = (row: Row<Columns>) => (
-        <>
-            {editCheckpoint ? (
-                <RouterButton
-                    to={`/admin/settings/checkpoint/${row
-                        .getAllCells()
-                        .find((c) => c.column.id === 'id')
-                        ?.getValue()}`}
-                    color="primary"
-                    startIcon={<EditIcon />}>
-                    rediger
-                </RouterButton>
-            ) : (
-                <div />
-            )}
-        </>
+        [editCheckpoint]
     );
 
     return (
@@ -132,7 +129,6 @@ export const CheckpointTable = ({
             defaultGrouping={['mainCategory', 'groupCategory']}
             defaultVisibilityState={{}}
             toRenderInCustomCell={[]}
-            getAction={getAction}
             isLoading={isLoading}
             selectedIds={selectedIds}
             setSelected={updateSelected}

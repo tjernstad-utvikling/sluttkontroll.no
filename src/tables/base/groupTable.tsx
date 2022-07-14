@@ -1,5 +1,6 @@
 import {
     Cell,
+    ExpandedState,
     GroupingState,
     Row,
     TableOptions,
@@ -7,15 +8,14 @@ import {
     Updater,
     VisibilityState,
     flexRender,
+    getCoreRowModel,
+    getExpandedRowModel,
+    getFilteredRowModel,
+    getGroupedRowModel,
+    getPaginationRowModel,
     useReactTable
 } from '@tanstack/react-table';
-import {
-    PropsWithChildren,
-    ReactElement,
-    useCallback,
-    useEffect,
-    useState
-} from 'react';
+import { PropsWithChildren, ReactElement, useEffect, useState } from 'react';
 import { RowStylingEnum, useTableStyles } from './defaultTable';
 
 import { ColumnSelectRT } from './tableUtils';
@@ -36,7 +36,7 @@ import { VisuallyHidden } from '../../components/text';
 import { useTableState } from './hooks/useTableState';
 
 interface TableProperties<T extends Record<string, unknown>>
-    extends TableOptions<T> {
+    extends Omit<TableOptions<T>, 'getCoreRowModel'> {
     tableKey: TableKey;
     defaultGrouping: string[];
     defaultVisibilityState: Record<string, boolean>;
@@ -47,7 +47,6 @@ interface TableProperties<T extends Record<string, unknown>>
         row: Row<T>,
         cell: Cell<T, any>
     ) => ReactElement;
-    getAction?: (row: Row<T>) => ReactElement;
     getRowStyling?: (row: Row<T>) => RowStylingEnum | undefined;
     setSelected?: (rows: Row<T>[]) => void;
     selectedIds?: number[];
@@ -68,7 +67,6 @@ export function GroupTable<T extends Record<string, unknown>>(
         children,
         toRenderInCustomCell,
         getCustomCell,
-        getAction,
         getRowStyling,
         setSelected,
         preserveSelected,
@@ -79,26 +77,33 @@ export function GroupTable<T extends Record<string, unknown>>(
     /**Get saved table settings */
     const [tableState, setTableState] = useTableState<TableState>(tableKey, {
         grouping: defaultGrouping,
-        columnVisibility: defaultVisibilityState
+        columnVisibility: defaultVisibilityState,
+        expanded: {}
     } as TableState);
 
-    function updateGrouping(grouping: Updater<GroupingState>) {
-        const valueToStore =
-            grouping instanceof Function
-                ? grouping(tableState.grouping)
-                : grouping;
+    function updateGrouping(update: Updater<GroupingState>) {
+        const grouping =
+            update instanceof Function ? update(tableState.grouping) : update;
         setTableState((prev) => {
-            return { ...prev, valueToStore };
+            return { ...prev, grouping };
         });
     }
 
-    function updateVisibility(grouping: Updater<VisibilityState>) {
-        const valueToStore =
-            grouping instanceof Function
-                ? grouping(tableState.columnVisibility)
-                : grouping;
+    function updateVisibility(update: Updater<VisibilityState>) {
+        const columnVisibility =
+            update instanceof Function
+                ? update(tableState.columnVisibility)
+                : update;
         setTableState((prev) => {
-            return { ...prev, valueToStore };
+            return { ...prev, columnVisibility };
+        });
+    }
+    function updateExpanded(update: Updater<ExpandedState>) {
+        const expanded =
+            update instanceof Function ? update(tableState.expanded) : update;
+
+        setTableState((prev) => {
+            return { ...prev, expanded };
         });
     }
 
@@ -106,9 +111,20 @@ export function GroupTable<T extends Record<string, unknown>>(
     const table = useReactTable<T>({
         ...props,
         columns,
+        getCoreRowModel: getCoreRowModel(),
+        autoResetExpanded: false,
         state: tableState,
+        enableRowSelection: true,
+        enableMultiRowSelection: true,
+        enableSubRowSelection: true,
         onGroupingChange: updateGrouping,
-        onColumnVisibilityChange: updateVisibility
+        onColumnVisibilityChange: updateVisibility,
+        onExpandedChange: updateExpanded,
+        getExpandedRowModel: getExpandedRowModel(),
+        getGroupedRowModel: getGroupedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        debugTable: true
     });
 
     function getRowClassName(row: Row<T>) {
@@ -267,6 +283,13 @@ export function GroupTable<T extends Record<string, unknown>>(
                                                             }>
                                                             <TableSortLabel
                                                                 active
+                                                                {...{
+                                                                    onClick:
+                                                                        header.column.getToggleGroupingHandler(),
+                                                                    style: {
+                                                                        cursor: 'pointer'
+                                                                    }
+                                                                }}
                                                                 direction={
                                                                     header.column.getIsGrouped()
                                                                         ? 'desc'
@@ -325,7 +348,6 @@ export function GroupTable<T extends Record<string, unknown>>(
                                         )
                                     }
                                     rowClassName={getRowClassName(row)}
-                                    getAction={getAction}
                                     toRenderInCustomCell={toRenderInCustomCell}
                                     getCustomCell={getCustomCell}
                                 />

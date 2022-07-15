@@ -1,12 +1,20 @@
 import {
     Cell,
+    ExpandedState,
+    GroupingState,
     Row,
     TableOptions,
     TableState,
-    useExpanded,
-    useGroupBy,
-    useTable
-} from 'react-table';
+    Updater,
+    VisibilityState,
+    flexRender,
+    getCoreRowModel,
+    getExpandedRowModel,
+    getFilteredRowModel,
+    getGroupedRowModel,
+    getPaginationRowModel,
+    useReactTable
+} from '@tanstack/react-table';
 import {
     PropsWithChildren,
     ReactElement,
@@ -31,29 +39,23 @@ import TableRowMui from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Tooltip from '@mui/material/Tooltip';
 import { VisuallyHidden } from '../../components/text';
-import { useDebounce } from '../../hooks/useDebounce';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useTableState } from './hooks/useTableState';
 
 interface TableProperties<T extends Record<string, unknown>>
-    extends TableOptions<T> {
+    extends Omit<TableOptions<T>, 'getCoreRowModel'> {
     tableKey: TableKey;
-    defaultGroupBy: string[];
+    defaultGrouping: string[];
+    defaultVisibilityState: Record<string, boolean>;
     children?: React.ReactNode;
-    toRenderInCustomCell: string[];
-    getCustomCell?: (
-        accessor: string,
-        row: Row<T>,
-        cell: Cell<T, any>
-    ) => ReactElement;
-    getAction?: (row: Row<T>) => ReactElement;
     getRowStyling?: (row: Row<T>) => RowStylingEnum | undefined;
     setSelected?: (rows: Row<T>[]) => void;
     selectedIds?: number[];
     preserveSelected?: boolean;
     isLoading: boolean;
+    enableSelection?: boolean;
 }
 
-const hooks = [useGroupBy, useExpanded];
+// const hooks = [useGroupBy, useExpanded];
 
 export function GroupTable<T extends Record<string, unknown>>(
     props: PropsWithChildren<TableProperties<T>>
@@ -61,54 +63,69 @@ export function GroupTable<T extends Record<string, unknown>>(
     const {
         columns,
         tableKey,
-        defaultGroupBy,
+        defaultGrouping,
+        defaultVisibilityState,
         children,
-        toRenderInCustomCell,
-        getCustomCell,
-        getAction,
         getRowStyling,
         setSelected,
         preserveSelected,
-        selectedIds
+        selectedIds,
+        enableSelection
     } = props;
     const classes = useTableStyles();
 
     /**Get saved table settings */
-    const [initialState, setInitialState] = useLocalStorage(tableKey, {
-        groupBy: defaultGroupBy
-    });
+    const [tableState, setTableState] = useTableState<TableState>(tableKey, {
+        grouping: defaultGrouping,
+        columnVisibility: defaultVisibilityState,
+        expanded: {}
+    } as TableState);
+
+    function updateGrouping(update: Updater<GroupingState>) {
+        const grouping =
+            update instanceof Function ? update(tableState.grouping) : update;
+        setTableState((prev) => {
+            return { ...prev, grouping };
+        });
+    }
+
+    function updateVisibility(update: Updater<VisibilityState>) {
+        const columnVisibility =
+            update instanceof Function
+                ? update(tableState.columnVisibility)
+                : update;
+        setTableState((prev) => {
+            return { ...prev, columnVisibility };
+        });
+    }
+    function updateExpanded(update: Updater<ExpandedState>) {
+        const expanded =
+            update instanceof Function ? update(tableState.expanded) : update;
+
+        setTableState((prev) => {
+            return { ...prev, expanded };
+        });
+    }
 
     /**Table instance */
-    const instance = useTable<T>(
-        {
-            ...props,
-            columns,
-            initialState
-        },
-        ...hooks
-    );
-    const {
-        getTableProps,
-        headerGroups,
-        getTableBodyProps,
-        rows,
-        prepareRow,
-        state,
-        visibleColumns
-    } = instance;
-
-    /**Save table settings */
-    const debouncedState = useDebounce<TableState>(state, 500);
-
-    useEffect(() => {
-        const { groupBy, expanded, hiddenColumns } = debouncedState;
-        const val = {
-            groupBy,
-            expanded,
-            hiddenColumns
-        };
-        setInitialState(val);
-    }, [setInitialState, debouncedState]);
+    const table = useReactTable<T>({
+        ...props,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        autoResetExpanded: false,
+        state: tableState,
+        enableRowSelection: true,
+        enableMultiRowSelection: true,
+        enableSubRowSelection: true,
+        onGroupingChange: updateGrouping,
+        onColumnVisibilityChange: updateVisibility,
+        onExpandedChange: updateExpanded,
+        getExpandedRowModel: getExpandedRowModel(),
+        getGroupedRowModel: getGroupedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        debugTable: true
+    });
 
     function getRowClassName(row: Row<T>) {
         if (getRowStyling !== undefined) {
@@ -144,7 +161,7 @@ export function GroupTable<T extends Record<string, unknown>>(
         );
 
         const filteredRows = rows.filter(
-            (row) => row.index === rowIndex && !row.isGrouped
+            (row) => row.index === rowIndex && !row.getIsGrouped()
         );
         if (filteredRows.length) {
             // Should only be one result
@@ -158,14 +175,11 @@ export function GroupTable<T extends Record<string, unknown>>(
     useEffect(() => {
         if (selectedIds)
             setSelectedRows(
-                rows.filter((r) => {
-                    if (r.values.hasOwnProperty('id')) {
-                        return selectedIds.find((o) => o === r.values.id);
-                    }
-                    return false;
+                table.getRowModel().rows.filter((r) => {
+                    return selectedIds.find((o) => o === r.getValue('id'));
                 })
             );
-    }, [rows, selectedIds]);
+    }, [selectedIds, table]);
 
     /**
      * Handle Row Selection:
@@ -201,21 +215,23 @@ export function GroupTable<T extends Record<string, unknown>>(
                 if (selectedRows?.length) {
                     const lastSelectedRow = selectedRows[0];
                     // Calculate array indexes and reset selected rows
-                    const lastIndex = rows.indexOf(lastSelectedRow);
-                    const currentIndex = rows.indexOf(row);
+                    const lastIndex = table
+                        .getRowModel()
+                        .rows.indexOf(lastSelectedRow);
+                    const currentIndex = table.getRowModel().rows.indexOf(row);
 
                     updatedSelectedRows = [];
                     if (lastIndex < currentIndex) {
                         for (let i = lastIndex; i <= currentIndex; i++) {
-                            const selectedRow = rows[i];
-                            if (!selectedRow.isGrouped) {
+                            const selectedRow = table.getRowModel().rows[i];
+                            if (!selectedRow.getIsGrouped()) {
                                 updatedSelectedRows.push(selectedRow);
                             }
                         }
                     } else {
                         for (let i = currentIndex; i <= lastIndex; i++) {
-                            const selectedRow = rows[i];
-                            if (!selectedRow.isGrouped) {
+                            const selectedRow = table.getRowModel().rows[i];
+                            if (!selectedRow.getIsGrouped()) {
                                 updatedSelectedRows.push(selectedRow);
                             }
                         }
@@ -234,12 +250,12 @@ export function GroupTable<T extends Record<string, unknown>>(
                 }
             }
 
-            if (setSelected) {
+            if (setSelected && enableSelection) {
                 setSelectedRows(updatedSelectedRows);
                 setSelected(updatedSelectedRows);
             }
         },
-        [selectedRows, preserveSelected, setSelected, rows]
+        [selectedRows, preserveSelected, setSelected, enableSelection, table]
     );
 
     return (
@@ -247,42 +263,51 @@ export function GroupTable<T extends Record<string, unknown>>(
             <TableContainer component={Paper} className={classes.root}>
                 <div className={classes.tools}>
                     <div className={classes.pasteTool}>{children}</div>
-                    <ColumnSelectRT instance={instance} />
+                    <ColumnSelectRT instance={table} />
                 </div>
-                <Table
-                    role="grid"
-                    size="small"
-                    aria-label="sjekkliste"
-                    {...getTableProps()}>
+                <Table role="grid" size="small" aria-label="sjekkliste">
                     <TableHead>
-                        {headerGroups.map((headerGroup) => (
-                            <TableRowMui {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map((column) => {
-                                    const {
-                                        title: groupTitle = '',
-                                        ...columnGroupByProps
-                                    } = column.getGroupByToggleProps();
-
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRowMui key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableCell {...column.getHeaderProps()}>
-                                            {column.canGroupBy && (
-                                                <Tooltip title={groupTitle}>
-                                                    <TableSortLabel
-                                                        active
-                                                        direction={
-                                                            column.isGrouped
-                                                                ? 'desc'
-                                                                : 'asc'
-                                                        }
-                                                        IconComponent={
-                                                            KeyboardArrowRight
-                                                        }
-                                                        {...columnGroupByProps}
-                                                    />
-                                                </Tooltip>
+                                        <TableCell
+                                            key={header.id}
+                                            colSpan={header.colSpan}>
+                                            {header.isPlaceholder ? null : (
+                                                <div>
+                                                    {header.column.getCanGroup() ? (
+                                                        <Tooltip
+                                                            title={
+                                                                'Grupper kolonne'
+                                                            }>
+                                                            <TableSortLabel
+                                                                active
+                                                                {...{
+                                                                    onClick:
+                                                                        header.column.getToggleGroupingHandler(),
+                                                                    style: {
+                                                                        cursor: 'pointer'
+                                                                    }
+                                                                }}
+                                                                direction={
+                                                                    header.column.getIsGrouped()
+                                                                        ? 'desc'
+                                                                        : 'asc'
+                                                                }
+                                                                IconComponent={
+                                                                    KeyboardArrowRight
+                                                                }
+                                                            />
+                                                        </Tooltip>
+                                                    ) : null}{' '}
+                                                    {flexRender(
+                                                        header.column.columnDef
+                                                            .header,
+                                                        header.getContext()
+                                                    )}
+                                                </div>
                                             )}
-
-                                            {column.render('Header')}
                                         </TableCell>
                                     );
                                 })}
@@ -290,11 +315,10 @@ export function GroupTable<T extends Record<string, unknown>>(
                         ))}
                     </TableHead>
                     <TableBody
-                        {...getTableBodyProps()}
                         onClick={(event) => {
                             const row = getRowFromEvent(
                                 event.target as HTMLElement,
-                                rows
+                                table.getRowModel().rows
                             );
 
                             if (row) {
@@ -303,27 +327,26 @@ export function GroupTable<T extends Record<string, unknown>>(
                         }}>
                         {props.isLoading && (
                             <tr>
-                                <td colSpan={visibleColumns.length}>
+                                <td
+                                    colSpan={
+                                        table.getVisibleFlatColumns().length
+                                    }>
                                     <LinearProgress sx={{ width: '100%' }} />
                                 </td>
                             </tr>
                         )}
-                        {rows.map((row) => {
-                            prepareRow(row);
+                        {table.getRowModel().rows.map((row) => {
                             return (
                                 <TableRow<T>
-                                    {...row.getRowProps()}
+                                    key={row.id}
                                     row={row}
-                                    state={state}
+                                    state={tableState}
                                     isSelected={
                                         !!selectedRows?.find(
                                             (r) => r.id === row.id
                                         )
                                     }
                                     rowClassName={getRowClassName(row)}
-                                    getAction={getAction}
-                                    toRenderInCustomCell={toRenderInCustomCell}
-                                    getCustomCell={getCustomCell}
                                 />
                             );
                         })}

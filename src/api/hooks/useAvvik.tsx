@@ -219,6 +219,7 @@ export function useNewAvvik() {
             utbedrer: User[] | null;
             checklistId: number;
             images: File[];
+            discoverLocation: string;
         }
     >(
         async (body) => {
@@ -520,7 +521,11 @@ export function useUpdateAvvik() {
                 {
                     beskrivelse: body.avvik.beskrivelse,
                     kommentar: body.avvik.kommentar,
-                    utbedrer: body.avvik.utbedrer.map((u) => u.id)
+                    utbedrer: body.avvik.utbedrer.map((u) => {
+                        return {
+                            id: u.id
+                        };
+                    })
                 }
             );
             return data;

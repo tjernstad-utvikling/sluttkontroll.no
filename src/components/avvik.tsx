@@ -87,6 +87,12 @@ export function AvvikCard({
                         variant="body2"
                         color="textSecondary"
                         component="p">
+                        {avvik.discoverLocation}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        component="p">
                         {trimmedBeskrivelse}
                     </Typography>
                 </CardContent>

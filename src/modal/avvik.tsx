@@ -24,7 +24,8 @@ export const AvvikEditModal = ({
     const handleUpdate = async (
         beskrivelse: string,
         kommentar: string,
-        utbedrer: User[] | null
+        utbedrer: User[] | null,
+        discoverLocation: string
     ): Promise<boolean> => {
         if (avvikData.data !== undefined) {
             try {
@@ -33,6 +34,7 @@ export const AvvikEditModal = ({
                         ...avvikData.data,
                         beskrivelse,
                         kommentar,
+                        discoverLocation,
                         utbedrer: utbedrer !== null ? utbedrer : []
                     }
                 });

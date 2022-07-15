@@ -17,24 +17,30 @@ interface TableRowProps {
     tint?: boolean;
     hasTopBorder?: boolean;
     hasBottomBorder?: boolean;
+    style?: { backgroundColor?: string | undefined };
 }
 export const TableRow = ({
     children,
     tint,
     hasBottomBorder,
-    hasTopBorder
+    hasTopBorder,
+    style
 }: TableRowProps) => {
     return (
         <View
-            style={{
-                fontSize: 12,
-                padding: 2,
-                display: 'flex',
-                flexDirection: 'row',
-                backgroundColor: (tint && '#e9eef5') || '',
-                borderBottom: (hasBottomBorder && '1px solid #5b8bc9') || '',
-                borderTop: (hasTopBorder && '1px solid #5b8bc9') || ''
-            }}>
+            style={[
+                {
+                    fontSize: 12,
+                    padding: 5,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    backgroundColor: (tint && '#e9eef5') || '',
+                    borderBottom:
+                        (hasBottomBorder && '1px solid #5b8bc9') || '',
+                    borderTop: (hasTopBorder && '1px solid #5b8bc9') || ''
+                },
+                style ? style : {}
+            ]}>
             {children}
         </View>
     );

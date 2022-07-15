@@ -78,6 +78,11 @@ export const columns = ({
             flex: 1
         },
         {
+            field: 'discoverLocation',
+            headerName: 'Oppdaget sted',
+            flex: 1
+        },
+        {
             field: 'beskrivelse',
             headerName: 'Beskrivelse',
             flex: 1,

@@ -267,7 +267,12 @@ const SlkDocument = ({
                     locationImageUrl={locationImageUrl}
                 />
             ) : (
-                <FrontPage reportSetting={reportSetting} kontroll={kontroll} />
+                isModuleActive(ReportModules.frontPage) && (
+                    <FrontPage
+                        reportSetting={reportSetting}
+                        kontroll={kontroll}
+                    />
+                )
             )}
             {isModuleActive(ReportModules.infoPage) && (
                 <InfoPage

@@ -240,6 +240,12 @@ const AvvikView = () => {
                                             </dd>
                                             <Divider />
                                             <Typography style={{ padding: 5 }}>
+                                                {
+                                                    avvikData.data
+                                                        ?.discoverLocation
+                                                }
+                                            </Typography>
+                                            <Typography style={{ padding: 5 }}>
                                                 {avvikData.data?.beskrivelse}
                                             </Typography>
                                             <Divider />

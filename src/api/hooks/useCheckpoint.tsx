@@ -30,7 +30,9 @@ export function useAddCheckpoint() {
             prosedyre: string;
             prosedyreNr: string;
             tekst: string;
-            gruppe: string;
+            mainCategory: string;
+            groupCategory: number;
+            checkpointNumber: number;
         }
     >(
         async (body) => {
@@ -93,7 +95,9 @@ export function useUpdateCheckpoint() {
             prosedyre: string;
             prosedyreNr: string;
             tekst: string;
-            gruppe: string;
+            mainCategory: string;
+            groupCategory: number;
+            checkpointNumber: number;
         }
     >(
         async (body) => {
@@ -152,10 +156,3 @@ export function useUpdateCheckpoint() {
         }
     );
 }
-
-export const checkpointGroupOptions = [
-    { value: 'Installasjon', label: 'Installasjon' },
-    { value: 'Målinger', label: 'Målinger' },
-    { value: 'Tavler', label: 'Tavler' },
-    { value: 'Annet', label: 'Annet' }
-];

@@ -1,7 +1,6 @@
-import { Cell, Row, TableState } from 'react-table';
+import { Cell, Row, TableState, flexRender } from '@tanstack/react-table';
 
 import Button from '@mui/material/Button';
-import { ReactElement } from 'react';
 import TableCellMui from '@mui/material/TableCell';
 import TableRowMui from '@mui/material/TableRow';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
@@ -9,48 +8,28 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 
 interface TableRowProps<T extends {}> {
     row: Row<T>;
-    state: TableState<T>;
+    state: TableState;
     isSelected: boolean;
     rowClassName: string;
-    getAction?: (row: Row<T>) => ReactElement;
-    toRenderInCustomCell: string[];
-    getCustomCell?: (
-        accessor: string,
-        row: Row<T>,
-        cell: Cell<T, any>
-    ) => ReactElement;
 }
 export function TableRow<T extends {}>({
     row,
     state,
     rowClassName,
-    isSelected,
-    getAction,
-    toRenderInCustomCell,
-    getCustomCell
+    isSelected
 }: TableRowProps<T>) {
     return (
         <TableRowMui
             data-row-index={row.index}
-            data-row-is-group-row={row.isGrouped ? 1 : undefined}
-            {...row.getRowProps()}
+            data-row-is-group-row={row.getIsGrouped() ? 1 : undefined}
             style={{
-                cursor: !row.isGrouped ? 'pointer' : 'auto'
+                cursor: !row.getIsGrouped() ? 'pointer' : 'auto'
             }}
             className={`${rowClassName} ${
-                !row.isGrouped && 'slk-table-selectable'
+                !row.getIsGrouped() && 'slk-table-selectable'
             } ${isSelected && 'Mui-selected'}`}>
-            {row.cells.map((cell) => {
-                return (
-                    <TableCell
-                        {...cell.getCellProps()}
-                        toRenderInCustomCell={toRenderInCustomCell}
-                        getCustomCell={getCustomCell}
-                        cell={cell}
-                        state={state}
-                        getAction={getAction}
-                    />
-                );
+            {row.getVisibleCells().map((cell) => {
+                return <TableCell key={cell.id} cell={cell} state={state} />;
             })}
         </TableRowMui>
     );
@@ -58,72 +37,59 @@ export function TableRow<T extends {}>({
 
 interface TableCellProps<T extends {}> {
     cell: Cell<T, any>;
-    state: TableState<T>;
-    getAction?: (row: Row<T>) => ReactElement;
-    toRenderInCustomCell: string[];
-    getCustomCell?: (
-        accessor: string,
-        row: Row<T>,
-        cell: Cell<T, any>
-    ) => ReactElement;
+    state: TableState;
 }
-export function TableCell<T extends {}>({
-    cell,
-    state,
-    getAction,
-    toRenderInCustomCell,
-    getCustomCell
-}: TableCellProps<T>) {
-    if (cell.column.id === 'action')
-        return (
-            <TableCellMui data-is-action={1} {...cell.getCellProps()}>
-                {cell.row.isGrouped ? (
-                    <span></span>
-                ) : getAction ? (
-                    getAction(cell.row)
-                ) : null}
-            </TableCellMui>
-        );
-    if (cell.isGrouped || cell.row.isGrouped)
+export function TableCell<T extends {}>({ cell, state }: TableCellProps<T>) {
+    if (cell.getIsGrouped() || cell.row.getIsGrouped())
         return (
             <TableCellMui
                 data-is-action={cell.column.id === 'action' ? 1 : undefined}
-                {...cell.getCellProps()}
                 aria-describedby="rowActionDescription">
-                {cell.isGrouped ? (
+                {cell.getIsGrouped() ? (
                     // If it's a grouped cell, add an expander and row count
                     <>
                         <Button
-                            {...cell.row.getToggleRowExpandedProps()}
+                            {...{
+                                onClick: cell.row.getToggleExpandedHandler(),
+                                style: {
+                                    cursor: cell.row.getCanExpand()
+                                        ? 'pointer'
+                                        : 'normal'
+                                }
+                            }}
                             variant="text"
                             size="small"
                             startIcon={
-                                cell.row.isExpanded ? (
+                                cell.row.getIsExpanded() ? (
                                     <UnfoldLessIcon />
                                 ) : (
                                     <UnfoldMoreIcon />
                                 )
                             }>
-                            {cell.render('Cell')} ({cell.row.subRows.length})
+                            {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                            )}{' '}
+                            ({cell.row.subRows.length})
                         </Button>
                     </>
-                ) : cell.row.isGrouped ? (
+                ) : cell.getIsAggregated() ? (
+                    // If the cell is aggregated, use the Aggregated
+                    // renderer for cell
+                    flexRender(
+                        cell.column.columnDef.aggregatedCell ??
+                            cell.column.columnDef.cell,
+                        cell.getContext()
+                    )
+                ) : cell.getIsPlaceholder() ? null : cell.row.getIsGrouped() ? (
                     <span></span>
                 ) : null}
             </TableCellMui>
         );
 
     return (
-        <TableCellMui
-            {...cell.getCellProps()}
-            aria-describedby="rowActionDescription">
-            {toRenderInCustomCell.includes(cell.column.id)
-                ? getCustomCell
-                    ? getCustomCell(cell.column.id, cell.row, cell)
-                    : null
-                : state.groupBy.includes(cell.column.id)
-                ? null
-                : cell.render('Cell')}
+        <TableCellMui aria-describedby="rowActionDescription">
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
         </TableCellMui>
     );
 }

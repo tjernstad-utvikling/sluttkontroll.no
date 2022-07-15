@@ -1,4 +1,5 @@
 import {
+    ColumnFiltersState,
     ExpandedState,
     GroupingState,
     Row,
@@ -9,9 +10,13 @@ import {
     flexRender,
     getCoreRowModel,
     getExpandedRowModel,
+    getFacetedMinMaxValues,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
     getFilteredRowModel,
     getGroupedRowModel,
     getPaginationRowModel,
+    getSortedRowModel,
     useReactTable
 } from '@tanstack/react-table';
 import {
@@ -24,6 +29,7 @@ import {
 import { RowStylingEnum, useTableStyles } from './defaultTable';
 
 import { ColumnSelectRT } from './tableUtils';
+import { Filter } from './components/filter';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
@@ -78,6 +84,10 @@ export function GroupTable<T extends Record<string, unknown>>(
         expanded: {}
     } as TableState);
 
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+    console.log({ columnFilters });
+
     function updateGrouping(update: Updater<GroupingState>) {
         const grouping =
             update instanceof Function ? update(tableState.grouping) : update;
@@ -110,10 +120,11 @@ export function GroupTable<T extends Record<string, unknown>>(
         columns,
         getCoreRowModel: getCoreRowModel(),
         autoResetExpanded: false,
-        state: tableState,
+        state: { ...tableState, columnFilters },
         enableRowSelection: true,
         enableMultiRowSelection: true,
         enableSubRowSelection: true,
+        onColumnFiltersChange: setColumnFilters,
         onGroupingChange: updateGrouping,
         onColumnVisibilityChange: updateVisibility,
         onExpandedChange: updateExpanded,
@@ -121,6 +132,10 @@ export function GroupTable<T extends Record<string, unknown>>(
         getGroupedRowModel: getGroupedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
+        getFacetedMinMaxValues: getFacetedMinMaxValues(),
         debugTable: true
     });
 
@@ -272,38 +287,51 @@ export function GroupTable<T extends Record<string, unknown>>(
                                             key={header.id}
                                             colSpan={header.colSpan}>
                                             {header.isPlaceholder ? null : (
-                                                <div>
-                                                    {header.column.getCanGroup() ? (
-                                                        <Tooltip
-                                                            title={
-                                                                'Grupper kolonne'
-                                                            }>
-                                                            <TableSortLabel
-                                                                active
-                                                                {...{
-                                                                    onClick:
-                                                                        header.column.getToggleGroupingHandler(),
-                                                                    style: {
-                                                                        cursor: 'pointer'
+                                                <>
+                                                    <div>
+                                                        {header.column.getCanGroup() ? (
+                                                            <Tooltip
+                                                                title={
+                                                                    'Grupper kolonne'
+                                                                }>
+                                                                <TableSortLabel
+                                                                    active
+                                                                    {...{
+                                                                        onClick:
+                                                                            header.column.getToggleGroupingHandler(),
+                                                                        style: {
+                                                                            cursor: 'pointer'
+                                                                        }
+                                                                    }}
+                                                                    direction={
+                                                                        header.column.getIsGrouped()
+                                                                            ? 'desc'
+                                                                            : 'asc'
                                                                     }
-                                                                }}
-                                                                direction={
-                                                                    header.column.getIsGrouped()
-                                                                        ? 'desc'
-                                                                        : 'asc'
+                                                                    IconComponent={
+                                                                        KeyboardArrowRight
+                                                                    }
+                                                                />
+                                                            </Tooltip>
+                                                        ) : null}{' '}
+                                                        {flexRender(
+                                                            header.column
+                                                                .columnDef
+                                                                .header,
+                                                            header.getContext()
+                                                        )}
+                                                    </div>
+                                                    {header.column.getCanFilter() ? (
+                                                        <div>
+                                                            <Filter
+                                                                column={
+                                                                    header.column
                                                                 }
-                                                                IconComponent={
-                                                                    KeyboardArrowRight
-                                                                }
+                                                                table={table}
                                                             />
-                                                        </Tooltip>
-                                                    ) : null}{' '}
-                                                    {flexRender(
-                                                        header.column.columnDef
-                                                            .header,
-                                                        header.getContext()
-                                                    )}
-                                                </div>
+                                                        </div>
+                                                    ) : null}
+                                                </>
                                             )}
                                         </TableCell>
                                     );

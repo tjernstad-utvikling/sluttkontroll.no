@@ -185,7 +185,7 @@ export const SjekklisteTable = ({
             },
             {
                 header: '',
-                accessorKey: 'action',
+                accessorKey: 'actions',
                 enableGrouping: false,
                 cell: ({ row }) => (
                     <>

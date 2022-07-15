@@ -86,7 +86,7 @@ export function ColumnSelectRT<T extends Record<string, unknown>>({
     // const { allColumns, toggleHideColumn } = instance;
     const hideableColumns = instance
         .getAllColumns()
-        .filter((column) => !(column.id === 'action'));
+        .filter((column) => !(column.id === 'actions'));
     const checkedCount = hideableColumns.reduce(
         (acc, val) => acc + (val.getIsVisible() ? 0 : 1),
         0
@@ -113,25 +113,28 @@ export function ColumnSelectRT<T extends Record<string, unknown>>({
                     <FormControl component="fieldset">
                         <FormLabel component="legend">Velg kolonner</FormLabel>
                         <FormGroup>
-                            {instance.getAllLeafColumns().map((c) => (
-                                <FormControlLabel
-                                    key={c.id}
-                                    control={
-                                        <Switch
-                                            name={c.id}
-                                            color="primary"
-                                            size="small"
-                                            disabled={
-                                                c.getIsVisible() &&
-                                                onlyOneOptionLeft
-                                            }
-                                        />
-                                    }
-                                    onChange={c.getToggleVisibilityHandler()}
-                                    checked={c.getIsVisible()}
-                                    label={c.id}
-                                />
-                            ))}
+                            {instance
+                                .getAllLeafColumns()
+                                .filter((column) => !(column.id === 'actions'))
+                                .map((c) => (
+                                    <FormControlLabel
+                                        key={c.id}
+                                        control={
+                                            <Switch
+                                                name={c.id}
+                                                color="primary"
+                                                size="small"
+                                                disabled={
+                                                    c.getIsVisible() &&
+                                                    onlyOneOptionLeft
+                                                }
+                                            />
+                                        }
+                                        onChange={c.getToggleVisibilityHandler()}
+                                        checked={c.getIsVisible()}
+                                        label={c.columnDef.header?.toString()}
+                                    />
+                                ))}
                         </FormGroup>
                     </FormControl>
                 </DialogContent>

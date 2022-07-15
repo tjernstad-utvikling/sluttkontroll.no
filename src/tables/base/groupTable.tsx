@@ -1,5 +1,4 @@
 import {
-    Cell,
     ExpandedState,
     GroupingState,
     Row,
@@ -54,8 +53,6 @@ interface TableProperties<T extends Record<string, unknown>>
     isLoading: boolean;
     enableSelection?: boolean;
 }
-
-// const hooks = [useGroupBy, useExpanded];
 
 export function GroupTable<T extends Record<string, unknown>>(
     props: PropsWithChildren<TableProperties<T>>

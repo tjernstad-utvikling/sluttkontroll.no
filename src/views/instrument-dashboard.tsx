@@ -1,10 +1,5 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import {
-    InstrumentTable,
-    defaultColumns,
-    instrumentColumns
-} from '../tables/instrument';
-import {
     useInstruments,
     useRemoveInstrumentDisponent,
     useSetInstrumentDisponent
@@ -15,7 +10,7 @@ import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
 import { InstrumentStatus } from '../components/instrument';
-import { TableContainer } from '../tables/base/tableContainer';
+import { InstrumentTable } from '../tables/instrument';
 import { useCurrentUser } from '../api/hooks/useUsers';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useState } from 'react';
@@ -79,25 +74,20 @@ const InstrumentsView = () => {
                             }>
                             <CardContent>
                                 <InstrumentStatus />
-                                <TableContainer
-                                    columns={instrumentColumns({
-                                        edit: (id: number) => {
-                                            setEditId(id);
-                                            setIsModalOpen(true);
-                                        },
-                                        regCalibration: (id: number) => {
-                                            setCalibrationModalId(id);
-                                        },
-                                        currentUser: currentUserData.data,
-                                        changeDisponent: handleInstrumentBooking
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="instruments">
-                                    <InstrumentTable
-                                        isLoading={instrumentsData.isLoading}
-                                        instruments={instrumentsData.data ?? []}
-                                    />
-                                </TableContainer>
+
+                                <InstrumentTable
+                                    changeDisponent={handleInstrumentBooking}
+                                    currentUser={currentUserData.data}
+                                    edit={(id: number) => {
+                                        setEditId(id);
+                                        setIsModalOpen(true);
+                                    }}
+                                    regCalibration={(id: number) => {
+                                        setCalibrationModalId(id);
+                                    }}
+                                    isLoading={instrumentsData.isLoading}
+                                    instruments={instrumentsData.data ?? []}
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

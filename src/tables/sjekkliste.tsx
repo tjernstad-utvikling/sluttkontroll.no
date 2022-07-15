@@ -40,6 +40,7 @@ export const SjekklisteValueGetter = (data: Checklist | null) => {
     };
     return { prosedyre, prosedyreNr, avvik, gruppe };
 };
+
 interface AvvikCellProps {
     url: string;
     id: string;

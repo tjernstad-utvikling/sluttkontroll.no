@@ -99,6 +99,7 @@ export const CheckpointTable = ({
                 id: 'actions',
                 header: '',
                 enableGrouping: false,
+                enableColumnFilter: false,
                 cell: ({ row }) => (
                     <>
                         {editCheckpoint ? (

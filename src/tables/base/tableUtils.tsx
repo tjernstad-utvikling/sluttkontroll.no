@@ -1,3 +1,4 @@
+import { Column, Table } from '@tanstack/react-table';
 import React, { ReactElement } from 'react';
 
 import Button from '@mui/material/Button';
@@ -5,6 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import { Filter } from './components/filter';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -15,7 +17,6 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
-import { Table } from '@tanstack/react-table';
 import { useTable } from './tableContainer';
 
 export const ColumnSelect = (): JSX.Element => {
@@ -221,3 +222,47 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
         </div>
     );
 };
+
+interface ColumnActionProps<T extends {}> {
+    column: Column<T, unknown>;
+    table: Table<T>;
+}
+export function ColumnAction<T extends {}>({
+    column,
+    table
+}: ColumnActionProps<T>) {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const close = () => {
+        setAnchorEl(null);
+    };
+
+    return (
+        <div>
+            <IconButton
+                aria-label="kolonne meny"
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+                size="small">
+                <MoreVertIcon fontSize="inherit" />
+            </IconButton>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={close}>
+                {column.getCanFilter() && (
+                    <MenuItem>
+                        <Filter column={column} table={table} />
+                    </MenuItem>
+                )}
+            </Menu>
+        </div>
+    );
+}

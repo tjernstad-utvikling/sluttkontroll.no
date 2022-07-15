@@ -231,6 +231,7 @@ export const InstrumentTable = ({
                 header: '',
                 accessorKey: 'actions',
                 enableGrouping: false,
+                enableColumnFilter: false,
                 cell: ({ row }) => (
                     <RowAction
                         actionItems={[

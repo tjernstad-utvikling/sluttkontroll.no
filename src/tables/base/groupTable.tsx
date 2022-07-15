@@ -1,3 +1,4 @@
+import { ColumnAction, ColumnSelectRT } from './tableUtils';
 import {
     ColumnFiltersState,
     ExpandedState,
@@ -28,8 +29,7 @@ import {
 } from 'react';
 import { RowStylingEnum, useTableStyles } from './defaultTable';
 
-import { ColumnSelectRT } from './tableUtils';
-import { Filter } from './components/filter';
+import { FilterRemove } from './components/filter';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
@@ -85,8 +85,6 @@ export function GroupTable<T extends Record<string, unknown>>(
     } as TableState);
 
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-    console.log({ columnFilters });
 
     function updateGrouping(update: Updater<GroupingState>) {
         const grouping =
@@ -288,7 +286,11 @@ export function GroupTable<T extends Record<string, unknown>>(
                                             colSpan={header.colSpan}>
                                             {header.isPlaceholder ? null : (
                                                 <>
-                                                    <div>
+                                                    <div
+                                                        style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'row'
+                                                        }}>
                                                         {header.column.getCanGroup() ? (
                                                             <Tooltip
                                                                 title={
@@ -320,17 +322,21 @@ export function GroupTable<T extends Record<string, unknown>>(
                                                                 .header,
                                                             header.getContext()
                                                         )}
-                                                    </div>
-                                                    {header.column.getCanFilter() ? (
-                                                        <div>
-                                                            <Filter
+                                                        <FilterRemove
+                                                            column={
+                                                                header.column
+                                                            }
+                                                            table={table}
+                                                        />
+                                                        {header.column.getCanFilter() && (
+                                                            <ColumnAction
                                                                 column={
                                                                     header.column
                                                                 }
                                                                 table={table}
                                                             />
-                                                        </div>
-                                                    ) : null}
+                                                        )}
+                                                    </div>
                                                 </>
                                             )}
                                         </TableCell>

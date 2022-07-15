@@ -23,7 +23,7 @@ type InstrumentColumns = {
     id: number;
     name: string;
     serienr: string;
-    sisteKalibrert: Date | undefined;
+    sisteKalibrert: Date | null;
     user: string;
     disponent: UserRef | null;
     calibrationInterval: number;
@@ -35,9 +35,9 @@ type InstrumentColumns = {
 export const InstrumentValueGetter = (data: Instrument | null) => {
     const sisteKalibrert = (
         formatString: string,
-        date: Date | undefined
+        date: Date | null
     ): string => {
-        if (date !== undefined) {
+        if (date !== null) {
             return format(new Date(date), formatString);
         }
         return 'Kalibrering ikke registrert';
@@ -123,7 +123,7 @@ export const InstrumentTable = ({
                 ...c,
                 sisteKalibrert: c.sisteKalibrert
                     ? new Date(c.sisteKalibrert.date)
-                    : undefined,
+                    : null,
                 user: InstrumentValueGetter(c).user('Ansvarlig ikke valgt')
             };
         });
@@ -144,11 +144,6 @@ export const InstrumentTable = ({
             {
                 header: 'Serienummer',
                 accessorKey: 'serienr',
-                enableGrouping: false
-            },
-            {
-                header: 'Siste kalibrering',
-                accessorKey: 'sisteKalibrert',
                 enableGrouping: false
             },
             {
@@ -178,7 +173,7 @@ export const InstrumentTable = ({
             {
                 header: 'Disponerer instrumentet',
                 accessorKey: 'disponent',
-                enableGrouping: false,
+                enableGrouping: true,
                 cell: ({ cell, row }) => (
                     <RenderDisponentField
                         onClick={changeDisponent}
@@ -207,6 +202,16 @@ export const InstrumentTable = ({
                         <Chip variant="outlined" icon={<NotInterestedIcon />} />
                     );
                 }
+            },
+            {
+                header: 'Tid for kalibrering',
+                accessorKey: 'needCalibrating',
+                enableGrouping: true
+            },
+            {
+                header: 'Passert kalibrering',
+                accessorKey: 'passedCalibrationDate',
+                enableGrouping: true
             },
             {
                 header: '',
@@ -250,7 +255,7 @@ export const InstrumentTable = ({
             tableKey={TableKey.instrument}
             columns={columns}
             data={data}
-            defaultGrouping={['groupCategory']}
+            defaultGrouping={[]}
             defaultVisibilityState={{}}
             getRowStyling={getRowStyling}
             isLoading={isLoading}

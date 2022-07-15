@@ -1,5 +1,4 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { Instrument, UserRef } from '../contracts/instrumentApi';
 
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
@@ -8,6 +7,7 @@ import CompassCalibrationIcon from '@mui/icons-material/CompassCalibration';
 import EditIcon from '@mui/icons-material/Edit';
 import { GroupTable } from './base/groupTable';
 import IconButton from '@mui/material/IconButton';
+import { Instrument } from '../contracts/instrumentApi';
 import { Link } from 'react-router-dom';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import { RowAction } from './base/tableUtils';
@@ -25,7 +25,7 @@ type InstrumentColumns = {
     serienr: string;
     sisteKalibrert: Date | null;
     user: string;
-    disponent: UserRef | null;
+    disponent: string | null;
     calibrationInterval: number;
     toCalibrate: boolean;
     passedCalibrationDate: boolean;
@@ -48,11 +48,11 @@ export const InstrumentValueGetter = (data: Instrument | null) => {
         }
         return notSelectedString;
     };
-    const disponent = (): string => {
+    const disponent = (): string | null => {
         if (data?.disponent !== null) {
-            return data?.disponent.name ?? '';
+            return data?.disponent.name ?? null;
         }
-        return '';
+        return null;
     };
 
     return { sisteKalibrert, user, disponent };
@@ -68,32 +68,40 @@ const RenderDisponentField = ({
     onClick: (id: number) => void;
 }) => {
     if (user !== undefined) {
-        const disponent: UserRef | null = row.getValue('disponent');
-        if (disponent !== null && disponent !== undefined) {
+        const disponent = row.getValue<string | undefined>('disponent');
+        if (disponent) {
             return (
                 <>
-                    <Button
-                        onClick={() => onClick(row.getValue('id'))}
-                        variant="outlined"
-                        color="primary"
-                        size="small">
-                        {user.id === disponent.id ? 'Lever' : 'Overta'}
-                    </Button>{' '}
+                    {!row.getIsGrouped() ? (
+                        <Button
+                            onClick={() => onClick(row.getValue('id'))}
+                            variant="outlined"
+                            color="primary"
+                            size="small">
+                            {user.name === disponent ? 'Lever' : 'Overta'}
+                        </Button>
+                    ) : (
+                        <div />
+                    )}{' '}
                     <Typography style={{ paddingLeft: 5 }}>
-                        {disponent.name}
+                        {disponent}
                     </Typography>
                 </>
             );
         }
         return (
             <>
-                <Button
-                    onClick={() => onClick(row.getValue('id'))}
-                    variant="outlined"
-                    color="primary"
-                    size="small">
-                    Book
-                </Button>{' '}
+                {!row.getIsGrouped() ? (
+                    <Button
+                        onClick={() => onClick(row.getValue('id'))}
+                        variant="outlined"
+                        color="primary"
+                        size="small">
+                        Book
+                    </Button>
+                ) : (
+                    <div />
+                )}{' '}
                 <Typography style={{ paddingLeft: 5 }}>Ingen</Typography>
             </>
         );
@@ -124,7 +132,8 @@ export const InstrumentTable = ({
                 sisteKalibrert: c.sisteKalibrert
                     ? new Date(c.sisteKalibrert.date)
                     : null,
-                user: InstrumentValueGetter(c).user('Ansvarlig ikke valgt')
+                user: InstrumentValueGetter(c).user('Ansvarlig ikke valgt'),
+                disponent: InstrumentValueGetter(c).disponent()
             };
         });
     }, [instruments]);
@@ -134,7 +143,9 @@ export const InstrumentTable = ({
             {
                 header: '#',
                 accessorKey: 'id',
-                enableGrouping: false
+                enableGrouping: false,
+
+                aggregatedCell: () => ''
             },
             {
                 header: 'Instrument',
@@ -149,6 +160,7 @@ export const InstrumentTable = ({
             {
                 header: 'Siste kalibrering',
                 accessorKey: 'sisteKalibrert',
+                aggregatedCell: () => '',
                 enableGrouping: false,
                 cell: ({ cell, row }) => (
                     <>
@@ -185,7 +197,9 @@ export const InstrumentTable = ({
             {
                 header: 'Kalibreringsinterval',
                 accessorKey: 'calibrationInterval',
-                enableGrouping: true
+                enableGrouping: true,
+                aggregationFn: 'max',
+                aggregatedCell: ({ getValue }) => `Maks ${getValue()}`
             },
             {
                 header: 'Skal kalibreres',

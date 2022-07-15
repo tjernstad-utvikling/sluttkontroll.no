@@ -1,5 +1,4 @@
 import {
-    Cell,
     ExpandedState,
     GroupingState,
     Row,

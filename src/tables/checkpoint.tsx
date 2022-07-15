@@ -49,8 +49,7 @@ export const CheckpointTable = ({
                     String(c.groupCategory),
                 mainCategory:
                     categories.find((mc) => mc.key === c.mainCategory)?.name ??
-                    String(c.groupCategory),
-                action: c.id
+                    String(c.groupCategory)
             };
         });
     }, [checkpoints]);
@@ -129,7 +128,6 @@ export const CheckpointTable = ({
             data={data}
             defaultGrouping={['mainCategory', 'groupCategory']}
             defaultVisibilityState={{}}
-            toRenderInCustomCell={[]}
             isLoading={isLoading}
             selectedIds={selectedIds}
             setSelected={updateSelected}

@@ -47,12 +47,6 @@ interface TableProperties<T extends Record<string, unknown>>
     defaultGrouping: string[];
     defaultVisibilityState: Record<string, boolean>;
     children?: React.ReactNode;
-    toRenderInCustomCell: string[];
-    getCustomCell?: (
-        accessor: string,
-        row: Row<T>,
-        cell: Cell<T, any>
-    ) => ReactElement;
     getRowStyling?: (row: Row<T>) => RowStylingEnum | undefined;
     setSelected?: (rows: Row<T>[]) => void;
     selectedIds?: number[];
@@ -72,8 +66,6 @@ export function GroupTable<T extends Record<string, unknown>>(
         defaultGrouping,
         defaultVisibilityState,
         children,
-        toRenderInCustomCell,
-        getCustomCell,
         getRowStyling,
         setSelected,
         preserveSelected,
@@ -355,8 +347,6 @@ export function GroupTable<T extends Record<string, unknown>>(
                                         )
                                     }
                                     rowClassName={getRowClassName(row)}
-                                    toRenderInCustomCell={toRenderInCustomCell}
-                                    getCustomCell={getCustomCell}
                                 />
                             );
                         })}

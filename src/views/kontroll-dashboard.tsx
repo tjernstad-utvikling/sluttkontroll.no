@@ -4,11 +4,6 @@ import {
     KontrollClipboard,
     SkjemaClipboard
 } from '../components/clipboard';
-import {
-    KontrollTable,
-    defaultColumns,
-    kontrollColumns
-} from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 import {
     useKontroller,
@@ -23,7 +18,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentStatus } from '../components/instrument';
 import { KontrollEditModal } from '../modal/kontroll';
-import { TableContainer } from '../tables/base/tableContainer';
+import { KontrollTable } from '../tables/kontroll';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClients } from '../api/hooks/useKlient';
@@ -143,8 +138,8 @@ const KontrollerView = () => {
                             <CardContent>
                                 <InstrumentStatus />
 
-                                <TableContainer
-                                    columns={kontrollColumns({
+                                <KontrollTable
+                                    {...{
                                         users: userData.data ?? [],
                                         klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
@@ -158,15 +153,11 @@ const KontrollerView = () => {
                                         addAttachment:
                                             setKontrollAddAttachmentId,
                                         attachments: attachmentsData.data ?? []
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        kontroller={kontrollData.data ?? []}
-                                        loading={kontrollData.isLoading}
-                                        onSelected={onSelectForClipboard}
-                                    />
-                                </TableContainer>
+                                    }}
+                                    kontroller={kontrollData.data ?? []}
+                                    loading={kontrollData.isLoading}
+                                    onSelected={onSelectForClipboard}
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

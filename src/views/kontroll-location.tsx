@@ -6,11 +6,6 @@ import {
     SkjemaClipboard
 } from '../components/clipboard';
 import {
-    KontrollTable,
-    defaultColumns,
-    kontrollColumns
-} from '../tables/kontroll';
-import {
     useClients,
     useLocationById,
     useUpdateLocation
@@ -32,10 +27,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
+import { KontrollTable } from '../tables/kontroll';
 import { LocationEditSchema } from '../schema/location';
 import { LocationImageCard } from '../components/location';
 import { NewImageModal } from '../modal/newLocationImage';
-import { TableContainer } from '../tables/base/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
@@ -232,8 +227,8 @@ const KontrollObjektView = () => {
                                 />
                             }>
                             <CardContent>
-                                <TableContainer
-                                    columns={kontrollColumns({
+                                <KontrollTable
+                                    {...{
                                         users: userData.data ?? [],
                                         klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
@@ -247,31 +242,24 @@ const KontrollObjektView = () => {
                                         addAttachment:
                                             setKontrollAddAttachmentId,
                                         attachments: attachmentsData.data ?? []
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        kontroller={kontrollData.data ?? []}
-                                        onSelected={onSelectForClipboard}
-                                        loading={kontrollData.isLoading}
-                                        leftAction={
-                                            <PasteButton
-                                                clipboardHas={
-                                                    clipboardHasKontroll
+                                    }}
+                                    kontroller={kontrollData.data ?? []}
+                                    onSelected={onSelectForClipboard}
+                                    loading={kontrollData.isLoading}
+                                    leftAction={
+                                        <PasteButton
+                                            clipboardHas={clipboardHasKontroll}
+                                            options={{
+                                                kontrollPaste: {
+                                                    locationId:
+                                                        Number(objectId),
+                                                    klientId: Number(klientId),
+                                                    kontroll: kontrollToPast
                                                 }
-                                                options={{
-                                                    kontrollPaste: {
-                                                        locationId:
-                                                            Number(objectId),
-                                                        klientId:
-                                                            Number(klientId),
-                                                        kontroll: kontrollToPast
-                                                    }
-                                                }}
-                                            />
-                                        }
-                                    />
-                                </TableContainer>
+                                            }}
+                                        />
+                                    }
+                                />
                             </CardContent>
                         </Card>
                     </Grid>

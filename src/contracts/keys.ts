@@ -10,5 +10,6 @@ export enum StorageKeys {
 export enum TableKey {
     checklist = '@slk:table:checklist',
     checkpoint = '@slk:table:checkpoint',
-    instrument = '@slk:table:instrument'
+    instrument = '@slk:table:instrument',
+    kontroll = '@slk:table:kontroll'
 }

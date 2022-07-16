@@ -5,6 +5,9 @@ import { ClipBoardContextProvider } from '../../data/clipboard';
 import { KontrollContextProvider } from '../../data/kontroll';
 import { MainLayout } from '../../layout/main';
 
+const KontrollInstrumentsView = lazy(
+    () => import('../../views/kontroll-instrument')
+);
 const AvvikNewView = lazy(() => import('../../views/kontroll-avvikNew'));
 const AvvikPageView = lazy(() => import('../../views/kontroll-avvikPage'));
 const AvvikView = lazy(() => import('../../views/kontroll-avvik'));
@@ -76,6 +79,10 @@ export const Kontroll = () => {
                         <Route
                             path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/measurement`}>
                             <MeasurementsView />
+                        </Route>
+                        <Route
+                            path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/instrument`}>
+                            <KontrollInstrumentsView />
                         </Route>
                         <Route
                             path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/avvik/:avvikId`}>

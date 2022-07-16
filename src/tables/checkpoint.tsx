@@ -100,6 +100,7 @@ export const CheckpointTable = ({
                 header: '',
                 enableGrouping: false,
                 enableColumnFilter: false,
+                enableSorting: false,
                 cell: ({ row }) => (
                     <>
                         {editCheckpoint ? (

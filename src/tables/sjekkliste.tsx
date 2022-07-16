@@ -188,6 +188,7 @@ export const SjekklisteTable = ({
                 accessorKey: 'actions',
                 enableGrouping: false,
                 enableColumnFilter: false,
+                enableSorting: false,
                 cell: ({ row }) => (
                     <>
                         {clipboardHasAvvik && (

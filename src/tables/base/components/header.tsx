@@ -78,7 +78,8 @@ export function HeaderCell<T extends {}>({
                                 flexGrow: 3
                             }}
                         />
-                        {header.column.getCanFilter() && (
+                        {(header.column.getCanFilter() ||
+                            header.column.getCanSort()) && (
                             <ColumnAction
                                 column={header.column}
                                 table={table}

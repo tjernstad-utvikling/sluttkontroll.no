@@ -2,6 +2,7 @@ import { Column, Table } from '@tanstack/react-table';
 import React, { ReactElement } from 'react';
 
 import Button from '@mui/material/Button';
+import ClearIcon from '@mui/icons-material/Clear';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -12,13 +13,14 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
 import IconButton from '@mui/material/IconButton';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
 import { useTable } from './tableContainer';
-import { useTableStyles } from './style';
 
 export const ColumnSelect = (): JSX.Element => {
     const [open, setOpen] = React.useState(false);
@@ -234,8 +236,6 @@ export function ColumnAction<T extends {}>({
 }: ColumnActionProps<T>) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-    const { classes } = useTableStyles();
-
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -260,6 +260,37 @@ export function ColumnAction<T extends {}>({
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={close}>
+                {column.getCanSort() && (
+                    <>
+                        <MenuItem>
+                            <Button
+                                disabled={!column.getIsSorted()}
+                                variant="text"
+                                startIcon={<ClearIcon />}
+                                onClick={() => column.clearSorting()}>
+                                Fjern sortering
+                            </Button>
+                        </MenuItem>
+                        <MenuItem>
+                            <Button
+                                disabled={column.getIsSorted() === 'asc'}
+                                variant="text"
+                                startIcon={<KeyboardArrowUpIcon />}
+                                onClick={() => column.toggleSorting(false)}>
+                                Sorter stigende
+                            </Button>
+                        </MenuItem>
+                        <MenuItem>
+                            <Button
+                                disabled={column.getIsSorted() === 'desc'}
+                                variant="text"
+                                startIcon={<KeyboardArrowDownIcon />}
+                                onClick={() => column.toggleSorting(true)}>
+                                Sorter synkende
+                            </Button>
+                        </MenuItem>
+                    </>
+                )}
                 {column.getCanFilter() && (
                     <MenuItem>
                         <Filter column={column} table={table} />

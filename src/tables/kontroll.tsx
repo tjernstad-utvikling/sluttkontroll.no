@@ -25,9 +25,9 @@ import { useMemo } from 'react';
 type KontrollColumns = {
     id: number;
     klient: string;
+    name: string;
     location: string;
-    openAvvik: number;
-    closedAvvik: number;
+    avvik: { open: number; closed: number };
     measurement: number;
     attachments: number;
     instrumenter: number;
@@ -132,7 +132,13 @@ function RenderAvvikCell({ klienter, row }: RenderAvvikCellProps) {
                 'id'
             )}/avvik`}>
             <span>
-                ({row.getValue('openAvvik')} | {row.getValue('closedAvvik')}){' '}
+                {row.getValue<{ open: number; closed: number }>('avvik').open}{' '}
+                <sup>
+                    {
+                        row.getValue<{ open: number; closed: number }>('avvik')
+                            .closed
+                    }
+                </sup>{' '}
             </span>
         </Link>
     );
@@ -370,8 +376,7 @@ export const KontrollTable = ({
                 klient: KontrollValueGetter(k).klient(klienter),
                 location: KontrollValueGetter(k).location(klienter),
                 attachments: KontrollValueGetter(k).attachment(attachments),
-                closedAvvik: KontrollValueGetter(k).avvik(avvik).closed,
-                openAvvik: KontrollValueGetter(k).avvik(avvik).open,
+                avvik: KontrollValueGetter(k).avvik(avvik),
                 measurement: KontrollValueGetter(k).measurement(measurements),
                 instrumenter: k.instrumenter.length,
                 user: KontrollValueGetter(k).user(users)
@@ -394,7 +399,7 @@ export const KontrollTable = ({
             },
             {
                 header: 'Lokasjon',
-                accessorKey: 'objekt',
+                accessorKey: 'location',
                 enableGrouping: true
             },
             {
@@ -403,15 +408,16 @@ export const KontrollTable = ({
                 enableGrouping: true
             },
             {
-                header: 'Åpne avvik',
-                accessorKey: 'openAvvik',
-                enableGrouping: false
-            },
-            {
-                header: 'Avvik (åpne | lukket) ',
-                accessorKey: 'closedAvvik',
+                header: () => (
+                    <span>
+                        Avvik åpne <sup>lukket</sup>
+                    </span>
+                ),
+                accessorKey: 'avvik',
                 aggregatedCell: () => '',
                 enableGrouping: false,
+                enableColumnFilter: false,
+                enableSorting: false,
                 cell: ({ row }) => (
                     <RenderAvvikCell klienter={klienter} row={row} />
                 )
@@ -430,7 +436,7 @@ export const KontrollTable = ({
             },
             {
                 header: 'Vedlegg',
-                accessorKey: 'measurement',
+                accessorKey: 'attachments',
                 enableGrouping: false,
                 cell: ({ row, cell }) => (
                     <RenderAttachmentCell
@@ -473,7 +479,6 @@ export const KontrollTable = ({
                     return 'Pågår';
                 }
             },
-
             {
                 header: '',
                 accessorKey: 'actions',

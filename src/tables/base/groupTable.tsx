@@ -281,7 +281,11 @@ export function GroupTable<T extends Record<string, unknown>>(
                     <div className={classes2.pasteTool}>{children}</div>
                     <ColumnSelectRT instance={table} />
                 </div>
-                <Table role="grid" size="small" aria-label="sjekkliste">
+                <Table
+                    style={{ overflowX: 'auto' }}
+                    role="grid"
+                    size="small"
+                    aria-label="sjekkliste">
                     <TableHead>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRowMui key={headerGroup.id}>

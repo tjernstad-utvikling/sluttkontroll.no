@@ -18,6 +18,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
 import { useTable } from './tableContainer';
+import { useTableStyles } from './style';
 
 export const ColumnSelect = (): JSX.Element => {
     const [open, setOpen] = React.useState(false);
@@ -233,6 +234,8 @@ export function ColumnAction<T extends {}>({
 }: ColumnActionProps<T>) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
+    const { classes } = useTableStyles();
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -242,7 +245,7 @@ export function ColumnAction<T extends {}>({
     };
 
     return (
-        <div>
+        <>
             <IconButton
                 aria-label="kolonne meny"
                 aria-controls="simple-menu"
@@ -263,6 +266,6 @@ export function ColumnAction<T extends {}>({
                     </MenuItem>
                 )}
             </Menu>
-        </div>
+        </>
     );
 }

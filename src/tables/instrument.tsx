@@ -195,6 +195,11 @@ export const InstrumentTable = ({
                 )
             },
             {
+                header: 'Ansvarlig',
+                accessorKey: 'user',
+                enableGrouping: true
+            },
+            {
                 header: 'Kalibreringsinterval',
                 accessorKey: 'calibrationInterval',
                 enableGrouping: true,

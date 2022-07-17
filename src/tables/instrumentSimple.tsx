@@ -4,7 +4,6 @@ import { GroupTable } from './base/groupTable';
 import { Instrument } from '../contracts/instrumentApi';
 import { InstrumentValueGetter } from './instrument';
 import { Link } from 'react-router-dom';
-import { RowStylingEnum } from './base/defaultTable';
 import { TableKey } from '../contracts/keys';
 import { useMemo } from 'react';
 
@@ -95,6 +94,7 @@ export const InstrumentSimpleTable = ({
             isLoading={isLoading}
             selectedIds={selectedIds}
             setSelected={updateSelected}
+            preserveSelected
             enableSelection={enableSelection}
         />
     );

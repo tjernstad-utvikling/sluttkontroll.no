@@ -1,4 +1,8 @@
 import { useEffect, useState } from 'react';
+import {
+    useKontrollById,
+    useUpdateKontrollInstrumentConnection
+} from '../api/hooks/useKontroll';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -7,7 +11,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { InstrumentSimpleTable } from '../tables/instrumentSimple';
 import { useInstruments } from '../api/hooks/useInstrument';
-import { useKontrollById } from '../api/hooks/useKontroll';
 
 interface InstrumentSelectModalProps {
     kontrollId: number;
@@ -24,11 +27,23 @@ export function InstrumentSelectModal({
 
     const [selected, setSelected] = useState<number[]>();
 
+    const kontrollMutation = useUpdateKontrollInstrumentConnection();
+
     useEffect(() => {
         if (kontrollData.data) {
             setSelected(kontrollData.data.instrumenter.map((i) => i.id));
         }
     }, [kontrollData.data]);
+
+    async function saveSelectedInstruments() {
+        if (selected)
+            await kontrollMutation.mutateAsync({
+                instrumentIds: selected,
+                kontrollId
+            });
+
+        close();
+    }
 
     return (
         <Dialog
@@ -49,7 +64,7 @@ export function InstrumentSelectModal({
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={close} variant="contained">
+                <Button onClick={saveSelectedInstruments} variant="contained">
                     Lagre ({selected?.length})
                 </Button>
                 <Button onClick={close} color="error">

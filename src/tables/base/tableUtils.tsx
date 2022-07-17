@@ -260,37 +260,35 @@ export function ColumnAction<T extends {}>({
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={close}>
-                {column.getCanSort() && (
-                    <>
-                        <MenuItem>
-                            <Button
-                                disabled={!column.getIsSorted()}
-                                variant="text"
-                                startIcon={<ClearIcon />}
-                                onClick={() => column.clearSorting()}>
-                                Fjern sortering
-                            </Button>
-                        </MenuItem>
-                        <MenuItem>
-                            <Button
-                                disabled={column.getIsSorted() === 'asc'}
-                                variant="text"
-                                startIcon={<KeyboardArrowUpIcon />}
-                                onClick={() => column.toggleSorting(false)}>
-                                Sorter stigende
-                            </Button>
-                        </MenuItem>
-                        <MenuItem>
-                            <Button
-                                disabled={column.getIsSorted() === 'desc'}
-                                variant="text"
-                                startIcon={<KeyboardArrowDownIcon />}
-                                onClick={() => column.toggleSorting(true)}>
-                                Sorter synkende
-                            </Button>
-                        </MenuItem>
-                    </>
-                )}
+                {column.getCanSort() && [
+                    <MenuItem key="removeSort">
+                        <Button
+                            disabled={!column.getIsSorted()}
+                            variant="text"
+                            startIcon={<ClearIcon />}
+                            onClick={() => column.clearSorting()}>
+                            Fjern sortering
+                        </Button>
+                    </MenuItem>,
+                    <MenuItem key="raisingSort">
+                        <Button
+                            disabled={column.getIsSorted() === 'asc'}
+                            variant="text"
+                            startIcon={<KeyboardArrowUpIcon />}
+                            onClick={() => column.toggleSorting(false)}>
+                            Sorter stigende
+                        </Button>
+                    </MenuItem>,
+                    <MenuItem key="downSort">
+                        <Button
+                            disabled={column.getIsSorted() === 'desc'}
+                            variant="text"
+                            startIcon={<KeyboardArrowDownIcon />}
+                            onClick={() => column.toggleSorting(true)}>
+                            Sorter synkende
+                        </Button>
+                    </MenuItem>
+                ]}
                 {column.getCanFilter() && (
                     <MenuItem>
                         <Filter column={column} table={table} />

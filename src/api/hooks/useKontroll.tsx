@@ -222,6 +222,56 @@ export function useUpdateKontroll() {
         }
     );
 }
+export function useUpdateKontrollInstrumentConnection() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        { id: number }[],
+        unknown,
+        {
+            kontrollId: number;
+            instrumentIds: number[];
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.post<{
+                instrumenter: { id: number }[];
+            }>(`/instrument/set-kontroll`, {
+                ...body
+            });
+            return data.instrumenter;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (data, vars) => {
+                const kontroller =
+                    queryClient.getQueryData<Kontroll[]>('kontroll');
+                // ✅ update detail view directly
+
+                const kontroll = kontroller?.find(
+                    (k) => k.id === vars.kontrollId
+                );
+
+                if (kontroller && kontroller?.length > 0 && kontroll) {
+                    queryClient.setQueryData(
+                        'kontroll',
+                        unionBy(
+                            [{ ...kontroll, instrumenter: data }],
+                            kontroller,
+                            'id'
+                        ).sort((a, b) => a.id - b.id)
+                    );
+                }
+                queryClient.invalidateQueries('kontroll');
+                queryClient.invalidateQueries(['instrument']);
+
+                enqueueSnackbar('Instrumenter koblet til kontroll', {
+                    variant: 'success'
+                });
+            }
+        }
+    );
+}
 
 export function useNewKontroll() {
     const queryClient = useQueryClient();

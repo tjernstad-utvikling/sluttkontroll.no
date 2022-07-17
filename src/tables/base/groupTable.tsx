@@ -292,6 +292,7 @@ export function GroupTable<T extends Record<string, unknown>>(
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <HeaderCell
+                                            key={header.id}
                                             header={header}
                                             table={table}
                                         />

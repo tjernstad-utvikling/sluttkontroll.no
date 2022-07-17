@@ -272,6 +272,61 @@ export function useUpdateKontrollInstrumentConnection() {
         }
     );
 }
+export function useUpdateKontrollRemoveInstrumentConnection() {
+    const queryClient = useQueryClient();
+    const { enqueueSnackbar } = useSnackbar();
+    return useMutation<
+        any,
+        unknown,
+        {
+            kontrollId: number;
+            instrumentId: number;
+        }
+    >(
+        async (body) => {
+            const { data } = await sluttkontrollApi.put<any>(
+                `/instrument/disconnect-kontroll/${body.instrumentId}/${body.kontrollId}`
+            );
+            return data;
+        },
+        {
+            // 💡 response of the mutation is passed to onSuccess
+            onSuccess: (_, vars) => {
+                const kontroller =
+                    queryClient.getQueryData<Kontroll[]>('kontroll');
+                // ✅ update detail view directly
+
+                const kontroll = kontroller?.find(
+                    (k) => k.id === vars.kontrollId
+                );
+
+                if (kontroller && kontroller?.length > 0 && kontroll) {
+                    queryClient.setQueryData(
+                        'kontroll',
+                        unionBy(
+                            [
+                                {
+                                    ...kontroll,
+                                    instrumenter: kontroll.instrumenter.filter(
+                                        (i) => i.id !== vars.instrumentId
+                                    )
+                                }
+                            ],
+                            kontroller,
+                            'id'
+                        ).sort((a, b) => a.id - b.id)
+                    );
+                }
+                queryClient.invalidateQueries('kontroll');
+                queryClient.invalidateQueries(['instrument']);
+
+                enqueueSnackbar('Instrumenter koblet til kontroll', {
+                    variant: 'success'
+                });
+            }
+        }
+    );
+}
 
 export function useNewKontroll() {
     const queryClient = useQueryClient();

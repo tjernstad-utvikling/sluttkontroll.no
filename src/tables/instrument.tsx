@@ -116,6 +116,7 @@ interface InstrumentTableProps {
     isLoading: boolean;
     currentUser: User | undefined;
     changeDisponent: (instrumentId: number) => void;
+    customRowAction?: (id: number) => React.ReactNode;
 }
 export const InstrumentTable = ({
     instruments,
@@ -123,7 +124,8 @@ export const InstrumentTable = ({
     regCalibration,
     isLoading,
     changeDisponent,
-    currentUser
+    currentUser,
+    customRowAction
 }: InstrumentTableProps) => {
     const data = useMemo((): InstrumentColumns[] => {
         return instruments.map((c) => {
@@ -238,27 +240,31 @@ export const InstrumentTable = ({
                 enableGrouping: false,
                 enableColumnFilter: false,
                 enableSorting: false,
-                cell: ({ row }) => (
-                    <RowAction
-                        actionItems={[
-                            {
-                                name: 'Rediger',
-                                action: () => edit(row.getValue('id')),
-                                icon: <EditIcon />
-                            },
-                            {
-                                name: 'Registrer kalibrering',
-                                action: () =>
-                                    regCalibration(row.getValue('id')),
+                cell: ({ row }) => {
+                    return customRowAction ? (
+                        customRowAction(row.getValue('id'))
+                    ) : (
+                        <RowAction
+                            actionItems={[
+                                {
+                                    name: 'Rediger',
+                                    action: () => edit(row.getValue('id')),
+                                    icon: <EditIcon />
+                                },
+                                {
+                                    name: 'Registrer kalibrering',
+                                    action: () =>
+                                        regCalibration(row.getValue('id')),
 
-                                icon: <TodayIcon />
-                            }
-                        ]}
-                    />
-                )
+                                    icon: <TodayIcon />
+                                }
+                            ]}
+                        />
+                    );
+                }
             }
         ],
-        [changeDisponent, currentUser, edit, regCalibration]
+        [changeDisponent, currentUser, customRowAction, edit, regCalibration]
     );
 
     const getRowStyling = (

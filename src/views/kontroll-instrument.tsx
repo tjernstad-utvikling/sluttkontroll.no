@@ -4,14 +4,20 @@ import {
     useRemoveInstrumentDisponent,
     useSetInstrumentDisponent
 } from '../api/hooks/useInstrument';
+import {
+    useKontrollById,
+    useUpdateKontrollRemoveInstrumentConnection
+} from '../api/hooks/useKontroll';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
 import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { InstrumentTable } from '../tables/instrument';
 import { KontrollInstrumentViewParams } from '../contracts/navigation';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { useCurrentUser } from '../api/hooks/useUsers';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
@@ -30,8 +36,13 @@ const KontrollInstrumentsView = () => {
 
     const instrumentsData = useInstruments({ kontrollId: Number(kontrollId) });
 
+    const kontrollData = useKontrollById(Number(kontrollId));
+
     const instrumentDisponentMutation = useSetInstrumentDisponent();
     const removeInstrumentDisponentMutation = useRemoveInstrumentDisponent();
+
+    const removeInstrumentConnectionMutation =
+        useUpdateKontrollRemoveInstrumentConnection();
 
     const handleInstrumentBooking = async (instrumentId: number) => {
         const instrument = instrumentsData.data?.find(
@@ -58,6 +69,13 @@ const KontrollInstrumentsView = () => {
             }
         }
     };
+
+    async function removeInstrument(instrumentId: number) {
+        await removeInstrumentConnectionMutation.mutateAsync({
+            kontrollId: Number(kontrollId),
+            instrumentId
+        });
+    }
 
     return (
         <>
@@ -91,6 +109,20 @@ const KontrollInstrumentsView = () => {
                                     }}
                                     isLoading={instrumentsData.isLoading}
                                     instruments={instrumentsData.data ?? []}
+                                    customRowAction={(instrumentId) =>
+                                        kontrollData.data?.done ? undefined : (
+                                            <IconButton
+                                                onClick={() =>
+                                                    removeInstrument(
+                                                        instrumentId
+                                                    )
+                                                }
+                                                color="error"
+                                                aria-label="fjern instrument fra liste">
+                                                <PlaylistRemoveIcon />
+                                            </IconButton>
+                                        )
+                                    }
                                 />
                             </CardContent>
                         </Card>

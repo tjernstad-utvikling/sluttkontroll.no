@@ -9,21 +9,26 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
-import { InstrumentStatus } from '../components/instrument';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { InstrumentTable } from '../tables/instrument';
+import { KontrollInstrumentViewParams } from '../contracts/navigation';
 import { useCurrentUser } from '../api/hooks/useUsers';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 
 const KontrollInstrumentsView = () => {
     const { classes } = usePageStyles();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<boolean>(false);
     const [calibrationModalId, setCalibrationModalId] = useState<number>();
     const [editId, setEditId] = useState<number>();
 
+    const { kontrollId } = useParams<KontrollInstrumentViewParams>();
+
     const currentUserData = useCurrentUser();
 
-    const instrumentsData = useInstruments();
+    const instrumentsData = useInstruments({ kontrollId: Number(kontrollId) });
 
     const instrumentDisponentMutation = useSetInstrumentDisponent();
     const removeInstrumentDisponentMutation = useRemoveInstrumentDisponent();
@@ -61,20 +66,19 @@ const KontrollInstrumentsView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card
-                            title="Instrumenter"
+                            title="Instrumenter tilknyttet kontroll"
                             menu={
                                 <CardMenu
                                     items={[
                                         {
-                                            label: 'Nytt instrument',
-                                            action: () => setIsModalOpen(true)
+                                            label: 'Legg til instrument',
+                                            action: () =>
+                                                setIsSelectModalOpen(true)
                                         }
                                     ]}
                                 />
                             }>
                             <CardContent>
-                                <InstrumentStatus />
-
                                 <InstrumentTable
                                     changeDisponent={handleInstrumentBooking}
                                     currentUser={currentUserData.data}
@@ -102,6 +106,14 @@ const KontrollInstrumentsView = () => {
                 open={isModalOpen}
                 close={() => {
                     setIsModalOpen(!isModalOpen);
+                    setEditId(undefined);
+                }}
+            />
+            <InstrumentSelectModal
+                kontrollId={Number(kontrollId)}
+                open={isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(!isSelectModalOpen);
                     setEditId(undefined);
                 }}
             />

@@ -23,7 +23,7 @@ const InstrumentsView = () => {
 
     const currentUserData = useCurrentUser();
 
-    const instrumentsData = useInstruments();
+    const instrumentsData = useInstruments({});
 
     const instrumentDisponentMutation = useSetInstrumentDisponent();
     const removeInstrumentDisponentMutation = useRemoveInstrumentDisponent();

@@ -11,5 +11,6 @@ export enum TableKey {
     checklist = '@slk:table:checklist',
     checkpoint = '@slk:table:checkpoint',
     instrument = '@slk:table:instrument',
+    instrumentSimple = '@slk:table:instrument-simple',
     kontroll = '@slk:table:kontroll'
 }

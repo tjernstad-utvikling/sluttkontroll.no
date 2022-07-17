@@ -6,13 +6,24 @@ import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';
 import { useSnackbar } from 'notistack';
 
-export function useInstruments() {
-    return useQuery(['instrument'], async () => {
-        const { data } = await sluttkontrollApi.get<{
-            instruments: Instrument[];
-        }>('/instrument/', {});
-        return data.instruments;
-    });
+export function useInstruments({ kontrollId }: { kontrollId?: number }) {
+    return useQuery(
+        ['instrument', ...(kontrollId ? ['kontroll', kontrollId] : [])],
+        async () => {
+            const { data } = await sluttkontrollApi.get<{
+                instruments: Instrument[];
+            }>('/instrument/', {
+                params: {
+                    ...(kontrollId
+                        ? {
+                              kontrollId
+                          }
+                        : {})
+                }
+            });
+            return data.instruments;
+        }
+    );
 }
 
 export function useInstrument({ instrumentId }: { instrumentId?: number }) {

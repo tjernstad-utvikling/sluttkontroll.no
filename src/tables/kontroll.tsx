@@ -229,7 +229,7 @@ function RenderInstrumentCell({
             <Link
                 to={`/kontroll/kl/${klient?.id}/obj/${
                     location?.id
-                }/${row.getValue('id')}/instruments`}>
+                }/${row.getValue('id')}/instrument`}>
                 {cell.getValue()}
             </Link>
             <IconButton

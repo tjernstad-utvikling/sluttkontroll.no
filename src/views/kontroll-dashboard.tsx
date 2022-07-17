@@ -16,6 +16,7 @@ import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { InstrumentStatus } from '../components/instrument';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollTable } from '../tables/kontroll';
@@ -31,6 +32,10 @@ import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollerView = () => {
     const { classes } = usePageStyles();
+
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<
+        number | undefined
+    >(undefined);
 
     const history = useHistory();
     const { showAllKontroller, setShowAllKontroller } = useKontrollCtx();
@@ -152,7 +157,9 @@ const KontrollerView = () => {
                                         editComment: setCommentId,
                                         addAttachment:
                                             setKontrollAddAttachmentId,
-                                        attachments: attachmentsData.data ?? []
+                                        attachments: attachmentsData.data ?? [],
+                                        openSelectInstrument:
+                                            setIsSelectModalOpen
                                     }}
                                     kontroller={kontrollData.data ?? []}
                                     loading={kontrollData.isLoading}
@@ -178,6 +185,13 @@ const KontrollerView = () => {
             <AttachmentModal
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
+            />
+            <InstrumentSelectModal
+                kontrollId={isSelectModalOpen ?? 0}
+                open={!!isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(undefined);
+                }}
             />
         </>
     );

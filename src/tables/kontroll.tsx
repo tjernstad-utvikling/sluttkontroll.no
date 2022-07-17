@@ -208,11 +208,13 @@ interface RenderInstrumentCellProps {
     klienter: Klient[];
     row: Row<KontrollColumns>;
     cell: Cell<KontrollColumns, unknown>;
+    openSelectInstrument: (id: number) => void;
 }
 function RenderInstrumentCell({
     klienter,
     row,
-    cell
+    cell,
+    openSelectInstrument
 }: RenderInstrumentCellProps) {
     const klient = useMemo(() => {
         return klienter.find((k) => k.name === row.getValue('klient'));
@@ -233,8 +235,7 @@ function RenderInstrumentCell({
                 {cell.getValue()}
             </Link>
             <IconButton
-                // to={`${url}/checklist/${id}/avvik/new`}
-                // component={RouterLink}
+                onClick={() => openSelectInstrument(row.getValue('id'))}
                 aria-label="Legg til instrument"
                 size="small">
                 <AddIcon fontSize="small" />
@@ -346,6 +347,7 @@ interface KontrollTableProps {
     skjemaToPast: Skjema[];
     editComment: (id: number) => void;
     addAttachment: (id: number) => void;
+    openSelectInstrument: (id: number) => void;
 }
 
 export const KontrollTable = ({
@@ -363,7 +365,8 @@ export const KontrollTable = ({
     edit,
     editComment,
     skjemaToPast,
-    toggleStatus
+    toggleStatus,
+    openSelectInstrument
 }: KontrollTableProps) => {
     const {
         state: { kontrollClipboard }
@@ -455,6 +458,7 @@ export const KontrollTable = ({
                         cell={cell}
                         klienter={klienter}
                         row={row}
+                        openSelectInstrument={openSelectInstrument}
                     />
                 )
             },
@@ -505,6 +509,7 @@ export const KontrollTable = ({
             edit,
             editComment,
             klienter,
+            openSelectInstrument,
             skjemaToPast,
             toggleStatus
         ]

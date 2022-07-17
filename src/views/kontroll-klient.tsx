@@ -21,6 +21,7 @@ import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { KlientEditSchema } from '../schema/klient';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
@@ -36,6 +37,10 @@ import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollKlientView = () => {
     const { classes } = usePageStyles();
+
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<
+        number | undefined
+    >(undefined);
 
     const { klientId } = useParams<KontrollKlientViewParams>();
     const history = useHistory();
@@ -209,7 +214,9 @@ const KontrollKlientView = () => {
                                         editComment: setCommentId,
                                         addAttachment:
                                             setKontrollAddAttachmentId,
-                                        attachments: attachmentsData.data ?? []
+                                        attachments: attachmentsData.data ?? [],
+                                        openSelectInstrument:
+                                            setIsSelectModalOpen
                                     }}
                                     kontroller={kontrollData.data ?? []}
                                     onSelected={onSelectForClipboard}
@@ -235,6 +242,13 @@ const KontrollKlientView = () => {
             <AttachmentModal
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
+            />
+            <InstrumentSelectModal
+                kontrollId={isSelectModalOpen ?? 0}
+                open={!!isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(undefined);
+                }}
             />
         </div>
     );

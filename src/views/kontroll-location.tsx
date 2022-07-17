@@ -25,6 +25,7 @@ import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
 import { KontrollTable } from '../tables/kontroll';
@@ -44,6 +45,10 @@ const KontrollObjektView = () => {
     const { classes } = usePageStyles();
     const { objectId, klientId } = useParams<KontrollObjectViewParams>();
     const history = useHistory();
+
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<
+        number | undefined
+    >(undefined);
 
     const [editLocation, setEditLocation] = useState<boolean>(false);
     const [addLocationImage, setAddLocationImage] = useState<boolean>(false);
@@ -241,7 +246,9 @@ const KontrollObjektView = () => {
                                         editComment: setCommentId,
                                         addAttachment:
                                             setKontrollAddAttachmentId,
-                                        attachments: attachmentsData.data ?? []
+                                        attachments: attachmentsData.data ?? [],
+                                        openSelectInstrument:
+                                            setIsSelectModalOpen
                                     }}
                                     kontroller={kontrollData.data ?? []}
                                     onSelected={onSelectForClipboard}
@@ -286,6 +293,13 @@ const KontrollObjektView = () => {
                 locationId={Number(objectId)}
                 open={addLocationImage}
                 close={() => setAddLocationImage(false)}
+            />
+            <InstrumentSelectModal
+                kontrollId={isSelectModalOpen ?? 0}
+                open={!!isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(undefined);
+                }}
             />
         </div>
     );

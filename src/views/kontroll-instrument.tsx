@@ -146,7 +146,6 @@ const KontrollInstrumentsView = () => {
                 open={isSelectModalOpen}
                 close={() => {
                     setIsSelectModalOpen(!isSelectModalOpen);
-                    setEditId(undefined);
                 }}
             />
         </>

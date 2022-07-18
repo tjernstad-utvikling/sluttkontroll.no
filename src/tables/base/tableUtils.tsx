@@ -1,4 +1,4 @@
-import { Column, Table } from '@tanstack/react-table';
+import { Column, Table, flexRender } from '@tanstack/react-table';
 import React, { ReactElement } from 'react';
 
 import Button from '@mui/material/Button';
@@ -136,7 +136,10 @@ export function ColumnSelectRT<T extends Record<string, unknown>>({
                                         }
                                         onChange={c.getToggleVisibilityHandler()}
                                         checked={c.getIsVisible()}
-                                        label={c.columnDef.header?.toString()}
+                                        label={flexRender(
+                                            c.columnDef.header,
+                                            c
+                                        )}
                                     />
                                 ))}
                         </FormGroup>

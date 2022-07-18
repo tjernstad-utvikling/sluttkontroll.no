@@ -1,12 +1,12 @@
 import * as Yup from 'yup';
 
 import { Form, Formik, useFormikContext } from 'formik';
-import { Klient, ReportKontroll } from '../contracts/kontrollApi';
+import { RapportEgenskaper, ReportKontroll } from '../contracts/reportApi';
 import { useEffect, useMemo } from 'react';
 
 import Grid from '@mui/material/Grid';
+import { Klient } from '../contracts/kontrollApi';
 import { LoadingButton } from '../components/button';
-import { RapportEgenskaper } from '../contracts/reportApi';
 import Select from 'react-select';
 import { Sertifikat } from '../contracts/certificateApi';
 import { TextField } from '../components/input';

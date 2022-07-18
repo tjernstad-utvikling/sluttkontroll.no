@@ -2,12 +2,11 @@ import {
     Checklist,
     Kontroll,
     Location,
-    ReportKontroll,
     Skjema
 } from '../../contracts/kontrollApi';
+import { RapportEgenskaper, ReportKontroll } from '../../contracts/reportApi';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { RapportEgenskaper } from '../../contracts/reportApi';
 import { User } from '../../contracts/userApi';
 import sluttkontrollApi from '../sluttkontroll';
 import unionBy from 'lodash.unionby';

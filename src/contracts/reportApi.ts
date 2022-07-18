@@ -1,3 +1,4 @@
+import { LocationImage } from './kontrollApi';
 import { Sertifikat } from './certificateApi';
 
 export interface ReportSetting {
@@ -8,6 +9,36 @@ export interface ReportSetting {
     selectedSkjemaer: number[];
     selectedAttachments: number[];
     modules: ReportModules[];
+}
+
+export interface ReportKontroll {
+    id: number;
+    name: string;
+    kommentar: string;
+    done: boolean;
+    completedDate: string | null;
+    location: {
+        id: number;
+        klient: {
+            id: number;
+        };
+        locationImage?: LocationImage | null | undefined;
+    };
+    user: {
+        id: number;
+    };
+    avvikUtbedrere: { id: number }[];
+    rapportEgenskaper: RapportEgenskaper | null;
+    instrumenter: ReportInstrument[];
+}
+
+export interface ReportInstrument {
+    id: number;
+    name: string;
+    serienr: string;
+    sisteKalibrert: {
+        date: string;
+    };
 }
 
 export enum ReportModules {

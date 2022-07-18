@@ -1,11 +1,11 @@
 import { LocalImage, ReportSetting } from '../../contracts/reportApi';
 import { Page, StyleSheet, View } from '@react-pdf/renderer';
 
-import { Footer } from './components/footer';
-import { Header } from './components/header';
+import { Footer } from '../components/footer';
+import { Header } from '../components/header';
 import { OutputData } from '@editorjs/editorjs';
-import { Text } from './components/text';
-import { TextBox } from './components/box';
+import { StatementModule } from '../modules/statement.module';
+import { Text } from '../components/text';
 
 interface StatementPageProps {
     statement: OutputData | undefined;
@@ -29,9 +29,10 @@ export const StatementPage = ({
                     location={reportSetting.reportSite}
                     date={reportSetting.reportDate}
                 />
-
-                <TextBox text={statement} statementImages={statementImages} />
-
+                <StatementModule
+                    statement={statement}
+                    statementImages={statementImages}
+                />
                 <Footer />
             </Page>
         );

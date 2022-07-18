@@ -38,33 +38,6 @@ export interface Kontroll {
     avvikUtbedrere: { id: number }[];
     instrumenter: { id: number }[];
 }
-export interface ReportKontroll {
-    id: number;
-    name: string;
-    kommentar: string;
-    done: boolean;
-    completedDate: string | null;
-    location: {
-        id: number;
-        klient: {
-            id: number;
-        };
-        locationImage?: LocationImage | null | undefined;
-    };
-    user: {
-        id: number;
-    };
-    avvikUtbedrere: { id: number }[];
-    rapportEgenskaper: RapportEgenskaper | null;
-    instrumenter: {
-        id: number;
-        name: string;
-        serienr: string;
-        sisteKalibrert: {
-            date: string;
-        };
-    }[];
-}
 
 export interface Skjema {
     id: number;

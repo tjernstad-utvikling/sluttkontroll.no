@@ -1,7 +1,7 @@
 import { Document, Font, usePDF } from '@react-pdf/renderer';
-import { ExtendedSkjema, ReportKontroll } from '../contracts/kontrollApi';
 import {
     LocalImage,
+    ReportKontroll,
     ReportModules,
     ReportSetting
 } from '../contracts/reportApi';
@@ -11,10 +11,11 @@ import { useEffect, useState } from 'react';
 import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
 import Button from '@mui/material/Button';
-import { FrontPage } from './modules/frontPage';
-import { FrontPageWImage } from './modules/frontPageWImage';
-import { InfoPage } from './modules/infoPage';
-import { MeasurementPage } from './modules/measurementPage';
+import { ExtendedSkjema } from '../contracts/kontrollApi';
+import { FrontPage } from './pages/frontpage.page';
+import { FrontPageWImage } from './pages/frontpageWImage.page';
+import { InfoPage } from './pages/info.page';
+import { MeasurementPage } from './pages/measurement.page';
 import { OutputData } from '@editorjs/editorjs';
 import PDFMerger from 'pdf-merger-js/browser';
 import { PDFViewer } from '@react-pdf/renderer';
@@ -22,8 +23,8 @@ import RobotoBold from '../assets/fonts/Roboto-Bold.ttf';
 import RobotoBoldItalic from '../assets/fonts/Roboto-BoldItalic.ttf';
 import RobotoItalic from '../assets/fonts/Roboto-Italic.ttf';
 import RobotoRegular from '../assets/fonts/Roboto-Regular.ttf';
-import { SkjemaPage } from './modules/skjemaPage';
-import { StatementPage } from './modules/statementPage';
+import { SkjemaPage } from './pages/skjema.page';
+import { StatementPage } from './pages/statement.page';
 import { Theme } from '@mui/material';
 import { getAttachmentFile } from '../api/attachmentApi';
 import { makeStyles } from '../theme/makeStyles';

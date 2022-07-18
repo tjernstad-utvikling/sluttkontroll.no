@@ -4,15 +4,15 @@ import {
     RapportUser,
     ReportSetting
 } from '../../contracts/reportApi';
-import { TableCell, TableHeader, TableRow } from './components/table';
+import { TableCell, TableHeader, TableRow } from '../components/table';
 
-import { Footer } from './components/footer';
-import { Header } from './components/header';
+import { Footer } from '../components/footer';
+import { Header } from '../components/header';
 import { OutputData } from '@editorjs/editorjs';
-import { SertifikatBlock } from './components/sertifikat';
-import { Spacer } from './components/spacing';
-import { Text } from './components/text';
-import { TextBox } from './components/box';
+import { SertifikatBlock } from '../components/sertifikat';
+import { Spacer } from '../components/spacing';
+import { Text } from '../components/text';
+import { TextBox } from '../components/box';
 
 interface InfoPageProps {
     reportSetting: ReportSetting | undefined;

@@ -1,6 +1,6 @@
 import { TableCell, TableRow } from './table';
 
-import { Avvik } from '../../../contracts/avvikApi';
+import { Avvik } from '../../contracts/avvikApi';
 
 interface ChecklistRowProps {
     isEvenIndex?: boolean;

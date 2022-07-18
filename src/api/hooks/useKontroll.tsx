@@ -93,7 +93,6 @@ export function useReportKontrollById(kontrollId: number | undefined) {
             return data.kontroll;
         },
         {
-            // The query will not execute until the userId exists
             enabled: !!kontrollId
         }
     );

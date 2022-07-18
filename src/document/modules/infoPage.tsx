@@ -19,12 +19,18 @@ interface InfoPageProps {
     infoText: OutputData | undefined;
     rapportEgenskaper: RapportEgenskaper | undefined | null;
     rapportUser: RapportUser | undefined | null;
+    hasClientModuleActive: boolean;
+    hasControllerModuleActive: boolean;
+    hasInfoModuleActive: boolean;
 }
 export const InfoPage = ({
     reportSetting,
     infoText,
     rapportEgenskaper,
-    rapportUser
+    rapportUser,
+    hasClientModuleActive,
+    hasControllerModuleActive,
+    hasInfoModuleActive
 }: InfoPageProps): JSX.Element => {
     if (reportSetting && infoText && rapportEgenskaper && rapportUser) {
         return (
@@ -38,75 +44,94 @@ export const InfoPage = ({
                     location={reportSetting.reportSite}
                     date={reportSetting.reportDate}
                 />
-                <TableHeader title="Informasjon om inspeksjonssted" />
+                {hasClientModuleActive && (
+                    <>
+                        <TableHeader title="Informasjon om inspeksjonssted" />
 
-                <TableRow tint>
-                    <TableCell isTitle width={180}>
-                        Oppdragsgiver
-                    </TableCell>
-                    <TableCell>{rapportEgenskaper.oppdragsgiver}</TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell isTitle width={180}>
-                        Kontrollsted
-                    </TableCell>
-                    <TableCell>{rapportEgenskaper.kontrollsted}</TableCell>
-                </TableRow>
-                <TableRow hasBottomBorder tint>
-                    <TableCell isTitle width={180}>
-                        Adresse
-                    </TableCell>
-                    <TableCell>{rapportEgenskaper.adresse}</TableCell>
-                </TableRow>
-                {/* Kontaktperson under */}
-                <TableRow>
-                    <TableCell isTitle width={180}>
-                        Kontaktperson
-                    </TableCell>
-                    <TableCell>{rapportEgenskaper.kontaktperson}</TableCell>
-                </TableRow>
-                <TableRow tint>
-                    <TableCell isTitle width={180}>
-                        Telefonnummer
-                    </TableCell>
-                    <TableCell>{rapportEgenskaper.kontaktTelefon}</TableCell>
-                </TableRow>
-                <TableRow hasBottomBorder>
-                    <TableCell isTitle width={180}>
-                        E-postadresse
-                    </TableCell>
-                    <TableCell>{rapportEgenskaper.kontaktEpost}</TableCell>
-                </TableRow>
-                <Spacer />
-                <TableHeader title="Kontrollert av" />
-                <TableRow tint>
-                    <TableCell isTitle width={180}>
-                        Kontrollør
-                    </TableCell>
-                    <TableCell>{rapportUser.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell isTitle width={180}>
-                        Telefonnummer
-                    </TableCell>
-                    <TableCell>{rapportUser.phone}</TableCell>
-                </TableRow>
-                <TableRow hasBottomBorder tint>
-                    <TableCell isTitle width={180}>
-                        E-postadresse
-                    </TableCell>
-                    <TableCell>{rapportUser.email}</TableCell>
-                </TableRow>
-
-                <Spacer />
-                {rapportEgenskaper.sertifikater.length > 0 && (
-                    <SertifikatBlock
-                        sertifikater={rapportEgenskaper.sertifikater}
-                    />
+                        <TableRow tint>
+                            <TableCell isTitle width={180}>
+                                Oppdragsgiver
+                            </TableCell>
+                            <TableCell>
+                                {rapportEgenskaper.oppdragsgiver}
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell isTitle width={180}>
+                                Kontrollsted
+                            </TableCell>
+                            <TableCell>
+                                {rapportEgenskaper.kontrollsted}
+                            </TableCell>
+                        </TableRow>
+                        <TableRow hasBottomBorder tint>
+                            <TableCell isTitle width={180}>
+                                Adresse
+                            </TableCell>
+                            <TableCell>{rapportEgenskaper.adresse}</TableCell>
+                        </TableRow>
+                        {/* Kontaktperson under */}
+                        <TableRow>
+                            <TableCell isTitle width={180}>
+                                Kontaktperson
+                            </TableCell>
+                            <TableCell>
+                                {rapportEgenskaper.kontaktperson}
+                            </TableCell>
+                        </TableRow>
+                        <TableRow tint>
+                            <TableCell isTitle width={180}>
+                                Telefonnummer
+                            </TableCell>
+                            <TableCell>
+                                {rapportEgenskaper.kontaktTelefon}
+                            </TableCell>
+                        </TableRow>
+                        <TableRow hasBottomBorder>
+                            <TableCell isTitle width={180}>
+                                E-postadresse
+                            </TableCell>
+                            <TableCell>
+                                {rapportEgenskaper.kontaktEpost}
+                            </TableCell>
+                        </TableRow>
+                        <Spacer />
+                    </>
                 )}
-                <Spacer />
+                {hasControllerModuleActive && (
+                    <>
+                        <TableHeader title="Kontrollert av" />
+                        <TableRow tint>
+                            <TableCell isTitle width={180}>
+                                Kontrollør
+                            </TableCell>
+                            <TableCell>{rapportUser.name}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell isTitle width={180}>
+                                Telefonnummer
+                            </TableCell>
+                            <TableCell>{rapportUser.phone}</TableCell>
+                        </TableRow>
+                        <TableRow hasBottomBorder tint>
+                            <TableCell isTitle width={180}>
+                                E-postadresse
+                            </TableCell>
+                            <TableCell>{rapportUser.email}</TableCell>
+                        </TableRow>
 
-                <TextBox text={infoText} statementImages={[]} />
+                        <Spacer />
+                        {rapportEgenskaper.sertifikater.length > 0 && (
+                            <SertifikatBlock
+                                sertifikater={rapportEgenskaper.sertifikater}
+                            />
+                        )}
+                        <Spacer />
+                    </>
+                )}
+                {hasInfoModuleActive && (
+                    <TextBox text={infoText} statementImages={[]} />
+                )}
 
                 <Footer />
             </Page>

@@ -276,6 +276,15 @@ const SlkDocument = ({
             )}
             {isModuleActive(ReportModules.infoPage) && (
                 <InfoPage
+                    hasClientModuleActive={isModuleActive(
+                        ReportModules.clientModule
+                    )}
+                    hasControllerModuleActive={isModuleActive(
+                        ReportModules.controllerModule
+                    )}
+                    hasInfoModuleActive={isModuleActive(
+                        ReportModules.infoModule
+                    )}
                     infoText={infoText}
                     reportSetting={reportSetting}
                     rapportEgenskaper={kontroll?.rapportEgenskaper}

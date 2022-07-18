@@ -13,7 +13,12 @@ export interface ReportSetting {
 export enum ReportModules {
     frontPage = 'FrontPage',
     infoPage = 'InfoPage',
+    clientModule = 'ClientModule',
+    controllerModule = 'ControllerModule',
+    infoModule = 'InfoModule',
     statementPage = 'StatementPage',
+    statementModule = 'StatementModule',
+    instrumentModule = 'InstrumentModule',
     controlModule = 'controlModule',
     skjemaPage = 'skjemaPage',
     measurementPage = 'measurementPage',

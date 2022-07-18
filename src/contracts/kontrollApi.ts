@@ -56,7 +56,14 @@ export interface ReportKontroll {
     };
     avvikUtbedrere: { id: number }[];
     rapportEgenskaper: RapportEgenskaper | null;
-    instrumenter: { id: number }[];
+    instrumenter: {
+        id: number;
+        name: string;
+        serienr: string;
+        sisteKalibrert: {
+            date: string;
+        };
+    }[];
 }
 
 export interface Skjema {

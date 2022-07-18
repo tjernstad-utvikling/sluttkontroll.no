@@ -20,6 +20,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Editor } from '../../tools/editor';
 import Grid from '@mui/material/Grid';
+import { InstrumentSelectModal } from '../../modal/instrumentSelect';
 import { OutputData } from '@editorjs/editorjs';
 import { RapportEgenskaper } from '../../contracts/reportApi';
 import { ReportModules } from '../../contracts/reportApi';
@@ -495,6 +496,32 @@ export const SelectAttachments = ({ kontrollId }: SelectAttachmentsProps) => {
             <AttachmentModal
                 kontrollId={openAddAttachment}
                 close={() => setOpenAddAttachment(undefined)}
+            />
+        </>
+    );
+};
+interface SelectInstrumentsProps {
+    kontrollId: number;
+}
+export const SelectInstruments = ({ kontrollId }: SelectInstrumentsProps) => {
+    const { classes } = useStyles();
+    const [open, setOpen] = useState<boolean>(false);
+
+    const { kontroll } = useReport();
+
+    return (
+        <>
+            <Button
+                className={classes.button}
+                variant="outlined"
+                color="primary"
+                onClick={() => setOpen(!open)}>
+                Velg instrumenter ({kontroll?.instrumenter.length})
+            </Button>
+            <InstrumentSelectModal
+                close={() => setOpen(false)}
+                open={open}
+                kontrollId={kontrollId}
             />
         </>
     );

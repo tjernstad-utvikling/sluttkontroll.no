@@ -3,7 +3,7 @@ import {
     RapportEgenskaper,
     RapportUser,
     ReportSetting
-} from '../../contracts/reportApi';
+} from '../../../contracts/reportApi';
 import { TableCell, TableHeader, TableRow } from '../components/table';
 
 import { Footer } from '../components/footer';

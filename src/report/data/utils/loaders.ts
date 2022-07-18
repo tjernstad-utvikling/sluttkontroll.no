@@ -1,9 +1,9 @@
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
-import { getReportSetting, getReportStatement } from '../../api/reportApi';
+import { getReportSetting, getReportStatement } from '../../../api/reportApi';
 
 import { OutputData } from '@editorjs/editorjs';
-import { ReportSetting } from '../../contracts/reportApi';
-import { errorHandler } from '../../tools/errorHandler';
+import { ReportSetting } from '../../../contracts/reportApi';
+import { errorHandler } from '../../../tools/errorHandler';
 
 export async function loadReportStatement(
     kontrollId: number,

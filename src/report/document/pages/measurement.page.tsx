@@ -1,11 +1,14 @@
-import { Measurement, MeasurementType } from '../../contracts/measurementApi';
+import {
+    Measurement,
+    MeasurementType
+} from '../../../contracts/measurementApi';
 import { Page, StyleSheet, View } from '@react-pdf/renderer';
 
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
 import { MeasurementModule } from '../modules/measurement.module';
-import { ReportSetting } from '../../contracts/reportApi';
-import { Skjema } from '../../contracts/kontrollApi';
+import { ReportSetting } from '../../../contracts/reportApi';
+import { Skjema } from '../../../contracts/kontrollApi';
 import { Spacer } from '../components/spacing';
 import { Text } from '../components/text';
 

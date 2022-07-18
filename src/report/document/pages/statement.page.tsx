@@ -1,4 +1,4 @@
-import { LocalImage, ReportSetting } from '../../contracts/reportApi';
+import { LocalImage, ReportSetting } from '../../../contracts/reportApi';
 import { Page, StyleSheet, View } from '@react-pdf/renderer';
 
 import { Footer } from '../components/footer';

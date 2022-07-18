@@ -1,4 +1,7 @@
-import { Measurement, MeasurementType } from '../../contracts/measurementApi';
+import {
+    Measurement,
+    MeasurementType
+} from '../../../contracts/measurementApi';
 import { TableCell, TableRow } from '../components/table';
 
 interface MeasurementPageProps {

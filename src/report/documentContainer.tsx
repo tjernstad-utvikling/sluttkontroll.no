@@ -6,7 +6,10 @@ import {
 } from '../contracts/reportApi';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 import { createContext, useContext, useState } from 'react';
-import { handleReportSettings, loadReportStatement } from './utils/loaders';
+import {
+    handleReportSettings,
+    loadReportStatement
+} from './data/utils/loaders';
 import {
     useMeasurementTypes,
     useMeasurements

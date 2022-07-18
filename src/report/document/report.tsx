@@ -4,14 +4,14 @@ import {
     ReportKontroll,
     ReportModules,
     ReportSetting
-} from '../contracts/reportApi';
-import { Measurement, MeasurementType } from '../contracts/measurementApi';
+} from '../../contracts/reportApi';
+import { Measurement, MeasurementType } from '../../contracts/measurementApi';
 import { useEffect, useState } from 'react';
 
-import { Attachment } from '../contracts/attachmentApi';
-import { Avvik } from '../contracts/avvikApi';
+import { Attachment } from '../../contracts/attachmentApi';
+import { Avvik } from '../../contracts/avvikApi';
 import Button from '@mui/material/Button';
-import { ExtendedSkjema } from '../contracts/kontrollApi';
+import { ExtendedSkjema } from '../../contracts/kontrollApi';
 import { FrontPage } from './pages/frontpage.page';
 import { FrontPageWImage } from './pages/frontpageWImage.page';
 import { InfoPage } from './pages/info.page';
@@ -26,10 +26,10 @@ import RobotoRegular from '../assets/fonts/Roboto-Regular.ttf';
 import { SkjemaPage } from './pages/skjema.page';
 import { StatementPage } from './pages/statement.page';
 import { Theme } from '@mui/material';
-import { getAttachmentFile } from '../api/attachmentApi';
-import { makeStyles } from '../theme/makeStyles';
-import { useReport } from './documentContainer';
-import { useWindowSize } from '../hooks/useWindowSize';
+import { getAttachmentFile } from '../../api/attachmentApi';
+import { makeStyles } from '../../theme/makeStyles';
+import { useReport } from '../documentContainer';
+import { useWindowSize } from '../../hooks/useWindowSize';
 
 Font.register({
     family: 'Roboto',

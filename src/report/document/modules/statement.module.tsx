@@ -1,6 +1,6 @@
 import { StyleSheet, View } from '@react-pdf/renderer';
 
-import { LocalImage } from '../../contracts/reportApi';
+import { LocalImage } from '../../../contracts/reportApi';
 import { OutputData } from '@editorjs/editorjs';
 import { Text } from '../components/text';
 import { TextBox } from '../components/box';

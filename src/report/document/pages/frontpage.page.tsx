@@ -1,5 +1,5 @@
 import { Image, Page, StyleSheet, View } from '@react-pdf/renderer';
-import { ReportKontroll, ReportSetting } from '../../contracts/reportApi';
+import { ReportKontroll, ReportSetting } from '../../../contracts/reportApi';
 
 import { DateText } from '../components/text';
 import PdfLogo from '../../assets/pdf-logo.png';

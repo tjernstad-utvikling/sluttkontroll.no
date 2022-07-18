@@ -12,14 +12,14 @@ import {
     ReportStatement,
     SelectAttachments,
     SelectInstruments
-} from '../document/customizeData/kontrollReportData';
+} from '../report/data/kontrollReportData';
 
 import Container from '@mui/material/Container';
-import { DocumentContainer } from '../document/documentContainer';
+import { DocumentContainer } from '../report/documentContainer';
 import Grid from '@mui/material/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
 import { ReportModules } from '../contracts/reportApi';
-import { SlkReport } from '../document/report';
+import { SlkReport } from '../report/document/report';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 

@@ -14,8 +14,8 @@ import {
 import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import { StyleSheet, View } from '@react-pdf/renderer';
 
-import { ImageBlockData } from '../../tools/editor';
-import { LocalImage } from '../../contracts/reportApi';
+import { ImageBlockData } from '../../../tools/editor';
+import { LocalImage } from '../../../contracts/reportApi';
 import { PdfImage } from './image';
 import { Text } from './text';
 

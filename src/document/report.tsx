@@ -312,18 +312,24 @@ const SlkDocument = ({
             {isModuleActive(ReportModules.measurementPage) &&
                 isModuleActive(ReportModules.controlModule) &&
                 !isModuleActive(ReportModules.inlineMeasurementModule) &&
-                filteredSkjemaer?.map((s, i) => (
-                    <MeasurementPage
-                        key={s.id}
-                        skjema={s}
-                        index={i}
-                        measurements={measurements?.filter(
-                            (m) => m.skjema.id === s.id
-                        )}
-                        reportSetting={reportSetting}
-                        measurementTypes={measurementTypes}
-                    />
-                ))}
+                filteredSkjemaer?.map((s, i) => {
+                    const filteredMeasurements = measurements?.filter(
+                        (m) => m.skjema.id === s.id
+                    );
+                    if (filteredMeasurements?.length === 0) {
+                        return null;
+                    }
+                    return (
+                        <MeasurementPage
+                            key={s.id}
+                            skjema={s}
+                            index={i}
+                            measurements={filteredMeasurements}
+                            reportSetting={reportSetting}
+                            measurementTypes={measurementTypes}
+                        />
+                    );
+                })}
         </Document>
     );
 };

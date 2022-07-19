@@ -2,6 +2,7 @@ import { StyleSheet, View } from '@react-pdf/renderer';
 
 import { LocalImage } from '../../../contracts/reportApi';
 import { OutputData } from '@editorjs/editorjs';
+import { Spacer } from '../components/spacing';
 import { Text } from '../components/text';
 import { TextBox } from '../components/box';
 
@@ -14,7 +15,12 @@ export const StatementModule = ({
     statementImages
 }: StatementPageProps): JSX.Element => {
     if (statement) {
-        return <TextBox text={statement} statementImages={statementImages} />;
+        return (
+            <View>
+                <TextBox text={statement} statementImages={statementImages} />
+                <Spacer />
+            </View>
+        );
     }
     return (
         <View style={styles.container}>

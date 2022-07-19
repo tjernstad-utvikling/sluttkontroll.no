@@ -297,6 +297,11 @@ const SlkDocument = ({
                     reportSetting={reportSetting}
                     statement={statementText}
                     statementImages={statementImages}
+                    kontroll={kontroll}
+                    hasStatement={isModuleActive(ReportModules.statementModule)}
+                    hasInstrument={isModuleActive(
+                        ReportModules.instrumentModule
+                    )}
                 />
             )}
             {isModuleActive(ReportModules.skjemaPage) &&

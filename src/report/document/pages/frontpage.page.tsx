@@ -2,7 +2,7 @@ import { Image, Page, StyleSheet, View } from '@react-pdf/renderer';
 import { ReportKontroll, ReportSetting } from '../../../contracts/reportApi';
 
 import { DateText } from '../components/text';
-import PdfLogo from '../../assets/pdf-logo.png';
+import PdfLogo from '../../../assets/pdf-logo.png';
 import { Text } from '../components/text';
 
 interface FrontPageProps {

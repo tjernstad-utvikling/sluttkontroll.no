@@ -12,6 +12,7 @@ import Checkbox from '@mui/material/Checkbox';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Image } from './image';
+import LinearProgress from '@mui/material/LinearProgress';
 import { Link } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { RowAction } from '../tables/base/tableUtils';
@@ -19,7 +20,7 @@ import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import { makeStyles } from '../theme/makeStyles';
-import { useAvvik } from '../data/avvik';
+import { useDeleteAvvikImage } from '../api/hooks/useAvvik';
 
 interface AvvikCardProps {
     avvik: Avvik;
@@ -81,6 +82,12 @@ export function AvvikCard({
                         variant="h5"
                         component="h3">
                         ID: {avvik.id}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        component="p">
+                        {avvik.discoverLocation}
                     </Typography>
                     <Typography
                         variant="body2"
@@ -153,6 +160,7 @@ interface AvvikGridProps {
     selectedFromGrid: boolean;
     url: string;
     leftAction?: React.ReactNode;
+    isLoading: boolean;
 }
 export function AvvikGrid(props: AvvikGridProps) {
     const { classes } = useStyles();
@@ -219,6 +227,7 @@ export function AvvikGrid(props: AvvikGridProps) {
         <>
             <div className={classes.pasteTool}>{props.leftAction}</div>
             <div className={classes.container}>
+                {props.isLoading && <LinearProgress />}
                 {props.avvik.map((a) => (
                     <AvvikCard
                         key={a.id}
@@ -240,7 +249,19 @@ interface AvvikImageCardProps {
 }
 export const AvvikImageCard = ({ avvikBilde, avvik }: AvvikImageCardProps) => {
     const { classes } = useStyles();
-    const { deleteAvvikImage } = useAvvik();
+
+    const deleteImageMutation = useDeleteAvvikImage();
+
+    async function deleteAvvikImage(avvik: Avvik, avvikBildeId: number) {
+        try {
+            await deleteImageMutation.mutateAsync({
+                avvik,
+                imageId: avvikBildeId
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <Card className={classes.cardRoot}>
             <CardActionArea>

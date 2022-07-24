@@ -1,20 +1,17 @@
 import { Card, CardContent } from '../components/card';
-import { CheckpointTable, columns, defaultColumns } from '../tables/checkpoint';
+import { useChecklists, useUpdateChecklist } from '../api/hooks/useChecklist';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { Checklist } from '../contracts/kontrollApi';
 import { Checkpoint } from '../contracts/checkpointApi';
+import { CheckpointTable } from '../tables/checkpoint';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { LoadingButton } from '../components/button';
 import { SelectTemplate } from '../components/template';
 import { SjekklisterViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/base/tableContainer';
 import { Template } from '../contracts/skjemaTemplateApi';
-import { getCheckpoints } from '../api/checkpointApi';
-import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
+import { useCheckpoints } from '../api/hooks/useCheckpoint';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SjekklisteEditView = () => {
@@ -23,7 +20,6 @@ const SjekklisteEditView = () => {
     const { skjemaId } = useParams<SjekklisterViewParams>();
     const history = useHistory();
 
-    const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [selected, setSelected] = useState<Checkpoint[]>([]);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -32,56 +28,35 @@ const SjekklisteEditView = () => {
     const [selectFromTemplate, setSelectFromTemplate] =
         useState<boolean>(false);
 
-    const [_checklists, setChecklists] = useState<Checklist[]>([]);
-
-    const {
-        state: { checklists },
-        loadKontroller,
-        saveEditChecklist
-    } = useKontroll();
-
-    useEffectOnce(() => {
-        loadKontroller();
+    const checklistData = useChecklists({
+        skjemaId: Number(skjemaId)
     });
+
+    const checklistMutations = useUpdateChecklist();
+
+    const checkpointData = useCheckpoints();
 
     const onSubmitChecklist = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         setIsSubmitting(true);
-        if (await saveEditChecklist(Number(skjemaId), selected)) {
+        try {
+            await checklistMutations.mutateAsync({
+                checkpoints: selected,
+                skjemaId: Number(skjemaId)
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
             history.goBack();
         }
+
         setIsSubmitting(false);
     };
 
     useEffect(() => {
-        if (checklists !== undefined) {
-            setChecklists(
-                checklists.filter((c) => c.skjema.id === Number(skjemaId))
-            );
-        }
-    }, [checklists, skjemaId]);
-
-    useEffect(() => {
-        setSelected(_checklists.map((c) => c.checkpoint));
-    }, [_checklists]);
-
-    useEffectOnce(async () => {
-        try {
-            const res = await getCheckpoints();
-            if (res.status === 200) {
-                setCheckpoints(
-                    res.checkpoints.sort((a, b) =>
-                        String(a.prosedyreNr).localeCompare(
-                            String(b.prosedyreNr),
-                            undefined,
-                            { numeric: true, sensitivity: 'base' }
-                        )
-                    )
-                );
-            }
-        } catch (error: any) {}
-    });
+        setSelected(checklistData.data?.map((c) => c.checkpoint) ?? []);
+    }, [checklistData.data]);
 
     return (
         <div>
@@ -121,32 +96,34 @@ const SjekklisteEditView = () => {
                                         isOpen={selectFromTemplate}
                                     />
                                     {!selectFromTemplate ? (
-                                        checkpoints !== undefined ? (
-                                            <TableContainer
-                                                columns={columns({})}
-                                                defaultColumns={defaultColumns}
-                                                tableId="checkpoints">
-                                                <CheckpointTable
-                                                    checklists={_checklists}
-                                                    templateList={
-                                                        template?.skjemaTemplateCheckpoints
-                                                    }
-                                                    checkpoints={checkpoints}
-                                                    onSelected={(ids) =>
-                                                        setSelected(
-                                                            checkpoints?.filter(
-                                                                (c) =>
-                                                                    ids.indexOf(
-                                                                        c.id
-                                                                    ) !== -1
-                                                            )
-                                                        )
-                                                    }
-                                                />
-                                            </TableContainer>
-                                        ) : (
-                                            <div>Laster sjekkpunkter</div>
-                                        )
+                                        <CheckpointTable
+                                            isLoading={
+                                                checkpointData.isLoading ||
+                                                checklistData.isLoading
+                                            }
+                                            checklists={
+                                                checklistData.data ?? []
+                                            }
+                                            templateList={
+                                                template?.skjemaTemplateCheckpoints
+                                            }
+                                            checkpoints={
+                                                checkpointData.data ?? []
+                                            }
+                                            enableSelection
+                                            onSelected={(ids) =>
+                                                setSelected(
+                                                    checkpointData.data
+                                                        ? checkpointData.data?.filter(
+                                                              (c) =>
+                                                                  ids.indexOf(
+                                                                      c.id
+                                                                  ) !== -1
+                                                          )
+                                                        : []
+                                                )
+                                            }
+                                        />
                                     ) : (
                                         <div />
                                     )}

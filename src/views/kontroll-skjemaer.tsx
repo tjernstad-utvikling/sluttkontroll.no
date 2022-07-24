@@ -8,22 +8,21 @@ import {
 import { SkjemaTable, columns, defaultColumns } from '../tables/skjema';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { useRemoveSkjema, useSkjemaer } from '../api/hooks/useSkjema';
 
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { PasteButton } from '../components/clipboard';
-import { Skjema } from '../contracts/kontrollApi';
 import { SkjemaEditModal } from '../modal/skjema';
 import { SkjemaerViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/base/tableContainer';
-import { useAvvik } from '../data/avvik';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useKontroll } from '../data/kontroll';
-import { useMeasurement } from '../data/measurement';
+import { useKontrollById } from '../api/hooks/useKontroll';
+import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
 
 const SkjemaerView = () => {
@@ -40,46 +39,34 @@ const SkjemaerView = () => {
     useHotkeys('n', () => history.push(`${url}/skjema/new`)); // new skjema
     /***** */
 
-    const [_skjemaer, setSkjemaer] = useState<Skjema[]>([]);
+    const kontrollData = useKontrollById(Number(kontrollId));
 
-    const {
-        state: { skjemaer, kontroller },
-        loadKontroller,
-        removeSkjema
-    } = useKontroll();
+    const skjemaData = useSkjemaer({ kontrollId: Number(kontrollId) });
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const measurementData = useMeasurements({ kontrollId: Number(kontrollId) });
 
-    const {
-        state: { measurements }
-    } = useMeasurement();
+    const removeSkjemaMutation = useRemoveSkjema();
 
-    useEffectOnce(() => {
-        loadKontroller();
+    const avvikData = useAvvik({
+        includeClosed: true,
+        kontrollId: Number(kontrollId)
     });
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
 
-    useEffect(() => {
-        if (skjemaer !== undefined) {
-            setSkjemaer(
-                skjemaer.filter((s) => s.kontroll.id === Number(kontrollId))
-            );
-        }
-    }, [skjemaer, kontrollId]);
-
     const deleteSkjema = async (skjemaId: number) => {
-        const skjema = skjemaer?.find((s) => s.id === skjemaId);
+        const skjema = skjemaData.data?.find((s) => s.id === skjemaId);
         if (skjema !== undefined) {
             const isConfirmed = await confirm(
                 `Slette ${skjema.area} - ${skjema.omrade}?`
             );
 
             if (isConfirmed) {
-                removeSkjema(skjemaId);
+                await removeSkjemaMutation.mutateAsync({
+                    kontrollId: Number(kontrollId),
+                    skjemaId
+                });
             }
         }
     };
@@ -105,11 +92,12 @@ const SkjemaerView = () => {
     }, []);
 
     const onSelectForClipboard = (ids: number[]) => {
-        selectedSkjemaer(
-            _skjemaer.filter((skjema) => {
-                return ids.includes(skjema.id);
-            })
-        );
+        if (skjemaData.data)
+            selectedSkjemaer(
+                skjemaData.data.filter((skjema) => {
+                    return ids.includes(skjema.id);
+                })
+            );
     };
 
     return (
@@ -139,45 +127,44 @@ const SkjemaerView = () => {
                                 />
                             }>
                             <CardContent>
-                                {skjemaer !== undefined ? (
-                                    <TableContainer
-                                        columns={columns(
-                                            kontroller ?? [],
-                                            avvik ?? [],
-                                            measurements ?? [],
-                                            url,
-                                            deleteSkjema,
-                                            setEditId,
-                                            clipboardHasMeasurement,
-                                            measurementToPast,
-                                            setCommentId
-                                        )}
-                                        defaultColumns={defaultColumns}
-                                        tableId="skjemaer">
-                                        <SkjemaTable
-                                            skjemaer={_skjemaer}
-                                            onSelected={onSelectForClipboard}
-                                            leftAction={
-                                                <PasteButton
-                                                    clipboardHas={
-                                                        clipboardHasSkjema
+                                <TableContainer
+                                    columns={columns(
+                                        kontrollData.data,
+                                        avvikData.data ?? [],
+                                        measurementData.data ?? [],
+                                        url,
+                                        deleteSkjema,
+                                        setEditId,
+                                        clipboardHasMeasurement,
+                                        measurementToPast,
+                                        setCommentId
+                                    )}
+                                    defaultColumns={defaultColumns}
+                                    tableId="skjemaer">
+                                    <SkjemaTable
+                                        skjemaer={skjemaData.data ?? []}
+                                        isLoading={
+                                            skjemaData.isLoading ||
+                                            avvikData.isLoading ||
+                                            measurementData.isLoading
+                                        }
+                                        onSelected={onSelectForClipboard}
+                                        leftAction={
+                                            <PasteButton
+                                                clipboardHas={
+                                                    clipboardHasSkjema
+                                                }
+                                                options={{
+                                                    skjemaPaste: {
+                                                        kontrollId:
+                                                            Number(kontrollId),
+                                                        skjema: skjemaToPast
                                                     }
-                                                    options={{
-                                                        skjemaPaste: {
-                                                            kontrollId:
-                                                                Number(
-                                                                    kontrollId
-                                                                ),
-                                                            skjema: skjemaToPast
-                                                        }
-                                                    }}
-                                                />
-                                            }
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster skjemaer</div>
-                                )}
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

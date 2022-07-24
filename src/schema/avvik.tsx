@@ -8,9 +8,8 @@ import Select from 'react-select';
 import { TextField } from '../components/input';
 import { User } from '../contracts/userApi';
 import { useEffect } from 'react';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 interface AvvikSchemaProps {
     avvik?: Avvik;
@@ -18,7 +17,8 @@ interface AvvikSchemaProps {
     onSubmit: (
         beskrivelse: string,
         kommentar: string,
-        utbedrer: Array<User> | null
+        utbedrer: Array<User> | null,
+        discoverLocation: string
     ) => Promise<boolean>;
 }
 export const AvvikSchema = ({
@@ -26,10 +26,7 @@ export const AvvikSchema = ({
     beskrivelse,
     onSubmit
 }: AvvikSchemaProps): JSX.Element => {
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
+    const usersData = useUsers();
 
     interface Option {
         value: User;
@@ -38,14 +35,12 @@ export const AvvikSchema = ({
     const [userOptions, setUserOptions] = useState<Array<Option>>();
 
     useEffect(() => {
-        if (users !== undefined) {
-            setUserOptions(users.map((u) => ({ value: u, label: u.name })));
+        if (usersData.data !== undefined) {
+            setUserOptions(
+                usersData.data.map((u) => ({ value: u, label: u.name }))
+            );
         }
-    }, [users]);
-
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    }, [usersData.data]);
 
     if (userOptions !== undefined) {
         return (
@@ -56,9 +51,10 @@ export const AvvikSchema = ({
                             ? beskrivelse
                             : avvik?.beskrivelse || '',
                     kommentar: avvik?.kommentar || '',
+                    discoverLocation: avvik?.discoverLocation || '',
                     utbedrer:
                         avvik !== undefined
-                            ? avvik.utbedrer.map((a) => {
+                            ? avvik.utbedrer?.map((a) => {
                                   let user = userOptions.find(
                                       (u) => u.value.id === a.id
                                   );
@@ -77,12 +73,21 @@ export const AvvikSchema = ({
                         values.kommentar,
                         values.utbedrer !== null
                             ? values.utbedrer.map((ut) => ut.value)
-                            : null
+                            : null,
+                        values.discoverLocation
                     );
                 }}>
                 {({ isSubmitting, setFieldValue, values }) => {
                     return (
                         <Form>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                id="discoverLocation"
+                                label="Oppdaget sted"
+                                name="discoverLocation"
+                                autoFocus
+                            />
                             <TextField
                                 variant="outlined"
                                 fullWidth
@@ -98,7 +103,7 @@ export const AvvikSchema = ({
                                 label="Kommentar"
                                 name="kommentar"
                             />
-                            {users && (
+                            {usersData.data && (
                                 <>
                                     <label htmlFor="avvikUtbedrere-select">
                                         Utbedres av

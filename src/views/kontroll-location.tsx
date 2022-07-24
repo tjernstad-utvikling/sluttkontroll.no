@@ -5,14 +5,17 @@ import {
     PasteButton,
     SkjemaClipboard
 } from '../components/clipboard';
-import { Kontroll, Location } from '../contracts/kontrollApi';
 import {
-    KontrollTable,
-    defaultColumns,
-    kontrollColumns
-} from '../tables/kontroll';
+    useClients,
+    useLocationById,
+    useUpdateLocation
+} from '../api/hooks/useKlient';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import {
+    useKontroller,
+    useToggleKontrollStatus
+} from '../api/hooks/useKontroll';
 
 import AddIcon from '@mui/icons-material/Add';
 import { AttachmentModal } from '../modal/attachment';
@@ -22,85 +25,66 @@ import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
+import { KontrollTable } from '../tables/kontroll';
 import { LocationEditSchema } from '../schema/location';
 import { LocationImageCard } from '../components/location';
 import { NewImageModal } from '../modal/newLocationImage';
-import { TableContainer } from '../tables/base/tableContainer';
 import Typography from '@mui/material/Typography';
-import { useAvvik } from '../data/avvik';
-import { useClient } from '../data/klient';
+import { useAttachments } from '../api/hooks/useAttachments';
+import { useAvvik } from '../api/hooks/useAvvik';
 import { useClipBoard } from '../data/clipboard';
-import { useKontroll } from '../data/kontroll';
-import { useMeasurement } from '../data/measurement';
+import { useKontroll as useKontrollCtx } from '../data/kontroll';
+import { useMeasurements } from '../api/hooks/useMeasurement';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollObjektView = () => {
     const { classes } = usePageStyles();
     const { objectId, klientId } = useParams<KontrollObjectViewParams>();
     const history = useHistory();
 
-    const [loadedObjekt, setLoadedObjekt] = useState<number>();
-
-    const [_kontroller, setKontroller] = useState<Array<Kontroll>>([]);
-    const [_location, setLocation] = useState<Location>();
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<
+        number | undefined
+    >(undefined);
 
     const [editLocation, setEditLocation] = useState<boolean>(false);
     const [addLocationImage, setAddLocationImage] = useState<boolean>(false);
 
-    const {
-        state: { kontroller },
-        loadKontrollerByObjekt,
-        toggleStatusKontroll,
-        showAllKontroller,
-        setShowAllKontroller
-    } = useKontroll();
-    const {
-        state: { klienter },
-        saveEditLocation
-    } = useClient();
-    const {
-        loadUsers,
-        state: { users }
-    } = useUser();
+    const { showAllKontroller, setShowAllKontroller } = useKontrollCtx();
 
-    const {
-        state: { avvik }
-    } = useAvvik();
+    const kontrollData = useKontroller({
+        includeDone: showAllKontroller,
+        locationId: Number(objectId)
+    });
 
-    const {
-        state: { measurements }
-    } = useMeasurement();
+    const attachmentsData = useAttachments({
+        locationId: Number(objectId)
+    });
 
-    useEffect(() => {
-        if (loadedObjekt !== Number(objectId)) {
-            loadKontrollerByObjekt(Number(objectId), showAllKontroller);
-            setLoadedObjekt(Number(objectId));
-            loadUsers();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loadUsers, loadedObjekt, objectId]);
+    const statusMutation = useToggleKontrollStatus();
 
-    useEffect(() => {
-        if (kontroller !== undefined) {
-            setKontroller(
-                kontroller.filter((k) => k.location.id === Number(objectId))
-            );
-        }
-    }, [kontroller, objectId]);
+    function toggleStatusKontroll(kontrollId: number) {
+        const kontroll = kontrollData.data?.find((k) => k.id === kontrollId);
+        if (kontroll) statusMutation.mutateAsync({ kontroll });
+    }
+    const clientData = useClients();
 
-    useEffect(() => {
-        if (klienter !== undefined) {
-            const klient = klienter.find((k) => k.id === Number(klientId));
-            if (klient !== undefined) {
-                setLocation(
-                    klient.locations.find((o) => o.id === Number(objectId))
-                );
-            }
-        }
-    }, [klientId, klienter, objectId]);
+    const locationData = useLocationById({
+        clientId: Number(klientId),
+        locationId: Number(objectId)
+    });
+
+    const userData = useUsers();
+
+    const avvikData = useAvvik({
+        includeClosed: true,
+        locationId: Number(objectId)
+    });
+
+    const measurementData = useMeasurements({ locationId: Number(objectId) });
 
     const [editId, setEditId] = useState<number>();
     const [commentId, setCommentId] = useState<number | undefined>(undefined);
@@ -115,9 +99,18 @@ const KontrollObjektView = () => {
         setEditId(undefined);
     };
 
+    const locationMutation = useUpdateLocation();
     const handleEditLocation = async (name: string): Promise<void> => {
-        if (_location !== undefined) {
-            if (await saveEditLocation(name, Number(klientId), _location)) {
+        if (locationData.data !== undefined) {
+            try {
+                await locationMutation.mutateAsync({
+                    clientId: Number(klientId),
+                    locationId: Number(objectId),
+                    name
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 setEditLocation(false);
             }
         }
@@ -144,9 +137,9 @@ const KontrollObjektView = () => {
 
     const onSelectForClipboard = (ids: number[]) => {
         selectedKontroll(
-            _kontroller.filter((kontroll) => {
+            kontrollData.data?.filter((kontroll) => {
                 return ids.includes(kontroll.id);
-            })
+            }) ?? []
         );
     };
 
@@ -181,14 +174,14 @@ const KontrollObjektView = () => {
 
                                         <Typography paragraph>
                                             <strong>Lokasjon:</strong>{' '}
-                                            {_location?.name}
+                                            {locationData.data?.name}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        {_location && (
+                                        {locationData.data && (
                                             <LocationImageCard
                                                 klientId={Number(klientId)}
-                                                location={_location}
+                                                location={locationData.data}
                                                 openAddImageModal={() =>
                                                     setAddLocationImage(true)
                                                 }
@@ -197,9 +190,10 @@ const KontrollObjektView = () => {
                                     </Grid>
                                 </Grid>
 
-                                {editLocation && _location !== undefined ? (
+                                {editLocation &&
+                                locationData.data !== undefined ? (
                                     <LocationEditSchema
-                                        location={_location}
+                                        location={locationData.data}
                                         onSubmit={handleEditLocation}
                                     />
                                 ) : (
@@ -229,74 +223,50 @@ const KontrollObjektView = () => {
                                                 ? 'Vis kun åpne kontroller'
                                                 : 'Vis alle kontroller',
                                             icon: <CallMergeIcon />,
-                                            action: () => {
-                                                if (!showAllKontroller)
-                                                    loadKontrollerByObjekt(
-                                                        Number(objectId),
-                                                        true
-                                                    );
+                                            action: () =>
                                                 setShowAllKontroller(
                                                     !showAllKontroller
-                                                );
-                                            }
+                                                )
                                         }
                                     ]}
                                 />
                             }>
                             <CardContent>
-                                {kontroller !== undefined ? (
-                                    <TableContainer
-                                        columns={kontrollColumns({
-                                            users: users ?? [],
-                                            klienter: klienter ?? [],
-                                            avvik: avvik ?? [],
-                                            measurements: measurements ?? [],
-                                            edit: editKontroll,
-                                            toggleStatus: toggleStatusKontroll,
-                                            clipboardHasSkjema,
-                                            skjemaToPast,
-                                            editComment: setCommentId,
-                                            addAttachment:
-                                                setKontrollAddAttachmentId
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="kontroller">
-                                        <KontrollTable
-                                            kontroller={_kontroller.filter(
-                                                (k) => {
-                                                    if (showAllKontroller) {
-                                                        return true;
-                                                    }
-                                                    return k.done !== true;
+                                <KontrollTable
+                                    {...{
+                                        users: userData.data ?? [],
+                                        klienter: clientData.data ?? [],
+                                        avvik: avvikData.data ?? [],
+                                        measurements:
+                                            measurementData.data ?? [],
+                                        edit: editKontroll,
+                                        toggleStatus: toggleStatusKontroll,
+                                        clipboardHasSkjema,
+                                        skjemaToPast,
+                                        editComment: setCommentId,
+                                        addAttachment:
+                                            setKontrollAddAttachmentId,
+                                        attachments: attachmentsData.data ?? [],
+                                        openSelectInstrument:
+                                            setIsSelectModalOpen
+                                    }}
+                                    kontroller={kontrollData.data ?? []}
+                                    onSelected={onSelectForClipboard}
+                                    loading={kontrollData.isLoading}
+                                    leftAction={
+                                        <PasteButton
+                                            clipboardHas={clipboardHasKontroll}
+                                            options={{
+                                                kontrollPaste: {
+                                                    locationId:
+                                                        Number(objectId),
+                                                    klientId: Number(klientId),
+                                                    kontroll: kontrollToPast
                                                 }
-                                            )}
-                                            onSelected={onSelectForClipboard}
-                                            leftAction={
-                                                <PasteButton
-                                                    clipboardHas={
-                                                        clipboardHasKontroll
-                                                    }
-                                                    options={{
-                                                        kontrollPaste: {
-                                                            locationId:
-                                                                Number(
-                                                                    objectId
-                                                                ),
-                                                            klientId:
-                                                                Number(
-                                                                    klientId
-                                                                ),
-                                                            kontroll:
-                                                                kontrollToPast
-                                                        }
-                                                    }}
-                                                />
-                                            }
+                                            }}
                                         />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster kontroller</div>
-                                )}
+                                    }
+                                />
                             </CardContent>
                         </Card>
                     </Grid>
@@ -323,6 +293,13 @@ const KontrollObjektView = () => {
                 locationId={Number(objectId)}
                 open={addLocationImage}
                 close={() => setAddLocationImage(false)}
+            />
+            <InstrumentSelectModal
+                kontrollId={isSelectModalOpen ?? 0}
+                open={!!isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(undefined);
+                }}
             />
         </div>
     );

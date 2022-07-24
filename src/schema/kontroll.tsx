@@ -8,9 +8,8 @@ import Select from 'react-select';
 import { TextField } from '../components/input';
 import { User } from '../contracts/userApi';
 import { useEffect } from 'react';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 interface KontrollSchemaProps {
     kontroll?: Kontroll;
@@ -24,10 +23,7 @@ export const KontrollSchema = ({
     kontroll,
     onSubmit
 }: KontrollSchemaProps): JSX.Element => {
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
+    const usersData = useUsers();
 
     interface Option {
         value: User;
@@ -36,14 +32,12 @@ export const KontrollSchema = ({
     const [userOptions, setUserOptions] = useState<Array<Option>>();
 
     useEffect(() => {
-        if (users !== undefined) {
-            setUserOptions(users.map((u) => ({ value: u, label: u.name })));
+        if (usersData.data !== undefined) {
+            setUserOptions(
+                usersData.data.map((u) => ({ value: u, label: u.name }))
+            );
         }
-    }, [users]);
-
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    }, [usersData.data]);
 
     const user =
         kontroll !== undefined
@@ -92,7 +86,7 @@ export const KontrollSchema = ({
                                 name="name"
                                 autoFocus
                             />
-                            {users && (
+                            {usersData.data && (
                                 <div>
                                     <label htmlFor="user-select">
                                         Kontrollen utføres av

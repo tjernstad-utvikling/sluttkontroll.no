@@ -10,8 +10,7 @@ import { Template } from '../contracts/skjemaTemplateApi';
 import { Theme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '../theme/makeStyles';
-import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useTemplate } from '../data/skjemaTemplate';
+import { useTemplates } from '../api/hooks/useSkjemaTemplate';
 
 interface SelectTemplateProps {
     onSelect: (template: Template) => void;
@@ -24,16 +23,11 @@ export const SelectTemplate = ({
     isOpen
 }: SelectTemplateProps) => {
     const { classes } = useStyles();
-    const {
-        state: { templates },
-        loadTemplates
-    } = useTemplate();
-    useEffectOnce(async () => {
-        loadTemplates();
-    });
+
+    const templateData = useTemplates();
 
     const onSelectTemplate = (templateId: number) => {
-        const template = templates?.find((t) => t.id === templateId);
+        const template = templateData.data?.find((t) => t.id === templateId);
         if (template !== undefined) {
             onSelect(template);
         }
@@ -48,7 +42,7 @@ export const SelectTemplate = ({
                 onClick={onOpen}>
                 Velg fra maler
             </Button>
-            {templates !== undefined && isOpen && (
+            {isOpen && (
                 <>
                     <Typography component="h3" variant="h4">
                         Sjekkliste maler
@@ -61,11 +55,13 @@ export const SelectTemplate = ({
                         })}
                         defaultColumns={defaultColumns}
                         tableId="skjemaTemplates">
-                        <TemplateTable templates={templates} />
+                        <TemplateTable
+                            isLoading={templateData.isLoading}
+                            templates={templateData.data ?? []}
+                        />
                     </TableContainer>
                 </>
             )}
-            {templates === undefined && <div>Laster maler</div>}
         </div>
     );
 };

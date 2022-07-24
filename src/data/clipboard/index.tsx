@@ -10,9 +10,10 @@ import { Measurement } from '../../contracts/measurementApi';
 import { Theme } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '../../theme/makeStyles';
-import { useAvvik } from '../avvik';
-import { useKontroll } from '../kontroll';
-import { useMeasurement } from '../measurement';
+import { useMoveAvvik } from '../../api/hooks/useAvvik';
+import { useMoveKontroll } from '../../api/hooks/useKontroll';
+import { useMoveMeasurement } from '../../api/hooks/useMeasurement';
+import { useMoveSkjema } from '../../api/hooks/useSkjema';
 import { useSnackbar } from 'notistack';
 
 export const useClipBoard = () => {
@@ -33,16 +34,13 @@ export const ClipBoardContextProvider = ({
     const [showScissor, setShowScissor] = useState<boolean>(false);
     const [cutoutLength, setCutoutLength] = useState<number>(0);
 
+    const moveMutation = useMoveKontroll();
+    const moveSkjemaMutation = useMoveSkjema();
+    const moveAvvikMutation = useMoveAvvik();
+    const moveMeasurementMutation = useMoveMeasurement();
+
     const { classes } = useStyles();
     const { enqueueSnackbar } = useSnackbar();
-
-    const {
-        state: { skjemaer, checklists },
-        moveSkjema,
-        moveKontroll
-    } = useKontroll();
-    const { moveMeasurement } = useMeasurement();
-    const { moveAvvik } = useAvvik();
 
     function selectedSkjemaer(skjemaer: Skjema[]) {
         setCutoutLength(skjemaer.length);
@@ -147,7 +145,14 @@ export const ClipBoardContextProvider = ({
     }: PasteOptions) {
         if (skjemaPaste !== undefined) {
             for (const skjema of skjemaPaste.skjema) {
-                if (await moveSkjema(skjema, skjemaPaste.kontrollId)) {
+                try {
+                    await moveSkjemaMutation.mutateAsync({
+                        skjema,
+                        kontrollId: skjemaPaste.kontrollId
+                    });
+                } catch (error) {
+                    console.error(error);
+                } finally {
                     dispatch({
                         type: ActionType.removeSkjemaClipboard,
                         payload: skjema
@@ -161,16 +166,18 @@ export const ClipBoardContextProvider = ({
         }
         if (measurementPaste !== undefined) {
             for (const measurement of measurementPaste.measurement) {
-                const skjema = skjemaer?.find(
-                    (skjema) => skjema.id === measurementPaste.skjemaId
-                );
-                if (skjema) {
-                    if (await moveMeasurement(measurement, skjema)) {
-                        dispatch({
-                            type: ActionType.removeMeasurementClipboard,
-                            payload: measurement
-                        });
-                    }
+                try {
+                    await moveMeasurementMutation.mutateAsync({
+                        measurement,
+                        skjemaId: measurementPaste.skjemaId
+                    });
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    dispatch({
+                        type: ActionType.removeMeasurementClipboard,
+                        payload: measurement
+                    });
                 }
             }
             dispatch({
@@ -180,19 +187,18 @@ export const ClipBoardContextProvider = ({
         }
         if (avvikPaste !== undefined) {
             for (const avvik of avvikPaste.avvik) {
-                const checklist = checklists?.find(
-                    (checklist) => checklist.id === avvikPaste.checklistId
-                );
-                const skjema = skjemaer?.find(
-                    (skjema) => skjema.id === checklist?.skjema.id
-                );
-                if (checklist && skjema) {
-                    if (await moveAvvik(avvik, checklist, skjema)) {
-                        dispatch({
-                            type: ActionType.removeAvvikClipboard,
-                            payload: avvik
-                        });
-                    }
+                try {
+                    await moveAvvikMutation.mutateAsync({
+                        avvik,
+                        checklistId: avvikPaste.checklistId
+                    });
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    dispatch({
+                        type: ActionType.removeAvvikClipboard,
+                        payload: avvik
+                    });
                 }
             }
             dispatch({
@@ -200,15 +206,18 @@ export const ClipBoardContextProvider = ({
                 payload: []
             });
         }
+
         if (kontrollPaste !== undefined) {
             for (const kontroll of kontrollPaste.kontroll) {
-                if (
-                    await moveKontroll(
+                try {
+                    await moveMutation.mutateAsync({
                         kontroll,
-                        kontrollPaste.klientId,
-                        kontrollPaste.locationId
-                    )
-                ) {
+                        klientId: kontrollPaste.klientId,
+                        locationId: kontrollPaste.locationId
+                    });
+                } catch (error) {
+                    console.error(error);
+                } finally {
                     dispatch({
                         type: ActionType.removeKontrollClipboard,
                         payload: kontroll

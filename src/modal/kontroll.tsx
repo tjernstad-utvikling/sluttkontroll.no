@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useKontrollById, useUpdateKontroll } from '../api/hooks/useKontroll';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Kontroll } from '../contracts/kontrollApi';
 import { KontrollSchema } from '../schema/kontroll';
 import { User } from '../contracts/userApi';
-import { useKontroll } from '../data/kontroll';
 
 interface KontrollEditModalProps {
     editId: number | undefined;
@@ -19,32 +17,22 @@ export const KontrollEditModal = ({
     editId,
     close
 }: KontrollEditModalProps): JSX.Element => {
-    const [kontroll, setKontroll] = useState<Kontroll>();
+    const kontrollData = useKontrollById(editId);
 
-    const {
-        state: { kontroller },
-        updateKontroll
-    } = useKontroll();
-
-    useEffect(() => {
-        if (kontroller !== undefined) {
-            setKontroll(kontroller.find((k) => k.id === editId));
-        }
-    }, [editId, kontroller]);
+    const updateMutation = useUpdateKontroll();
 
     const handleUpdate = async (
         name: string,
         user: User,
         avvikUtbedrere: User[] | null
     ): Promise<boolean> => {
-        if (kontroll !== undefined) {
+        if (kontrollData.data !== undefined) {
             if (
-                await updateKontroll({
-                    ...kontroll,
+                await updateMutation.mutateAsync({
+                    ...kontrollData.data,
                     name,
                     user,
-                    avvikUtbedrere:
-                        avvikUtbedrere !== null ? avvikUtbedrere : []
+                    avvikUtbedrere: avvikUtbedrere ?? []
                 })
             ) {
                 close();
@@ -61,10 +49,10 @@ export const KontrollEditModal = ({
             fullWidth>
             <DialogTitle id="add-Picture-Dialog">Rediger kontroll</DialogTitle>
             <DialogContent>
-                {kontroll && (
+                {kontrollData.data && (
                     <KontrollSchema
                         onSubmit={handleUpdate}
-                        kontroll={kontroll}
+                        kontroll={kontrollData.data}
                     />
                 )}
             </DialogContent>

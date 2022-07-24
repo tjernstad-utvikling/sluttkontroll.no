@@ -4,6 +4,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { SettingCard } from '../components/settings';
 import { Theme } from '@mui/material';
+import { UploadModal } from '../modal/upload';
 import accountMultiple from '../assets/account-multiple.svg';
 import ballot from '../assets/ballot.svg';
 import checkCircle from '../assets/check-circle.svg';
@@ -58,6 +59,7 @@ const SettingsView = () => {
                     </Grid>
                 </Grid>
             </Container>
+            <UploadModal close={() => console.log()} kontrollId={1} />
         </>
     );
 };

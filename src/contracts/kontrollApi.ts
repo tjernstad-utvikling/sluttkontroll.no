@@ -1,5 +1,6 @@
-import { Attachment } from './attachmentApi';
+import { Checkpoint } from './checkpointApi';
 import { RapportEgenskaper } from './reportApi';
+
 export interface Klient {
     id: number;
     name: string;
@@ -35,26 +36,7 @@ export interface Kontroll {
         id: number;
     };
     avvikUtbedrere: { id: number }[];
-    attachments: Attachment[];
-}
-export interface ReportKontroll {
-    id: number;
-    name: string;
-    kommentar: string;
-    done: boolean;
-    completedDate: string | null;
-    location: {
-        id: number;
-        klient: {
-            id: number;
-        };
-        locationImage?: LocationImage | null | undefined;
-    };
-    user: {
-        id: number;
-    };
-    avvikUtbedrere: { id: number }[];
-    rapportEgenskaper: RapportEgenskaper | null;
+    instrumenter: { id: number }[];
 }
 
 export interface Skjema {
@@ -76,14 +58,7 @@ export interface ExtendedSkjema {
 
 export interface Checklist {
     id: number;
-    checkpoint: {
-        id: number;
-        prosedyreNr: string;
-        prosedyre: string;
-        tiltak: null;
-        tekst: string;
-        gruppe: string;
-    };
+    checkpoint: Checkpoint;
     aktuell: boolean;
     skjema: { id: number };
 }

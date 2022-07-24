@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useAvvikById, useUpdateAvvik } from '../api/hooks/useAvvik';
 
-import { Avvik } from '../contracts/avvikApi';
 import { AvvikSchema } from '../schema/avvik';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import LinearProgress from '@mui/material/LinearProgress';
 import { User } from '../contracts/userApi';
-import { useAvvik } from '../data/avvik';
 
 interface AvvikEditModalProps {
     editId: number | undefined;
@@ -19,33 +18,29 @@ export const AvvikEditModal = ({
     editId,
     close
 }: AvvikEditModalProps): JSX.Element => {
-    const [editAvvik, setEditAvvik] = useState<Avvik>();
+    const avvikData = useAvvikById(editId);
 
-    const {
-        state: { avvik },
-        updateAvvik
-    } = useAvvik();
-
-    useEffect(() => {
-        if (avvik !== undefined) {
-            setEditAvvik(avvik.find((a) => a.id === editId));
-        }
-    }, [editId, avvik]);
-
+    const updateAvvikMutation = useUpdateAvvik();
     const handleUpdate = async (
         beskrivelse: string,
         kommentar: string,
-        utbedrer: User[] | null
+        utbedrer: User[] | null,
+        discoverLocation: string
     ): Promise<boolean> => {
-        if (editAvvik !== undefined) {
-            if (
-                await updateAvvik({
-                    ...editAvvik,
-                    beskrivelse,
-                    kommentar,
-                    utbedrer: utbedrer !== null ? utbedrer : []
-                })
-            ) {
+        if (avvikData.data !== undefined) {
+            try {
+                updateAvvikMutation.mutateAsync({
+                    avvik: {
+                        ...avvikData.data,
+                        beskrivelse,
+                        kommentar,
+                        discoverLocation,
+                        utbedrer: utbedrer !== null ? utbedrer : []
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            } finally {
                 close();
             }
         }
@@ -58,10 +53,14 @@ export const AvvikEditModal = ({
             onClose={close}
             aria-labelledby="add-Picture-Dialog"
             fullWidth>
+            {avvikData.isLoading && <LinearProgress />}
             <DialogTitle id="add-Picture-Dialog">Rediger Avvik</DialogTitle>
             <DialogContent>
-                {editAvvik && (
-                    <AvvikSchema onSubmit={handleUpdate} avvik={editAvvik} />
+                {avvikData.isFetched && (
+                    <AvvikSchema
+                        onSubmit={handleUpdate}
+                        avvik={avvikData.data}
+                    />
                 )}
             </DialogContent>
             <DialogActions>

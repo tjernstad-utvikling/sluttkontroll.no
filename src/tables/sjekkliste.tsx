@@ -1,4 +1,4 @@
-import { Cell, Column, Row } from 'react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 
 import AddIcon from '@mui/icons-material/Add';
 import { Avvik } from '../contracts/avvikApi';
@@ -14,6 +14,7 @@ import { TableKey } from '../contracts/keys';
 import Typography from '@mui/material/Typography';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { categories } from '../utils/checkpointCategories.json';
 import { useMemo } from 'react';
 
 export const SjekklisteValueGetter = (data: Checklist | null) => {
@@ -39,6 +40,7 @@ export const SjekklisteValueGetter = (data: Checklist | null) => {
     };
     return { prosedyre, prosedyreNr, avvik, gruppe };
 };
+
 interface AvvikCellProps {
     url: string;
     id: string;
@@ -53,7 +55,7 @@ const AvvikCell = ({ avvik, url, id, row }: AvvikCellProps) => {
                     ( {avvik.open} | {avvik.closed} ){' '}
                 </span>
             </Link>
-            {row.allCells.find((c) => c.column.id === 'aktuell')?.value ? (
+            {row.getValue('aktuell') ? (
                 <IconButton
                     to={`${url}/checklist/${id}/avvik/new`}
                     component={RouterLink}
@@ -89,8 +91,8 @@ type ChecklistColumns = {
     prosedyre: string;
     avvik: any;
     aktuell: boolean;
-    gruppe: string;
-    action: number;
+    groupCategory: string;
+    mainCategory: string;
 };
 
 interface SjekklisteTableProps {
@@ -101,6 +103,7 @@ interface SjekklisteTableProps {
     clipboardHasAvvik: boolean;
     avvikToPast: Avvik[];
     children?: React.ReactNode;
+    isLoading: boolean;
 }
 export const SjekklisteTable = ({
     checklists,
@@ -109,7 +112,8 @@ export const SjekklisteTable = ({
     avvikToPast,
     clipboardHasAvvik,
     toggleAktuell,
-    children
+    children,
+    isLoading
 }: SjekklisteTableProps) => {
     const data = useMemo((): ChecklistColumns[] => {
         return checklists.map((c) => {
@@ -118,128 +122,124 @@ export const SjekklisteTable = ({
                 prosedyreNr: c.checkpoint.prosedyreNr,
                 prosedyre: c.checkpoint.prosedyre,
                 avvik: SjekklisteValueGetter(c).avvik(avvik),
-                action: c.id,
+                groupCategory:
+                    categories
+                        .find((mc) => mc.key === c.checkpoint.mainCategory)
+                        ?.groups.find(
+                            (g) => g.key === c.checkpoint.groupCategory
+                        )?.name ?? String(c.checkpoint.groupCategory),
+                mainCategory:
+                    categories.find(
+                        (mc) => mc.key === c.checkpoint.mainCategory
+                    )?.name ?? String(c.checkpoint.groupCategory),
                 gruppe: c.checkpoint.gruppe
             };
         });
     }, [avvik, checklists]);
 
-    const columns: Column<ChecklistColumns>[] = useMemo(
+    const columns: ColumnDef<ChecklistColumns>[] = useMemo(
         () => [
             {
-                Header: '#',
-                accessor: 'id',
-                disableGroupBy: true
+                header: '#',
+                accessorKey: 'id',
+                enableGrouping: false
             },
             {
-                Header: 'Prosedyre nr',
-                accessor: 'prosedyreNr',
-                disableGroupBy: true
+                header: 'Prosedyre nr',
+                accessorKey: 'prosedyreNr',
+                enableGrouping: false
             },
             {
-                Header: 'Prosedyre',
-                accessor: 'prosedyre',
-                disableGroupBy: true
+                header: 'Prosedyre',
+                accessorKey: 'prosedyre',
+                enableGrouping: false
             },
             {
-                Header: 'Avvik (åpne | lukket) ',
-                accessor: 'avvik',
-                disableGroupBy: true
-            },
-            {
-                Header: 'Aktuell',
-                accessor: 'aktuell',
-                disableGroupBy: true
-            },
-            {
-                Header: 'Gruppe',
-                accessor: 'gruppe',
-                disableGroupBy: false
-            },
-            {
-                Header: '',
-                accessor: 'action',
-                disableGroupBy: true
-            }
-        ],
-        []
-    );
-    const getAction = (row: Row<ChecklistColumns>) => (
-        <>
-            {clipboardHasAvvik && (
-                <PasteTableButton
-                    clipboardHas={true}
-                    options={{
-                        avvikPaste: {
-                            checklistId: Number(
-                                row.cells.find((c) => c.column.id === 'id')
-                                    ?.value
-                            ),
-                            avvik: avvikToPast
-                        }
-                    }}
-                />
-            )}
-            <RowAction
-                actionItems={[
-                    {
-                        name: row.values.aktuell
-                            ? 'sett: Ikke aktuell'
-                            : 'sett: aktuell',
-                        action: () =>
-                            toggleAktuell(
-                                Number(
-                                    row.allCells.find(
-                                        (c) => c.column.id === 'id'
-                                    )?.value
-                                )
-                            ),
-                        // skip: kontroll?.done || false,
-                        icon: row.values.aktuell ? (
-                            <VisibilityOffIcon />
-                        ) : (
-                            <VisibilityIcon />
-                        )
-                    }
-                ]}
-            />
-        </>
-    );
-
-    const getCustomCell = (
-        accessor: string,
-        row: Row<ChecklistColumns>,
-        cell: Cell<ChecklistColumns, any>
-    ) => {
-        console.log(row);
-        switch (accessor) {
-            case 'avvik':
-                return (
+                header: 'Avvik (åpne | lukket) ',
+                accessorKey: 'avvik',
+                enableGrouping: false,
+                cell: ({ cell, row }) => (
                     <AvvikCell
-                        avvik={cell.value}
-                        id={
-                            row.allCells.find((c) => c.column.id === 'id')
-                                ?.value
-                        }
+                        avvik={cell.getValue()}
+                        id={row.getValue('id')}
                         url={url}
                         row={row}
                     />
-                );
-            case 'aktuell':
-                return <AktuellCell aktuell={cell.value} />;
-
-            default:
-                return <span />;
-        }
-    };
+                )
+            },
+            {
+                header: 'Aktuell',
+                accessorKey: 'aktuell',
+                enableGrouping: false,
+                cell: ({ cell }) => <AktuellCell aktuell={cell.getValue()} />
+            },
+            {
+                header: 'Kategori',
+                accessorKey: 'mainCategory',
+                enableGrouping: true
+            },
+            {
+                header: 'Gruppe',
+                accessorKey: 'groupCategory',
+                enableGrouping: true
+            },
+            {
+                header: '',
+                accessorKey: 'actions',
+                enableGrouping: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                cell: ({ row }) => (
+                    <>
+                        {clipboardHasAvvik && (
+                            <PasteTableButton
+                                clipboardHas={true}
+                                options={{
+                                    avvikPaste: {
+                                        checklistId: Number(row.getValue('id')),
+                                        avvik: avvikToPast
+                                    }
+                                }}
+                            />
+                        )}
+                        <RowAction
+                            actionItems={[
+                                {
+                                    name: row.getValue('aktuell')
+                                        ? 'sett: Ikke aktuell'
+                                        : 'sett: aktuell',
+                                    action: () =>
+                                        toggleAktuell(
+                                            Number(
+                                                row
+                                                    .getAllCells()
+                                                    .find(
+                                                        (c) =>
+                                                            c.column.id === 'id'
+                                                    )
+                                                    ?.getValue()
+                                            )
+                                        ),
+                                    // skip: kontroll?.done || false,
+                                    icon: row.getValue('aktuell') ? (
+                                        <VisibilityOffIcon />
+                                    ) : (
+                                        <VisibilityIcon />
+                                    )
+                                }
+                            ]}
+                        />
+                    </>
+                )
+            }
+        ],
+        [avvikToPast, clipboardHasAvvik, toggleAktuell, url]
+    );
 
     const getRowStyling = (
         row: Row<ChecklistColumns>
     ): RowStylingEnum | undefined => {
-        if (
-            !row.allCells.find((c) => c.column.id === 'aktuell')?.value &&
-            !row.isGrouped
-        ) {
+        if (!row.getValue('aktuell') && !row.getIsGrouped()) {
             return RowStylingEnum.disabled;
         }
     };
@@ -249,11 +249,10 @@ export const SjekklisteTable = ({
             tableKey={TableKey.checklist}
             columns={columns}
             data={data}
-            defaultGroupBy={['gruppe']}
-            toRenderInCustomCell={['avvik', 'aktuell']}
-            getCustomCell={getCustomCell}
-            getAction={getAction}
+            defaultGrouping={['groupCategory']}
+            defaultVisibilityState={{}}
             getRowStyling={getRowStyling}
+            isLoading={isLoading}
         />
     );
 };

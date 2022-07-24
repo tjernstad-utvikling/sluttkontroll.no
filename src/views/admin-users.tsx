@@ -1,27 +1,18 @@
 import { Card, CardContent, CardMenu } from '../components/card';
 import { UserTable, columns, defaultColumns } from '../tables/user';
+import { useCurrentUser, useUsers } from '../api/hooks/useUsers';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { TableContainer } from '../tables/base/tableContainer';
-import { useAuth } from '../hooks/useAuth';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
 
 const UsersView = () => {
     const { classes } = usePageStyles();
 
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
+    const currentUserData = useCurrentUser();
 
-    const { user } = useAuth();
-
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    const userData = useUsers();
 
     return (
         <>
@@ -42,15 +33,20 @@ const UsersView = () => {
                                 />
                             }>
                             <CardContent>
-                                {users !== undefined && user !== undefined ? (
+                                {currentUserData.data !== undefined ? (
                                     <TableContainer
-                                        columns={columns({ currentUser: user })}
+                                        columns={columns({
+                                            currentUser: currentUserData.data
+                                        })}
                                         defaultColumns={defaultColumns}
                                         tableId="users">
-                                        <UserTable users={users ?? []} />
+                                        <UserTable
+                                            isLoading={userData.isLoading}
+                                            users={userData.data ?? []}
+                                        />
                                     </TableContainer>
                                 ) : (
-                                    <div>Laster brukere</div>
+                                    <div>Bruker mangler</div>
                                 )}
                             </CardContent>
                         </Card>

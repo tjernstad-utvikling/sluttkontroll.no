@@ -5,25 +5,36 @@ import Grid from '@mui/material/Grid';
 import { Roles } from '../contracts/userApi';
 import { UserSchema } from '../schema/user';
 import { useHistory } from 'react-router-dom';
+import { useNewUser } from '../api/hooks/useUsers';
 import { usePageStyles } from '../styles/kontroll/page';
-import { useUser } from '../data/user';
 
 const NewUserView = () => {
     const { classes } = usePageStyles();
 
     const history = useHistory();
-    const { newUser } = useUser();
+
+    const newUserMutation = useNewUser();
+
     const handleNewUser = async (
         name: string,
         phone: string,
         email: string,
         roles: Roles[] | undefined
     ) => {
-        if (await newUser(name, email, phone, roles)) {
+        try {
+            await newUserMutation.mutateAsync({
+                email,
+                name,
+                phone,
+                roles
+            });
+        } catch (error) {
+            console.log(error);
+            return false;
+        } finally {
             history.goBack();
             return true;
         }
-        return false;
     };
     return (
         <>

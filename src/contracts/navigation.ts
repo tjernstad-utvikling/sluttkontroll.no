@@ -16,6 +16,10 @@ export interface AvvikViewParams {
 }
 export interface AvvikPageViewParams {
     avvikId: string;
+    kontrollId: string;
+    skjemaId?: string;
+    objectId: string;
+    checklistId?: string;
 }
 export interface AvvikNewViewParams {
     checklistId: string;
@@ -41,6 +45,9 @@ export interface KontrollReportStatementViewParams {
 export interface InstrumentCalibrationViewParams {
     instrumentId: string;
 }
+export interface KontrollInstrumentViewParams {
+    kontrollId: string;
+}
 export interface EditUserViewParams {
     userId: string;
 }
@@ -49,6 +56,9 @@ export interface AdminTemplateEditViewParams {
 }
 export interface AdminFormsTemplateEditViewParams {
     templateId: string;
+}
+export interface AdminCheckpointEditViewParams {
+    checkpointId: string;
 }
 export interface PasswordResetViewParams {
     token?: string;

@@ -9,9 +9,8 @@ import { LoadingButton } from '../components/button';
 import Select from 'react-select';
 import { User } from '../contracts/userApi';
 import { useEffect } from 'react';
-import { useEffectOnce } from '../hooks/useEffectOnce';
 import { useState } from 'react';
-import { useUser } from '../data/user';
+import { useUsers } from '../api/hooks/useUsers';
 
 interface FormValues {
     name: string;
@@ -38,22 +37,17 @@ export const InstrumentSchema = ({
     instrument,
     onSubmit
 }: InstrumentSchemaProps): JSX.Element => {
-    const {
-        state: { users },
-        loadUsers
-    } = useUser();
+    const usersData = useUsers();
 
     const [userOptions, setUserOptions] = useState<Option[]>();
 
     useEffect(() => {
-        if (users !== undefined) {
-            setUserOptions(users.map((u) => ({ value: u, label: u.name })));
+        if (usersData.data !== undefined) {
+            setUserOptions(
+                usersData.data.map((u) => ({ value: u, label: u.name }))
+            );
         }
-    }, [users]);
-
-    useEffectOnce(() => {
-        loadUsers();
-    });
+    }, [usersData.data]);
 
     const user =
         instrument !== undefined && instrument.user !== null
@@ -100,7 +94,7 @@ export const InstrumentSchema = ({
                                 label="Serienr"
                                 name="serienr"
                             />
-                            {users && (
+                            {usersData.data && (
                                 <>
                                     <label htmlFor="user-select">
                                         Instrument ansvarlig

@@ -1,13 +1,13 @@
 import { Route, Switch } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 
-import { AvvikContextProvider } from '../../data/avvik';
 import { ClipBoardContextProvider } from '../../data/clipboard';
 import { KontrollContextProvider } from '../../data/kontroll';
 import { MainLayout } from '../../layout/main';
-import { MeasurementContextProvider } from '../../data/measurement';
-import { TemplateContextProvider } from '../../data/skjemaTemplate';
 
+const KontrollInstrumentsView = lazy(
+    () => import('../../views/kontroll-instrument')
+);
 const AvvikNewView = lazy(() => import('../../views/kontroll-avvikNew'));
 const AvvikPageView = lazy(() => import('../../views/kontroll-avvikPage'));
 const AvvikView = lazy(() => import('../../views/kontroll-avvik'));
@@ -81,6 +81,10 @@ export const Kontroll = () => {
                             <MeasurementsView />
                         </Route>
                         <Route
+                            path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/instrument`}>
+                            <KontrollInstrumentsView />
+                        </Route>
+                        <Route
                             path={`/kontroll/kl/:klientId/obj/:objectId/:kontrollId/avvik/:avvikId`}>
                             <AvvikPageView />
                         </Route>
@@ -119,16 +123,8 @@ export const Kontroll = () => {
 
 const KontrollProvider = ({ children }: { children: React.ReactNode }) => {
     return (
-        <AvvikContextProvider>
-            <MeasurementContextProvider>
-                <KontrollContextProvider>
-                    <TemplateContextProvider>
-                        <ClipBoardContextProvider>
-                            {children}
-                        </ClipBoardContextProvider>
-                    </TemplateContextProvider>
-                </KontrollContextProvider>
-            </MeasurementContextProvider>
-        </AvvikContextProvider>
+        <KontrollContextProvider>
+            <ClipBoardContextProvider>{children}</ClipBoardContextProvider>
+        </KontrollContextProvider>
     );
 };

@@ -10,73 +10,59 @@ import {
     columns,
     defaultColumns
 } from '../tables/measurement';
+import {
+    useDeleteMeasurement,
+    useMeasurementTypes,
+    useMeasurements
+} from '../api/hooks/useMeasurement';
 import { useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { Measurement } from '../contracts/measurementApi';
 import { MeasurementModal } from '../modal/measurement';
 import { MeasurementsViewParams } from '../contracts/navigation';
 import { TableContainer } from '../tables/base/tableContainer';
 import { useClipBoard } from '../data/clipboard';
 import { useConfirm } from '../hooks/useConfirm';
-import { useEffectOnce } from '../hooks/useEffectOnce';
-import { useKontroll } from '../data/kontroll';
-import { useMeasurement } from '../data/measurement';
+import { useKontrollById } from '../api/hooks/useKontroll';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
+import { useSkjemaer } from '../api/hooks/useSkjema';
 
 const MeasurementsView = () => {
     const { classes } = usePageStyles();
     const { kontrollId, skjemaId } = useParams<MeasurementsViewParams>();
 
-    const [_measurements, setMeasurements] = useState<Array<Measurement>>([]);
     const [measurementModalOpen, setMeasurementModalOpen] =
         useState<boolean>(false);
-    const {
-        state: { skjemaer, kontroller },
-        loadKontroller
-    } = useKontroll();
 
     const { confirm } = useConfirm();
 
     const [editId, setEditId] = useState<number>();
 
-    const {
-        state: { measurements, measurementTypes },
-        removeMeasurement
-    } = useMeasurement();
-
-    useEffectOnce(() => {
-        loadKontroller();
+    const measurementData = useMeasurements({
+        ...(skjemaId
+            ? { skjemaId: Number(skjemaId) }
+            : kontrollId
+            ? { kontrollId: Number(kontrollId) }
+            : {})
     });
 
-    useEffect(() => {
-        let active = true;
-        if (measurements !== undefined && active) {
-            if (skjemaId !== undefined) {
-                setMeasurements(
-                    measurements.filter((m) => m.skjema.id === Number(skjemaId))
-                );
-            } else {
-                setMeasurements(
-                    measurements.filter(
-                        (m) => m.skjema.kontroll.id === Number(kontrollId)
-                    )
-                );
-            }
-        }
-        return () => {
-            active = false;
-        };
-    }, [skjemaId, measurements, kontrollId]);
+    const deleteMeasurementMutation = useDeleteMeasurement();
+
+    const mTypeData = useMeasurementTypes();
+
+    const kontrollData = useKontrollById(Number(kontrollId));
+    const skjemaData = useSkjemaer({ kontrollId: Number(kontrollId) });
 
     const deleteMeasurement = async (measurementId: number) => {
-        const measurement = measurements?.find((m) => m.id === measurementId);
-        if (measurement !== undefined && measurementTypes !== undefined) {
+        const measurement = measurementData.data?.find(
+            (m) => m.id === measurementId
+        );
+        if (measurement !== undefined && mTypeData.data !== undefined) {
             let mType = measurement.type;
 
-            let type = measurementTypes.find(
+            let type = mTypeData.data.find(
                 (type) => type.shortName === measurement.type
             );
             if (type) {
@@ -95,7 +81,10 @@ const MeasurementsView = () => {
             );
 
             if (isConfirmed) {
-                removeMeasurement(measurementId);
+                await deleteMeasurementMutation.mutateAsync({
+                    measurementId,
+                    skjemaId: measurement.skjema.id
+                });
             }
         }
     };
@@ -120,11 +109,12 @@ const MeasurementsView = () => {
     }, []);
 
     const onSelectForClipboard = (ids: number[]) => {
-        selectedMeasurements(
-            _measurements.filter((measurement) => {
-                return ids.includes(measurement.id);
-            })
-        );
+        if (measurementData.data)
+            selectedMeasurements(
+                measurementData.data.filter((measurement) => {
+                    return ids.includes(measurement.id);
+                })
+            );
     };
 
     return (
@@ -157,47 +147,50 @@ const MeasurementsView = () => {
                                 )
                             }>
                             <CardContent>
-                                {skjemaer !== undefined ? (
-                                    <TableContainer
-                                        columns={columns({
-                                            kontroller: kontroller ?? [],
-                                            skjemaer: skjemaer ?? [],
-                                            deleteMeasurement,
-                                            edit: (id) => {
-                                                setEditId(id);
-                                                setMeasurementModalOpen(true);
-                                            },
-                                            measurementTypes
-                                        })}
-                                        defaultColumns={defaultColumns}
-                                        tableId="measurements">
-                                        <MeasurementTable
-                                            measurements={_measurements ?? []}
-                                            onSelected={onSelectForClipboard}
-                                            leftAction={
-                                                skjemaId !== undefined && (
-                                                    <PasteButton
-                                                        clipboardHas={
-                                                            clipboardHasMeasurement
+                                <TableContainer
+                                    columns={columns({
+                                        kontroll: kontrollData.data,
+                                        skjemaer: skjemaData.data ?? [],
+                                        deleteMeasurement,
+                                        edit: (id) => {
+                                            setEditId(id);
+                                            setMeasurementModalOpen(true);
+                                        },
+                                        measurementTypes: mTypeData.data
+                                    })}
+                                    defaultColumns={defaultColumns}
+                                    tableId="measurements">
+                                    <MeasurementTable
+                                        measurements={
+                                            measurementData.data ?? []
+                                        }
+                                        isLoading={
+                                            skjemaData.isLoading ||
+                                            kontrollData.isLoading ||
+                                            measurementData.isLoading
+                                        }
+                                        onSelected={onSelectForClipboard}
+                                        leftAction={
+                                            skjemaId !== undefined && (
+                                                <PasteButton
+                                                    clipboardHas={
+                                                        clipboardHasMeasurement
+                                                    }
+                                                    options={{
+                                                        measurementPaste: {
+                                                            skjemaId:
+                                                                Number(
+                                                                    skjemaId
+                                                                ),
+                                                            measurement:
+                                                                measurementToPast
                                                         }
-                                                        options={{
-                                                            measurementPaste: {
-                                                                skjemaId:
-                                                                    Number(
-                                                                        skjemaId
-                                                                    ),
-                                                                measurement:
-                                                                    measurementToPast
-                                                            }
-                                                        }}
-                                                    />
-                                                )
-                                            }
-                                        />
-                                    </TableContainer>
-                                ) : (
-                                    <div>Laster målinger</div>
-                                )}
+                                                    }}
+                                                />
+                                            )
+                                        }
+                                    />
+                                </TableContainer>
                             </CardContent>
                         </Card>
                     </Grid>

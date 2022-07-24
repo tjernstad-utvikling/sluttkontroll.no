@@ -1,16 +1,19 @@
-import { ChecklistRow, ChecklistSection } from './components/skjema';
-import { Measurement, MeasurementType } from '../../contracts/measurementApi';
+import { ChecklistRow, ChecklistSection } from '../components/skjema';
+import {
+    Measurement,
+    MeasurementType
+} from '../../../contracts/measurementApi';
 import { Page, StyleSheet, View } from '@react-pdf/renderer';
-import { TableCell, TableHeader, TableRow } from './components/table';
+import { TableCell, TableHeader, TableRow } from '../components/table';
 
-import { Avvik } from '../../contracts/avvikApi';
-import { ExtendedSkjema } from '../../contracts/kontrollApi';
-import { Footer } from './components/footer';
-import { Header } from './components/header';
-import { MeasurementModule } from './components/measurement';
-import { ReportSetting } from '../../contracts/reportApi';
-import { Spacer } from './components/spacing';
-import { Text } from './components/text';
+import { Avvik } from '../../../contracts/avvikApi';
+import { ExtendedSkjema } from '../../../contracts/kontrollApi';
+import { Footer } from '../components/footer';
+import { Header } from '../components/header';
+import { MeasurementModule } from '../modules/measurement.module';
+import { ReportSetting } from '../../../contracts/reportApi';
+import { Spacer } from '../components/spacing';
+import { Text } from '../components/text';
 import { sortChecklist } from '../utils/sort';
 
 interface SkjemaPageProps {

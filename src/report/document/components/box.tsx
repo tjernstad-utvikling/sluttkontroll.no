@@ -10,7 +10,7 @@ import {
     ItalicText,
     LinkText,
     Paragraph
-} from '../components/text';
+} from './text';
 import { OutputBlockData, OutputData } from '@editorjs/editorjs';
 import { StyleSheet, View } from '@react-pdf/renderer';
 

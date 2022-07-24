@@ -4,11 +4,6 @@ import {
     KontrollClipboard,
     SkjemaClipboard
 } from '../components/clipboard';
-import {
-    KontrollTable,
-    defaultColumns,
-    kontrollColumns
-} from '../tables/kontroll';
 import { useClientById, useUpdateClient } from '../api/hooks/useKlient';
 import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
@@ -26,10 +21,11 @@ import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { KlientEditSchema } from '../schema/klient';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollKlientViewParams } from '../contracts/navigation';
-import { TableContainer } from '../tables/base/tableContainer';
+import { KontrollTable } from '../tables/kontroll';
 import Typography from '@mui/material/Typography';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
@@ -41,6 +37,10 @@ import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollKlientView = () => {
     const { classes } = usePageStyles();
+
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<
+        number | undefined
+    >(undefined);
 
     const { klientId } = useParams<KontrollKlientViewParams>();
     const history = useHistory();
@@ -198,8 +198,8 @@ const KontrollKlientView = () => {
                                 />
                             }>
                             <CardContent>
-                                <TableContainer
-                                    columns={kontrollColumns({
+                                <KontrollTable
+                                    {...{
                                         users: userData.data ?? [],
                                         klienter: clientData.data
                                             ? [clientData.data]
@@ -214,16 +214,14 @@ const KontrollKlientView = () => {
                                         editComment: setCommentId,
                                         addAttachment:
                                             setKontrollAddAttachmentId,
-                                        attachments: attachmentsData.data ?? []
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        kontroller={kontrollData.data ?? []}
-                                        onSelected={onSelectForClipboard}
-                                        loading={kontrollData.isLoading}
-                                    />
-                                </TableContainer>
+                                        attachments: attachmentsData.data ?? [],
+                                        openSelectInstrument:
+                                            setIsSelectModalOpen
+                                    }}
+                                    kontroller={kontrollData.data ?? []}
+                                    onSelected={onSelectForClipboard}
+                                    loading={kontrollData.isLoading}
+                                />
                             </CardContent>
                         </Card>
                     </Grid>
@@ -244,6 +242,13 @@ const KontrollKlientView = () => {
             <AttachmentModal
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
+            />
+            <InstrumentSelectModal
+                kontrollId={isSelectModalOpen ?? 0}
+                open={!!isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(undefined);
+                }}
             />
         </div>
     );

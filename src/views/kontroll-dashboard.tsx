@@ -4,11 +4,6 @@ import {
     KontrollClipboard,
     SkjemaClipboard
 } from '../components/clipboard';
-import {
-    KontrollTable,
-    defaultColumns,
-    kontrollColumns
-} from '../tables/kontroll';
 import { useEffect, useState } from 'react';
 import {
     useKontroller,
@@ -21,9 +16,10 @@ import CallMergeIcon from '@mui/icons-material/CallMerge';
 import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { InstrumentStatus } from '../components/instrument';
 import { KontrollEditModal } from '../modal/kontroll';
-import { TableContainer } from '../tables/base/tableContainer';
+import { KontrollTable } from '../tables/kontroll';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
 import { useClients } from '../api/hooks/useKlient';
@@ -36,6 +32,10 @@ import { useUsers } from '../api/hooks/useUsers';
 
 const KontrollerView = () => {
     const { classes } = usePageStyles();
+
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<
+        number | undefined
+    >(undefined);
 
     const history = useHistory();
     const { showAllKontroller, setShowAllKontroller } = useKontrollCtx();
@@ -143,8 +143,8 @@ const KontrollerView = () => {
                             <CardContent>
                                 <InstrumentStatus />
 
-                                <TableContainer
-                                    columns={kontrollColumns({
+                                <KontrollTable
+                                    {...{
                                         users: userData.data ?? [],
                                         klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
@@ -157,16 +157,14 @@ const KontrollerView = () => {
                                         editComment: setCommentId,
                                         addAttachment:
                                             setKontrollAddAttachmentId,
-                                        attachments: attachmentsData.data ?? []
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        kontroller={kontrollData.data ?? []}
-                                        loading={kontrollData.isLoading}
-                                        onSelected={onSelectForClipboard}
-                                    />
-                                </TableContainer>
+                                        attachments: attachmentsData.data ?? [],
+                                        openSelectInstrument:
+                                            setIsSelectModalOpen
+                                    }}
+                                    kontroller={kontrollData.data ?? []}
+                                    loading={kontrollData.isLoading}
+                                    onSelected={onSelectForClipboard}
+                                />
                             </CardContent>
                         </Card>
                     </Grid>
@@ -187,6 +185,13 @@ const KontrollerView = () => {
             <AttachmentModal
                 kontrollId={kontrollAddAttachmentId}
                 close={() => setKontrollAddAttachmentId(undefined)}
+            />
+            <InstrumentSelectModal
+                kontrollId={isSelectModalOpen ?? 0}
+                open={!!isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(undefined);
+                }}
             />
         </>
     );

@@ -1,34 +1,35 @@
 import { Document, Font, usePDF } from '@react-pdf/renderer';
-import { ExtendedSkjema, ReportKontroll } from '../contracts/kontrollApi';
 import {
     LocalImage,
+    ReportKontroll,
     ReportModules,
     ReportSetting
-} from '../contracts/reportApi';
-import { Measurement, MeasurementType } from '../contracts/measurementApi';
+} from '../../contracts/reportApi';
+import { Measurement, MeasurementType } from '../../contracts/measurementApi';
 import { useEffect, useState } from 'react';
 
-import { Attachment } from '../contracts/attachmentApi';
-import { Avvik } from '../contracts/avvikApi';
+import { Attachment } from '../../contracts/attachmentApi';
+import { Avvik } from '../../contracts/avvikApi';
 import Button from '@mui/material/Button';
-import { FrontPage } from './modules/frontPage';
-import { FrontPageWImage } from './modules/frontPageWImage';
-import { InfoPage } from './modules/infoPage';
-import { MeasurementPage } from './modules/measurementPage';
+import { ExtendedSkjema } from '../../contracts/kontrollApi';
+import { FrontPage } from './pages/frontpage.page';
+import { FrontPageWImage } from './pages/frontpageWImage.page';
+import { InfoPage } from './pages/info.page';
+import { MeasurementPage } from './pages/measurement.page';
 import { OutputData } from '@editorjs/editorjs';
 import PDFMerger from 'pdf-merger-js/browser';
 import { PDFViewer } from '@react-pdf/renderer';
-import RobotoBold from '../assets/fonts/Roboto-Bold.ttf';
-import RobotoBoldItalic from '../assets/fonts/Roboto-BoldItalic.ttf';
-import RobotoItalic from '../assets/fonts/Roboto-Italic.ttf';
-import RobotoRegular from '../assets/fonts/Roboto-Regular.ttf';
-import { SkjemaPage } from './modules/skjemaPage';
-import { StatementPage } from './modules/statementPage';
+import RobotoBold from '../../assets/fonts/Roboto-Bold.ttf';
+import RobotoBoldItalic from '../../assets/fonts/Roboto-BoldItalic.ttf';
+import RobotoItalic from '../../assets/fonts/Roboto-Italic.ttf';
+import RobotoRegular from '../../assets/fonts/Roboto-Regular.ttf';
+import { SkjemaPage } from './pages/skjema.page';
+import { StatementPage } from './pages/statement.page';
 import { Theme } from '@mui/material';
-import { getAttachmentFile } from '../api/attachmentApi';
-import { makeStyles } from '../theme/makeStyles';
-import { useReport } from './documentContainer';
-import { useWindowSize } from '../hooks/useWindowSize';
+import { getAttachmentFile } from '../../api/attachmentApi';
+import { makeStyles } from '../../theme/makeStyles';
+import { useReport } from '../documentContainer';
+import { useWindowSize } from '../../hooks/useWindowSize';
 
 Font.register({
     family: 'Roboto',
@@ -276,6 +277,15 @@ const SlkDocument = ({
             )}
             {isModuleActive(ReportModules.infoPage) && (
                 <InfoPage
+                    hasClientModuleActive={isModuleActive(
+                        ReportModules.clientModule
+                    )}
+                    hasControllerModuleActive={isModuleActive(
+                        ReportModules.controllerModule
+                    )}
+                    hasInfoModuleActive={isModuleActive(
+                        ReportModules.infoModule
+                    )}
                     infoText={infoText}
                     reportSetting={reportSetting}
                     rapportEgenskaper={kontroll?.rapportEgenskaper}
@@ -287,6 +297,11 @@ const SlkDocument = ({
                     reportSetting={reportSetting}
                     statement={statementText}
                     statementImages={statementImages}
+                    kontroll={kontroll}
+                    hasStatement={isModuleActive(ReportModules.statementModule)}
+                    hasInstrument={isModuleActive(
+                        ReportModules.instrumentModule
+                    )}
                 />
             )}
             {isModuleActive(ReportModules.skjemaPage) &&
@@ -312,18 +327,24 @@ const SlkDocument = ({
             {isModuleActive(ReportModules.measurementPage) &&
                 isModuleActive(ReportModules.controlModule) &&
                 !isModuleActive(ReportModules.inlineMeasurementModule) &&
-                filteredSkjemaer?.map((s, i) => (
-                    <MeasurementPage
-                        key={s.id}
-                        skjema={s}
-                        index={i}
-                        measurements={measurements?.filter(
-                            (m) => m.skjema.id === s.id
-                        )}
-                        reportSetting={reportSetting}
-                        measurementTypes={measurementTypes}
-                    />
-                ))}
+                filteredSkjemaer?.map((s, i) => {
+                    const filteredMeasurements = measurements?.filter(
+                        (m) => m.skjema.id === s.id
+                    );
+                    if (filteredMeasurements?.length === 0) {
+                        return null;
+                    }
+                    return (
+                        <MeasurementPage
+                            key={s.id}
+                            skjema={s}
+                            index={i}
+                            measurements={filteredMeasurements}
+                            reportSetting={reportSetting}
+                            measurementTypes={measurementTypes}
+                        />
+                    );
+                })}
         </Document>
     );
 };

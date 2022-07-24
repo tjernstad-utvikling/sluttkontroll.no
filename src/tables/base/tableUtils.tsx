@@ -1,21 +1,25 @@
+import { Column, Table, flexRender } from '@tanstack/react-table';
 import React, { ReactElement } from 'react';
 
 import Button from '@mui/material/Button';
+import ClearIcon from '@mui/icons-material/Clear';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import { Filter } from './components/filter';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
 import IconButton from '@mui/material/IconButton';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
-import { Table } from '@tanstack/react-table';
 import { useTable } from './tableContainer';
 
 export const ColumnSelect = (): JSX.Element => {
@@ -86,7 +90,7 @@ export function ColumnSelectRT<T extends Record<string, unknown>>({
     // const { allColumns, toggleHideColumn } = instance;
     const hideableColumns = instance
         .getAllColumns()
-        .filter((column) => !(column.id === 'action'));
+        .filter((column) => !(column.id === 'actions'));
     const checkedCount = hideableColumns.reduce(
         (acc, val) => acc + (val.getIsVisible() ? 0 : 1),
         0
@@ -113,25 +117,31 @@ export function ColumnSelectRT<T extends Record<string, unknown>>({
                     <FormControl component="fieldset">
                         <FormLabel component="legend">Velg kolonner</FormLabel>
                         <FormGroup>
-                            {instance.getAllLeafColumns().map((c) => (
-                                <FormControlLabel
-                                    key={c.id}
-                                    control={
-                                        <Switch
-                                            name={c.id}
-                                            color="primary"
-                                            size="small"
-                                            disabled={
-                                                c.getIsVisible() &&
-                                                onlyOneOptionLeft
-                                            }
-                                        />
-                                    }
-                                    onChange={c.getToggleVisibilityHandler()}
-                                    checked={c.getIsVisible()}
-                                    label={c.id}
-                                />
-                            ))}
+                            {instance
+                                .getAllLeafColumns()
+                                .filter((column) => !(column.id === 'actions'))
+                                .map((c) => (
+                                    <FormControlLabel
+                                        key={c.id}
+                                        control={
+                                            <Switch
+                                                name={c.id}
+                                                color="primary"
+                                                size="small"
+                                                disabled={
+                                                    c.getIsVisible() &&
+                                                    onlyOneOptionLeft
+                                                }
+                                            />
+                                        }
+                                        onChange={c.getToggleVisibilityHandler()}
+                                        checked={c.getIsVisible()}
+                                        label={flexRender(
+                                            c.columnDef.header,
+                                            c
+                                        )}
+                                    />
+                                ))}
                         </FormGroup>
                     </FormControl>
                 </DialogContent>
@@ -218,3 +228,76 @@ export const RowAction = ({ actionItems }: RowActionProps) => {
         </div>
     );
 };
+
+interface ColumnActionProps<T extends {}> {
+    column: Column<T, unknown>;
+    table: Table<T>;
+}
+export function ColumnAction<T extends {}>({
+    column,
+    table
+}: ColumnActionProps<T>) {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const close = () => {
+        setAnchorEl(null);
+    };
+
+    return (
+        <>
+            <IconButton
+                aria-label="kolonne meny"
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+                size="small">
+                <MoreVertIcon fontSize="inherit" />
+            </IconButton>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={close}>
+                {column.getCanSort() && [
+                    <MenuItem key="removeSort">
+                        <Button
+                            disabled={!column.getIsSorted()}
+                            variant="text"
+                            startIcon={<ClearIcon />}
+                            onClick={() => column.clearSorting()}>
+                            Fjern sortering
+                        </Button>
+                    </MenuItem>,
+                    <MenuItem key="raisingSort">
+                        <Button
+                            disabled={column.getIsSorted() === 'asc'}
+                            variant="text"
+                            startIcon={<KeyboardArrowUpIcon />}
+                            onClick={() => column.toggleSorting(false)}>
+                            Sorter stigende
+                        </Button>
+                    </MenuItem>,
+                    <MenuItem key="downSort">
+                        <Button
+                            disabled={column.getIsSorted() === 'desc'}
+                            variant="text"
+                            startIcon={<KeyboardArrowDownIcon />}
+                            onClick={() => column.toggleSorting(true)}>
+                            Sorter synkende
+                        </Button>
+                    </MenuItem>
+                ]}
+                {column.getCanFilter() && (
+                    <MenuItem>
+                        <Filter column={column} table={table} />
+                    </MenuItem>
+                )}
+            </Menu>
+        </>
+    );
+}

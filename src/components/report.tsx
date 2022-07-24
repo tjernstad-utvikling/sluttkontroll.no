@@ -5,7 +5,7 @@ import { ReportPropertiesSchema } from '../schema/reportProperties';
 import Switch from '@mui/material/Switch';
 import { useClients } from '../api/hooks/useKlient';
 import { useEffect } from 'react';
-import { useReport } from '../document/documentContainer';
+import { useReport } from '../report/documentContainer';
 import { useState } from 'react';
 import { useUpdateReportKontroll } from '../api/hooks/useKontroll';
 

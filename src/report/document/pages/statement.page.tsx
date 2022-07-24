@@ -1,21 +1,32 @@
-import { LocalImage, ReportSetting } from '../../contracts/reportApi';
+import {
+    LocalImage,
+    ReportKontroll,
+    ReportSetting
+} from '../../../contracts/reportApi';
 import { Page, StyleSheet, View } from '@react-pdf/renderer';
 
-import { Footer } from './components/footer';
-import { Header } from './components/header';
+import { Footer } from '../components/footer';
+import { Header } from '../components/header';
+import { InstrumentModule } from '../modules/instrument.module';
 import { OutputData } from '@editorjs/editorjs';
-import { Text } from './components/text';
-import { TextBox } from './components/box';
+import { StatementModule } from '../modules/statement.module';
+import { Text } from '../components/text';
 
 interface StatementPageProps {
     statement: OutputData | undefined;
     reportSetting: ReportSetting | undefined;
     statementImages: LocalImage[];
+    kontroll: ReportKontroll | undefined;
+    hasStatement: boolean;
+    hasInstrument: boolean;
 }
 export const StatementPage = ({
     statement,
     reportSetting,
-    statementImages
+    statementImages,
+    kontroll,
+    hasInstrument,
+    hasStatement
 }: StatementPageProps): JSX.Element => {
     if (statement && reportSetting) {
         return (
@@ -29,9 +40,15 @@ export const StatementPage = ({
                     location={reportSetting.reportSite}
                     date={reportSetting.reportDate}
                 />
-
-                <TextBox text={statement} statementImages={statementImages} />
-
+                {hasStatement && (
+                    <StatementModule
+                        statement={statement}
+                        statementImages={statementImages}
+                    />
+                )}
+                {hasInstrument && (
+                    <InstrumentModule instruments={kontroll?.instrumenter} />
+                )}
                 <Footer />
             </Page>
         );

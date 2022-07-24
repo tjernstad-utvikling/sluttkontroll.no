@@ -1,28 +1,31 @@
 import { Image, Page, StyleSheet, View } from '@react-pdf/renderer';
+import { ReportKontroll, ReportSetting } from '../../../contracts/reportApi';
 
-import { DateText } from './components/text';
-import PdfLogo from '../../assets/pdf-logo.png';
-import { ReportKontroll } from '../../contracts/kontrollApi';
-import { ReportSetting } from '../../contracts/reportApi';
-import { Text } from './components/text';
+import { DateText } from '../components/text';
+import PdfLogo from '../../../assets/pdf-logo.png';
+import { Text } from '../components/text';
 
 interface FrontPageProps {
     reportSetting: ReportSetting | undefined;
     kontroll: ReportKontroll | undefined;
+    locationImageUrl: string | undefined;
 }
-export const FrontPage = ({ reportSetting, kontroll }: FrontPageProps) => {
+export const FrontPageWImage = ({
+    reportSetting,
+    kontroll,
+    locationImageUrl
+}: FrontPageProps) => {
     if (reportSetting && kontroll) {
         return (
             <Page style={{ position: 'relative', top: 0, left: 0 }}>
                 <View style={styles.container}>
+                    <Image style={styles.topImage} src={locationImageUrl} />
+                    <Image style={styles.logo} src={PdfLogo} />
                     <View style={styles.text}>
                         <Text style={styles.title}>{'Rapport '}</Text>
                         <Text style={styles.title}>
                             {reportSetting.reportTitle}
                         </Text>
-                    </View>
-                    <View>
-                        <Image style={styles.logo} src={PdfLogo} />
                     </View>
                     <View style={[styles.text, styles.subText]}>
                         <Text>{reportSetting.reportSite}</Text>
@@ -57,13 +60,17 @@ const styles = StyleSheet.create({
         height: '29cm'
     },
     logo: {
-        marginHorizontal: 150
+        marginHorizontal: 190
+    },
+    topImage: {
+        marginHorizontal: 0,
+        marginTop: -30
     },
     title: {
-        fontSize: '60px'
+        fontSize: '50px'
     },
     subText: {
-        fontSize: '30px'
+        fontSize: '25px'
     },
     text: {
         alignItems: 'center'

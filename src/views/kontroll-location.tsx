@@ -6,11 +6,6 @@ import {
     SkjemaClipboard
 } from '../components/clipboard';
 import {
-    KontrollTable,
-    defaultColumns,
-    kontrollColumns
-} from '../tables/kontroll';
-import {
     useClients,
     useLocationById,
     useUpdateLocation
@@ -30,12 +25,13 @@ import { CommentModal } from '../modal/comment';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 import Grid from '@mui/material/Grid';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { KontrollEditModal } from '../modal/kontroll';
 import { KontrollObjectViewParams } from '../contracts/navigation';
+import { KontrollTable } from '../tables/kontroll';
 import { LocationEditSchema } from '../schema/location';
 import { LocationImageCard } from '../components/location';
 import { NewImageModal } from '../modal/newLocationImage';
-import { TableContainer } from '../tables/base/tableContainer';
 import Typography from '@mui/material/Typography';
 import { useAttachments } from '../api/hooks/useAttachments';
 import { useAvvik } from '../api/hooks/useAvvik';
@@ -49,6 +45,10 @@ const KontrollObjektView = () => {
     const { classes } = usePageStyles();
     const { objectId, klientId } = useParams<KontrollObjectViewParams>();
     const history = useHistory();
+
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<
+        number | undefined
+    >(undefined);
 
     const [editLocation, setEditLocation] = useState<boolean>(false);
     const [addLocationImage, setAddLocationImage] = useState<boolean>(false);
@@ -232,8 +232,8 @@ const KontrollObjektView = () => {
                                 />
                             }>
                             <CardContent>
-                                <TableContainer
-                                    columns={kontrollColumns({
+                                <KontrollTable
+                                    {...{
                                         users: userData.data ?? [],
                                         klienter: clientData.data ?? [],
                                         avvik: avvikData.data ?? [],
@@ -246,32 +246,27 @@ const KontrollObjektView = () => {
                                         editComment: setCommentId,
                                         addAttachment:
                                             setKontrollAddAttachmentId,
-                                        attachments: attachmentsData.data ?? []
-                                    })}
-                                    defaultColumns={defaultColumns}
-                                    tableId="kontroller">
-                                    <KontrollTable
-                                        kontroller={kontrollData.data ?? []}
-                                        onSelected={onSelectForClipboard}
-                                        loading={kontrollData.isLoading}
-                                        leftAction={
-                                            <PasteButton
-                                                clipboardHas={
-                                                    clipboardHasKontroll
+                                        attachments: attachmentsData.data ?? [],
+                                        openSelectInstrument:
+                                            setIsSelectModalOpen
+                                    }}
+                                    kontroller={kontrollData.data ?? []}
+                                    onSelected={onSelectForClipboard}
+                                    loading={kontrollData.isLoading}
+                                    leftAction={
+                                        <PasteButton
+                                            clipboardHas={clipboardHasKontroll}
+                                            options={{
+                                                kontrollPaste: {
+                                                    locationId:
+                                                        Number(objectId),
+                                                    klientId: Number(klientId),
+                                                    kontroll: kontrollToPast
                                                 }
-                                                options={{
-                                                    kontrollPaste: {
-                                                        locationId:
-                                                            Number(objectId),
-                                                        klientId:
-                                                            Number(klientId),
-                                                        kontroll: kontrollToPast
-                                                    }
-                                                }}
-                                            />
-                                        }
-                                    />
-                                </TableContainer>
+                                            }}
+                                        />
+                                    }
+                                />
                             </CardContent>
                         </Card>
                     </Grid>
@@ -298,6 +293,13 @@ const KontrollObjektView = () => {
                 locationId={Number(objectId)}
                 open={addLocationImage}
                 close={() => setAddLocationImage(false)}
+            />
+            <InstrumentSelectModal
+                kontrollId={isSelectModalOpen ?? 0}
+                open={!!isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(undefined);
+                }}
             />
         </div>
     );

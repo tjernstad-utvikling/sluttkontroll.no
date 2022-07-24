@@ -45,6 +45,9 @@ export interface KontrollReportStatementViewParams {
 export interface InstrumentCalibrationViewParams {
     instrumentId: string;
 }
+export interface KontrollInstrumentViewParams {
+    kontrollId: string;
+}
 export interface EditUserViewParams {
     userId: string;
 }

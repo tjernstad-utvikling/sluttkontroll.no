@@ -1,12 +1,15 @@
-import { ExtendedSkjema, ReportKontroll } from '../contracts/kontrollApi';
 import {
     LocalImage,
+    ReportKontroll,
     ReportModules,
     ReportSetting
 } from '../contracts/reportApi';
 import { Measurement, MeasurementType } from '../contracts/measurementApi';
 import { createContext, useContext, useState } from 'react';
-import { handleReportSettings, loadReportStatement } from './utils/loaders';
+import {
+    handleReportSettings,
+    loadReportStatement
+} from './data/utils/loaders';
 import {
     useMeasurementTypes,
     useMeasurements
@@ -14,6 +17,7 @@ import {
 
 import { Attachment } from '../contracts/attachmentApi';
 import { Avvik } from '../contracts/avvikApi';
+import { ExtendedSkjema } from '../contracts/kontrollApi';
 import { OutputData } from '@editorjs/editorjs';
 import { crop } from '../tools/crop';
 import { errorHandler } from '../tools/errorHandler';

@@ -10,15 +10,16 @@ import {
     MeasurementAdjusting,
     ReportProperties,
     ReportStatement,
-    SelectAttachments
-} from '../document/customizeData/kontrollReportData';
+    SelectAttachments,
+    SelectInstruments
+} from '../report/data/kontrollReportData';
 
 import Container from '@mui/material/Container';
-import { DocumentContainer } from '../document/documentContainer';
+import { DocumentContainer } from '../report/documentContainer';
 import Grid from '@mui/material/Grid';
 import { KontrollReportViewParams } from '../contracts/navigation';
 import { ReportModules } from '../contracts/reportApi';
-import { SlkReport } from '../document/report';
+import { SlkReport } from '../report/document/report';
 import { usePageStyles } from '../styles/kontroll/page';
 import { useParams } from 'react-router-dom';
 
@@ -59,6 +60,50 @@ const KontrollReportView = () => {
                                             />
                                             <ReportProperties />
                                         </div>
+                                        <Block
+                                            dependency={ReportModules.infoPage}>
+                                            <div style={{ paddingLeft: 30 }}>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent:
+                                                            'space-between'
+                                                    }}>
+                                                    <ReportSwitch
+                                                        id={
+                                                            ReportModules.clientModule
+                                                        }
+                                                        label="Inspeksjonssted"
+                                                    />
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent:
+                                                            'space-between'
+                                                    }}>
+                                                    <ReportSwitch
+                                                        id={
+                                                            ReportModules.controllerModule
+                                                        }
+                                                        label="Kontrollert av"
+                                                    />
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent:
+                                                            'space-between'
+                                                    }}>
+                                                    <ReportSwitch
+                                                        id={
+                                                            ReportModules.infoModule
+                                                        }
+                                                        label="Generell informasjon om kontroll"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </Block>
                                         <div
                                             style={{
                                                 display: 'flex',
@@ -66,12 +111,56 @@ const KontrollReportView = () => {
                                             }}>
                                             <ReportSwitch
                                                 id={ReportModules.statementPage}
-                                                label="Generell vurdering"
-                                            />
-                                            <ReportStatement
-                                                kontrollId={Number(kontrollId)}
+                                                label="Rapport hoveddel"
                                             />
                                         </div>
+                                        <Block
+                                            dependency={
+                                                ReportModules.statementPage
+                                            }>
+                                            <div
+                                                style={{
+                                                    paddingLeft: 30
+                                                }}>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent:
+                                                            'space-between'
+                                                    }}>
+                                                    <ReportSwitch
+                                                        id={
+                                                            ReportModules.statementModule
+                                                        }
+                                                        label="Generell vurdering"
+                                                    />
+                                                    <ReportStatement
+                                                        kontrollId={Number(
+                                                            kontrollId
+                                                        )}
+                                                    />
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent:
+                                                            'space-between'
+                                                    }}>
+                                                    <ReportSwitch
+                                                        id={
+                                                            ReportModules.instrumentModule
+                                                        }
+                                                        label="Instrumenter benyttet til kontrollen"
+                                                    />
+                                                    <SelectInstruments
+                                                        kontrollId={Number(
+                                                            kontrollId
+                                                        )}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </Block>
+
                                         <div
                                             style={{
                                                 display: 'flex',

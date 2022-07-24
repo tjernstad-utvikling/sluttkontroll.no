@@ -1,5 +1,5 @@
-import { Checklist } from '../../contracts/kontrollApi';
-import { categories } from '../../utils/checkpointCategories.json';
+import { Checklist } from '../../../contracts/kontrollApi';
+import { categories } from '../../../utils/checkpointCategories.json';
 
 export function sortChecklist(checklists: Checklist[]) {
     const grouped = groupBy(checklists, 'mainCategory');

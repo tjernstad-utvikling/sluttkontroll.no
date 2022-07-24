@@ -11,7 +11,7 @@ export const Paragraph = ({ children }: TextProps) => {
     return <PdfRTExt style={styles.p}>{children}</PdfRTExt>;
 };
 interface DateTextProps {
-    children: string | undefined;
+    children?: string | undefined;
 }
 export const DateText = ({ children }: DateTextProps) => {
     if (children) {

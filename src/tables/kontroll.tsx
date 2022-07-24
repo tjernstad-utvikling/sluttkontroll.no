@@ -1,10 +1,4 @@
-import { BaseTable, RowStylingEnum } from './base/defaultTable';
-import {
-    GridCellParams,
-    GridColDef,
-    GridRowModel,
-    GridValueGetterParams
-} from '@mui/x-data-grid-pro';
+import { Cell, ColumnDef, Row } from '@tanstack/react-table';
 import { Klient, Kontroll, Skjema } from '../contracts/kontrollApi';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -14,17 +8,35 @@ import { Avvik } from '../contracts/avvikApi';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import EditIcon from '@mui/icons-material/Edit';
+import { GroupTable } from './base/groupTable';
 import IconButton from '@mui/material/IconButton';
 import InsertCommentIcon from '@mui/icons-material/InsertComment';
 import { Link } from 'react-router-dom';
 import { Measurement } from '../contracts/measurementApi';
 import { PasteTableButton } from '../components/clipboard';
 import { RowAction } from './base/tableUtils';
+import { RowStylingEnum } from './base/defaultTable';
 import SummarizeIcon from '@mui/icons-material/Summarize';
+import { TableKey } from '../contracts/keys';
 import { User } from '../contracts/userApi';
 import { useClipBoard } from '../data/clipboard';
+import { useMemo } from 'react';
 
-export const KontrollValueGetter = (data: Kontroll | GridRowModel | null) => {
+type KontrollColumns = {
+    id: number;
+    klient: string;
+    name: string;
+    location: string;
+    avvik: { open: number; closed: number };
+    measurement: number;
+    attachments: number;
+    instrumenter: number;
+    user: string;
+    kommentar: string;
+    done: boolean;
+};
+
+export const KontrollValueGetter = (data: Kontroll | null) => {
     const klient = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
             const klient = klienter.find(
@@ -35,7 +47,7 @@ export const KontrollValueGetter = (data: Kontroll | GridRowModel | null) => {
         }
         return '';
     };
-    const objekt = (klienter: Klient[]): string => {
+    const location = (klienter: Klient[]): string => {
         if (klienter !== undefined) {
             const klient = klienter.find(
                 (k) => k.id === data?.location.klient.id
@@ -96,309 +108,434 @@ export const KontrollValueGetter = (data: Kontroll | GridRowModel | null) => {
         return 0;
     };
 
-    return { klient, objekt, user, avvik, measurement, attachment };
+    return { klient, location, user, avvik, measurement, attachment };
 };
-interface KontrollColumnsConfig {
-    users: User[];
+
+interface RenderAvvikCellProps {
     klienter: Klient[];
-    avvik: Avvik[];
-    measurements: Measurement[];
+    row: Row<KontrollColumns>;
+}
+function RenderAvvikCell({ klienter, row }: RenderAvvikCellProps) {
+    const klient = useMemo(() => {
+        return klienter.find((k) => k.name === row.getValue('klient'));
+    }, [klienter, row]);
+
+    const location = useMemo(() => {
+        return klient?.locations.find(
+            (l) => l.name === row.getValue('location')
+        );
+    }, [klient?.locations, row]);
+
+    return (
+        <Link
+            to={`/kontroll/kl/${klient?.id}/obj/${location?.id}/${row.getValue(
+                'id'
+            )}/avvik`}>
+            <span>
+                {row.getValue<{ open: number; closed: number }>('avvik').open}{' '}
+                <sup>
+                    {
+                        row.getValue<{ open: number; closed: number }>('avvik')
+                            .closed
+                    }
+                </sup>{' '}
+            </span>
+        </Link>
+    );
+}
+
+interface RenderMeasurementCellProps {
+    klienter: Klient[];
+    row: Row<KontrollColumns>;
+    cell: Cell<KontrollColumns, unknown>;
+}
+function RenderMeasurementCell({
+    klienter,
+    row,
+    cell
+}: RenderMeasurementCellProps) {
+    const klient = useMemo(() => {
+        return klienter.find((k) => k.name === row.getValue('klient'));
+    }, [klienter, row]);
+
+    const location = useMemo(() => {
+        return klient?.locations.find(
+            (l) => l.name === row.getValue('location')
+        );
+    }, [klient?.locations, row]);
+
+    return (
+        <Link
+            to={`/kontroll/kl/${klient?.id}/obj/${location?.id}/${row.getValue(
+                'id'
+            )}/measurement`}>
+            {cell.getValue()}
+        </Link>
+    );
+}
+
+interface RenderAttachmentCellProps {
+    klienter: Klient[];
+    row: Row<KontrollColumns>;
+    cell: Cell<KontrollColumns, unknown>;
+}
+function RenderAttachmentCell({
+    klienter,
+    row,
+    cell
+}: RenderAttachmentCellProps) {
+    const klient = useMemo(() => {
+        return klienter.find((k) => k.name === row.getValue('klient'));
+    }, [klienter, row]);
+
+    const location = useMemo(() => {
+        return klient?.locations.find(
+            (l) => l.name === row.getValue('location')
+        );
+    }, [klient?.locations, row]);
+
+    return (
+        <Link
+            to={`/kontroll/kl/${klient?.id}/obj/${location?.id}/${row.getValue(
+                'id'
+            )}/attachments`}>
+            {cell.getValue()}
+        </Link>
+    );
+}
+
+interface RenderInstrumentCellProps {
+    klienter: Klient[];
+    row: Row<KontrollColumns>;
+    cell: Cell<KontrollColumns, unknown>;
+    openSelectInstrument: (id: number) => void;
+}
+function RenderInstrumentCell({
+    klienter,
+    row,
+    cell,
+    openSelectInstrument
+}: RenderInstrumentCellProps) {
+    const klient = useMemo(() => {
+        return klienter.find((k) => k.name === row.getValue('klient'));
+    }, [klienter, row]);
+
+    const location = useMemo(() => {
+        return klient?.locations.find(
+            (l) => l.name === row.getValue('location')
+        );
+    }, [klient?.locations, row]);
+
+    return (
+        <>
+            <Link
+                to={`/kontroll/kl/${klient?.id}/obj/${
+                    location?.id
+                }/${row.getValue('id')}/instrument`}>
+                {cell.getValue()}
+            </Link>
+            <IconButton
+                onClick={() => openSelectInstrument(row.getValue('id'))}
+                aria-label="Legg til instrument"
+                size="small">
+                <AddIcon fontSize="small" />
+            </IconButton>
+        </>
+    );
+}
+
+interface RenderActionCellProps {
+    klienter: Klient[];
+    row: Row<KontrollColumns>;
     edit: (id: number) => void;
     toggleStatus: (id: number) => void;
     clipboardHasSkjema: boolean;
     skjemaToPast: Skjema[];
     editComment: (id: number) => void;
     addAttachment: (id: number) => void;
-    attachments: Attachment[];
 }
-export const kontrollColumns = ({
-    users,
+function RenderActionCell({
     klienter,
-    avvik,
-    measurements,
-    edit,
-    toggleStatus,
-    clipboardHasSkjema,
-    skjemaToPast,
-    editComment,
+    row,
     addAttachment,
-    attachments
-}: KontrollColumnsConfig) => {
-    const columns: GridColDef[] = [
-        {
-            field: 'id',
-            headerName: '#',
-            flex: 1
-        },
-        {
-            field: 'klient',
-            headerName: 'Kunde',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).klient(klienter),
-            sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    KontrollValueGetter(param1.api.getRow(param1.id)).klient(
-                        klienter
-                    )
-                ).localeCompare(
-                    String(
-                        KontrollValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).klient(klienter)
-                    )
-                )
-        },
-        {
-            field: 'objekt',
-            headerName: 'Lokasjon',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).objekt(klienter),
-            sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    KontrollValueGetter(param1.api.getRow(param1.id)).objekt(
-                        klienter
-                    )
-                ).localeCompare(
-                    String(
-                        KontrollValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).objekt(klienter)
-                    )
-                )
-        },
-        {
-            field: 'name',
-            headerName: 'Kontroll',
-            flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <Link
-                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}`}>
-                    {params.row.name}
-                </Link>
-            )
-        },
-        {
-            field: 'avvik',
-            headerName: 'Avvik (åpne | lukket) ',
-            flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <Link
-                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/avvik`}>
-                    <span>
-                        ({KontrollValueGetter(params.row).avvik(avvik).open} |{' '}
-                        {KontrollValueGetter(params.row).avvik(avvik).closed} ){' '}
-                    </span>
-                </Link>
-            ),
-            sortComparator: (v1, v2, param1, param2) =>
-                KontrollValueGetter(param1.api.getRow(param1.id)).avvik(avvik)
-                    .open -
-                KontrollValueGetter(param2.api.getRow(param2.id)).avvik(avvik)
-                    .open
-        },
-        {
-            field: 'measurement',
-            headerName: 'Målinger',
-            flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <Link
-                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/measurement`}>
-                    {KontrollValueGetter(params.row).measurement(measurements)}
-                </Link>
-            ),
-            sortComparator: (v1, v2, param1, param2) =>
-                KontrollValueGetter(param1.api.getRow(param1.id)).measurement(
-                    measurements
-                ) -
-                KontrollValueGetter(param2.api.getRow(param2.id)).measurement(
-                    measurements
-                )
-        },
-        {
-            field: 'attachments',
-            headerName: 'Vedlegg',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).attachment(attachments),
-            renderCell: (params: GridCellParams) => (
-                <Link
-                    to={`/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/attachments`}>
-                    {KontrollValueGetter(params.row).attachment(attachments)}
-                </Link>
-            ),
-            sortComparator: (v1, v2, param1, param2) =>
-                KontrollValueGetter(param1.api.getRow(param1.id)).attachment(
-                    attachments
-                ) -
-                KontrollValueGetter(param2.api.getRow(param2.id)).attachment(
-                    attachments
-                )
-        },
-        {
-            field: 'instrumenter',
-            headerName: 'Instrumenter',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) => 1,
-            renderCell: (params: GridCellParams) => (
-                <>
-                    <Link to={'/'}>
-                        <span>1</span>
-                    </Link>
+    clipboardHasSkjema,
+    edit,
+    editComment,
+    skjemaToPast,
+    toggleStatus
+}: RenderActionCellProps) {
+    const klient = useMemo(() => {
+        return klienter.find((k) => k.name === row.getValue('klient'));
+    }, [klienter, row]);
 
-                    <IconButton
-                        // to={`${url}/checklist/${id}/avvik/new`}
-                        // component={RouterLink}
-                        aria-label="Legg til instrument"
-                        size="small">
-                        <AddIcon fontSize="small" />
-                    </IconButton>
-                </>
-            )
-            // sortComparator: (v1, v2, param1, param2) =>
-            //     KontrollValueGetter(param1.api.getRow(param1.id)).attachment(
-            //         attachments
-            //     ) -
-            //     KontrollValueGetter(param2.api.getRow(param2.id)).attachment(
-            //         attachments
-            //     )
-        },
-        {
-            field: 'user',
-            headerName: 'Utførende',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                KontrollValueGetter(params.row).user(users),
-            sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    KontrollValueGetter(param1.api.getRow(param1.id)).user(
-                        users
-                    )
-                ).localeCompare(
-                    String(
-                        KontrollValueGetter(param2.api.getRow(param2.id)).user(
-                            users
-                        )
-                    )
-                )
-        },
-        {
-            field: 'kommentar',
-            headerName: 'Kommentar',
-            flex: 1
-        },
-        {
-            field: 'done',
-            headerName: 'Status',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) => {
-                if (params.row.done) {
-                    return 'Utført';
-                }
-                return 'Pågår';
-            }
-        },
-        {
-            field: 'action',
-            headerName: ' ',
-            sortable: false,
-            filterable: false,
-            disableColumnMenu: true,
-            renderCell: (params: GridCellParams) => (
-                <>
-                    {clipboardHasSkjema && (
-                        <PasteTableButton
-                            clipboardHas={true}
-                            options={{
-                                skjemaPaste: {
-                                    kontrollId: params.row.id,
-                                    skjema: skjemaToPast
-                                }
-                            }}
-                        />
-                    )}
-                    <RowAction
-                        actionItems={[
-                            {
-                                name: 'Kommentar',
-                                action: () => editComment(params.row.id),
-                                skip: params.row.done,
-                                icon: <InsertCommentIcon />
-                            },
-                            {
-                                name: 'Rediger',
-                                action: () => edit(params.row.id),
-                                skip: params.row.done,
-                                icon: <EditIcon />
-                            },
-                            {
-                                name: params.row.done
-                                    ? 'Åpne'
-                                    : 'Sett som utført',
-                                action: () => toggleStatus(params.row.id),
-                                icon: <DoneOutlineIcon />
-                            },
-                            {
-                                name: 'Kontrollrapport',
-                                to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report`,
-                                icon: <DescriptionIcon />
-                            },
-                            {
-                                name: 'Kontrollerklæring',
-                                to: `/kontroll/kl/${params.row.location.klient.id}/obj/${params.row.location.id}/${params.row.id}/report-statement`,
-                                skip: params.row.done,
-                                icon: <SummarizeIcon />
-                            },
-                            {
-                                name: 'Vedlegg',
-                                action: () => addAttachment(params.row.id),
-                                icon: <AttachFileIcon />
-                            }
-                        ]}
-                    />
-                </>
-            )
-        }
-    ];
+    const location = useMemo(() => {
+        return klient?.locations.find(
+            (l) => l.name === row.getValue('location')
+        );
+    }, [klient?.locations, row]);
 
-    return columns;
-};
-
-export const defaultColumns: string[] = ['klient', 'objekt', 'name', 'user'];
+    return (
+        <>
+            {clipboardHasSkjema && (
+                <PasteTableButton
+                    clipboardHas={true}
+                    options={{
+                        skjemaPaste: {
+                            kontrollId: row.getValue('id'),
+                            skjema: skjemaToPast
+                        }
+                    }}
+                />
+            )}
+            <RowAction
+                actionItems={[
+                    {
+                        name: 'Kommentar',
+                        action: () => editComment(row.getValue('id')),
+                        skip: row.getValue('done'),
+                        icon: <InsertCommentIcon />
+                    },
+                    {
+                        name: 'Rediger',
+                        action: () => edit(row.getValue('id')),
+                        skip: row.getValue('done'),
+                        icon: <EditIcon />
+                    },
+                    {
+                        name: row.getValue('done') ? 'Åpne' : 'Sett som utført',
+                        action: () => toggleStatus(row.getValue('id')),
+                        icon: <DoneOutlineIcon />
+                    },
+                    {
+                        name: 'Kontrollrapport',
+                        to: `/kontroll/kl/${klient?.id}/obj/${
+                            location?.id
+                        }/${row.getValue('id')}/report`,
+                        icon: <DescriptionIcon />
+                    },
+                    {
+                        name: 'Kontrollerklæring',
+                        to: `/kontroll/kl/${klient?.id}/obj/${
+                            location?.id
+                        }/${row.getValue('id')}/report-statement`,
+                        icon: <SummarizeIcon />
+                    },
+                    {
+                        name: 'Vedlegg',
+                        action: () => addAttachment(row.getValue('id')),
+                        icon: <AttachFileIcon />
+                    }
+                ]}
+            />
+        </>
+    );
+}
 
 interface KontrollTableProps {
     kontroller: Kontroll[];
-
+    klienter: Klient[];
+    attachments: Attachment[];
+    measurements: Measurement[];
+    avvik: Avvik[];
+    users: User[];
     onSelected: (ids: number[]) => void;
     leftAction?: React.ReactNode;
     loading?: boolean;
+    edit: (id: number) => void;
+    toggleStatus: (id: number) => void;
+    clipboardHasSkjema: boolean;
+    skjemaToPast: Skjema[];
+    editComment: (id: number) => void;
+    addAttachment: (id: number) => void;
+    openSelectInstrument: (id: number) => void;
 }
+
 export const KontrollTable = ({
     kontroller,
+    klienter,
+    attachments,
+    measurements,
+    users,
+    avvik,
     onSelected,
     leftAction,
-    loading
+    loading,
+    addAttachment,
+    clipboardHasSkjema,
+    edit,
+    editComment,
+    skjemaToPast,
+    toggleStatus,
+    openSelectInstrument
 }: KontrollTableProps) => {
     const {
         state: { kontrollClipboard }
     } = useClipBoard();
-    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
-        if (kontrollClipboard?.find((kc) => kc.id === row.id)) {
+
+    const data = useMemo((): KontrollColumns[] => {
+        return kontroller.map((k) => {
+            return {
+                ...k,
+                klient: KontrollValueGetter(k).klient(klienter),
+                location: KontrollValueGetter(k).location(klienter),
+                attachments: KontrollValueGetter(k).attachment(attachments),
+                avvik: KontrollValueGetter(k).avvik(avvik),
+                measurement: KontrollValueGetter(k).measurement(measurements),
+                instrumenter: k.instrumenter.length,
+                user: KontrollValueGetter(k).user(users)
+            };
+        });
+    }, [attachments, avvik, klienter, kontroller, measurements, users]);
+
+    const columns: ColumnDef<KontrollColumns>[] = useMemo(
+        () => [
+            {
+                header: '#',
+                accessorKey: 'id',
+                enableGrouping: false,
+                aggregatedCell: () => ''
+            },
+            {
+                header: 'Kunde',
+                accessorKey: 'klient',
+                enableGrouping: true
+            },
+            {
+                header: 'Lokasjon',
+                accessorKey: 'location',
+                enableGrouping: true
+            },
+            {
+                header: 'Kontroll',
+                accessorKey: 'name',
+                enableGrouping: true
+            },
+            {
+                header: () => (
+                    <span>
+                        Avvik åpne <sup>lukket</sup>
+                    </span>
+                ),
+                accessorKey: 'avvik',
+                aggregatedCell: () => '',
+                enableGrouping: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                cell: ({ row }) => (
+                    <RenderAvvikCell klienter={klienter} row={row} />
+                )
+            },
+            {
+                header: 'Målinger',
+                accessorKey: 'measurement',
+                enableGrouping: false,
+                cell: ({ row, cell }) => (
+                    <RenderMeasurementCell
+                        cell={cell}
+                        klienter={klienter}
+                        row={row}
+                    />
+                )
+            },
+            {
+                header: 'Vedlegg',
+                accessorKey: 'attachments',
+                enableGrouping: false,
+                cell: ({ row, cell }) => (
+                    <RenderAttachmentCell
+                        cell={cell}
+                        klienter={klienter}
+                        row={row}
+                    />
+                )
+            },
+            {
+                header: 'Instrumenter',
+                accessorKey: 'instrumenter',
+                enableGrouping: false,
+                cell: ({ row, cell }) => (
+                    <RenderInstrumentCell
+                        cell={cell}
+                        klienter={klienter}
+                        row={row}
+                        openSelectInstrument={openSelectInstrument}
+                    />
+                )
+            },
+            {
+                header: 'Utførende',
+                accessorKey: 'user',
+                enableGrouping: true
+            },
+            {
+                header: 'Kommentar',
+                accessorKey: 'kommentar',
+                enableGrouping: false
+            },
+            {
+                header: 'Status',
+                accessorKey: 'done',
+                enableGrouping: true,
+                cell: ({ cell }) => {
+                    if (cell.getValue()) {
+                        return 'Utført';
+                    }
+                    return 'Pågår';
+                }
+            },
+            {
+                header: '',
+                accessorKey: 'actions',
+                enableGrouping: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                cell: ({ row }) => (
+                    <RenderActionCell
+                        addAttachment={addAttachment}
+                        clipboardHasSkjema={clipboardHasSkjema}
+                        edit={edit}
+                        editComment={editComment}
+                        klienter={klienter}
+                        row={row}
+                        skjemaToPast={skjemaToPast}
+                        toggleStatus={toggleStatus}
+                    />
+                )
+            }
+        ],
+        [
+            addAttachment,
+            clipboardHasSkjema,
+            edit,
+            editComment,
+            klienter,
+            openSelectInstrument,
+            skjemaToPast,
+            toggleStatus
+        ]
+    );
+
+    const getRowStyling = (
+        row: Row<KontrollColumns>
+    ): RowStylingEnum | undefined => {
+        if (kontrollClipboard?.find((kc) => kc.id === row.getValue('id'))) {
             return RowStylingEnum.cut;
         }
-        if (row.done) {
+        if (row.getValue('done')) {
             return RowStylingEnum.completed;
         }
     };
 
     return (
-        <BaseTable
-            onSelected={onSelected}
+        <GroupTable<KontrollColumns>
+            tableKey={TableKey.kontroll}
+            columns={columns}
+            data={data}
+            defaultGrouping={[]}
+            defaultVisibilityState={{}}
             getRowStyling={getRowStyling}
-            loading={loading}
-            data={kontroller}>
+            isLoading={!!loading}>
             {leftAction}
-        </BaseTable>
+        </GroupTable>
     );
 };

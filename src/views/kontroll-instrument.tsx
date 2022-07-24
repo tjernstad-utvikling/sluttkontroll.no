@@ -4,29 +4,45 @@ import {
     useRemoveInstrumentDisponent,
     useSetInstrumentDisponent
 } from '../api/hooks/useInstrument';
+import {
+    useKontrollById,
+    useUpdateKontrollRemoveInstrumentConnection
+} from '../api/hooks/useKontroll';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import { InstrumentCalibrationModal } from '../modal/instrumentCalibration';
 import { InstrumentModal } from '../modal/instrument';
-import { InstrumentStatus } from '../components/instrument';
+import { InstrumentSelectModal } from '../modal/instrumentSelect';
 import { InstrumentTable } from '../tables/instrument';
+import { KontrollInstrumentViewParams } from '../contracts/navigation';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import { useCurrentUser } from '../api/hooks/useUsers';
 import { usePageStyles } from '../styles/kontroll/page';
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 
-const InstrumentsView = () => {
+const KontrollInstrumentsView = () => {
     const { classes } = usePageStyles();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isSelectModalOpen, setIsSelectModalOpen] = useState<boolean>(false);
     const [calibrationModalId, setCalibrationModalId] = useState<number>();
     const [editId, setEditId] = useState<number>();
 
+    const { kontrollId } = useParams<KontrollInstrumentViewParams>();
+
     const currentUserData = useCurrentUser();
 
-    const instrumentsData = useInstruments({});
+    const instrumentsData = useInstruments({ kontrollId: Number(kontrollId) });
+
+    const kontrollData = useKontrollById(Number(kontrollId));
 
     const instrumentDisponentMutation = useSetInstrumentDisponent();
     const removeInstrumentDisponentMutation = useRemoveInstrumentDisponent();
+
+    const removeInstrumentConnectionMutation =
+        useUpdateKontrollRemoveInstrumentConnection();
 
     const handleInstrumentBooking = async (instrumentId: number) => {
         const instrument = instrumentsData.data?.find(
@@ -54,6 +70,13 @@ const InstrumentsView = () => {
         }
     };
 
+    async function removeInstrument(instrumentId: number) {
+        await removeInstrumentConnectionMutation.mutateAsync({
+            kontrollId: Number(kontrollId),
+            instrumentId
+        });
+    }
+
     return (
         <>
             <div className={classes.appBarSpacer} />
@@ -61,20 +84,19 @@ const InstrumentsView = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Card
-                            title="Instrumenter"
+                            title="Instrumenter tilknyttet kontroll"
                             menu={
                                 <CardMenu
                                     items={[
                                         {
-                                            label: 'Nytt instrument',
-                                            action: () => setIsModalOpen(true)
+                                            label: 'Legg til instrument',
+                                            action: () =>
+                                                setIsSelectModalOpen(true)
                                         }
                                     ]}
                                 />
                             }>
                             <CardContent>
-                                <InstrumentStatus />
-
                                 <InstrumentTable
                                     changeDisponent={handleInstrumentBooking}
                                     currentUser={currentUserData.data}
@@ -87,6 +109,20 @@ const InstrumentsView = () => {
                                     }}
                                     isLoading={instrumentsData.isLoading}
                                     instruments={instrumentsData.data ?? []}
+                                    customRowAction={(instrumentId) =>
+                                        kontrollData.data?.done ? undefined : (
+                                            <IconButton
+                                                onClick={() =>
+                                                    removeInstrument(
+                                                        instrumentId
+                                                    )
+                                                }
+                                                color="error"
+                                                aria-label="fjern instrument fra liste">
+                                                <PlaylistRemoveIcon />
+                                            </IconButton>
+                                        )
+                                    }
                                 />
                             </CardContent>
                         </Card>
@@ -105,8 +141,15 @@ const InstrumentsView = () => {
                     setEditId(undefined);
                 }}
             />
+            <InstrumentSelectModal
+                kontrollId={Number(kontrollId)}
+                open={isSelectModalOpen}
+                close={() => {
+                    setIsSelectModalOpen(!isSelectModalOpen);
+                }}
+            />
         </>
     );
 };
 
-export default InstrumentsView;
+export default KontrollInstrumentsView;

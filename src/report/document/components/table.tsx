@@ -46,7 +46,7 @@ export const TableRow = ({
     );
 };
 interface TableCellProps {
-    children: string | number;
+    children?: React.ReactNode;
     width?: number;
     isTitle?: boolean;
 }

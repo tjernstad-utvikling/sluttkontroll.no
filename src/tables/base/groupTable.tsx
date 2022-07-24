@@ -1,18 +1,22 @@
 import {
-    Cell,
+    ColumnFiltersState,
     ExpandedState,
     GroupingState,
     Row,
+    SortingState,
     TableOptions,
     TableState,
     Updater,
     VisibilityState,
-    flexRender,
     getCoreRowModel,
     getExpandedRowModel,
+    getFacetedMinMaxValues,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
     getFilteredRowModel,
     getGroupedRowModel,
     getPaginationRowModel,
+    getSortedRowModel,
     useReactTable
 } from '@tanstack/react-table';
 import {
@@ -25,19 +29,16 @@ import {
 import { RowStylingEnum, useTableStyles } from './defaultTable';
 
 import { ColumnSelectRT } from './tableUtils';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { HeaderCell } from './components/header';
 import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import { TableKey } from '../../contracts/keys';
 import { TableRow } from './components/group';
 import TableRowMui from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Tooltip from '@mui/material/Tooltip';
 import { VisuallyHidden } from '../../components/text';
 import { useTableState } from './hooks/useTableState';
 
@@ -55,8 +56,6 @@ interface TableProperties<T extends Record<string, unknown>>
     enableSelection?: boolean;
 }
 
-// const hooks = [useGroupBy, useExpanded];
-
 export function GroupTable<T extends Record<string, unknown>>(
     props: PropsWithChildren<TableProperties<T>>
 ): ReactElement {
@@ -72,7 +71,7 @@ export function GroupTable<T extends Record<string, unknown>>(
         selectedIds,
         enableSelection
     } = props;
-    const classes = useTableStyles();
+    const classes2 = useTableStyles();
 
     /**Get saved table settings */
     const [tableState, setTableState] = useTableState<TableState>(tableKey, {
@@ -80,6 +79,8 @@ export function GroupTable<T extends Record<string, unknown>>(
         columnVisibility: defaultVisibilityState,
         expanded: {}
     } as TableState);
+
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
     function updateGrouping(update: Updater<GroupingState>) {
         const grouping =
@@ -107,23 +108,38 @@ export function GroupTable<T extends Record<string, unknown>>(
         });
     }
 
+    function updateSorting(update: Updater<SortingState>) {
+        const sorting =
+            update instanceof Function ? update(tableState.sorting) : update;
+
+        setTableState((prev) => {
+            return { ...prev, sorting };
+        });
+    }
+
     /**Table instance */
     const table = useReactTable<T>({
         ...props,
         columns,
         getCoreRowModel: getCoreRowModel(),
         autoResetExpanded: false,
-        state: tableState,
+        state: { ...tableState, columnFilters },
         enableRowSelection: true,
         enableMultiRowSelection: true,
         enableSubRowSelection: true,
+        onColumnFiltersChange: setColumnFilters,
         onGroupingChange: updateGrouping,
         onColumnVisibilityChange: updateVisibility,
         onExpandedChange: updateExpanded,
+        onSortingChange: updateSorting,
         getExpandedRowModel: getExpandedRowModel(),
         getGroupedRowModel: getGroupedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
+        getFacetedMinMaxValues: getFacetedMinMaxValues(),
         debugTable: true
     });
 
@@ -260,55 +276,26 @@ export function GroupTable<T extends Record<string, unknown>>(
 
     return (
         <>
-            <TableContainer component={Paper} className={classes.root}>
-                <div className={classes.tools}>
-                    <div className={classes.pasteTool}>{children}</div>
+            <TableContainer component={Paper} className={classes2.root}>
+                <div className={classes2.tools}>
+                    <div className={classes2.pasteTool}>{children}</div>
                     <ColumnSelectRT instance={table} />
                 </div>
-                <Table role="grid" size="small" aria-label="sjekkliste">
+                <Table
+                    style={{ overflowX: 'auto' }}
+                    role="grid"
+                    size="small"
+                    aria-label="sjekkliste">
                     <TableHead>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRowMui key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableCell
+                                        <HeaderCell
                                             key={header.id}
-                                            colSpan={header.colSpan}>
-                                            {header.isPlaceholder ? null : (
-                                                <div>
-                                                    {header.column.getCanGroup() ? (
-                                                        <Tooltip
-                                                            title={
-                                                                'Grupper kolonne'
-                                                            }>
-                                                            <TableSortLabel
-                                                                active
-                                                                {...{
-                                                                    onClick:
-                                                                        header.column.getToggleGroupingHandler(),
-                                                                    style: {
-                                                                        cursor: 'pointer'
-                                                                    }
-                                                                }}
-                                                                direction={
-                                                                    header.column.getIsGrouped()
-                                                                        ? 'desc'
-                                                                        : 'asc'
-                                                                }
-                                                                IconComponent={
-                                                                    KeyboardArrowRight
-                                                                }
-                                                            />
-                                                        </Tooltip>
-                                                    ) : null}{' '}
-                                                    {flexRender(
-                                                        header.column.columnDef
-                                                            .header,
-                                                        header.getContext()
-                                                    )}
-                                                </div>
-                                            )}
-                                        </TableCell>
+                                            header={header}
+                                            table={table}
+                                        />
                                     );
                                 })}
                             </TableRowMui>

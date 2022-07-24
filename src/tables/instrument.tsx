@@ -1,49 +1,58 @@
-import { BaseTable, RowStylingEnum } from './base/defaultTable';
-import {
-    GridCellParams,
-    GridColDef,
-    GridRowModel,
-    GridValueGetterParams
-} from '@mui/x-data-grid-pro';
+import { ColumnDef, Row } from '@tanstack/react-table';
 
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import CompassCalibrationIcon from '@mui/icons-material/CompassCalibration';
 import EditIcon from '@mui/icons-material/Edit';
+import { GroupTable } from './base/groupTable';
 import IconButton from '@mui/material/IconButton';
 import { Instrument } from '../contracts/instrumentApi';
 import { Link } from 'react-router-dom';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import { RowAction } from './base/tableUtils';
+import { RowStylingEnum } from './base/defaultTable';
+import { TableKey } from '../contracts/keys';
 import TodayIcon from '@mui/icons-material/Today';
 import { Typography } from '@mui/material';
 import { User } from '../contracts/userApi';
 import { format } from 'date-fns';
+import { useMemo } from 'react';
 
-export const InstrumentValueGetter = (
-    data: Instrument | GridRowModel | null
-) => {
-    const sisteKalibrert = (formatString: string): string => {
-        if (
-            data?.sisteKalibrert !== null &&
-            data?.sisteKalibrert !== undefined
-        ) {
-            return format(new Date(data?.sisteKalibrert.date), formatString);
+type InstrumentColumns = {
+    id: number;
+    name: string;
+    serienr: string;
+    sisteKalibrert: Date | null;
+    user: string;
+    disponent: string | null;
+    calibrationInterval: number;
+    toCalibrate: boolean;
+    passedCalibrationDate: boolean;
+    needCalibrating: boolean;
+};
+
+export const InstrumentValueGetter = (data: Instrument | null) => {
+    const sisteKalibrert = (
+        formatString: string,
+        date: Date | null
+    ): string => {
+        if (date !== null) {
+            return format(new Date(date), formatString);
         }
         return 'Kalibrering ikke registrert';
     };
     const user = (notSelectedString: string): string => {
         if (data?.user !== null) {
-            return data?.user.name;
+            return data?.user.name ?? '';
         }
         return notSelectedString;
     };
-    const disponent = (): string => {
+    const disponent = (): string | null => {
         if (data?.disponent !== null) {
-            return data?.disponent.name;
+            return data?.disponent.name ?? null;
         }
-        return '';
+        return null;
     };
 
     return { sisteKalibrert, user, disponent };
@@ -54,223 +63,229 @@ const RenderDisponentField = ({
     user,
     onClick
 }: {
-    row: Instrument | GridRowModel;
+    row: Row<InstrumentColumns>;
     user: User | undefined;
     onClick: (id: number) => void;
 }) => {
     if (user !== undefined) {
-        if (row.disponent !== null && row.disponent !== undefined) {
+        const disponent = row.getValue<string | undefined>('disponent');
+        if (disponent) {
             return (
                 <>
-                    <Button
-                        onClick={() => onClick(row.id)}
-                        variant="outlined"
-                        color="primary"
-                        size="small">
-                        {user.id === row.disponent.id ? 'Lever' : 'Overta'}
-                    </Button>{' '}
+                    {!row.getIsGrouped() ? (
+                        <Button
+                            onClick={() => onClick(row.getValue('id'))}
+                            variant="outlined"
+                            color="primary"
+                            size="small">
+                            {user.name === disponent ? 'Lever' : 'Overta'}
+                        </Button>
+                    ) : (
+                        <div />
+                    )}{' '}
                     <Typography style={{ paddingLeft: 5 }}>
-                        {row.disponent.name}
+                        {disponent}
                     </Typography>
                 </>
             );
         }
         return (
             <>
-                <Button
-                    onClick={() => onClick(row.id)}
-                    variant="outlined"
-                    color="primary"
-                    size="small">
-                    Book
-                </Button>{' '}
+                {!row.getIsGrouped() ? (
+                    <Button
+                        onClick={() => onClick(row.getValue('id'))}
+                        variant="outlined"
+                        color="primary"
+                        size="small">
+                        Book
+                    </Button>
+                ) : (
+                    <div />
+                )}{' '}
                 <Typography style={{ paddingLeft: 5 }}>Ingen</Typography>
             </>
         );
     }
     return <div />;
 };
-interface instrumentColumnsOptions {
-    edit: (id: number) => void;
-    regCalibration: (id: number) => void;
-    currentUser: User | undefined;
-    changeDisponent: (instrumentId: number) => void;
-}
-export const instrumentColumns = ({
-    edit,
-    regCalibration,
-    currentUser,
-    changeDisponent
-}: instrumentColumnsOptions) => {
-    const columns: GridColDef[] = [
-        {
-            field: 'id',
-            headerName: '#',
-            flex: 1
-        },
-        {
-            field: 'name',
-            headerName: 'Instrument',
-            flex: 1
-        },
-        {
-            field: 'serienr',
-            headerName: 'Serienummer',
-            flex: 1
-        },
-        {
-            field: 'sisteKalibrert',
-            headerName: 'Siste kalibrering',
-            flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <>
-                    <Link to={`/instrument/${params.row.id}/calibration`}>
-                        {InstrumentValueGetter(params.row).sisteKalibrert(
-                            'dd.MM.Y'
-                        )}
-                    </Link>
-                    <IconButton
-                        onClick={() => regCalibration(params.row.id)}
-                        aria-label="Registrer ny kalibrering"
-                        size="large">
-                        <AddIcon />
-                    </IconButton>
-                </>
-            ),
-            sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    InstrumentValueGetter(
-                        param1.api.getRow(param1.id)
-                    ).sisteKalibrert('Y-M-d')
-                ).localeCompare(
-                    String(
-                        InstrumentValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).sisteKalibrert('Y-M-d')
-                    )
-                )
-        },
-        {
-            field: 'user',
-            headerName: 'Ansvarlig',
-            flex: 1,
-            valueGetter: (params: GridValueGetterParams) =>
-                InstrumentValueGetter(params.row).user('Ansvarlig ikke valgt'),
-            sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    InstrumentValueGetter(param1.api.getRow(param1.id)).user('')
-                ).localeCompare(
-                    String(
-                        InstrumentValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).user('')
-                    )
-                )
-        },
-        {
-            field: 'disponent',
-            headerName: 'Disponerer instrumentet',
-            flex: 1,
-            renderCell: (params: GridCellParams) => (
-                <RenderDisponentField
-                    onClick={changeDisponent}
-                    row={params.row}
-                    user={currentUser}
-                />
-            ),
-            sortComparator: (v1, v2, param1, param2) =>
-                String(
-                    InstrumentValueGetter(
-                        param1.api.getRow(param1.id)
-                    ).disponent()
-                ).localeCompare(
-                    String(
-                        InstrumentValueGetter(
-                            param2.api.getRow(param2.id)
-                        ).disponent()
-                    )
-                )
-        },
-        {
-            field: 'calibrationInterval',
-            headerName: 'Kalibreringsinterval',
-            flex: 1
-        },
-        {
-            field: 'toCalibrate',
-            headerName: 'Skal kalibreres',
-            flex: 1,
-            renderCell: (params: GridCellParams) => {
-                return params.row.toCalibrate ? (
-                    <Chip
-                        variant="outlined"
-                        icon={<CompassCalibrationIcon />}
-                        label="Skal kalibreres"
-                    />
-                ) : (
-                    <Chip variant="outlined" icon={<NotInterestedIcon />} />
-                );
-            }
-        },
-        {
-            field: 'action',
-            headerName: ' ',
-            sortable: false,
-            filterable: false,
-            disableColumnMenu: true,
-            renderCell: (params: GridCellParams) => (
-                <RowAction
-                    actionItems={[
-                        {
-                            name: 'Rediger',
-                            action: () => edit(params.row.id),
-                            skip: params.row.done,
-                            icon: <EditIcon />
-                        },
-                        {
-                            name: 'Registrer kalibrering',
-                            action: () => regCalibration(params.row.id),
-                            skip: params.row.done,
-                            icon: <TodayIcon />
-                        }
-                    ]}
-                />
-            )
-        }
-    ];
-
-    return columns;
-};
-
-export const defaultColumns: string[] = [
-    'name',
-    'serienr',
-    'sisteKalibrert',
-    'disponent',
-    'user'
-];
 
 interface InstrumentTableProps {
     instruments: Instrument[];
+    edit: (id: number) => void;
+    regCalibration: (id: number) => void;
     isLoading: boolean;
+    currentUser: User | undefined;
+    changeDisponent: (instrumentId: number) => void;
+    customRowAction?: (id: number) => React.ReactNode;
 }
 export const InstrumentTable = ({
     instruments,
-    isLoading
+    edit,
+    regCalibration,
+    isLoading,
+    changeDisponent,
+    currentUser,
+    customRowAction
 }: InstrumentTableProps) => {
-    const getRowStyling = (row: GridRowModel): RowStylingEnum | undefined => {
-        if (row.passedCalibrationDate) {
+    const data = useMemo((): InstrumentColumns[] => {
+        return instruments.map((c) => {
+            return {
+                ...c,
+                sisteKalibrert: c.sisteKalibrert
+                    ? new Date(c.sisteKalibrert.date)
+                    : null,
+                user: InstrumentValueGetter(c).user('Ansvarlig ikke valgt'),
+                disponent: InstrumentValueGetter(c).disponent()
+            };
+        });
+    }, [instruments]);
+
+    const columns: ColumnDef<InstrumentColumns>[] = useMemo(
+        () => [
+            {
+                header: '#',
+                accessorKey: 'id',
+                enableGrouping: false,
+
+                aggregatedCell: () => ''
+            },
+            {
+                header: 'Instrument',
+                accessorKey: 'name',
+                enableGrouping: false
+            },
+            {
+                header: 'Serienummer',
+                accessorKey: 'serienr',
+                enableGrouping: false
+            },
+            {
+                header: 'Siste kalibrering',
+                accessorKey: 'sisteKalibrert',
+                aggregatedCell: () => '',
+                enableGrouping: false,
+                cell: ({ cell, row }) => (
+                    <>
+                        <Link
+                            to={`/instrument/${row.getValue(
+                                'id'
+                            )}/calibration`}>
+                            {InstrumentValueGetter(null).sisteKalibrert(
+                                'dd.MM.Y',
+                                cell.getValue()
+                            )}
+                        </Link>
+                        <IconButton
+                            onClick={() => regCalibration(row.getValue('id'))}
+                            aria-label="Registrer ny kalibrering"
+                            size="large">
+                            <AddIcon />
+                        </IconButton>
+                    </>
+                )
+            },
+            {
+                header: 'Disponerer instrumentet',
+                accessorKey: 'disponent',
+                enableGrouping: true,
+                cell: ({ cell, row }) => (
+                    <RenderDisponentField
+                        onClick={changeDisponent}
+                        row={row}
+                        user={currentUser}
+                    />
+                )
+            },
+            {
+                header: 'Ansvarlig',
+                accessorKey: 'user',
+                enableGrouping: true
+            },
+            {
+                header: 'Kalibreringsinterval',
+                accessorKey: 'calibrationInterval',
+                enableGrouping: true,
+                aggregationFn: 'max',
+                aggregatedCell: ({ getValue }) => `Maks ${getValue()}`
+            },
+            {
+                header: 'Skal kalibreres',
+                accessorKey: 'toCalibrate',
+                enableGrouping: true,
+                cell: ({ cell }) => {
+                    return cell.getValue() ? (
+                        <Chip
+                            variant="outlined"
+                            icon={<CompassCalibrationIcon />}
+                            label="Skal kalibreres"
+                        />
+                    ) : (
+                        <Chip variant="outlined" icon={<NotInterestedIcon />} />
+                    );
+                }
+            },
+            {
+                header: 'Tid for kalibrering',
+                accessorKey: 'needCalibrating',
+                enableGrouping: true
+            },
+            {
+                header: 'Passert kalibrering',
+                accessorKey: 'passedCalibrationDate',
+                enableGrouping: true
+            },
+            {
+                header: '',
+                accessorKey: 'actions',
+                enableGrouping: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                cell: ({ row }) => {
+                    return customRowAction ? (
+                        customRowAction(row.getValue('id'))
+                    ) : (
+                        <RowAction
+                            actionItems={[
+                                {
+                                    name: 'Rediger',
+                                    action: () => edit(row.getValue('id')),
+                                    icon: <EditIcon />
+                                },
+                                {
+                                    name: 'Registrer kalibrering',
+                                    action: () =>
+                                        regCalibration(row.getValue('id')),
+
+                                    icon: <TodayIcon />
+                                }
+                            ]}
+                        />
+                    );
+                }
+            }
+        ],
+        [changeDisponent, currentUser, customRowAction, edit, regCalibration]
+    );
+
+    const getRowStyling = (
+        row: Row<InstrumentColumns>
+    ): RowStylingEnum | undefined => {
+        if (row.getValue('passedCalibrationDate')) {
             return RowStylingEnum.error;
-        } else if (row.needCalibrating) {
+        } else if (row.getValue('needCalibrating')) {
             return RowStylingEnum.warning;
         }
     };
 
     return (
-        <BaseTable
-            data={instruments}
+        <GroupTable<InstrumentColumns>
+            tableKey={TableKey.instrument}
+            columns={columns}
+            data={data}
+            defaultGrouping={[]}
+            defaultVisibilityState={{}}
             getRowStyling={getRowStyling}
-            loading={isLoading}
+            isLoading={isLoading}
         />
     );
 };

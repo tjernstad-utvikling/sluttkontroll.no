@@ -61,7 +61,7 @@ export function UploadModal({ kontrollId, close }: AttachmentModalProps) {
             <DialogContent>
                 <DropZone
                     multiple
-                    accept="image/*"
+                    accept="application/pdf"
                     setFiles={setImages}
                     files={images}>
                     <div className={classes.imageContainer}>

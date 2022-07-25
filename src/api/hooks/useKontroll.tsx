@@ -24,10 +24,12 @@ export function useExternalKontroller() {
 }
 
 export function useKontroller({
+    my,
     includeDone,
     clientId,
     locationId
 }: {
+    my?: boolean;
     includeDone: boolean;
     clientId?: number;
     locationId?: number;
@@ -36,6 +38,7 @@ export function useKontroller({
         [
             'kontroll',
             includeDone ? 'all' : 'open',
+            ...(my ? ['myControl'] : []),
             ...(locationId
                 ? ['location', locationId]
                 : clientId
@@ -48,6 +51,7 @@ export function useKontroller({
             }>(`/kontroll`, {
                 params: {
                     ...(includeDone ? { all: true } : {}),
+                    ...(my ? { my: true } : {}),
                     ...(locationId
                         ? { locationId }
                         : clientId

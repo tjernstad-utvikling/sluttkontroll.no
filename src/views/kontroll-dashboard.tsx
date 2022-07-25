@@ -40,7 +40,10 @@ const KontrollerView = () => {
     const history = useHistory();
     const { showAllKontroller, setShowAllKontroller } = useKontrollCtx();
 
-    const kontrollData = useKontroller({ includeDone: showAllKontroller });
+    const kontrollData = useKontroller({
+        includeDone: showAllKontroller,
+        my: true
+    });
 
     const attachmentsData = useAttachments({
         myControl: true

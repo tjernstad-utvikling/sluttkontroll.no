@@ -92,8 +92,8 @@ export const CheckpointSchema = ({
                 prosedyreNr: checkpoint?.prosedyreNr || '',
                 tekst: checkpoint?.tekst || '',
                 mainCategory: mainOption || null,
-                groupCategory: selectedGroup,
-                checkpointNumber: checkpoint?.checkpointNumber || 1
+                groupCategory: Number(selectedGroup),
+                checkpointNumber: Number(checkpoint?.checkpointNumber) || 1
             }}
             enableReinitialize
             validationSchema={Yup.object({

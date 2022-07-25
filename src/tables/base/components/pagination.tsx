@@ -21,8 +21,7 @@ export function Pagination<T extends {}>({ table }: PaginationProps<T>) {
             <div
                 style={{
                     display: 'flex',
-                    flexDirection: 'row',
-                    paddingTop: '10px'
+                    flexDirection: 'row'
                 }}>
                 <IconButton
                     color="primary"
@@ -52,7 +51,7 @@ export function Pagination<T extends {}>({ table }: PaginationProps<T>) {
                     disabled={!table.getCanNextPage()}>
                     <KeyboardDoubleArrowRightIcon />
                 </IconButton>
-                <span style={{ paddingLeft: '20px' }}>
+                <span style={{ paddingLeft: '20px', paddingTop: '10px' }}>
                     <TextField
                         size="small"
                         label={'Gå til side'}
@@ -68,22 +67,24 @@ export function Pagination<T extends {}>({ table }: PaginationProps<T>) {
                         }}
                     />
                 </span>
+                <span style={{ paddingTop: '10px', paddingLeft: '20px' }}>
+                    <TextField
+                        size="small"
+                        select
+                        label="Vis"
+                        value={table.getState().pagination.pageSize}
+                        onChange={(e) => {
+                            table.setPageSize(Number(e.target.value));
+                        }}>
+                        {[10, 20, 30, 40, 50].map((pageSize) => (
+                            <MenuItem key={pageSize} value={pageSize}>
+                                {pageSize}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </span>
             </div>
 
-            <TextField
-                size="small"
-                select
-                label="Antall elementer"
-                value={table.getState().pagination.pageSize}
-                onChange={(e) => {
-                    table.setPageSize(Number(e.target.value));
-                }}>
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <MenuItem key={pageSize} value={pageSize}>
-                        {pageSize}
-                    </MenuItem>
-                ))}
-            </TextField>
             <span>
                 <div>Side</div>
                 <strong>

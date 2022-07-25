@@ -31,6 +31,7 @@ import { RowStylingEnum, useTableStyles } from './defaultTable';
 import { ColumnSelectRT } from './tableUtils';
 import { HeaderCell } from './components/header';
 import LinearProgress from '@mui/material/LinearProgress';
+import { Pagination } from './components/pagination';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -340,6 +341,7 @@ export function GroupTable<T extends Record<string, unknown>>(
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Pagination table={table} />
             <VisuallyHidden id="rowActionDescription">
                 Trykk for å velge
             </VisuallyHidden>

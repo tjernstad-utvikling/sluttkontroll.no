@@ -92,7 +92,7 @@ export const CheckpointSchema = ({
                 prosedyreNr: checkpoint?.prosedyreNr || '',
                 tekst: checkpoint?.tekst || '',
                 mainCategory: mainOption || null,
-                groupCategory: Number(selectedGroup),
+                groupCategory: selectedGroup,
                 checkpointNumber: Number(checkpoint?.checkpointNumber) || 1
             }}
             enableReinitialize

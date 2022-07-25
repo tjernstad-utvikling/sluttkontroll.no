@@ -111,6 +111,31 @@ export const KontrollValueGetter = (data: Kontroll | null) => {
     return { klient, location, user, avvik, measurement, attachment };
 };
 
+interface RenderKontrollCellProps {
+    klienter: Klient[];
+    row: Row<KontrollColumns>;
+    cell: Cell<KontrollColumns, unknown>;
+}
+function RenderKontrollCell({ klienter, row, cell }: RenderKontrollCellProps) {
+    const klient = useMemo(() => {
+        return klienter.find((k) => k.name === row.getValue('klient'));
+    }, [klienter, row]);
+
+    const location = useMemo(() => {
+        return klient?.locations.find(
+            (l) => l.name === row.getValue('location')
+        );
+    }, [klient?.locations, row]);
+
+    return (
+        <Link
+            to={`/kontroll/kl/${klient?.id}/obj/${location?.id}/${row.getValue(
+                'id'
+            )}`}>
+            {cell.getValue()}
+        </Link>
+    );
+}
 interface RenderAvvikCellProps {
     klienter: Klient[];
     row: Row<KontrollColumns>;
@@ -408,7 +433,14 @@ export const KontrollTable = ({
             {
                 header: 'Kontroll',
                 accessorKey: 'name',
-                enableGrouping: true
+                enableGrouping: true,
+                cell: ({ cell, row }) => (
+                    <RenderKontrollCell
+                        klienter={klienter}
+                        cell={cell}
+                        row={row}
+                    />
+                )
             },
             {
                 header: () => (
